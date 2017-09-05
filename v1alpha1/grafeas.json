@@ -13,7 +13,7 @@
   "paths": {
     "/v1alpha1/projects/{projectsId}/occurrences/{occurrencesId}": {
       "get": {
-        "tags": ["containeranalysis"],
+        "tags": ["grafeas"],
         "operationId": "GetOccurrence",
         "description": "Returns the requested occurrence",
         "parameters": [
@@ -42,7 +42,7 @@
         }
       },
       "delete": {
-        "tags": ["containeranalysis"],
+        "tags": ["grafeas"],
         "operationId": "DeleteOccurrence",
         "description": "Deletes the given occurrence from the system.",
         "parameters": [
@@ -71,7 +71,7 @@
         }
       },
       "put": {
-        "tags": ["containeranalysis"],
+        "tags": ["grafeas"],
         "operationId": "UpdateOccurrence",
         "description": "Updates an existing occurrence.",
         "parameters": [
@@ -110,7 +110,7 @@
     },
     "/v1alpha1/projects/{projectsId}/occurrences": {
       "get": {
-        "tags": ["containeranalysis"],
+        "tags": ["grafeas"],
         "operationId": "ListOccurrences",
         "description": "Lists active occurrences for a given project\/Digest.",
         "parameters": [
@@ -151,7 +151,7 @@
         }
       },
       "post": {
-        "tags": ["containeranalysis"],
+        "tags": ["grafeas"],
         "operationId": "CreateOccurrence",
         "description": "Creates a new occurrence.",
         "parameters": [
@@ -183,7 +183,7 @@
     },
     "/v1alpha1/projects/{projectsId}/occurrences/{occurrencesId}/notes": {
       "get": {
-        "tags": ["containeranalysis"],
+        "tags": ["grafeas"],
         "operationId": "GetOccurrenceNote",
         "description": "Gets the note that this occurrence is attached to.",
         "parameters": [
@@ -214,7 +214,7 @@
     },
     "/v1alpha1/projects/{projectsId}/notes/{notesId}": {
       "get": {
-        "tags": ["containeranalysis"],
+        "tags": ["grafeas"],
         "operationId": "GetNote",
         "description": "Returns the requested occurrence",
         "parameters": [
@@ -243,7 +243,7 @@
         }
       },
       "delete": {
-        "tags": ["containeranalysis"],
+        "tags": ["grafeas"],
         "operationId": "DeleteNote",
         "description": "Deletes the given note from the system.",
         "parameters": [
@@ -272,7 +272,7 @@
         }
       },
       "put": {
-        "tags": ["containeranalysis"],
+        "tags": ["grafeas"],
         "operationId": "UpdateNote",
         "description": "Updates an existing note.",
         "parameters": [
@@ -311,7 +311,7 @@
     },
     "/v1alpha1/projects/{projectsId}/notes": {
       "get": {
-        "tags": ["containeranalysis"],
+        "tags": ["grafeas"],
         "operationId": "ListNotes",
         "description": "Lists all notes for a given project.",
         "parameters": [
@@ -352,7 +352,7 @@
         }
       },
       "post": {
-        "tags": ["containeranalysis"],
+        "tags": ["grafeas"],
         "operationId": "CreateNote",
         "description": "Creates a new note.",
         "parameters": [
@@ -390,7 +390,7 @@
     },
     "/v1alpha1/projects/{projectsId}/notes/{notesId}/occurrences": {
       "get": {
-        "tags": ["containeranalysis"],
+        "tags": ["grafeas"],
         "operationId": "ListNoteOccurrences",
         "description": "Lists the names of Occurrences linked to a particular Note.",
         "parameters": [
@@ -440,7 +440,7 @@
     },
     "/v1alpha1/projects/{projectsId}/operations": {
       "post": {
-        "tags": ["containeranalysis"],
+        "tags": ["grafeas"],
         "operationId": "CreateOperation",
         "description": "Creates a new operation",
         "parameters": [
@@ -472,7 +472,7 @@
     },
     "/v1alpha1/projects/{projectsId}/operations/{operationsId}": {
       "put": {
-        "tags": ["containeranalysis"],
+        "tags": ["grafeas"],
         "operationId": "UpdateOperation",
         "description": "Updates an existing operation returns an error if operation\n does not exist. The only valid operations are to update mark the done bit\nchange the result.",
         "parameters": [
@@ -532,7 +532,6 @@
           "description": "This explicitly denotes which of the occurrence details is specified.\nThis field can be used as a filter in list requests.\n@OutputOnly",
           "type": "string",
           "enum": [
-            "UNKNOWN",
             "CUSTOM",
             "PACKAGE_VULNERABILITY",
             "BUILD_DETAILS",
@@ -991,14 +990,6 @@
         "git": {
           "description": "A SourceContext referring to any third party Git repo (e.g. GitHub).",
           "$ref": "#/definitions/GitSourceContext"
-        },
-        "piper": {
-          "description": "A SourceContext referring to a CL in Piper.",
-          "$ref": "#/definitions/PiperDepotSourceContext"
-        },
-        "citc": {
-          "description": "A SourceContext referring to a Citc client.",
-          "$ref": "#/definitions/CitcWorkspaceSourceContext"
         }
       }
     },
@@ -1327,7 +1318,7 @@
           "description": "Configuration used to create this deployment.",
           "type": "object",
           "additionalProperties": {
-            "type": "any",
+            "type": "string",
             "description": "Properties of the object. Contains field @type with type URL."
           }
         },
@@ -1361,7 +1352,7 @@
           "description": "Service-specific metadata associated with the operation.  It typically\ncontains progress information and common metadata such as create time.\nSome services might not provide such metadata.  Any method that returns a\nlong-running operation should document the metadata type, if any.",
           "type": "object",
           "additionalProperties": {
-            "type": "any",
+            "type": "string",
             "description": "Properties of the object. Contains field @type with type URL."
           }
         },
@@ -1377,7 +1368,7 @@
           "description": "The normal response of the operation in case of success.  If the original\nmethod returns no data on success, such as `Delete`, the response is\n`google.protobuf.Empty`.  If the original method is standard\n`Get`\/`Create`\/`Update`, the response should be the resource.  For other\nmethods, the response should have the type `XxxResponse`, where `Xxx`\nis the original method name.  For example, if the original method name\nis `TakeSnapshot()`, the inferred response type is\n`TakeSnapshotResponse`.",
           "type": "object",
           "additionalProperties": {
-            "type": "any",
+            "type": "string",
             "description": "Properties of the object. Contains field @type with type URL."
           }
         }
@@ -1403,7 +1394,7 @@
           "items": {
             "type": "object",
             "additionalProperties": {
-              "type": "any",
+              "type": "string",
               "description": "Properties of the object. Contains field @type with type URL."
             }
           }
@@ -1456,7 +1447,6 @@
           "description": "This explicitly denotes which kind of note is specified.\nThis field can be used as a filter in list requests.\n@OutputOnly",
           "type": "string",
           "enum": [
-            "UNKNOWN",
             "CUSTOM",
             "PACKAGE_VULNERABILITY",
             "BUILD_DETAILS",
