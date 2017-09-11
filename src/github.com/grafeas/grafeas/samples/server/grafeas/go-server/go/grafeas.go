@@ -2,9 +2,12 @@ package server
 
 import (
 	"net/http"
+	"github.com/grafeas/grafeas/samples/server/grafeas/go-server/go/storage"
 )
 
 type Grafeas struct {
+	s storage.Store
+
 
 }
 
