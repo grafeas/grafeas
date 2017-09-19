@@ -35,7 +35,11 @@ type MemStore struct {
 	notesByID map[string]swagger.Note
 }
 
-func (m *MemStore) CreateOccurrence(ctx context.Context, o *swagger.Occurrence) *server.AppError {
+func occurrenceName(pID, oID string) string {
+	return fmt.Sprintf("projects/%v/occurrences/%v", pID, oID)
+}
+
+func (m *MemStore) CreateOccurrence(o *swagger.Occurrence) *server.AppError {
 	if _, ok := m.occurrencesByID[o.Name]; ok {
 		return &server.AppError{fmt.Sprintf("Occurrence with Name %v already exists", o.Name),
 			http.StatusBadRequest}
@@ -44,8 +48,8 @@ func (m *MemStore) CreateOccurrence(ctx context.Context, o *swagger.Occurrence) 
 	return nil
 }
 
-func (m *MemStore) DeleteOccurrence(ctx context.Context, projectID, oID string) *server.AppError  {
-	name := fmt.Sprintf("projects/%v/occurrences/%v", projectID, oID)
+func (m *MemStore) DeleteOccurrence(pID, oID string) *server.AppError  {
+	name := occurrenceName(pID, oID)
 	if _, ok := m.occurrencesByID[name]; !ok {
 		return &server.AppError{fmt.Sprintf("Occurrence with Name %v does not Exist", name),
 			http.StatusBadRequest}
@@ -54,63 +58,63 @@ func (m *MemStore) DeleteOccurrence(ctx context.Context, projectID, oID string) 
 	return nil
 }
 
-func (m *MemStore) UpdateOccurrence(ctx context.Context, projectID, oID string, o *swagger.Occurrence) *server.AppError  {
+func (m *MemStore) UpdateOccurrence(projectID, oID string, o *swagger.Occurrence) *server.AppError  {
+	name := fmt.Sprintf("projects/%v/occurrences/%v", projectID, oID)
+}
+
+func (m *MemStore) GetOccurrence(projectID, oID string) (*swagger.Occurrence, *server.AppError ) {
 	panic("implement me")
 }
 
-func (m *MemStore) GetOccurrence(ctx context.Context, projectID, oID string) (*swagger.Occurrence, *server.AppError ) {
+func (m *MemStore) ListOccurrences() *server.AppError  {
 	panic("implement me")
 }
 
-func (m *MemStore) ListOccurrences(ctx context.Context) *server.AppError  {
+func (m *MemStore) CreateNote(nsf *swagger.Note) *server.AppError  {
 	panic("implement me")
 }
 
-func (m *MemStore) CreateNote(ctx context.Context, nsf *swagger.Note) *server.AppError  {
+func (m *MemStore) DeleteNote(providerID, nID string) *server.AppError  {
 	panic("implement me")
 }
 
-func (m *MemStore) DeleteNote(ctx context.Context, providerID, nID string) *server.AppError  {
+func (m *MemStore) UpdateNote(providerID, nID string, n *swagger.Note) *server.AppError  {
 	panic("implement me")
 }
 
-func (m *MemStore) UpdateNote(ctx context.Context, providerID, nID string, n *swagger.Note) *server.AppError  {
+func (m *MemStore) GetNote(providerID, nID string, n *swagger.Note) *server.AppError  {
 	panic("implement me")
 }
 
-func (m *MemStore) GetNote(ctx context.Context, providerID, nID string, n *swagger.Note) *server.AppError  {
+func (m *MemStore) GetNoteByOccurrence(projectID, oID string) (*swagger.Note, *server.AppError ) {
 	panic("implement me")
 }
 
-func (m *MemStore) GetNoteByOccurrence(ctx context.Context, projectID, oID string) (*swagger.Note, *server.AppError ) {
+func (m *MemStore) ListNotes() *server.AppError  {
 	panic("implement me")
 }
 
-func (m *MemStore) ListNotes(ctx context.Context) *server.AppError  {
+func (m *MemStore) ListNoteOccurrences() *server.AppError  {
 	panic("implement me")
 }
 
-func (m *MemStore) ListNoteOccurrences(ctx context.Context) *server.AppError  {
+func (m *MemStore) GetOperation(projectID, opID string) (*swagger.Operation, *server.AppError ) {
 	panic("implement me")
 }
 
-func (m *MemStore) GetOperation(ctx context.Context, projectID, opID string) (*swagger.Operation, *server.AppError ) {
+func (m *MemStore) CreateOperation(o *swagger.Operation) *server.AppError  {
 	panic("implement me")
 }
 
-func (m *MemStore) CreateOperation(ctx context.Context, o *swagger.Operation) *server.AppError  {
+func (m *MemStore) DeleteOperation(projectID, opID string) *server.AppError  {
 	panic("implement me")
 }
 
-func (m *MemStore) DeleteOperation(ctx context.Context, projectID, opID string) *server.AppError  {
+func (m *MemStore) UpdateOperation(projectID, opID string, op *swagger.Operation) *server.AppError  {
 	panic("implement me")
 }
 
-func (m *MemStore) UpdateOperation(ctx context.Context, projectID, opID string, op *swagger.Operation) *server.AppError  {
-	panic("implement me")
-}
-
-func (m *MemStore) ListOperations(ctx context.Context) *server.AppError  {
+func (m *MemStore) ListOperations() *server.AppError  {
 	panic("implement me")
 }
 
