@@ -11,6 +11,6 @@ func TestGrafeas_CreateNote(t *testing.T) {
 
 func note() swagger.Note {
 	n := swagger.Note{
-		Name: 
+		Name:
 	}
 }
