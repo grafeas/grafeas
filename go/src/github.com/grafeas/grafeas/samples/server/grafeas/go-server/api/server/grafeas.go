@@ -13,12 +13,6 @@ type Grafeas struct {
 	s storage.Store
 }
 
-type AppError struct {
-  Err string
-  StatusCode int
-
-}
-
 func (g *Grafeas) CreateNote(w http.ResponseWriter, r *http.Request) {
 	n := swagger.Note{}
 	body, err := ioutil.ReadAll(r.Body)
@@ -27,12 +21,14 @@ func (g *Grafeas) CreateNote(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "can't read body", http.StatusBadRequest)
 		return
 	}
+
+	json.Unmarshal(body, &n)
 	if n.Name == "" {
 		log.Printf("Invalid note name: %v", n.Name)
 		http.Error(w, "Invalid note name", http.StatusBadRequest)
 	}
-	json.Unmarshal(body, &n)
-	g.s.CreateNote(n)
+	// TODO: Validate that operation exists if it is specified
+	g.s.CreateNote(&n)
 
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
@@ -51,12 +47,14 @@ func (g *Grafeas) CreateOccurrence(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "can't read body", http.StatusBadRequest)
 		return
 	}
+	json.Unmarshal(body, &o)
 	if o.Name == "" {
 		log.Printf("Invalid occurrence name: %v", o.Name)
 		http.Error(w, "Invalid occurrences name", http.StatusBadRequest)
 	}
-	json.Unmarshal(body, &o)
-	g.s.CreateNote(o)
+	// TODO: Validate that note exists
+	// TODO: Validate that operation exists if it is specified
+	g.s.CreateOccurrence(&o)
 
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
@@ -68,6 +66,27 @@ func (g *Grafeas) CreateOccurrence(w http.ResponseWriter, r *http.Request) {
 }
 
 func (g *Grafeas) CreateOperation(w http.ResponseWriter, r *http.Request) {
+	o := swagger.Operation{}
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Printf("Error reading body: %v", err)
+		http.Error(w, "can't read body", http.StatusBadRequest)
+		return
+	}
+	json.Unmarshal(body, &o)
+	if o.Name == "" {
+		log.Printf("Invalid occurrence name: %v", o.Name)
+		http.Error(w, "Invalid occurrences name", http.StatusBadRequest)
+	}
+	g.s.CreateOperation(&o)
+
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.WriteHeader(http.StatusOK)
+	bytes, err := json.Marshal(&o)
+	if err != nil {
+		log.Printf("Error marshalling bytes: %v", err)
+	}
+	w.Write(bytes)
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
 }

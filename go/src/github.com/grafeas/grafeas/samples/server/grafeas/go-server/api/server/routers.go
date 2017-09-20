@@ -59,7 +59,7 @@ func routes(api Grafeas) Routes {
 			"CreateOccurrence",
 			"POST",
 			"/v1alpha1/projects/{projectsId}/occurrences",
-			api.CreateOccurrence
+			api.CreateOccurrence,
 		},
 
 		Route{
