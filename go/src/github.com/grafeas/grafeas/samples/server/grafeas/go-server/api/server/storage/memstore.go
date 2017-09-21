@@ -8,27 +8,6 @@ import (
 	"net/http"
 )
 
-type Store interface {
-	CreateOccurrence(o *swagger.Occurrence) *errors.AppError
-	DeleteOccurrence(projectID, oID string) *errors.AppError
-	UpdateOccurrence(projectID, oID string, o *swagger.Occurrence) *errors.AppError
-	GetOccurrence(projectID, oID string) (*swagger.Occurrence, *errors.AppError)
-	ListOccurrences() *errors.AppError
-	CreateNote(n *swagger.Note) *errors.AppError
-	DeleteNote(providerID, nID string) *errors.AppError
-	UpdateNote(providerID, nID string, n *swagger.Note) *errors.AppError
-	GetNote(providerID, nID string, n *swagger.Note) *errors.AppError
-	GetNoteByOccurrence(projectID, oID string) (*swagger.Note, *errors.AppError)
-	ListNotes() *errors.AppError
-	ListNoteOccurrences() *errors.AppError
-
-	GetOperation(projectID, opID string) (*swagger.Operation, *errors.AppError)
-	CreateOperation(o *swagger.Operation) *errors.AppError
-	DeleteOperation(projectID, opID string) *errors.AppError
-	UpdateOperation(projectID, opID string, op *swagger.Operation) *errors.AppError
-	ListOperations() *errors.AppError
-}
-
 type MemStore struct {
 	occurrencesByID map[string]swagger.Occurrence
 	notesByID       map[string]swagger.Note

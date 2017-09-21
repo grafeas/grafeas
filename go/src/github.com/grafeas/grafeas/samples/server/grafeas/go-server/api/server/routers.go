@@ -19,7 +19,7 @@ type Routes []Route
 
 func NewRouter(s storage.Store) *mux.Router {
 	router := mux.NewRouter().StrictSlash(true)
-	api := Grafeas{s}
+	api := Handler{s}
 	for _, route := range routes(api) {
 		var handler http.Handler
 		handler = route.HandlerFunc
@@ -39,7 +39,7 @@ func Index(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Hello World!")
 }
 
-func routes(api Grafeas) Routes {
+func routes(api Handler) Routes {
 	return Routes{
 		Route{
 			"Index",
