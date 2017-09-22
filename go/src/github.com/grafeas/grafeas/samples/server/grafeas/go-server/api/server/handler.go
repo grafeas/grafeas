@@ -1,3 +1,4 @@
+// package server is the implementation of a server that handles grafeas requests.
 package server
 
 import (
@@ -9,10 +10,13 @@ import (
 	"net/http"
 )
 
+// Handler accepts httpRequests, converts them to Grafeas objects - calls into Grafeas to operation on them
+// and converts responses to http responses.
 type Handler struct {
 	g v1alpha1.Grafeas
 }
 
+// CreateNote handles http requests to create notes in grafeas
 func (h *Handler) CreateNote(w http.ResponseWriter, r *http.Request) {
 	n := swagger.Note{}
 	body, err := ioutil.ReadAll(r.Body)
@@ -39,6 +43,7 @@ func (h *Handler) CreateNote(w http.ResponseWriter, r *http.Request) {
 	w.Write(bytes)
 }
 
+// CreateOccurrence handles http requests to create occurrences in grafeas
 func (h *Handler) CreateOccurrence(w http.ResponseWriter, r *http.Request) {
 	o := swagger.Occurrence{}
 	body, err := ioutil.ReadAll(r.Body)
@@ -62,6 +67,7 @@ func (h *Handler) CreateOccurrence(w http.ResponseWriter, r *http.Request) {
 	w.Write(bytes)
 }
 
+// CreateOperation handles http requests to create operation in grafeas
 func (h *Handler) CreateOperation(w http.ResponseWriter, r *http.Request) {
 	o := swagger.Operation{}
 	body, err := ioutil.ReadAll(r.Body)

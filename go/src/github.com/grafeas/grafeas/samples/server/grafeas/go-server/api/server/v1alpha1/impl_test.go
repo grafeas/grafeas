@@ -47,7 +47,7 @@ func TestGrafeas_CreateNote(t *testing.T) {
 	if err := g.CreateNote(&n); err == nil {
 		t.Errorf("CreateNote(empty note): got %v, want error")
 	} else if err.StatusCode != http.StatusBadRequest {
-		t.Errorf("CreateNote(empty note): got %v, want BadRequest(400)", err.StatusCode)
+		t.Errorf("CreateNote(empty note): got %v, want %v", err.StatusCode, http.StatusBadRequest)
 	}
 	n = testutil.Note()
 	if err := g.CreateNote(&n); err != nil {

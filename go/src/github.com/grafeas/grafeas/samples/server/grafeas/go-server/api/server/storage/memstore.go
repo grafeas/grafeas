@@ -6,25 +6,20 @@ import (
 	"github.com/grafeas/grafeas/samples/server/grafeas/go-server/api/server/errors"
 
 	"net/http"
+	"github.com/grafeas/grafeas/samples/server/grafeas/go-server/api/server/name"
 )
 
+// Memstore is an in-memory storage solution for Grafeas
 type MemStore struct {
 	occurrencesByID map[string]swagger.Occurrence
 	notesByID       map[string]swagger.Note
 	opsByID         map[string]swagger.Operation
 }
 
+// NewMemStore creates a memstore with all maps initialized.
 func NewMemStore() *MemStore {
 	return &MemStore{make(map[string]swagger.Occurrence), make(map[string]swagger.Note),
 		make(map[string]swagger.Operation)}
-}
-
-func occurrenceName(pID, oID string) string {
-	return fmt.Sprintf("projects/%v/occurrences/%v", pID, oID)
-}
-
-func noteName(pID, nID string) string {
-	return fmt.Sprintf("projects/%v/notes/%v", pID, nID)
 }
 
 func (m *MemStore) CreateOccurrence(o *swagger.Occurrence) *errors.AppError {
@@ -37,7 +32,7 @@ func (m *MemStore) CreateOccurrence(o *swagger.Occurrence) *errors.AppError {
 }
 
 func (m *MemStore) DeleteOccurrence(pID, oID string) *errors.AppError {
-	name := occurrenceName(pID, oID)
+	name := name.OccurrenceName(pID, oID)
 	if _, ok := m.occurrencesByID[name]; !ok {
 		return &errors.AppError{fmt.Sprintf("Occurrence with Name %v does not Exist", name),
 			http.StatusBadRequest}
