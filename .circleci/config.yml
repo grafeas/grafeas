@@ -20,7 +20,8 @@ jobs:
     steps:
       - run:
           name: Fix gopath
-          command: export GOPATH = /go/src/
+          command: |
+            export GOPATH=/go/src/
       - checkout
 
 
