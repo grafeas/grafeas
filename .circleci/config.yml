@@ -18,7 +18,11 @@ jobs:
     ####   /go/src/bitbucket.org/circleci/go-tool
     working_directory: /go/src/
     steps:
+      - run:
+          name: Fix gopath
+          command: export GOPATH = /go/src/
       - checkout
+
 
       # specify any bash command here prefixed with `run: `
       - run: go get -v -t -d ./...
