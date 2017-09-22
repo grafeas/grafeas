@@ -1,6 +1,7 @@
 package storage
 
 import (
+	"github.com/grafeas/grafeas/samples/server/grafeas/go-server/api/server/name"
 	"github.com/grafeas/grafeas/samples/server/grafeas/go-server/api/server/testing"
 	"net/http"
 	"testing"
@@ -60,9 +61,17 @@ func TestMemStore_DeleteOccurrence(t *testing.T) {
 	}
 	o := testutil.Occurrence(n.Name)
 	// Delete before the occurrence exists
-
-	if s.DeleteOccurrence(
+	pID, oID, err := name.ParseOccurrence(o.Name)
+	if err != nil {
+		t.Fatalf("Error parsing occurrence %v", err)
+	}
+	if err := s.DeleteOccurrence(pID, oID); err == nil {
+		t.Error("Deleting not-existant occurrence got success, want error")
+	}
 	if err := s.CreateOccurrence(&o); err != nil {
 		t.Fatalf("CreateOccurrence got %v want success", err)
+	}
+	if err := s.DeleteOccurrence(pID, oID); err != nil {
+		t.Errorf("DeleteOccurrence got %v, want success ", err)
 	}
 }
