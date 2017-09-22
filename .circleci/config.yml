@@ -19,6 +19,6 @@ jobs:
     working_directory: /go/src/github.com/grafeas/grafeas/
     steps:
       - checkout
+      - run: export GOPATH=$GOPATH:/usr/local/go/
       # specify any bash command here prefixed with `run: `
-      - run: GOPATH=/usr/local/go/
       - run: go test -v ./...
