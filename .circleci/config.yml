@@ -18,7 +18,7 @@ jobs:
     ####   /go/src/bitbucket.org/circleci/go-tool
     working_directory: /go/src/
     general: 
-      build_dir: ../.go_workspace/src/github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}
+      build_dir: ../.go_workspace/src/
     steps:
       # specify any bash command here prefixed with `run: `
       - run: go get -v -t -d ./...
