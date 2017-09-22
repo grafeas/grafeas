@@ -18,7 +18,7 @@ jobs:
     ####   /go/src/bitbucket.org/circleci/go-tool
     working_directory: /go/src/github.com/grafeas/grafeas
     environment:
-            GOPATH: /go/:/go/src/github.com/grafeas/grafeas/samples/server/grafeas/go-server/api/server/storage:/usr/local/go/src/github.com/grafeas/grafeas/samples/server/grafeas/go-server/api/server/v1alpha1:/go/src/github.com/grafeas/grafeas/samples/server/grafeas/go-server/api/server/testing:/go/src/github.com/grafeas/grafeas/samples/server/grafeas/go-server/api/server/errors:/go/src/github.com/grafeas/grafeas/samples/server/grafeas/go-server/api/server/name
+            GOPATH: /go/
     steps:
       - checkout
       # specify any bash command here prefixed with `run: `
