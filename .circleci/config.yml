@@ -17,6 +17,8 @@ jobs:
     ####   /go/src/github.com/circleci/go-tool
     ####   /go/src/bitbucket.org/circleci/go-tool
     working_directory: /go/src/github.com/grafeas/grafeas
+    environment:
+      GOPATH: $GOPATH:/go/
     steps:
       - checkout
       # specify any bash command here prefixed with `run: `
