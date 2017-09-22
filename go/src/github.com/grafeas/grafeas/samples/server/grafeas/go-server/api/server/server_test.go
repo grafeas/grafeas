@@ -39,7 +39,7 @@ func TestHandler_CreateOccurrence(t *testing.T) {
 func TestHandler_CreateOperation(t *testing.T) {
 	h := Handler{v1alpha1.Grafeas{storage.NewMemStore()}}
 	o := testutil.Operation()
-	if err := createOperation(o, g); err != nil {
+	if err := createOperation(o, h); err != nil {
 		t.Errorf("%v", err)
 	}
 }

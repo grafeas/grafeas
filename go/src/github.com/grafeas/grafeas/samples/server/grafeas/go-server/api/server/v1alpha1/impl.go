@@ -12,7 +12,7 @@ import (
 // Grafeas is an implementation of the Grafeas API, which should be called by handler methods for verification of logic
 // and storage.
 type Grafeas struct {
-	s *storage.MemStore
+	S *storage.MemStore
 }
 
 // CreateNote validates that a note is valid and then creates a note in the backing datastore.
@@ -22,7 +22,7 @@ func (g *Grafeas) CreateNote(n *swagger.Note) *errors.AppError {
 		return &errors.AppError{"Invalid note name", http.StatusBadRequest}
 	}
 	// TODO: Validate that operation exists if it is specified when get methods are implmented
-	return g.s.CreateNote(n)
+	return g.S.CreateNote(n)
 }
 
 // CreateOccurrence validates that a note is valid and then creates an occurrence in the backing datastore.
@@ -33,7 +33,7 @@ func (g *Grafeas) CreateOccurrence(o *swagger.Occurrence) *errors.AppError {
 	}
 	// TODO: Validate that note exists
 	// TODO: Validate that operation exists if it is specified
-	return g.s.CreateOccurrence(o)
+	return g.S.CreateOccurrence(o)
 }
 
 // CreateOperation validates that a note is valid and then creates an operation note in the backing datastore.
@@ -42,6 +42,5 @@ func (g *Grafeas) CreateOperation(o *swagger.Operation) *errors.AppError {
 		log.Printf("Invalid occurrence name: %v", o.Name)
 		return &errors.AppError{"Invalid occurrence name", http.StatusBadRequest}
 	}
-	return g.s.CreateOperation(o)
+	return g.S.CreateOperation(o)
 }
-

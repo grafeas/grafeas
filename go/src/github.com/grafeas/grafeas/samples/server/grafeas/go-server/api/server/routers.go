@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/grafeas/grafeas/samples/server/grafeas/go-server/api/server/storage"
+	"github.com/grafeas/grafeas/samples/server/grafeas/go-server/api/server/v1alpha1"
 )
 
 type Route struct {
@@ -17,9 +17,9 @@ type Route struct {
 
 type Routes []Route
 
-func NewRouter(s storage.Store) *mux.Router {
+func NewRouter(g v1alpha1.Grafeas) *mux.Router {
 	router := mux.NewRouter().StrictSlash(true)
-	api := Handler{s}
+	api := Handler{g}
 	for _, route := range routes(api) {
 		var handler http.Handler
 		handler = route.HandlerFunc
