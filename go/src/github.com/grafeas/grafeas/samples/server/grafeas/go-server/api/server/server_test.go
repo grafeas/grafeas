@@ -28,7 +28,7 @@ func TestHandler_CreateOccurrence(t *testing.T) {
 	h := Handler{v1alpha1.Grafeas{storage.NewMemStore()}}
 	n := testutil.Note()
 	if err := createNote(n, h); err != nil {
-		t.Fatalf("Error creating note: %v")
+		t.Fatalf("Error creating note: %v", err)
 	}
 	o := testutil.Occurrence(n.Name)
 	if err := createOccurrence(o, h); err != nil {
