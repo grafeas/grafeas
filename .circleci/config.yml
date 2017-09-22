@@ -3,6 +3,11 @@
 #
 # Check https://circleci.com/docs/2.0/language-go/ for more details
 version: 2
+ environment:
+    # GOROOT is not set by default
+    GOROOT: ""
+    PATH: "/usr/local/go/bin:/usr/local/go_workspace/bin:~/.go_workspace/bin:${PATH}"
+    GOPATH: "${HOME}/.go_workspace:/usr/local/go_workspace:${HOME}/.go_project"
 jobs:
   build:
     docker:
