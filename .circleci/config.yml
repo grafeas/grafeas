@@ -19,6 +19,5 @@ jobs:
     working_directory: /go/src/github.com/grafeas/grafeas/
     steps:
       - checkout
-      - run: go env
       # specify any bash command here prefixed with `run: `
-      - run: go test -v ./...
+      - run: go env; go test -v ./...
