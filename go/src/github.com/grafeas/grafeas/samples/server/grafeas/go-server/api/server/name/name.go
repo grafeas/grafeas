@@ -1,0 +1,158 @@
+// package name provides methods for manipulating resource names.
+package name
+
+import (
+	"fmt"
+	"net/http"
+	"strings"
+
+	"github.com/grafeas/grafeas/samples/server/grafeas/go-server/api/server/errors"
+)
+
+// ResourceKind is the type that will be used for all public resource kinds.
+type ResourceKind string
+
+const (
+	// Position of projectID in name string
+	projectKeywordIndex = 1
+	// Position of the resourceID in the string
+	resourceKeywordIndex = 3
+	projectsKeyword      = "projects"
+	occurrencesKeyword   = "occurrences"
+	notesKeyword         = "notes"
+	operationsKeyword    = "operations"
+
+	// Note is the ResourceKind associated with notes.
+	Note = ResourceKind(notesKeyword)
+	// Occurrence is the ResourceKind associated with occurrences.
+	Occurrence = ResourceKind(occurrencesKeyword)
+	// Operation is the ResourceKind associated with operations.
+	Operation = ResourceKind(operationsKeyword)
+	// Unknown is the ResourceKind when the kind cannot be determined.
+	Unknown = ResourceKind("")
+
+	// NoCharLimit is used to signal that no resource id length validation is needed
+	NoCharLimit = -1
+)
+
+var (
+	projectNameFormat    = FormatProject("{project_id}")
+	occurrenceNameFormat = FormatOccurrence("{project_id}", "{occurrence_id}")
+	operationNameFormat  = FormatOperation("{provider_project_id}", "{operation_id}")
+	noteNameFormat       = FormatNote("{provider_project_id}", "{note_id}")
+)
+
+func invalidArg(pattern, got string) *errors.AppError {
+	return &errors.AppError{fmt.Sprintf("expected name to be of form %q, input was %v", pattern, got),
+		http.StatusBadRequest}
+}
+
+// FormatProject synthesizes a stringly typed name of the form:
+//   projects/{project_id}
+// See also: ParseProject
+func FormatProject(projectID string) string {
+	return fmt.Sprintf("%v/%v", projectsKeyword, projectID)
+}
+
+func OccurrenceName(pID, oID string) string {
+	return fmt.Sprintf("projects/%v/occurrences/%v", pID, oID)
+}
+
+func NoteName(pID, nID string) string {
+	return fmt.Sprintf("projects/%v/notes/%v", pID, nID)
+}
+
+// FormatNoteProjectKW synthesizes a stringly typed name of the form:
+//   projects/{project_id}/notes/{note_id}
+// See also: ParseNote
+func FormatNote(projectID, noteID string) string {
+	return strings.Join([]string{projectsKeyword, projectID, string(Note), noteID}, "/")
+}
+
+// FormatOccurrence synthesizes a stringly typed name of the form:
+//   projects/{project_id}/occurrences/{occurrence_id}
+// See also: ParseOccurrence
+func FormatOccurrence(projectID, occurrenceID string) string {
+	return strings.Join([]string{projectsKeyword, projectID, string(Occurrence), occurrenceID}, "/")
+}
+
+// FormatOperation synthesizes a stringly typed name of the form:
+//   providers/{provider_id}/project/{project_id}/operations/{operation_id}
+// See also: ParseOperation
+func FormatOperation(projectID, operationID string) string {
+	return strings.Join([]string{projectsKeyword, projectID, operationsKeyword, operationID}, "/")
+}
+
+// ParseResourceKindAndResource takes a stringly typed name of the form:
+//    projects/{project_id}/occurrences/{occurrence_id}
+//    projects/{provider_name}/notes/{note_id}
+// validates form and returns either an error or the ResourceKind
+// (either occurrence or note) and project/resource-ids
+func ParseResourceKindAndResource(name string) (kind ResourceKind, pID, eID string, e *errors.AppError) {
+	err := invalidArg(fmt.Sprintf("%q or %q", occurrenceNameFormat, noteNameFormat), name)
+	params := strings.Split(name, "/")
+	if len(params) != 4 {
+		return Unknown, "", "", err
+	}
+	switch params[projectKeywordIndex-1] {
+	case projectsKeyword:
+		switch params[resourceKeywordIndex-1] {
+		case string(Occurrence):
+			return Occurrence, params[projectKeywordIndex], params[resourceKeywordIndex], nil
+		case string(Note):
+			return Note, params[projectKeywordIndex], params[resourceKeywordIndex], nil
+		case string(Operation):
+			return Operation, params[projectKeywordIndex], params[resourceKeywordIndex], nil
+		}
+
+		return Unknown, "", "", invalidArg(fmt.Sprintf("%q", occurrenceNameFormat), name)
+	}
+	return Unknown, "", "", err
+}
+
+// ParseOccurrence takes a stringly typed name of the form:
+//   projects/{project_id}/occurrences/{occurrence_id}
+// validates its form and returns either an error or the project-/occurrence-ids.
+func ParseOccurrence(name string) (string, string, *errors.AppError) {
+	return parseProjectAndEntityID(name, projectsKeyword, occurrencesKeyword, NoCharLimit)
+}
+
+// ParseNote takes a stringly typed name of the forms:
+//   providers/{provider_name}/notes/{note_id}
+// providers/{provider_name}/notes/{note_id}
+// validates its form and returns either an error or the provider-/note-ids.
+func ParseNote(name string) (string, string, *errors.AppError) {
+	return parseProjectAndEntityID(name, projectsKeyword, notesKeyword, 100)
+}
+
+// ParseOperation takes a stringly typed name of the form:
+//  projects/{project_id}/operations/{operation_id}
+// validates its form and returns either an error or the project-/operation-ids
+func ParseOperation(name string) (string, string, *errors.AppError) {
+	return parseProjectAndEntityID(name, projectsKeyword, operationsKeyword, 100)
+}
+
+// parseProjectAndEntityID takes resource and project keywords, a max resource id length and a stringly typed name of the form:
+//   projects/{project_id}/<resourceKeyword>/{entity_id}
+// validates its form and returns either an error or the project and resource ids. Only validates maxResourceIDLength if it is greater than 0
+func parseProjectAndEntityID(name, projectKeyword, resourceKeyword string, maxResourceIDLength int) (string, string, *errors.AppError) {
+	format := fmt.Sprintf("%s/{project_id}/%s/{entity_id}", projectKeyword, resourceKeyword)
+	params := strings.Split(name, "/")
+	if len(params) != 4 {
+		return "", "", invalidArg(format, name)
+	}
+	if params[projectKeywordIndex-1] != projectKeyword {
+		return "", "", invalidArg(format, name)
+	}
+	if params[resourceKeywordIndex-1] != resourceKeyword {
+		return "", "", invalidArg(format, name)
+	}
+	if params[projectKeywordIndex] == "" || params[resourceKeywordIndex] == "" {
+		return "", "", invalidArg(format, name)
+	}
+	if maxResourceIDLength > 0 && len(params[resourceKeywordIndex]) > maxResourceIDLength {
+		return "", "", &errors.AppError{fmt.Sprintf("resource id must be <= %v characters. Input was %v", maxResourceIDLength, name),
+			http.StatusBadRequest}
+	}
+	return params[projectKeywordIndex], params[resourceKeywordIndex], nil
+}
