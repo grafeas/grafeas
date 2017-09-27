@@ -22,6 +22,7 @@ func NewMemStore() *MemStore {
 		make(map[string]swagger.Operation)}
 }
 
+// CreateOccurrence adds the specified occurrence to the mem store
 func (m *MemStore) CreateOccurrence(o *swagger.Occurrence) *errors.AppError {
 	if _, ok := m.occurrencesByID[o.Name]; ok {
 		return &errors.AppError{fmt.Sprintf("Occurrence with Name %v already exists", o.Name),
@@ -31,6 +32,7 @@ func (m *MemStore) CreateOccurrence(o *swagger.Occurrence) *errors.AppError {
 	return nil
 }
 
+// Delete Occurrence deletes the occurrence with the given projectID and occurrenceID from the memstore
 func (m *MemStore) DeleteOccurrence(pID, oID string) *errors.AppError {
 	name := name.OccurrenceName(pID, oID)
 	if _, ok := m.occurrencesByID[name]; !ok {
@@ -41,14 +43,25 @@ func (m *MemStore) DeleteOccurrence(pID, oID string) *errors.AppError {
 	return nil
 }
 
-func (m *MemStore) UpdateOccurrence(projectID, oID string, o *swagger.Occurrence) *errors.AppError {
-	//name := fmt.Sprintf("projects/%v/occurrences/%v", projectID, oID)
-	panic("implement me")
-
+// UpdateOccurrence makes changes in o to the existing occurrence with the given projectID and occurrenceID
+func (m *MemStore) UpdateOccurrence(pID, oID string, o *swagger.Occurrence) *errors.AppError {
+	name := name.OccurrenceName(pID, oID)
+	if _, ok := m.occurrencesByID[name]; !ok {
+		return &errors.AppError{fmt.Sprintf("Occurrence with Name %v does not Exist", name),
+			http.StatusBadRequest}
+	}
+	m.occurrencesByID[name] = *o
+	return nil
 }
 
-func (m *MemStore) GetOccurrence(projectID, oID string) (*swagger.Occurrence, *errors.AppError) {
-	panic("implement me")
+func (m *MemStore) GetOccurrence(pID, oID string) (*swagger.Occurrence, *errors.AppError) {
+	name := name.OccurrenceName(pID, oID)
+	o, ok := m.occurrencesByID[name]
+	if !ok {
+		return nil, &errors.AppError{fmt.Sprintf("Occurrence with Name %v does not Exist", name),
+			http.StatusBadRequest}
+	}
+	return &o, nil
 }
 
 func (m *MemStore) ListOccurrences() *errors.AppError {
