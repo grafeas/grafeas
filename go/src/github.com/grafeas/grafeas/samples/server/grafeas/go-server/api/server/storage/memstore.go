@@ -150,8 +150,15 @@ func (m *MemStore) ListNoteOccurrences() *errors.AppError {
 	panic("implement me")
 }
 
-func (m *MemStore) GetOperation(projectID, opID string) (*swagger.Operation, *errors.AppError) {
-	panic("implement me")
+// GetOperation returns the operation with pID and oID
+func (m *MemStore) GetOperation(pID, opID string) (*swagger.Operation, *errors.AppError) {
+	oName := name.OperationName(pID, opID)
+	o, ok := m.opsByID[oName]
+	if !ok {
+		return nil, &errors.AppError{fmt.Sprintf("Operation with Name %v does not Exist", oName),
+			http.StatusBadRequest}
+	}
+	return &o, nil
 }
 
 // CreateOperation adds the specified operation to the mem store
@@ -164,12 +171,26 @@ func (m *MemStore) CreateOperation(o *swagger.Operation) *errors.AppError {
 	return nil
 }
 
-func (m *MemStore) DeleteOperation(projectID, opID string) *errors.AppError {
-	panic("implement me")
+// DeleteOperation deletes the operation with the given pID and oID from the memstore
+func (m *MemStore) DeleteOperation(pID, opID string) *errors.AppError {
+	opName := name.OperationName(pID, opID)
+	if _, ok := m.opsByID[opName]; !ok {
+		return &errors.AppError{fmt.Sprintf("Occurrence with Name %v does not Exist", opName),
+			http.StatusBadRequest}
+	}
+	delete(m.occurrencesByID, opName)
+	return nil
 }
 
-func (m *MemStore) UpdateOperation(projectID, opID string, op *swagger.Operation) *errors.AppError {
-	panic("implement me")
+// UpdateOperation updates the existing operation with the given pID and nID
+func (m *MemStore) UpdateOperation(pID, opID string, op *swagger.Operation) *errors.AppError {
+	opName := name.OperationName(pID, opID)
+	if _, ok := m.opsByID[opName]; !ok {
+		return &errors.AppError{fmt.Sprintf("Note with Name %v does not Exist", opName),
+			http.StatusBadRequest}
+	}
+	m.opsByID[opName] = *op
+	return nil
 }
 
 func (m *MemStore) ListOperations() *errors.AppError {
