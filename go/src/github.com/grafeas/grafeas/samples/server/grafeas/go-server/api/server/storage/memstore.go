@@ -46,7 +46,7 @@ func (m *MemStore) CreateOccurrence(o *swagger.Occurrence) *errors.AppError {
 	return nil
 }
 
-// Delete Occurrence deletes the occurrence with the given projectID and occurrenceID from the memstore
+// DeleteOccurrence deletes the occurrence with the given pID and oID from the memstore
 func (m *MemStore) DeleteOccurrence(pID, oID string) *errors.AppError {
 	name := name.OccurrenceName(pID, oID)
 	if _, ok := m.occurrencesByID[name]; !ok {
@@ -57,7 +57,7 @@ func (m *MemStore) DeleteOccurrence(pID, oID string) *errors.AppError {
 	return nil
 }
 
-// UpdateOccurrence makes changes in o to the existing occurrence with the given projectID and occurrenceID
+// UpdateOccurrence updates the existing occurrence with the given projectID and occurrenceID
 func (m *MemStore) UpdateOccurrence(pID, oID string, o *swagger.Occurrence) *errors.AppError {
 	name := name.OccurrenceName(pID, oID)
 	if _, ok := m.occurrencesByID[name]; !ok {
@@ -68,11 +68,12 @@ func (m *MemStore) UpdateOccurrence(pID, oID string, o *swagger.Occurrence) *err
 	return nil
 }
 
+// GetOccurrence returns the occurrence with pID and oID
 func (m *MemStore) GetOccurrence(pID, oID string) (*swagger.Occurrence, *errors.AppError) {
-	name := name.OccurrenceName(pID, oID)
-	o, ok := m.occurrencesByID[name]
+	oName := name.OccurrenceName(pID, oID)
+	o, ok := m.occurrencesByID[oName]
 	if !ok {
-		return nil, &errors.AppError{fmt.Sprintf("Occurrence with Name %v does not Exist", name),
+		return nil, &errors.AppError{fmt.Sprintf("Occurrence with Name %v does not Exist", oName),
 			http.StatusBadRequest}
 	}
 	return &o, nil
@@ -82,6 +83,7 @@ func (m *MemStore) ListOccurrences() *errors.AppError {
 	panic("implement me")
 }
 
+// CreateNote adds the specified note to the mem store
 func (m *MemStore) CreateNote(n *swagger.Note) *errors.AppError {
 	if _, ok := m.notesByID[n.Name]; ok {
 		return &errors.AppError{fmt.Sprintf("Occurrence with Name %v already exists", n.Name),
@@ -91,20 +93,53 @@ func (m *MemStore) CreateNote(n *swagger.Note) *errors.AppError {
 	return nil
 }
 
-func (m *MemStore) DeleteNote(providerID, nID string) *errors.AppError {
-	panic("implement me")
+// DeleteNote deletes the note with the given pID and nID from the memstore
+func (m *MemStore) DeleteNote(pID, nID string) *errors.AppError {
+	nName := name.NoteName(pID, nID)
+	if _, ok := m.notesByID[nName]; !ok {
+		return &errors.AppError{fmt.Sprintf("Note with Name %v does not Exist", nName),
+			http.StatusBadRequest}
+	}
+	delete(m.notesByID, nName)
+	return nil
 }
 
-func (m *MemStore) UpdateNote(providerID, nID string, n *swagger.Note) *errors.AppError {
-	panic("implement me")
+// UpdateNote updates the existing note with the given pID and nID
+func (m *MemStore) UpdateNote(pID, nID string, n *swagger.Note) *errors.AppError {
+	nName := name.NoteName(pID, nID)
+	if _, ok := m.notesByID[nName]; !ok {
+		return &errors.AppError{fmt.Sprintf("Note with Name %v does not Exist", nName),
+			http.StatusBadRequest}
+	}
+	m.notesByID[nName] = *n
+	return nil
 }
 
-func (m *MemStore) GetNote(providerID, nID string, n *swagger.Note) *errors.AppError {
-	panic("implement me")
+// GetNote returns the note with pID and nID
+func (m *MemStore) GetNote(pID, nID string) (*swagger.Note, *errors.AppError) {
+	nName := name.NoteName(pID, nID)
+	n, ok := m.notesByID[nName]
+	if !ok {
+		return nil, &errors.AppError{fmt.Sprintf("Note with Name %v does not Exist", nName),
+			http.StatusBadRequest}
+	}
+	return &n, nil
 }
 
-func (m *MemStore) GetNoteByOccurrence(projectID, oID string) (*swagger.Note, *errors.AppError) {
-	panic("implement me")
+// GetNoteByOccurrence returns the note attached to occurrence with pID and oID
+func (m *MemStore) GetNoteByOccurrence(pID, oID string) (*swagger.Note, *errors.AppError) {
+	oName := name.OccurrenceName(pID, oID)
+	o, ok := m.occurrencesByID[oName]
+	if !ok {
+		return nil, &errors.AppError{fmt.Sprintf("Occurrence with Name %v does not Exist", oName),
+			http.StatusBadRequest}
+	}
+	n, ok := m.notesByID[o.NoteName]
+	if !ok {
+		return nil, &errors.AppError{fmt.Sprintf("Note with Name %v does not Exist", o.NoteName),
+			http.StatusBadRequest}
+	}
+	return &n, nil
 }
 
 func (m *MemStore) ListNotes() *errors.AppError {
@@ -119,6 +154,7 @@ func (m *MemStore) GetOperation(projectID, opID string) (*swagger.Operation, *er
 	panic("implement me")
 }
 
+// CreateOperation adds the specified operation to the mem store
 func (m *MemStore) CreateOperation(o *swagger.Operation) *errors.AppError {
 	if _, ok := m.opsByID[o.Name]; ok {
 		return &errors.AppError{fmt.Sprintf("Operation with Name %v already exists", o.Name),
