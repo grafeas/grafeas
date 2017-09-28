@@ -135,3 +135,125 @@ func TestMemStore_UpdateOccurrence(t *testing.T) {
 		t.Errorf("GetOccurrence got %v, want %v",got, o2)
 	}
 }
+
+func TestMemStore_DeleteNote(t *testing.T) {
+	s := NewMemStore()
+	n := testutil.Note()
+	// Delete before the note exists
+	pID, oID, err := name.ParseNote(n.Name)
+	if err != nil {
+		t.Fatalf("Error parsing note %v", err)
+	}
+	if err := s.DeleteNote(pID, oID); err == nil {
+		t.Error("Deleting not-existant note got success, want error")
+	}
+	if err := s.CreateNote(&n); err != nil {
+		t.Fatalf("CreateNote got %v want success", err)
+	}
+
+	if err := s.DeleteNote(pID, oID); err != nil {
+		t.Errorf("DeleteNote got %v, want success ", err)
+	}
+}
+
+func TestMemStore_UpdateNote(t *testing.T) {
+	s := NewMemStore()
+	n := testutil.Note()
+
+	pID, nID, err := name.ParseNote(n.Name)
+	if err != nil {
+		t.Fatalf("Error parsing projectID and noteID %v", err)
+	}
+	if err := s.UpdateNote(pID, nID, &n); err == nil {
+		t.Fatalf("UpdateNote got success want error", err)
+	}
+	if err := s.CreateNote(&n); err != nil {
+		t.Fatalf("CreateNote got %v want success", err)
+	}
+	if got, err := s.GetNote(pID, nID); err != nil {
+		t.Fatalf("GetNote got %v, want success", err)
+	} else if reflect.DeepEqual(got, n){
+		t.Errorf("GetNote got %v, want %v",got, n)
+	}
+
+	n2 := n
+	n2.VulnerabilityType.CvssScore = 1.0
+	if err := s.UpdateNote(pID, nID, &n2); err != nil {
+		t.Fatalf("UpdateOccurrence got %v want success", err)
+	}
+
+	if got, err := s.GetNote(pID, nID); err != nil {
+		t.Fatalf("GetNote got %v, want success", err)
+	} else if reflect.DeepEqual(got, n2){
+		t.Errorf("GetNote got %v, want %v",got, n2)
+	}
+}
+
+func TestMemStore_GetOccurrence(t *testing.T) {
+	s := NewMemStore()
+	n := testutil.Note()
+	if err := s.CreateNote(&n); err != nil {
+		t.Fatalf("CreateNote got %v want success", err)
+	}
+	o := testutil.Occurrence(n.Name)
+	pID, oID, err := name.ParseOccurrence(o.Name)
+	if err != nil {
+		t.Fatalf("Error parsing occurrence %v", err)
+	}
+	if _, err := s.GetOccurrence(pID, oID); err == nil {
+		t.Fatal("GetOccurrence got success, want error")
+	}
+	if err := s.CreateOccurrence(&o); err != nil {
+		t.Errorf("CreateOccurrence got %v, want Success", err)
+	}
+	if got, err := s.GetOccurrence(pID, oID); err != nil {
+		t.Fatalf("GetOccurrence got %v, want success", err)
+	} else if reflect.DeepEqual(got, o){
+		t.Errorf("GetOccurrence got %v, want %v",got, o)
+	}
+}
+
+func TestMemStore_GetNote(t *testing.T) {
+	s := NewMemStore()
+	n := testutil.Note()
+
+	pID, nID, err := name.ParseNote(n.Name)
+	if err != nil {
+		t.Fatalf("Error parsing note %v", err)
+	}
+	if _, err := s.GetNote(pID, nID); err == nil {
+		t.Fatal("GetNote got success, want error")
+	}
+	if err := s.CreateNote(&n); err != nil {
+		t.Errorf("CreateNote got %v, want Success", err)
+	}
+	if got, err := s.GetNote(pID, nID); err != nil {
+		t.Fatalf("GetNote got %v, want success", err)
+	} else if reflect.DeepEqual(got, n){
+		t.Errorf("GetNote got %v, want %v",got, n)
+	}
+}
+
+func TestMemStore_GetNoteByOccurrence(t *testing.T) {
+	s := NewMemStore()
+	n := testutil.Note()
+	if err := s.CreateNote(&n); err != nil {
+		t.Fatalf("CreateNote got %v want success", err)
+	}
+	o := testutil.Occurrence(n.Name)
+	pID, oID, err := name.ParseOccurrence(o.Name)
+	if err != nil {
+		t.Fatalf("Error parsing occurrence %v", err)
+	}
+	if _, err := s.GetNoteByOccurrence(pID, oID); err == nil {
+		t.Fatal("GetNoteByOccurrence got success, want error")
+	}
+	if err := s.CreateOccurrence(&o); err != nil {
+		t.Errorf("CreateOccurrence got %v, want Success", err)
+	}
+	if got, err := s.GetNoteByOccurrence(pID, oID); err != nil {
+		t.Fatalf("GetNoteByOccurrence got %v, want success", err)
+	} else if reflect.DeepEqual(got, n){
+		t.Errorf("GetNoteByOccurrence got %v, want %v",got, n)
+	}
+}
