@@ -72,6 +72,10 @@ func OccurrenceName(pID, oID string) string {
 	return fmt.Sprintf("projects/%v/occurrences/%v", pID, oID)
 }
 
+func OperationName(pID, oID string) string {
+	return fmt.Sprintf("projects/%v/operations/%v", pID, oID)
+}
+
 func NoteName(pID, nID string) string {
 	return fmt.Sprintf("projects/%v/notes/%v", pID, nID)
 }

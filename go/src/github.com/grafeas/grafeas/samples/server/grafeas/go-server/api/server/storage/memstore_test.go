@@ -90,7 +90,7 @@ func TestMemStore_DeleteOccurrence(t *testing.T) {
 		t.Fatalf("Error parsing occurrence %v", err)
 	}
 	if err := s.DeleteOccurrence(pID, oID); err == nil {
-		t.Error("Deleting not-existant occurrence got success, want error")
+		t.Error("Deleting nonexistant occurrence got success, want error")
 	}
 	if err := s.CreateOccurrence(&o); err != nil {
 		t.Fatalf("CreateOccurrence got %v want success", err)
@@ -145,7 +145,7 @@ func TestMemStore_DeleteNote(t *testing.T) {
 		t.Fatalf("Error parsing note %v", err)
 	}
 	if err := s.DeleteNote(pID, oID); err == nil {
-		t.Error("Deleting not-existant note got success, want error")
+		t.Error("Deleting nonexistant note got success, want error")
 	}
 	if err := s.CreateNote(&n); err != nil {
 		t.Fatalf("CreateNote got %v want success", err)
@@ -179,7 +179,7 @@ func TestMemStore_UpdateNote(t *testing.T) {
 	n2 := n
 	n2.VulnerabilityType.CvssScore = 1.0
 	if err := s.UpdateNote(pID, nID, &n2); err != nil {
-		t.Fatalf("UpdateOccurrence got %v want success", err)
+		t.Fatalf("UpdateNote got %v want success", err)
 	}
 
 	if got, err := s.GetNote(pID, nID); err != nil {
@@ -255,5 +255,79 @@ func TestMemStore_GetNoteByOccurrence(t *testing.T) {
 		t.Fatalf("GetNoteByOccurrence got %v, want success", err)
 	} else if reflect.DeepEqual(got, n){
 		t.Errorf("GetNoteByOccurrence got %v, want %v",got, n)
+	}
+}
+
+func TestMemStore_GetOperation(t *testing.T) {
+	s := NewMemStore()
+	o := testutil.Operation()
+
+	pID, oID, err := name.ParseOperation(o.Name)
+	if err != nil {
+		t.Fatalf("Error parsing operation %v", err)
+	}
+	if _, err := s.GetOperation(pID, oID); err == nil {
+		t.Fatal("GetOperation got success, want error")
+	}
+	if err := s.CreateOperation(&o); err != nil {
+		t.Errorf("CreateOperation got %v, want Success", err)
+	}
+	if got, err := s.GetOperation(pID,oID); err != nil {
+		t.Fatalf("GetOperation got %v, want success", err)
+	} else if reflect.DeepEqual(got, o){
+		t.Errorf("GetOperation got %v, want %v",got, o)
+	}
+}
+
+func TestMemStore_DeleteOperation(t *testing.T) {
+	s := NewMemStore()
+	o := testutil.Operation()
+	// Delete before the operation exists
+	pID, oID, err := name.ParseOperation(o.Name)
+	if err != nil {
+		t.Fatalf("Error parsing note %v", err)
+	}
+	if err := s.DeleteOperation(pID, oID); err == nil {
+		t.Error("Deleting nonexistant operation got success, want error")
+	}
+	if err := s.CreateOperation(&o); err != nil {
+		t.Fatalf("CreateOperation got %v want success", err)
+	}
+
+	if err := s.DeleteOperation(pID, oID); err != nil {
+		t.Errorf("DeleteOperation got %v, want success ", err)
+	}
+}
+
+func TestMemStore_UpdateOperation(t *testing.T) {
+	s := NewMemStore()
+	o := testutil.Operation()
+
+	pID, oID, err := name.ParseOperation(o.Name)
+	if err != nil {
+		t.Fatalf("Error parsing projectID and operationID %v", err)
+	}
+	if err := s.UpdateOperation(pID, oID, &o); err == nil {
+		t.Fatalf("UpdateOperation got success want error", err)
+	}
+	if err := s.CreateOperation(&o); err != nil {
+		t.Fatalf("CreateOperation got %v want success", err)
+	}
+	if got, err := s.GetOperation(pID, oID); err != nil {
+		t.Fatalf("GetOperation got %v, want success", err)
+	} else if reflect.DeepEqual(got, o){
+		t.Errorf("GetOperation got %v, want %v",got, o)
+	}
+
+	o2 := o
+	o2.Done = true
+	if err := s.UpdateOperation(pID, oID, &o2); err != nil {
+		t.Fatalf("UpdateOperation got %v want success", err)
+	}
+
+	if got, err := s.GetOperation(pID, oID); err != nil {
+		t.Fatalf("GetOperation got %v, want success", err)
+	} else if reflect.DeepEqual(got, o2){
+		t.Errorf("GetOperation got %v, want %v",got, o2)
 	}
 }
