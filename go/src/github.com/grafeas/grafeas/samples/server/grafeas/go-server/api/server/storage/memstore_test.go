@@ -316,7 +316,7 @@ func TestMemStore_UpdateOperation(t *testing.T) {
 	if got, err := s.GetOperation(pID, oID); err != nil {
 		t.Fatalf("GetOperation got %v, want success", err)
 	} else if reflect.DeepEqual(got, o){
-		t.Errorf("GetNote got %v, want %v",got, o)
+		t.Errorf("GetOperation got %v, want %v",got, o)
 	}
 
 	o2 := o
@@ -326,8 +326,8 @@ func TestMemStore_UpdateOperation(t *testing.T) {
 	}
 
 	if got, err := s.GetOperation(pID, oID); err != nil {
-		t.Fatalf("GetNote got %v, want success", err)
+		t.Fatalf("GetOperation got %v, want success", err)
 	} else if reflect.DeepEqual(got, o2){
-		t.Errorf("GetNote got %v, want %v",got, o2)
+		t.Errorf("GetOperation got %v, want %v",got, o2)
 	}
 }
