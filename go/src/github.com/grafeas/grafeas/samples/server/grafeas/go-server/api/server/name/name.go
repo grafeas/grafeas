@@ -103,13 +103,14 @@ func FormatOperation(projectID, operationID string) string {
 
 // ParseResourceKindAndResource takes a stringly typed name of the form:
 //    projects/{project_id}/occurrences/{occurrence_id}
-//    projects/{provider_name}/notes/{note_id}
+//    projects/{project_name}/notes/{note_id}
+//    or:
 // validates form and returns either an error or the ResourceKind
 // (either occurrence or note) and project/resource-ids
 func ParseResourceKindAndResource(name string) (kind ResourceKind, pID, eID string, e *errors.AppError) {
 	err := invalidArg(fmt.Sprintf("%q or %q", occurrenceNameFormat, noteNameFormat), name)
 	params := strings.Split(name, "/")
-	if len(params) != 4 {
+	if  len(params) != 4  {
 		return Unknown, "", "", err
 	}
 	switch params[projectKeywordIndex-1] {
@@ -123,10 +124,36 @@ func ParseResourceKindAndResource(name string) (kind ResourceKind, pID, eID stri
 			return Operation, params[projectKeywordIndex], params[resourceKeywordIndex], nil
 		}
 
-		return Unknown, "", "", invalidArg(fmt.Sprintf("%q", occurrenceNameFormat), name)
+		return Unknown, "", "", invalidArg(fmt.Sprintf("%q or %q", occurrenceNameFormat, noteNameFormat), name)
 	}
 	return Unknown, "", "", err
 }
+
+// ParseResourceKindAndProject retrieves a projectID and resource kind from a Grafeas URL path
+// This method should be used with CreateRequests.
+func ParseResourceKindAndProject(path string) (kind ResourceKind, pID string, e *errors.AppError) {
+	err := invalidArg(fmt.Sprintf("%q or %q", occurrenceNameFormat, noteNameFormat), path)
+	params := strings.Split(path, "/")
+	if  len(params) != 3  {
+		return Unknown, "",  err
+	}
+	switch params[projectKeywordIndex-1] {
+	case projectsKeyword:
+		switch params[resourceKeywordIndex-1] {
+		case string(Occurrence):
+			return Occurrence, params[projectKeywordIndex], nil
+		case string(Note):
+			return Note, params[projectKeywordIndex],  nil
+		case string(Operation):
+			return Operation, params[projectKeywordIndex], nil
+		}
+
+		return Unknown, "",  invalidArg(fmt.Sprintf("%q or %q", occurrenceNameFormat, noteNameFormat), path)
+	}
+	return Unknown, "",  err
+}
+
+
 
 // ParseOccurrence takes a stringly typed name of the form:
 //   projects/{project_id}/occurrences/{occurrence_id}
