@@ -33,6 +33,15 @@ type Handler struct {
 // CreateNote handles http requests to create notes in grafeas
 func (h *Handler) CreateNote(w http.ResponseWriter, r *http.Request) {
 	n := swagger.Note{}
+	q := r.URL.Query()
+	nID, ok := q["noteId"]
+	
+	if !ok {
+		log.Print("noteId is not specified")
+		http.Error(w, "noteId must be specified in query", http.StatusBadRequest)
+		return
+	}
+
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		log.Printf("Error reading body: %v", err)
