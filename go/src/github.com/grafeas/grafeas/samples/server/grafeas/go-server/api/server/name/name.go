@@ -129,23 +129,24 @@ func ParseResourceKindAndResource(name string) (kind ResourceKind, pID, eID stri
 	return Unknown, "", "", err
 }
 
-// ParseResourceKindAndProject retrieves a projectID and resource kind from a Grafeas URL path
+// ParseResourceKindAndProjectFromPath retrieves a projectID and resource kind from a Grafeas URL path
 // This method should be used with CreateRequests.
-func ParseResourceKindAndProject(path string) (kind ResourceKind, pID string, e *errors.AppError) {
+func ParseResourceKindAndProjectFromPath(path string) (kind ResourceKind, pID string, e *errors.AppError) {
 	err := invalidArg(fmt.Sprintf("%q or %q", occurrenceNameFormat, noteNameFormat), path)
 	params := strings.Split(path, "/")
-	if  len(params) != 3  {
+	if  len(params) != 4  {
 		return Unknown, "",  err
 	}
-	switch params[projectKeywordIndex-1] {
+
+	switch params[projectKeywordIndex] {
 	case projectsKeyword:
-		switch params[resourceKeywordIndex-1] {
+		switch params[resourceKeywordIndex] {
 		case string(Occurrence):
-			return Occurrence, params[projectKeywordIndex], nil
+			return Occurrence, params[projectKeywordIndex+1], nil
 		case string(Note):
-			return Note, params[projectKeywordIndex],  nil
+			return Note, params[projectKeywordIndex+1],  nil
 		case string(Operation):
-			return Operation, params[projectKeywordIndex], nil
+			return Operation, params[projectKeywordIndex+1], nil
 		}
 
 		return Unknown, "",  invalidArg(fmt.Sprintf("%q or %q", occurrenceNameFormat, noteNameFormat), path)

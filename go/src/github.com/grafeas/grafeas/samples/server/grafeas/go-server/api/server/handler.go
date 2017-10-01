@@ -24,6 +24,7 @@ import (
 	"net/http"
 	"github.com/grafeas/grafeas/samples/server/grafeas/go-server/api/server/name"
 	"fmt"
+	"strings"
 )
 
 // Handler accepts httpRequests, converts them to Grafeas objects - calls into Grafeas to operation on them
@@ -34,6 +35,7 @@ type Handler struct {
 
 // CreateNote handles http requests to create notes in grafeas
 func (h *Handler) CreateNote(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	n := swagger.Note{}
 	nIDs, ok := r.URL.Query()["noteId"]
 	if !ok {
@@ -47,15 +49,16 @@ func (h *Handler) CreateNote(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	nID := nIDs[0]
-
-	k, pID, err := name.ParseResourceKindAndProject(r.URL.Path)
+	k, pID, err := name.ParseResourceKindAndProjectFromPath(strings.Trim(r.URL.Path, "/"))
 	if err != nil {
 		log.Printf("error parsing path %v", err)
 		http.Error(w, "Error processing request", http.StatusInternalServerError)
+		return
 	}
 	if k != name.Note {
-		log.Printf("wrong object type %v", err)
+		log.Printf("wrong object type %v", k)
 		http.Error(w, "Error processing request", http.StatusInternalServerError)
+		return
 	}
 
 	body, readErr := ioutil.ReadAll(r.Body)
@@ -83,7 +86,6 @@ func (h *Handler) CreateNote(w http.ResponseWriter, r *http.Request) {
 		log.Printf("Error marshalling bytes: %v", mErr)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 	}
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
 	w.Write(bytes)
 }
