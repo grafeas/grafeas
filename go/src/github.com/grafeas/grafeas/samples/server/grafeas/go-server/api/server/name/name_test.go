@@ -181,7 +181,7 @@ func TestOccurrenceErrorMessage(t *testing.T) {
 	}
 }
 
-func TestParseResourceKindAndProject(t *testing.T) {
+func TestParseResourceKindAndProjectPath(t *testing.T) {
 	badResourcePaths := []string{
 		"providers/foo/operations/bar",
 		"providers/foo/operations/bar",
@@ -205,9 +205,9 @@ func TestParseResourceKindAndProject(t *testing.T) {
 	}
 
 	goodResourcePaths := []string{
-		"projects/foo/occurrences",
-		"projects/foo/operations",
-		"projects/foo/notes",
+		"v1alpha1/projects/foo/occurrences",
+		"v1alpha1/projects/foo/operations",
+		"v1alpha1/projects/foo/notes",
 	}
 	for _, test := range goodResourcePaths {
 		if t1, r, err := ParseResourceKindAndProjectFromPath(test); err != nil {
