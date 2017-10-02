@@ -12,7 +12,7 @@ export GOPATH
 default: build
 
 build: vet
-	go build -v ./... 
+	go build -v ./src/... 
 
 # http://golang.org/cmd/go/#hdr-Run_gofmt_on_package_sources
 fmt:
