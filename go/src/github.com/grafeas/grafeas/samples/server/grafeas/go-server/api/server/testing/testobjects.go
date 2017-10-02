@@ -156,8 +156,8 @@ func Note() swagger.Note {
 
 func Operation() swagger.Operation {
 	return swagger.Operation{
-		Name: "projects/vulnerability-scanner-a/operations/foo",
+		Name:     "projects/vulnerability-scanner-a/operations/foo",
 		Metadata: map[string]string{"StartTime": "0916162344"},
-		Done: false,
+		Done:     false,
 	}
 }

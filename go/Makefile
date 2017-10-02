@@ -6,20 +6,14 @@
 GOPATH := ${PWD}/vendor:${GOPATH}
 export GOPATH
 
-default: build
 
-build: vet
-	go build -v ./src/github.com/grafeas/... 
+build:  vet fmt 
+	go build -v ./src/github.com/grafeas/...
+
 
 # http://golang.org/cmd/go/#hdr-Run_gofmt_on_package_sources
 fmt:
 	go fmt ./src/github.com/grafeas/...
-
-# https://github.com/golang/lint
-# # go get github.com/golang/lint/golint
-lint:
-	golint ./src/github.com/grafeas/...
-#
 
 test:
 	@go test -v ./src/github.com/grafeas/...
