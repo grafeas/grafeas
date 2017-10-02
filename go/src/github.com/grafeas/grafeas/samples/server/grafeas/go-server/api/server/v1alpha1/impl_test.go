@@ -12,7 +12,7 @@ func TestGrafeas_CreateOperation(t *testing.T) {
 	g := Grafeas{storage.NewMemStore()}
 	op := swagger.Operation{}
 	if err := g.CreateOperation(&op); err == nil {
-		t.Error("CreateOperation(empty operation): got %v, want error")
+		t.Error("CreateOperation(empty operation): got success, want error")
 	} else if err.StatusCode != http.StatusBadRequest {
 		t.Errorf("CreateOperation(empty operation): got %v, want BadRequest(400)", err.StatusCode)
 	}
@@ -30,7 +30,7 @@ func TestGrafeas_CreateOccurrence(t *testing.T) {
 	}
 	o := swagger.Occurrence{}
 	if err := g.CreateOccurrence(&o); err == nil {
-		t.Error("CreateOccurrence(empty occ): got %v, want error")
+		t.Error("CreateOccurrence(empty occ): got success, want error")
 	} else if err.StatusCode != http.StatusBadRequest {
 		t.Errorf("CreateOccurrence(empty occ): got %v, want BadRequest(400)", err.StatusCode)
 	}
@@ -45,7 +45,7 @@ func TestGrafeas_CreateNote(t *testing.T) {
 	g := Grafeas{storage.NewMemStore()}
 	n := swagger.Note{}
 	if err := g.CreateNote(&n); err == nil {
-		t.Error("CreateNote(empty note): got %v, want error")
+		t.Error("CreateNote(empty note): got success, want error")
 	} else if err.StatusCode != http.StatusBadRequest {
 		t.Errorf("CreateNote(empty note): got %v, want %v", err.StatusCode, http.StatusBadRequest)
 	}

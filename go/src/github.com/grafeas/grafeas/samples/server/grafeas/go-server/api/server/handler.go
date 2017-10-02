@@ -17,11 +17,14 @@ package server
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/grafeas/grafeas/samples/server/grafeas/go-server/api"
+	"github.com/grafeas/grafeas/samples/server/grafeas/go-server/api/server/name"
 	"github.com/grafeas/grafeas/samples/server/grafeas/go-server/api/server/v1alpha1"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strings"
 )
 
 // Handler accepts httpRequests, converts them to Grafeas objects - calls into Grafeas to operation on them
@@ -32,25 +35,55 @@ type Handler struct {
 
 // CreateNote handles http requests to create notes in grafeas
 func (h *Handler) CreateNote(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	n := swagger.Note{}
-	body, err := ioutil.ReadAll(r.Body)
+	nIDs, ok := r.URL.Query()["noteId"]
+	if !ok {
+		log.Print("noteId is not specified")
+		http.Error(w, "noteId must be specified in query", http.StatusBadRequest)
+		return
+	}
+	if len(nIDs) > 1 {
+		log.Print("noteId is not specified")
+		http.Error(w, "Only one noteId should be specified in query", http.StatusBadRequest)
+		return
+	}
+	nID := nIDs[0]
+	k, pID, err := name.ParseResourceKindAndProjectFromPath(strings.Trim(r.URL.Path, "/"))
 	if err != nil {
-		log.Printf("Error reading body: %v", err)
+		log.Printf("error parsing path %v", err)
+		http.Error(w, "Error processing request", http.StatusInternalServerError)
+		return
+	}
+	if k != name.Note {
+		log.Printf("wrong object type %v", k)
+		http.Error(w, "Error processing request", http.StatusInternalServerError)
+		return
+	}
+
+	body, readErr := ioutil.ReadAll(r.Body)
+	if readErr != nil {
+		log.Printf("Error reading body: %v", readErr)
 		http.Error(w, "can't read body", http.StatusBadRequest)
 		return
 	}
 
 	json.Unmarshal(body, &n)
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	genName := name.FormatNote(pID, nID)
+	if genName != n.Name {
+		log.Printf("Mismatching names in n.Name field and request parameters.")
+		http.Error(w, fmt.Sprintf("note.Name %v must specify match with request"+
+			" url parameters with projectsId %v and noteID %v", n.Name, pID, nID),
+			http.StatusBadRequest)
+	}
 
 	if err := h.g.CreateNote(&n); err != nil {
-
 		log.Printf("Error creating note: %v", err)
 		http.Error(w, err.Err, err.StatusCode)
 	}
-	bytes, err := json.Marshal(&n)
+	bytes, mErr := json.Marshal(&n)
 	if err != nil {
-		log.Printf("Error marshalling bytes: %v", err)
+		log.Printf("Error marshalling bytes: %v", mErr)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 	}
 	w.WriteHeader(http.StatusOK)

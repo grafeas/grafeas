@@ -36,6 +36,13 @@ func TestHandler_CreateNote(t *testing.T) {
 	if err := createNote(n, h); err != nil {
 		t.Errorf("%v", err)
 	}
+	// Test that note.Name must match values in path.
+	badN := testutil.Note()
+	badN.Name = "/projects/foo/notes/wrong"
+	if err := createNote(n, h); err == nil {
+		t.Error("CreateNote with mismatched url/name got success, want error")
+	}
+
 }
 
 func TestHandler_CreateOccurrence(t *testing.T) {
@@ -84,12 +91,14 @@ func createNote(n swagger.Note, g Handler) error {
 		return errors.New(fmt.Sprintf("error marshalling json: %v", err))
 	}
 	r, err := http.NewRequest("POST",
-		"/v1alpha1/projects/vulnerability-scanner-a/notes?note_id=CVE-1999-0710", reader)
+		"/v1alpha1/projects/vulnerability-scanner-a/notes?noteId=CVE-1999-0710", reader)
 	if err != nil {
 		return errors.New(fmt.Sprintf("error creating http request %v", err))
 	}
+
 	w := httptest.NewRecorder()
 	g.CreateNote(w, r)
+
 	if w.Code != 200 {
 		return errors.New(fmt.Sprintf("CreateNote(%v) got %v want 200", n, w.Code))
 	}
