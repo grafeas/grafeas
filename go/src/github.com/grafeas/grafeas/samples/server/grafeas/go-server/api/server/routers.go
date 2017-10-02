@@ -49,19 +49,8 @@ func NewRouter(g v1alpha1.Grafeas) *mux.Router {
 	return router
 }
 
-func Index(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hello World!")
-}
-
 func routes(api Handler) Routes {
 	return Routes{
-		Route{
-			"Index",
-			"GET",
-			"/",
-			Index,
-		},
-
 		Route{
 			"CreateNote",
 			"POST",

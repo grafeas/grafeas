@@ -17,13 +17,13 @@ package server
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/grafeas/grafeas/samples/server/grafeas/go-server/api"
+	"github.com/grafeas/grafeas/samples/server/grafeas/go-server/api/server/name"
 	"github.com/grafeas/grafeas/samples/server/grafeas/go-server/api/server/v1alpha1"
 	"io/ioutil"
 	"log"
 	"net/http"
-	"github.com/grafeas/grafeas/samples/server/grafeas/go-server/api/server/name"
-	"fmt"
 	"strings"
 )
 
@@ -72,9 +72,9 @@ func (h *Handler) CreateNote(w http.ResponseWriter, r *http.Request) {
 	genName := name.FormatNote(pID, nID)
 	if genName != n.Name {
 		log.Printf("Mismatching names in n.Name field and request parameters.")
-		http.Error(w, fmt.Sprintf("note.Name %v must specify match with request" +
+		http.Error(w, fmt.Sprintf("note.Name %v must specify match with request"+
 			" url parameters with projectsId %v and noteID %v", n.Name, pID, nID),
-				http.StatusBadRequest)
+			http.StatusBadRequest)
 	}
 
 	if err := h.g.CreateNote(&n); err != nil {

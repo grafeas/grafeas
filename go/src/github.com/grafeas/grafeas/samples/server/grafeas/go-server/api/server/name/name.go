@@ -110,7 +110,7 @@ func FormatOperation(projectID, operationID string) string {
 func ParseResourceKindAndResource(name string) (kind ResourceKind, pID, eID string, e *errors.AppError) {
 	err := invalidArg(fmt.Sprintf("%q or %q", occurrenceNameFormat, noteNameFormat), name)
 	params := strings.Split(name, "/")
-	if  len(params) != 4  {
+	if len(params) != 4 {
 		return Unknown, "", "", err
 	}
 	switch params[projectKeywordIndex-1] {
@@ -134,8 +134,8 @@ func ParseResourceKindAndResource(name string) (kind ResourceKind, pID, eID stri
 func ParseResourceKindAndProjectFromPath(path string) (kind ResourceKind, pID string, e *errors.AppError) {
 	err := invalidArg(fmt.Sprintf("%q or %q", occurrenceNameFormat, noteNameFormat), path)
 	params := strings.Split(path, "/")
-	if  len(params) != 4  {
-		return Unknown, "",  err
+	if len(params) != 4 {
+		return Unknown, "", err
 	}
 
 	switch params[projectKeywordIndex] {
@@ -144,17 +144,15 @@ func ParseResourceKindAndProjectFromPath(path string) (kind ResourceKind, pID st
 		case string(Occurrence):
 			return Occurrence, params[projectKeywordIndex+1], nil
 		case string(Note):
-			return Note, params[projectKeywordIndex+1],  nil
+			return Note, params[projectKeywordIndex+1], nil
 		case string(Operation):
 			return Operation, params[projectKeywordIndex+1], nil
 		}
 
-		return Unknown, "",  invalidArg(fmt.Sprintf("%q or %q", occurrenceNameFormat, noteNameFormat), path)
+		return Unknown, "", invalidArg(fmt.Sprintf("%q or %q", occurrenceNameFormat, noteNameFormat), path)
 	}
-	return Unknown, "",  err
+	return Unknown, "", err
 }
-
-
 
 // ParseOccurrence takes a stringly typed name of the form:
 //   projects/{project_id}/occurrences/{occurrence_id}
