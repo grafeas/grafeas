@@ -2,9 +2,9 @@
 package v1alpha1
 
 import (
-	"github.com/grafeas/grafeas/samples/server/grafeas/go-server/api"
-	"github.com/grafeas/grafeas/samples/server/grafeas/go-server/api/server/errors"
-	"github.com/grafeas/grafeas/samples/server/grafeas/go-server/api/server/storage"
+	"github.com/grafeas/samples/server/go-server/api"
+	"github.com/grafeas/samples/server/go-server/api/server/errors"
+	"github.com/grafeas/samples/server/go-server/api/server/storage"
 	"log"
 	"net/http"
 )

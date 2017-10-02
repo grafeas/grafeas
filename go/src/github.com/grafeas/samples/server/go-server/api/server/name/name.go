@@ -20,7 +20,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/grafeas/grafeas/samples/server/grafeas/go-server/api/server/errors"
+	"github.com/grafeas/samples/server/go-server/api/server/errors"
 )
 
 // ResourceKind is the type that will be used for all public resource kinds.

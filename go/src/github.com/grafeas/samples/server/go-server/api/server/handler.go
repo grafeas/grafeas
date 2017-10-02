@@ -18,9 +18,9 @@ package server
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/grafeas/grafeas/samples/server/grafeas/go-server/api"
-	"github.com/grafeas/grafeas/samples/server/grafeas/go-server/api/server/name"
-	"github.com/grafeas/grafeas/samples/server/grafeas/go-server/api/server/v1alpha1"
+	"github.com/grafeas/samples/server/go-server/api"
+	"github.com/grafeas/samples/server/go-server/api/server/name"
+	"github.com/grafeas/samples/server/go-server/api/server/v1alpha1"
 	"io/ioutil"
 	"log"
 	"net/http"
