@@ -57,8 +57,8 @@ var (
 )
 
 func invalidArg(pattern, got string) *errors.AppError {
-	return &errors.AppError{fmt.Sprintf("expected name to be of form %q, input was %v", pattern, got),
-		http.StatusBadRequest}
+	return &errors.AppError{Err: fmt.Sprintf("expected name to be of form %q, input was %v", pattern, got),
+		StatusCode: http.StatusBadRequest}
 }
 
 // FormatProject synthesizes a stringly typed name of the form:
@@ -195,8 +195,8 @@ func parseProjectAndEntityID(name, projectKeyword, resourceKeyword string, maxRe
 		return "", "", invalidArg(format, name)
 	}
 	if maxResourceIDLength > 0 && len(params[resourceKeywordIndex]) > maxResourceIDLength {
-		return "", "", &errors.AppError{fmt.Sprintf("resource id must be <= %v characters. Input was %v", maxResourceIDLength, name),
-			http.StatusBadRequest}
+		return "", "", &errors.AppError{Err: fmt.Sprintf("resource id must be <= %v characters. Input was %v", maxResourceIDLength, name),
+			StatusCode: http.StatusBadRequest}
 	}
 	return params[projectKeywordIndex], params[resourceKeywordIndex], nil
 }

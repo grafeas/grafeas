@@ -25,6 +25,6 @@ import (
 func main() {
 	log.Printf("Server started")
 	s := storage.NewMemStore()
-	router := NewRouter(v1alpha1.Grafeas{(s)})
+	router := NewRouter(v1alpha1.Grafeas{S: s})
 	log.Fatal(http.ListenAndServe(":8080", router))
 }

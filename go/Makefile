@@ -1,7 +1,4 @@
-.PHONY: build fmt lint run test vendor_clean vendor_get vendor_update vet
-
-+GOFILES = $(shell find . -name '*.go' -not -path './vendor/*')
-+GOPACKAGES = $(shell go list ./...  | grep -v /vendor/)
+.PHONY: build fmt lint test vet
 
 # Prepend our _vendor directory to the system GOPATH
 # # so that import path resolution will prioritize
@@ -12,24 +9,24 @@ export GOPATH
 default: build
 
 build: vet
-	go build -v ./src/... 
+	go build -v ./src/github.com/grafeas/... 
 
 # http://golang.org/cmd/go/#hdr-Run_gofmt_on_package_sources
 fmt:
-	go fmt ./src/...
+	go fmt ./src/github.com/grafeas/...
 
 # https://github.com/golang/lint
 # # go get github.com/golang/lint/golint
 lint:
-	golint ./src
+	golint ./src/github.com/grafeas/...
 #
-run: build
 
 test:
-	@go test -v $(GOPACKAGES)
+	@go test -v ./src/github.com/grafeas/...
+
 
 # http://godoc.org/code.google.com/p/go.tools/cmd/vet
 # go get code.google.com/p/go.tools/cmd/vet
 vet:
-	go vet ./src/...
+	go vet ./src/github.com/grafeas/...
 
