@@ -2,9 +2,9 @@
 package v1alpha1
 
 import (
-	"github.com/grafeas/grafeas/samples/server/grafeas/go-server/api"
-	"github.com/grafeas/grafeas/samples/server/grafeas/go-server/api/server/errors"
-	"github.com/grafeas/grafeas/samples/server/grafeas/go-server/api/server/storage"
+	"github.com/grafeas/samples/server/go-server/api"
+	"github.com/grafeas/samples/server/go-server/api/server/errors"
+	"github.com/grafeas/samples/server/go-server/api/server/storage"
 	"log"
 	"net/http"
 )
@@ -19,7 +19,7 @@ type Grafeas struct {
 func (g *Grafeas) CreateNote(n *swagger.Note) *errors.AppError {
 	if n.Name == "" {
 		log.Printf("Invalid note name: %v", n.Name)
-		return &errors.AppError{"Invalid note name", http.StatusBadRequest}
+		return &errors.AppError{Err: "Invalid note name", StatusCode: http.StatusBadRequest}
 	}
 	// TODO: Validate that operation exists if it is specified when get methods are implmented
 	return g.S.CreateNote(n)
@@ -29,7 +29,7 @@ func (g *Grafeas) CreateNote(n *swagger.Note) *errors.AppError {
 func (g *Grafeas) CreateOccurrence(o *swagger.Occurrence) *errors.AppError {
 	if o.Name == "" {
 		log.Printf("Invalid occurrence name: %v", o.Name)
-		return &errors.AppError{"Invalid occurrence name", http.StatusBadRequest}
+		return &errors.AppError{Err: "Invalid occurrence name", StatusCode: http.StatusBadRequest}
 	}
 	// TODO: Validate that note exists
 	// TODO: Validate that operation exists if it is specified
@@ -40,7 +40,7 @@ func (g *Grafeas) CreateOccurrence(o *swagger.Occurrence) *errors.AppError {
 func (g *Grafeas) CreateOperation(o *swagger.Operation) *errors.AppError {
 	if o.Name == "" {
 		log.Printf("Invalid occurrence name: %v", o.Name)
-		return &errors.AppError{"Invalid occurrence name", http.StatusBadRequest}
+		return &errors.AppError{Err: "Invalid occurrence name", StatusCode: http.StatusBadRequest}
 	}
 	return g.S.CreateOperation(o)
 }

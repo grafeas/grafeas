@@ -1,9 +1,9 @@
 package v1alpha1
 
 import (
-	"github.com/grafeas/grafeas/samples/server/grafeas/go-server/api"
-	"github.com/grafeas/grafeas/samples/server/grafeas/go-server/api/server/storage"
-	"github.com/grafeas/grafeas/samples/server/grafeas/go-server/api/server/testing"
+	"github.com/grafeas/samples/server/go-server/api"
+	"github.com/grafeas/samples/server/go-server/api/server/storage"
+	"github.com/grafeas/samples/server/go-server/api/server/testing"
 	"net/http"
 	"testing"
 )

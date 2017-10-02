@@ -15,11 +15,10 @@
 package server
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/grafeas/grafeas/samples/server/grafeas/go-server/api/server/v1alpha1"
+	"github.com/grafeas/samples/server/go-server/api/server/v1alpha1"
 )
 
 type Route struct {

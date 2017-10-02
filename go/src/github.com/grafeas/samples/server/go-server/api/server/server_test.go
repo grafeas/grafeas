@@ -24,14 +24,14 @@ import (
 
 	"errors"
 	"fmt"
-	"github.com/grafeas/grafeas/samples/server/grafeas/go-server/api"
-	"github.com/grafeas/grafeas/samples/server/grafeas/go-server/api/server/storage"
-	"github.com/grafeas/grafeas/samples/server/grafeas/go-server/api/server/testing"
-	"github.com/grafeas/grafeas/samples/server/grafeas/go-server/api/server/v1alpha1"
+	"github.com/grafeas/samples/server/go-server/api"
+	"github.com/grafeas/samples/server/go-server/api/server/storage"
+	"github.com/grafeas/samples/server/go-server/api/server/testing"
+	"github.com/grafeas/samples/server/go-server/api/server/v1alpha1"
 )
 
 func TestHandler_CreateNote(t *testing.T) {
-	h := Handler{v1alpha1.Grafeas{storage.NewMemStore()}}
+	h := Handler{v1alpha1.Grafeas{S: storage.NewMemStore()}}
 	n := testutil.Note()
 	if err := createNote(n, h); err != nil {
 		t.Errorf("%v", err)
@@ -46,7 +46,7 @@ func TestHandler_CreateNote(t *testing.T) {
 }
 
 func TestHandler_CreateOccurrence(t *testing.T) {
-	h := Handler{v1alpha1.Grafeas{storage.NewMemStore()}}
+	h := Handler{v1alpha1.Grafeas{S: storage.NewMemStore()}}
 	n := testutil.Note()
 	if err := createNote(n, h); err != nil {
 		t.Fatalf("Error creating note: %v", err)
@@ -58,7 +58,7 @@ func TestHandler_CreateOccurrence(t *testing.T) {
 }
 
 func TestHandler_CreateOperation(t *testing.T) {
-	h := Handler{v1alpha1.Grafeas{storage.NewMemStore()}}
+	h := Handler{v1alpha1.Grafeas{S: storage.NewMemStore()}}
 	o := testutil.Operation()
 	if err := createOperation(o, h); err != nil {
 		t.Errorf("%v", err)
