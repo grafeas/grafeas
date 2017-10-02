@@ -212,7 +212,7 @@ func TestParseResourceKindAndProjectPath(t *testing.T) {
 	for _, test := range goodResourcePaths {
 		if t1, r, err := ParseResourceKindAndProjectFromPath(test); err != nil {
 			t.Errorf("ParseResourceKindAndProjectFromPath %v; got (%v, %v, %v), wanted success",
-				test, t1, r)
+				test, t1, r, err)
 		} else if r != "foo" {
 			t.Errorf("ParseResourceKindAndProjectFromPath %v; got %v, wanted foo", test, t1)
 		}
