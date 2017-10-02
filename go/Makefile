@@ -3,7 +3,7 @@
 # Prepend our _vendor directory to the system GOPATH
 # # so that import path resolution will prioritize
 # # our third party snapshots.
-GOPATH := ${PWD}/vendor:${GOPATH}
+GOPATH := ${PWD}/src/vendor:/go/src/github.com/grafeas/grafeas/go:${GOPATH}
 export GOPATH
 
 
