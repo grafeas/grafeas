@@ -180,3 +180,41 @@ func TestOccurrenceErrorMessage(t *testing.T) {
 		t.Fatalf("bad error msg, got %q want it to contain %q", err.Err, want)
 	}
 }
+
+func TestParseResourceKindAndProjectPath(t *testing.T) {
+	badResourcePaths := []string{
+		"providers/foo/operations/bar",
+		"providers/foo/operations/bar",
+		"foo/foo/bar/bar",
+		"projects/foo/providers/bar",
+		"providers/foo/projects/bar",
+		"projects/foo/providers/bar/operations/baz",
+		"projects/foo/operations/bar",
+		"projects/foo/occurrences/bar",
+		"projects/foo/notes/bar",
+		"operations/foo",
+		"providers/-/projects/-/operations/abc",
+		"providers//projects//operations/",
+		"providers/foo/projects/bar/operations/" + strings.Repeat("a", 101),
+	}
+	for _, test := range badResourcePaths {
+		if t1, r, err := ParseResourceKindAndProjectFromPath(test); err == nil {
+			t.Errorf("ParseResourceKindAndProjectFromPath %v; got (%v, %v), wanted error",
+				test, t1, r)
+		}
+	}
+
+	goodResourcePaths := []string{
+		"v1alpha1/projects/foo/occurrences",
+		"v1alpha1/projects/foo/operations",
+		"v1alpha1/projects/foo/notes",
+	}
+	for _, test := range goodResourcePaths {
+		if t1, r, err := ParseResourceKindAndProjectFromPath(test); err != nil {
+			t.Errorf("ParseResourceKindAndProjectFromPath %v; got (%v, %v, %v), wanted success",
+				test, t1, r)
+		} else if r != "foo" {
+			t.Errorf("ParseResourceKindAndProjectFromPath %v; got %v, wanted foo", test, t1)
+		}
+	}
+}
