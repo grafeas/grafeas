@@ -1,0 +1,13 @@
+steps:
+- name: 'gcr.io/cloud-builders/go'
+  env:
+  - 'PROJECT_ROOT=github.com/grafeas/grafeas'
+  args: ['vet', './...']
+- name: 'gcr.io/cloud-builders/go'
+  env:
+  - 'PROJECT_ROOT=github.com/grafeas/grafeas'
+  args: ['install', './...']
+- name: 'gcr.io/cloud-builders/go'
+  env:
+  - 'PROJECT_ROOT=github.com/grafeas/grafeas'
+  args: ['test', './...']
