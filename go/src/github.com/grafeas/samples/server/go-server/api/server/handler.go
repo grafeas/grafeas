@@ -18,6 +18,7 @@ package server
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/google/uuid"
 	"github.com/grafeas/samples/server/go-server/api"
 	"github.com/grafeas/samples/server/go-server/api/server/name"
 	"github.com/grafeas/samples/server/go-server/api/server/v1alpha1"
@@ -43,7 +44,7 @@ func (h *Handler) CreateNote(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "noteId must be specified in query", http.StatusBadRequest)
 		return
 	}
-	if len(nIDs) > 1 {
+	if len(nIDs) != 1 {
 		log.Print("noteId is not specified")
 		http.Error(w, "Only one noteId should be specified in query", http.StatusBadRequest)
 		return
@@ -92,6 +93,7 @@ func (h *Handler) CreateNote(w http.ResponseWriter, r *http.Request) {
 
 // CreateOccurrence handles http requests to create occurrences in grafeas
 func (h *Handler) CreateOccurrence(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	o := swagger.Occurrence{}
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -99,13 +101,30 @@ func (h *Handler) CreateOccurrence(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "can't read body", http.StatusBadRequest)
 		return
 	}
+	k, pID, parseErr := name.ParseResourceKindAndProjectFromPath(strings.Trim(r.URL.Path, "/"))
+	if parseErr != nil {
+		log.Printf("error parsing path %v", parseErr)
+		http.Error(w, "Error processing request", http.StatusInternalServerError)
+		return
+	}
+	if k != name.Occurrence {
+		log.Printf("wrong object type %v", k)
+		http.Error(w, "Error processing request", http.StatusInternalServerError)
+		return
+	}
+
 	json.Unmarshal(body, &o)
+	// Generate random occurrenceId to prevent collisions
+	oID := uuid.New()
+	oName := name.FormatOccurrence(pID, oID.String())
+
+	// We replace the name in the specified occurrence with the name generated, as users shouldn't
+	// specify an occurrence name.
+	o.Name = oName
 	if err := h.g.CreateOccurrence(&o); err != nil {
 		log.Printf("Error creating occurrence: %v", err)
 		http.Error(w, err.Err, err.StatusCode)
 	}
-
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	bytes, err := json.Marshal(&o)
 	if err != nil {
 		log.Printf("Error marshalling bytes: %v", err)
