@@ -61,7 +61,11 @@ func TestHandler_CreateOccurrence(t *testing.T) {
 func TestHandler_CreateOperation(t *testing.T) {
 	h := Handler{v1alpha1.Grafeas{S: storage.NewMemStore()}}
 	o := testutil.Operation()
-	if err := createOperation(o, h); err != nil {
+	if err := createOperation(o, h, ""); err != nil {
+		t.Errorf("%v", err)
+	}
+	// Make sure we can specify operationId
+	if err := createOperation(o, h, "testID"); err != nil {
 		t.Errorf("%v", err)
 	}
 }
@@ -118,21 +122,37 @@ func createNote(n swagger.Note, g Handler) error {
 	return nil
 }
 
-func createOperation(o swagger.Operation, g Handler) error {
+func createOperation(o swagger.Operation, g Handler, oID string) error {
 	rawOp, err := json.Marshal(&o)
 	reader := bytes.NewReader(rawOp)
+	pID := "vulnerability-scanner-a"
 	if err != nil {
 		return errors.New(fmt.Sprintf("error marshalling json: %v", err))
 	}
-	r, err := http.NewRequest("POST",
-		"/v1alpha1/projects/vulnerability-scanner-a/operations", reader)
+	url := fmt.Sprintf("/v1alpha1/projects/%v/operations", pID)
+	if oID != "" {
+		url = fmt.Sprintf("%v?operationId=%v", url, oID)
+	}
+	r, err := http.NewRequest("POST", url, reader)
 	if err != nil {
 		return errors.New(fmt.Sprintf("error creating http request %v", err))
 	}
 	w := httptest.NewRecorder()
 	g.CreateOperation(w, r)
 	if w.Code != 200 {
-		return errors.New(fmt.Sprintf("CreateNote(%v) got %v want 200", o, w.Code))
+		return errors.New(fmt.Sprintf("CreateOperation(%v) got %v want 200 with error %v", o, w.Code, w.Body))
+	}
+	got := swagger.Operation{}
+	json.Unmarshal(w.Body.Bytes(), &got)
+	if got.Name == "" {
+		return errors.New("got.Name got empty, want name")
+	} else {
+		if gotPID, gotOpID, err := name.ParseOperation(got.Name); err != nil {
+			return fmt.Errorf("Error parsing created operation name: %v", err)
+		} else if gotPID != pID || gotOpID == "" {
+			return fmt.Errorf("Created Occurrence projectID: got projectID %v opID %v, want projectID %v, opID not empty",
+				gotPID, gotOpID, pID)
+		}
 	}
 	return nil
 }
