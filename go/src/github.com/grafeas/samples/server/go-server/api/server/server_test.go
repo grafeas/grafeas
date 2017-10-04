@@ -25,6 +25,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/grafeas/samples/server/go-server/api"
+	"github.com/grafeas/samples/server/go-server/api/server/name"
 	"github.com/grafeas/samples/server/go-server/api/server/storage"
 	"github.com/grafeas/samples/server/go-server/api/server/testing"
 	"github.com/grafeas/samples/server/go-server/api/server/v1alpha1"
@@ -66,13 +67,14 @@ func TestHandler_CreateOperation(t *testing.T) {
 }
 
 func createOccurrence(o swagger.Occurrence, g Handler) error {
+	pID := "test-project"
 	rawOcc, err := json.Marshal(&o)
 	reader := bytes.NewReader(rawOcc)
 	if err != nil {
 		return errors.New(fmt.Sprintf("error marshalling json: %v", err))
 	}
 	r, err := http.NewRequest("POST",
-		"/v1alpha1/projects/test-project/occurrences", reader)
+		fmt.Sprintf("/v1alpha1/projects/%v/occurrences", pID), reader)
 	if err != nil {
 		return errors.New(fmt.Sprintf("error creating http request %v", err))
 	}
@@ -80,6 +82,17 @@ func createOccurrence(o swagger.Occurrence, g Handler) error {
 	g.CreateOccurrence(w, r)
 	if w.Code != 200 {
 		return errors.New(fmt.Sprintf("CreateOccurrence(%v) got %v want 200", o, w.Code))
+	}
+	got := swagger.Occurrence{}
+	json.Unmarshal(w.Body.Bytes(), &got)
+	if got.Name == "" {
+		return errors.New("got.Name got empty, want name")
+	} else {
+		if gotID, _, err := name.ParseOccurrence(got.Name); err != nil {
+			return fmt.Errorf("Error parsing created occurrence name: %v", err)
+		} else if gotID != pID {
+			return fmt.Errorf("Created Occurrence projectID: got %v, want %v", gotID, pID)
+		}
 	}
 	return nil
 }

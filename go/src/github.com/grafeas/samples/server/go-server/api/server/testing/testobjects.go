@@ -18,7 +18,6 @@ import "github.com/grafeas/samples/server/go-server/api"
 
 func Occurrence(noteName string) swagger.Occurrence {
 	return swagger.Occurrence{
-		Name:        "projects/test-project/occurrences/134",
 		ResourceUrl: "gcr.io/foo/bar",
 		NoteName:    noteName,
 		Kind:        "PACKAGE_VULNERABILITY",
