@@ -65,7 +65,6 @@ func TestMemStore_CreateOccurrence(t *testing.T) {
 	// Try to insert an occurrence for a note that does not exist.
 	o.Name = "projects/testproject/occurrences/nonote"
 	o.NoteName = "projects/scan-provider/notes/notthere"
-	// Try to insert the same occurrence twice, expect failure.
 	if err := s.CreateOccurrence(&o); err == nil {
 		t.Errorf("CreateOccurrence got success, want Error")
 	} else if err.StatusCode != http.StatusBadRequest {
