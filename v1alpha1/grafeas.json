@@ -452,6 +452,12 @@
             "type": "string"
           },
           {
+            "name": "operationId",
+            "description": "The ID to use for this operation. If empty a random string will be used.",
+            "in": "query",
+            "type": "string"
+          },
+          {
             "name": "body",
             "description": "The request body.",
             "in": "body",
