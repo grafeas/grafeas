@@ -135,7 +135,7 @@ func (h *Handler) CreateOccurrence(w http.ResponseWriter, r *http.Request) {
 	w.Write(bytes)
 }
 
-// CreateOperation handles http requests to create operation in Grafeas
+// CreateOperation handles http requests to create an operation in Grafeas
 func (h *Handler) CreateOperation(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	oIDs, ok := r.URL.Query()["operationId"]

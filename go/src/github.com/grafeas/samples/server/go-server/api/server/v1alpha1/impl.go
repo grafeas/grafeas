@@ -33,7 +33,6 @@ func (g *Grafeas) CreateOccurrence(o *swagger.Occurrence) *errors.AppError {
 		log.Printf("Invalid occurrence name: %v", o.Name)
 		return &errors.AppError{Err: "Invalid occurrence name", StatusCode: http.StatusBadRequest}
 	}
-	// TODO: Validate that note exists
 	if o.NoteName == "" {
 		log.Print("No note is associated with this occurrence")
 	}
