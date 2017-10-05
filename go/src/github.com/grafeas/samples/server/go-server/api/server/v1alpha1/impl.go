@@ -74,3 +74,8 @@ func (g *Grafeas) DeleteOperation(pID, nID string) *errors.AppError {
 func (g *Grafeas) GetNote(pID, nID string) (*swagger.Note, *errors.AppError) {
 	return g.S.GetNote(pID, nID)
 }
+
+// GetOccurrence gets a occurrence from the datastore.
+func (g *Grafeas) GetOccurrence(pID, oID string) (*swagger.Occurrence, *errors.AppError) {
+	return g.S.GetOccurrence(pID, oID)
+}

@@ -218,6 +218,18 @@ func projectNoteIDFromReq(r *http.Request) (string, string, *errors.AppError) {
 	return pID, nID, nil
 }
 
+func projectOccIDFromReq(r *http.Request) (string, string, *errors.AppError) {
+	// We need to trim twice because the path may or may not contain the leading "/"
+	nameString := strings.TrimPrefix(strings.TrimPrefix(r.URL.Path, "/"), "v1alpha1/")
+
+	pID, oID, err := name.ParseOccurrence(nameString)
+	if err != nil {
+		log.Printf("error parsing path %v", err)
+		return "", "", &errors.AppError{err.Err, err.StatusCode}
+	}
+	return pID, oID, nil
+}
+
 func projectOperationIDFromReq(r *http.Request) (string, string, *errors.AppError) {
 	// We need to trim twice because the path may or may not contain the leading "/"
 	nameString := strings.TrimPrefix(strings.TrimPrefix(r.URL.Path, "/"), "v1alpha1/")
@@ -278,6 +290,25 @@ func (h *Handler) GetNote(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handler) GetOccurrence(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	pID, oID, appErr := projectOccIDFromReq(r)
+	if appErr != nil {
+		http.Error(w, appErr.Err, appErr.StatusCode)
+		return
+	}
+	o, err := h.g.GetOccurrence(pID, oID)
+	if err != nil {
+		log.Printf("Error getting occurrence %v", err)
+		http.Error(w, err.Err, err.StatusCode)
+		return
+	}
+
+	bytes, mErr := json.Marshal(&o)
+	if mErr != nil {
+		log.Printf("Error marshalling bytes: %v", mErr)
+		http.Error(w, "Error getting Occurrence", http.StatusInternalServerError)
+		return
+	}
+	w.Write(bytes)
 	w.WriteHeader(http.StatusOK)
 }
 
