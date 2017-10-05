@@ -72,7 +72,7 @@ func TestHandler_CreateOperation(t *testing.T) {
 
 func TestHandler_DeleteOperation(t *testing.T) {
 	h := Handler{v1alpha1.Grafeas{S: storage.NewMemStore()}}
-	pID := "project"
+	pID := "vulnerability-scanner-a"
 	oID := "operation"
 	r, err := http.NewRequest("DELETE", fmt.Sprintf("/v1alpha1/projects/%v/operations/%v", pID, oID), nil)
 	if err != nil {
@@ -81,24 +81,21 @@ func TestHandler_DeleteOperation(t *testing.T) {
 	w := httptest.NewRecorder()
 	h.DeleteOperation(w, r)
 	if w.Code != 400 {
-		t.Errorf("DeleteNote with no note got %v, want 400", w.Code)
+		t.Errorf("DeleteOperation with no note got %v, want 400", w.Code)
 	}
-	n := testutil.Note()
-	if err := createNote(n, h); err != nil {
+	o := testutil.Operation()
+	if err := createOperation(o, h, oID); err != nil {
 		t.Errorf("%v", err)
 	}
-	pID, nID, aErr := name.ParseNote(n.Name)
-	if aErr != nil {
-		t.Fatalf("Error parsing note name: %v", aErr)
-	}
-	r, err = http.NewRequest("DELETE", fmt.Sprintf("/v1alpha1/projects/%v/notes/%v", pID, nID), nil)
+
+	r, err = http.NewRequest("DELETE", fmt.Sprintf("/v1alpha1/projects/%v/operations/%v", pID, oID), nil)
 	if err != nil {
 		t.Fatalf("Could not create httprequest %v", err)
 	}
 	w = httptest.NewRecorder()
-	h.DeleteNote(w, r)
+	h.DeleteOperation(w, r)
 	if w.Code != 200 {
-		t.Errorf("DeleteNote got %v; %v, want 200", w.Code, w.Body)
+		t.Errorf("DeleteOperation got %v; %v, want 200", w.Code, w.Body)
 	}
 }
 

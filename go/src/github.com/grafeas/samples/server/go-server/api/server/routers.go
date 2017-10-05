@@ -138,7 +138,7 @@ func routes(api Handler) Routes {
 			"ListOperations",
 			"GET",
 			"/v1alpha1/projects/{projectsId}/operations",
-			api.ListNotes,
+			api.ListOperations,
 		},
 
 		Route{

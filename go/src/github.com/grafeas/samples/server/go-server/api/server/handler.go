@@ -254,6 +254,7 @@ func (h *Handler) DeleteOccurrence(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handler) GetNote(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+
 	w.WriteHeader(http.StatusOK)
 }
 
@@ -277,7 +278,7 @@ func (h *Handler) ListNoteOccurrences(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func (h *Handler) ListNoteOperations(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) ListOperations(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
 }
