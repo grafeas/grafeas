@@ -70,6 +70,38 @@ func TestHandler_CreateOperation(t *testing.T) {
 	}
 }
 
+func TestHandler_DeleteOperation(t *testing.T) {
+	h := Handler{v1alpha1.Grafeas{S: storage.NewMemStore()}}
+	pID := "project"
+	oID := "operation"
+	r, err := http.NewRequest("DELETE", fmt.Sprintf("/v1alpha1/projects/%v/operations/%v", pID, oID), nil)
+	if err != nil {
+		t.Fatalf("Could not create httprequest %v", err)
+	}
+	w := httptest.NewRecorder()
+	h.DeleteOperation(w, r)
+	if w.Code != 400 {
+		t.Errorf("DeleteNote with no note got %v, want 400", w.Code)
+	}
+	n := testutil.Note()
+	if err := createNote(n, h); err != nil {
+		t.Errorf("%v", err)
+	}
+	pID, nID, aErr := name.ParseNote(n.Name)
+	if aErr != nil {
+		t.Fatalf("Error parsing note name: %v", aErr)
+	}
+	r, err = http.NewRequest("DELETE", fmt.Sprintf("/v1alpha1/projects/%v/notes/%v", pID, nID), nil)
+	if err != nil {
+		t.Fatalf("Could not create httprequest %v", err)
+	}
+	w = httptest.NewRecorder()
+	h.DeleteNote(w, r)
+	if w.Code != 200 {
+		t.Errorf("DeleteNote got %v; %v, want 200", w.Code, w.Body)
+	}
+}
+
 func TestHandler_DeleteNote(t *testing.T) {
 	h := Handler{v1alpha1.Grafeas{S: storage.NewMemStore()}}
 	pID := "project"
@@ -100,8 +132,8 @@ func TestHandler_DeleteNote(t *testing.T) {
 	if w.Code != 200 {
 		t.Errorf("DeleteNote got %v; %v, want 200", w.Code, w.Body)
 	}
-
 }
+
 func createOccurrence(o swagger.Occurrence, g Handler) error {
 	pID := "test-project"
 	rawOcc, err := json.Marshal(&o)

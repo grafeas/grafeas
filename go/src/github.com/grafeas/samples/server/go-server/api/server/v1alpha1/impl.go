@@ -63,3 +63,9 @@ func (g *Grafeas) DeleteNote(pID, nID string) *errors.AppError {
 	// TODO: Check for occurrences tied to this note, and return an error if there are any before deletion.
 	return g.S.DeleteNote(pID, nID)
 }
+
+// DeleteOperation deletes an operation from the datastore.
+func (g *Grafeas) DeleteOperation(pID, nID string) *errors.AppError {
+	// TODO: Check for occurrences and notes tied to this operation, and return an error if there are any before deletion.
+	return g.S.DeleteOperation(pID, nID)
+}
