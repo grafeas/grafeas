@@ -135,27 +135,54 @@ func (h *Handler) CreateOccurrence(w http.ResponseWriter, r *http.Request) {
 
 // CreateOperation handles http requests to create operation in grafeas
 func (h *Handler) CreateOperation(w http.ResponseWriter, r *http.Request) {
-	o := swagger.Operation{}
-	body, err := ioutil.ReadAll(r.Body)
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	oIDs, ok := r.URL.Query()["operationId"]
+	var oID string
+	if !ok {
+		oID = uuid.New().String()
+	} else {
+		if len(oIDs) != 1 {
+			log.Print("too many operationIds specified")
+			http.Error(w, "Only one operationId should be specified in query", http.StatusBadRequest)
+			return
+		} else {
+			oID = oIDs[0]
+		}
+	}
+	k, pID, err := name.ParseResourceKindAndProjectFromPath(strings.Trim(r.URL.Path, "/"))
 	if err != nil {
+		log.Printf("error parsing path %v", err)
+		http.Error(w, "Error processing request", http.StatusInternalServerError)
+		return
+	}
+	if k != name.Operation {
+		log.Printf("wrong object type %v", k)
+		http.Error(w, "Error processing request", http.StatusInternalServerError)
+		return
+	}
+	o := swagger.Operation{}
+
+	body, readErr := ioutil.ReadAll(r.Body)
+	if readErr != nil {
 		log.Printf("Error reading body: %v", err)
 		http.Error(w, "can't read body", http.StatusBadRequest)
 		return
 	}
 	json.Unmarshal(body, &o)
+	genName := name.FormatOperation(pID, oID)
+	o.Name = genName
 	if err := h.g.CreateOperation(&o); err != nil {
 		log.Printf("Error creating occurrence: %v", err)
 		http.Error(w, err.Err, err.StatusCode)
 	}
 
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.WriteHeader(http.StatusOK)
-	bytes, err := json.Marshal(&o)
-	if err != nil {
+	bytes, mErr := json.Marshal(&o)
+	if mErr != nil {
 		log.Printf("Error marshalling bytes: %v", err)
+		http.Error(w, "Error processing request", http.StatusInternalServerError)
+		return
 	}
 	w.Write(bytes)
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
 }
 

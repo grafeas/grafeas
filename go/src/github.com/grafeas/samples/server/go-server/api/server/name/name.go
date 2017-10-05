@@ -149,7 +149,8 @@ func ParseResourceKindAndProjectFromPath(path string) (kind ResourceKind, pID st
 			return Operation, params[projectKeywordIndex+1], nil
 		}
 
-		return Unknown, "", invalidArg(fmt.Sprintf("%q or %q", occurrenceNameFormat, noteNameFormat), path)
+		return Unknown, "", invalidArg(fmt.Sprintf("%q, %q, or %q", occurrenceNameFormat,
+			noteNameFormat, operationNameFormat), path)
 	}
 	return Unknown, "", err
 }
