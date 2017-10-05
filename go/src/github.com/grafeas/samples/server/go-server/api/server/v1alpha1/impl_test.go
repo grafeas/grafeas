@@ -101,7 +101,7 @@ func TestGrafeas_DeleteOccurrence(t *testing.T) {
 	if err := g.CreateOccurrence(&o); err != nil {
 		t.Fatalf("CreateNote(%v) got %v, want success", n, err)
 	}
-	if err := g.DeleteOccurence(pID, oID); err != nil {
+	if err := g.DeleteOccurrence(pID, oID); err != nil {
 		t.Errorf("DeleteNote  got %v, want success", err)
 	}
 }
