@@ -477,6 +477,35 @@
       }
     },
     "/v1alpha1/projects/{projectsId}/operations/{operationsId}": {
+      "get": {
+        "tags": ["grafeas"],
+        "operationId": "GetOperation",
+        "description": "Returns the requested occurrence",
+        "parameters": [
+          {
+            "name": "projectsId",
+            "description": "Part of `name`. The name of the note in the form\n\"projects\/{project_id}\/operations\/{operation_id}\"",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "notesId",
+            "description": "Part of `name`. See documentation of `projectsId`.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/Operation"
+            }
+          }
+        }
+      },
       "put": {
         "tags": ["grafeas"],
         "operationId": "UpdateOperation",
@@ -511,6 +540,35 @@
             "schema": {
               "$ref": "#/definitions/Operation"
             }
+          }
+        }
+      }
+    },
+    "delete": {
+      "tags": ["grafeas"],
+      "operationId": "DeleteOperation",
+      "description": "Deletes the given operation from the system.",
+      "parameters": [
+        {
+          "name": "projectsId",
+          "description": "Part of `name`. The name of the note in the form\n\"projects\/{project_id}\/operations\/{operation_id}\"",
+          "in": "path",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "name": "operationsId",
+          "description": "Part of `name`. See documentation of `projectsId`.",
+          "in": "path",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "responses": {
+        "default": {
+          "description": "Successful operation",
+          "schema": {
+            "$ref": "#/definitions/Empty"
           }
         }
       }
@@ -1417,6 +1475,24 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/Occurrence"
+          }
+        },
+        "nextPageToken": {
+          "description": "The next pagination token in the List response. It should be used as\npage_token for the following request. An empty value means no more results.",
+          "type": "string"
+        }
+      }
+    },
+    "ListOperationsResponse": {
+      "id": "ListOperationsResponse",
+      "description": "Response including listed operations.",
+      "type": "object",
+      "properties": {
+        "occurrences": {
+          "description": "The operations requested.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Operation"
           }
         },
         "nextPageToken": {

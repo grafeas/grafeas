@@ -81,5 +81,22 @@ func TestGrafeas_DeleteNote(t *testing.T) {
 	if err := g.DeleteNote(pID, nID); err != nil {
 		t.Errorf("DeleteNote  got %v, want success", err)
 	}
+}
 
+func TestGrafeas_DeleteOperation(t *testing.T) {
+	g := Grafeas{storage.NewMemStore()}
+	o := testutil.Operation()
+	pID, oID, err := name.ParseOperation(o.Name)
+	if err != nil {
+		t.Fatalf("Error parsing note name %v", err)
+	}
+	if err := g.DeleteOperation(pID, oID); err == nil {
+		t.Error("DeleteOperation that doesn't exist got success, want err")
+	}
+	if err := g.CreateOperation(&o); err != nil {
+		t.Fatalf("CreateOperation(%v) got %v, want success", o, err)
+	}
+	if err := g.DeleteOperation(pID, oID); err != nil {
+		t.Errorf("DeleteOperation  got %v, want success", err)
+	}
 }
