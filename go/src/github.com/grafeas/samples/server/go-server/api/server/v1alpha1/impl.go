@@ -58,3 +58,9 @@ func (g *Grafeas) CreateOperation(o *swagger.Operation) *errors.AppError {
 	}
 	return g.S.CreateOperation(o)
 }
+
+// DeleteNote deletes a note from the datastore.
+func (g *Grafeas) DeleteNote(pID, nID string) *errors.AppError {
+	// TODO: Check for occurrences tied to this note, and return an error if there are any before deletion.
+	return g.S.DeleteNote(pID, nID)
+}

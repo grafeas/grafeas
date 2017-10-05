@@ -2,6 +2,7 @@ package v1alpha1
 
 import (
 	"github.com/grafeas/samples/server/go-server/api"
+	"github.com/grafeas/samples/server/go-server/api/server/name"
 	"github.com/grafeas/samples/server/go-server/api/server/storage"
 	"github.com/grafeas/samples/server/go-server/api/server/testing"
 	"net/http"
@@ -62,4 +63,23 @@ func TestGrafeas_CreateNote(t *testing.T) {
 	if err := g.CreateNote(&n); err != nil {
 		t.Errorf("CreateNote(%v) got %v, want success", n, err)
 	}
+}
+
+func TestGrafeas_DeleteNote(t *testing.T) {
+	g := Grafeas{storage.NewMemStore()}
+	n := testutil.Note()
+	pID, nID, err := name.ParseNote(n.Name)
+	if err != nil {
+		t.Fatalf("Error parsing note name %v", err)
+	}
+	if err := g.DeleteNote(pID, nID); err == nil {
+		t.Error("DeleteNote that doesn't exist got success, want err")
+	}
+	if err := g.CreateNote(&n); err != nil {
+		t.Fatalf("CreateNote(%v) got %v, want success", n, err)
+	}
+	if err := g.DeleteNote(pID, nID); err != nil {
+		t.Errorf("DeleteNote  got %v, want success", err)
+	}
+
 }
