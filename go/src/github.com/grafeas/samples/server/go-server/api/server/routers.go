@@ -86,6 +86,13 @@ func routes(api Handler) Routes {
 		},
 
 		Route{
+			"DeleteOperation",
+			"DELETE",
+			"/v1alpha1/projects/{projectsId}/operations/{operationId}",
+			api.DeleteOperation,
+		},
+
+		Route{
 			"GetNote",
 			"GET",
 			"/v1alpha1/projects/{projectsId}/notes/{notesId}",
@@ -97,6 +104,13 @@ func routes(api Handler) Routes {
 			"GET",
 			"/v1alpha1/projects/{projectsId}/occurrences/{occurrencesId}",
 			api.GetOccurrence,
+		},
+
+		Route{
+			"GetOperation",
+			"GET",
+			"/v1alpha1/projects/{projectsId}/operations/{operationsId}",
+			api.GetOperation,
 		},
 
 		Route{
@@ -118,6 +132,13 @@ func routes(api Handler) Routes {
 			"GET",
 			"/v1alpha1/projects/{projectsId}/notes",
 			api.ListNotes,
+		},
+
+		Route{
+			"ListOperations",
+			"GET",
+			"/v1alpha1/projects/{projectsId}/operations",
+			api.ListOperations,
 		},
 
 		Route{

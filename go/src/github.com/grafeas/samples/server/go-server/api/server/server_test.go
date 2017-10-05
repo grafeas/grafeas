@@ -108,6 +108,35 @@ func TestHandler_CreateOperation(t *testing.T) {
 	}
 }
 
+func TestHandler_DeleteOperation(t *testing.T) {
+	h := Handler{v1alpha1.Grafeas{S: storage.NewMemStore()}}
+	pID := "vulnerability-scanner-a"
+	oID := "operation"
+	r, err := http.NewRequest("DELETE", fmt.Sprintf("/v1alpha1/projects/%v/operations/%v", pID, oID), nil)
+	if err != nil {
+		t.Fatalf("Could not create httprequest %v", err)
+	}
+	w := httptest.NewRecorder()
+	h.DeleteOperation(w, r)
+	if w.Code != 400 {
+		t.Errorf("DeleteOperation with no note got %v, want 400", w.Code)
+	}
+	o := testutil.Operation()
+	if err := createOperation(o, h, oID); err != nil {
+		t.Errorf("%v", err)
+	}
+
+	r, err = http.NewRequest("DELETE", fmt.Sprintf("/v1alpha1/projects/%v/operations/%v", pID, oID), nil)
+	if err != nil {
+		t.Fatalf("Could not create httprequest %v", err)
+	}
+	w = httptest.NewRecorder()
+	h.DeleteOperation(w, r)
+	if w.Code != 200 {
+		t.Errorf("DeleteOperation got %v; %v, want 200", w.Code, w.Body)
+	}
+}
+
 func TestHandler_DeleteNote(t *testing.T) {
 	h := Handler{v1alpha1.Grafeas{S: storage.NewMemStore()}}
 	pID := "project"
@@ -138,8 +167,8 @@ func TestHandler_DeleteNote(t *testing.T) {
 	if w.Code != 200 {
 		t.Errorf("DeleteNote got %v; %v, want 200", w.Code, w.Body)
 	}
-
 }
+
 func createOccurrence(o swagger.Occurrence, g Handler) (*swagger.Occurrence, error) {
 	pID := "test-project"
 	rawOcc, err := json.Marshal(&o)
