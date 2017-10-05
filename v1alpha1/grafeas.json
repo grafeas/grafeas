@@ -220,7 +220,7 @@
         "parameters": [
           {
             "name": "projectsId",
-            "description": "Part of `name`. The name of the note in the form\n\"providers\/{provider_id}\/notes\/{note_id}\"",
+            "description": "Part of `name`. The name of the note in the form\n\"projects\/{project_id}\/notes\/{note_id}\"",
             "in": "path",
             "required": true,
             "type": "string"
@@ -249,7 +249,7 @@
         "parameters": [
           {
             "name": "projectsId",
-            "description": "Part of `name`. The name of the note in the form\n\"providers\/{provider_id}\/notes\/{note_id}\"",
+            "description": "Part of `name`. The name of the note in the form\n\"projects\/{project_id}\/notes\/{note_id}\"",
             "in": "path",
             "required": true,
             "type": "string"
@@ -278,7 +278,7 @@
         "parameters": [
           {
             "name": "projectsId",
-            "description": "Part of `name`. The name of the note.\nShould be of the form \"projects\/{provider_id}\/notes\/{note_id}\".",
+            "description": "Part of `name`. The name of the note.\nShould be of the form \"projects\/{project_id}\/notes\/{note_id}\".",
             "in": "path",
             "required": true,
             "type": "string"
@@ -396,7 +396,7 @@
         "parameters": [
           {
             "name": "projectsId",
-            "description": "Part of `name`. The name field will contain the note name for example:\n  \"provider\/{provider_id}\/notes\/{note_id}\"",
+            "description": "Part of `name`. The name field will contain the note name for example:\n  \"project\/{project_id}\/notes\/{note_id}\"",
             "in": "path",
             "required": true,
             "type": "string"
@@ -452,6 +452,12 @@
             "type": "string"
           },
           {
+            "name": "operationId",
+            "description": "The ID to use for this operation. If empty a random string will be used.",
+            "in": "query",
+            "type": "string"
+          },
+          {
             "name": "body",
             "description": "The request body.",
             "in": "body",
@@ -478,7 +484,7 @@
         "parameters": [
           {
             "name": "projectsId",
-            "description": "Part of `name`. The name of the Operation.\nShould be of the form \"projects\/{provider_id}\/operations\/{operation_id}\".",
+            "description": "Part of `name`. The name of the Operation.\nShould be of the form \"projects\/{project_id}\/operations\/{operation_id}\".",
             "in": "path",
             "required": true,
             "type": "string"
@@ -525,7 +531,7 @@
           "type": "string"
         },
         "noteName": {
-          "description": "An analysis note associated with this image, in the form\n\"providers\/{provider_id}\/notes\/{note_id}\"\nThis field can be used as a filter in list requests.",
+          "description": "An analysis note associated with this image, in the form\n\"projects\/{project_id}\/notes\/{note_id}\"\nThis field can be used as a filter in list requests.",
           "type": "string"
         },
         "kind": {
@@ -1432,7 +1438,7 @@
       "type": "object",
       "properties": {
         "name": {
-          "description": "The name of the note in the form\n\"providers\/{provider_id}\/notes\/{note_id}\"",
+          "description": "The name of the note in the form\n\"projects\/{project_id}\/notes\/{note_id}\"",
           "type": "string"
         },
         "shortDescription": {
@@ -1477,7 +1483,7 @@
           "$ref": "#/definitions/Deployable"
         },
         "discovery": {
-          "description": "A note describing a provider\/analysis type.",
+          "description": "A note describing a project\/analysis type.",
           "$ref": "#/definitions/Discovery"
         },
         "relatedUrl": {
