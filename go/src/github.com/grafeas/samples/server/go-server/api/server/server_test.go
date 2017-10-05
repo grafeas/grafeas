@@ -131,6 +131,21 @@ func TestHandler_DeleteNote(t *testing.T) {
 	}
 }
 
+func TestHandler_GetNote(t *testing.T) {
+	h := Handler{v1alpha1.Grafeas{S: storage.NewMemStore()}}
+	pID := "project"
+	nID := "note"
+	r, err := http.NewRequest("GET", fmt.Sprintf("/v1alpha1/projects/%v/notes/%v", pID, nID), nil)
+	if err != nil {
+		t.Fatalf("Could not create httprequest %v", err)
+	}
+	w := httptest.NewRecorder()
+	h.GetNote(w, r)
+	if w.Code != 400 {
+		t.Errorf("GetNote with no note got %v, want 400", w.Code)
+	}
+}
+
 func createOccurrence(o swagger.Occurrence, g Handler) error {
 	pID := "test-project"
 	rawOcc, err := json.Marshal(&o)

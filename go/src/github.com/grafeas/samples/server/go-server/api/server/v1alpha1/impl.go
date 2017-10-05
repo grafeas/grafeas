@@ -69,3 +69,8 @@ func (g *Grafeas) DeleteOperation(pID, nID string) *errors.AppError {
 	// TODO: Check for occurrences and notes tied to this operation, and return an error if there are any before deletion.
 	return g.S.DeleteOperation(pID, nID)
 }
+
+// GetNote gets a note from the datastore.
+func (g *Grafeas) GetNote(pID, nID string) (*swagger.Note, *errors.AppError) {
+	return g.S.GetNote(pID, nID)
+}

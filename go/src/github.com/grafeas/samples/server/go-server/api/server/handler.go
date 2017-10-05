@@ -254,7 +254,25 @@ func (h *Handler) DeleteOccurrence(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handler) GetNote(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	pID, nID, appErr := projectNoteIDFromReq(r)
+	if appErr != nil {
+		http.Error(w, appErr.Err, appErr.StatusCode)
+		return
+	}
+	n, err := h.g.GetNote(pID, nID)
+	if err != nil {
+		log.Printf("Error getting note %v", err)
+		http.Error(w, err.Err, err.StatusCode)
+		return
+	}
 
+	bytes, mErr := json.Marshal(&n)
+	if mErr != nil {
+		log.Printf("Error marshalling bytes: %v", mErr)
+		http.Error(w, "Error getting Note", http.StatusInternalServerError)
+		return
+	}
+	w.Write(bytes)
 	w.WriteHeader(http.StatusOK)
 }
 

@@ -6,6 +6,7 @@ import (
 	"github.com/grafeas/samples/server/go-server/api/server/storage"
 	"github.com/grafeas/samples/server/go-server/api/server/testing"
 	"net/http"
+	"reflect"
 	"testing"
 )
 
@@ -98,5 +99,25 @@ func TestGrafeas_DeleteOperation(t *testing.T) {
 	}
 	if err := g.DeleteOperation(pID, oID); err != nil {
 		t.Errorf("DeleteOperation  got %v, want success", err)
+	}
+}
+
+func TestGrafeas_GetNote(t *testing.T) {
+	g := Grafeas{storage.NewMemStore()}
+	n := testutil.Note()
+	pID, nID, err := name.ParseNote(n.Name)
+	if err != nil {
+		t.Fatalf("Error parsing note name %v", err)
+	}
+	if _, err := g.GetNote(pID, nID); err == nil {
+		t.Error("GetNote that doesn't exist got success, want err")
+	}
+	if err := g.CreateNote(&n); err != nil {
+		t.Fatalf("CreateNote(%v) got %v, want success", n, err)
+	}
+	if got, err := g.GetNote(pID, nID); err != nil {
+		t.Fatalf("GetNote(%v) got %v, want success", n, err)
+	} else if n.Name != got.Name || !reflect.DeepEqual(n.VulnerabilityType, got.VulnerabilityType) {
+		t.Errorf("GetNote got %v, want %v", *got, n)
 	}
 }
