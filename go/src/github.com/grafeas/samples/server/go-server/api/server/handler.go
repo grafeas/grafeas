@@ -20,6 +20,7 @@ import (
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/grafeas/samples/server/go-server/api"
+	"github.com/grafeas/samples/server/go-server/api/server/errors"
 	"github.com/grafeas/samples/server/go-server/api/server/name"
 	"github.com/grafeas/samples/server/go-server/api/server/v1alpha1"
 	"io/ioutil"
@@ -190,9 +191,35 @@ func (h *Handler) DeleteNote(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
 }
+}
+
+
+func projectOccIDFromReq(r *http.Request) (string, string, *errors.AppError) {
+	// We need to trim twice because the path may or may not contain the leading "/"
+	nameString := strings.TrimPrefix(strings.TrimPrefix(r.URL.Path, "/"), "v1alpha1/")
+
+	pID, oID, err := name.ParseOccurrence(nameString)
+	if err != nil {
+		log.Printf("error parsing path %v", err)
+		return "", "", &errors.AppError{Err: "Error processing request",
+			StatusCode: http.StatusInternalServerError}
+	}
+	return pID, oID, nil
+}
 
 func (h *Handler) DeleteOccurrence(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	pID, nID, appErr := projectOccIDFromReq(r)
+	if appErr != nil {
+		http.Error(w, appErr.Err, appErr.StatusCode)
+		return
+	}
+	if err := h.g.DeleteOccurrence(pID, nID); err != nil {
+		log.Printf("Unable to delete note %v", err)
+		http.Error(w, err.Err, err.StatusCode)
+		return
+
+	}
 	w.WriteHeader(http.StatusOK)
 }
 
