@@ -20,6 +20,7 @@ import (
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/grafeas/samples/server/go-server/api"
+	"github.com/grafeas/samples/server/go-server/api/server/errors"
 	"github.com/grafeas/samples/server/go-server/api/server/name"
 	"github.com/grafeas/samples/server/go-server/api/server/v1alpha1"
 	"io/ioutil"
@@ -38,27 +39,9 @@ type Handler struct {
 func (h *Handler) CreateNote(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	n := swagger.Note{}
-	nIDs, ok := r.URL.Query()["noteId"]
-	if !ok {
-		log.Print("noteId is not specified")
-		http.Error(w, "noteId must be specified in query", http.StatusBadRequest)
-		return
-	}
-	if len(nIDs) != 1 {
-		log.Print("noteId is not specified")
-		http.Error(w, "Only one noteId should be specified in query", http.StatusBadRequest)
-		return
-	}
-	nID := nIDs[0]
-	k, pID, err := name.ParseResourceKindAndProjectFromPath(strings.Trim(r.URL.Path, "/"))
-	if err != nil {
-		log.Printf("error parsing path %v", err)
-		http.Error(w, "Error processing request", http.StatusInternalServerError)
-		return
-	}
-	if k != name.Note {
-		log.Printf("wrong object type %v", k)
-		http.Error(w, "Error processing request", http.StatusInternalServerError)
+	pID, nID, appErr := noteAndProjectIDFromReq(r)
+	if appErr != nil {
+		http.Error(w, appErr.Err, appErr.StatusCode)
 		return
 	}
 
@@ -82,13 +65,40 @@ func (h *Handler) CreateNote(w http.ResponseWriter, r *http.Request) {
 		log.Printf("Error creating note: %v", err)
 		http.Error(w, err.Err, err.StatusCode)
 	}
-	bytes, mErr := json.Marshal(&n)
+	bytes, err := json.Marshal(&n)
 	if err != nil {
-		log.Printf("Error marshalling bytes: %v", mErr)
+		log.Printf("Error marshalling bytes: %v", err)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 	}
 	w.WriteHeader(http.StatusOK)
 	w.Write(bytes)
+}
+
+func noteAndProjectIDFromReq(r *http.Request) (string, string, *errors.AppError) {
+	nIDs, ok := r.URL.Query()["noteId"]
+	if !ok {
+		log.Print("noteId is not specified")
+		return "", "", &errors.AppError{Err: "noteId must be specified in query", StatusCode: http.StatusBadRequest}
+
+	}
+	if len(nIDs) != 1 {
+		log.Print("noteId is not specified, or multipe noteIds are specified")
+		return "", "", &errors.AppError{Err: "Exactly one noteId should be specified in query",
+			StatusCode: http.StatusBadRequest}
+	}
+	nID := nIDs[0]
+	k, pID, err := name.ParseResourceKindAndProjectFromPath(strings.Trim(r.URL.Path, "/"))
+	if err != nil {
+		log.Printf("error parsing path %v", err)
+		return "", "", &errors.AppError{Err: "Error processing request",
+			StatusCode: http.StatusInternalServerError}
+	}
+	if k != name.Note {
+		log.Printf("wrong object type %v", k)
+		return "", "", &errors.AppError{Err: "Error processing request",
+			StatusCode: http.StatusInternalServerError}
+	}
+	return pID, nID, nil
 }
 
 // CreateOccurrence handles http requests to create occurrences in grafeas
@@ -133,7 +143,7 @@ func (h *Handler) CreateOccurrence(w http.ResponseWriter, r *http.Request) {
 	w.Write(bytes)
 }
 
-// CreateOperation handles http requests to create operation in grafeas
+// CreateOperation handles http requests to create operation in Grafeas
 func (h *Handler) CreateOperation(w http.ResponseWriter, r *http.Request) {
 	o := swagger.Operation{}
 	body, err := ioutil.ReadAll(r.Body)
@@ -160,7 +170,14 @@ func (h *Handler) CreateOperation(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) DeleteNote(w http.ResponseWriter, r *http.Request) {
+
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	pID, nID, appErr := noteAndProjectIDFromReq(r)
+	if appErr != nil {
+		http.Error(w, appErr.Err, appErr.StatusCode)
+		return
+	}
+
 	w.WriteHeader(http.StatusOK)
 }
 
