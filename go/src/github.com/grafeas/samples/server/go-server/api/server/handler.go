@@ -204,8 +204,6 @@ func (h *Handler) DeleteNote(w http.ResponseWriter, r *http.Request) {
 	}
 	w.WriteHeader(http.StatusOK)
 }
-}
-
 
 func projectOccIDFromReq(r *http.Request) (string, string, *errors.AppError) {
 	// We need to trim twice because the path may or may not contain the leading "/"
@@ -214,8 +212,7 @@ func projectOccIDFromReq(r *http.Request) (string, string, *errors.AppError) {
 	pID, oID, err := name.ParseOccurrence(nameString)
 	if err != nil {
 		log.Printf("error parsing path %v", err)
-		return "", "", &errors.AppError{Err: "Error processing request",
-			StatusCode: http.StatusInternalServerError}
+		return "", "", &errors.AppError{err.Err, err.StatusCode}
 	}
 	return pID, oID, nil
 }
@@ -227,8 +224,7 @@ func projectNoteIDFromReq(r *http.Request) (string, string, *errors.AppError) {
 	pID, nID, err := name.ParseNote(nameString)
 	if err != nil {
 		log.Printf("error parsing path %v", err)
-		return "", "", &errors.AppError{Err: "Error processing request",
-			StatusCode: http.StatusInternalServerError}
+		return "", "", &errors.AppError{err.Err, err.StatusCode}
 	}
 	return pID, nID, nil
 }

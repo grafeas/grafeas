@@ -53,7 +53,7 @@ func TestHandler_CreateOccurrence(t *testing.T) {
 		t.Fatalf("Error creating note: %v", err)
 	}
 	o := testutil.Occurrence(n.Name)
-	if err := createOccurrence(o, h); err != nil {
+	if _, err := createOccurrence(o, h); err != nil {
 		t.Errorf("%v", err)
 	}
 }
@@ -61,13 +61,13 @@ func TestHandler_CreateOccurrence(t *testing.T) {
 func TestHandler_DeleteOccurrence(t *testing.T) {
 	h := Handler{v1alpha1.Grafeas{S: storage.NewMemStore()}}
 	pID := "project"
-	nID := "occurrence"
-	r, err := http.NewRequest("DELETE", fmt.Sprintf("/v1alpha1/projects/%v/occurrences/%v", pID, nID), nil)
+	oID := "occurrence"
+	r, err := http.NewRequest("DELETE", fmt.Sprintf("/v1alpha1/projects/%v/occurrences/%v", pID, oID), nil)
 	if err != nil {
 		t.Fatalf("Could not create httprequest %v", err)
 	}
 	w := httptest.NewRecorder()
-	h.DeleteNote(w, r)
+	h.DeleteOccurrence(w, r)
 	if w.Code != 400 {
 		t.Errorf("DeleteOccurrence with no occurrence got %v, want 400", w.Code)
 	}
@@ -75,16 +75,21 @@ func TestHandler_DeleteOccurrence(t *testing.T) {
 	if err := createNote(n, h); err != nil {
 		t.Errorf("%v", err)
 	}
-	pID, nID, aErr := name.ParseNote(n.Name)
+	o := testutil.Occurrence(n.Name)
+	got, err := createOccurrence(o, h)
+	if err != nil {
+		t.Fatalf("%v", err)
+	}
+	pID, oID, aErr := name.ParseOccurrence(got.Name)
 	if aErr != nil {
 		t.Fatalf("Error parsing note name: %v", aErr)
 	}
-	r, err = http.NewRequest("DELETE", fmt.Sprintf("/v1alpha1/projects/%v/occurrence/%v", pID, nID), nil)
+	r, err = http.NewRequest("DELETE", fmt.Sprintf("/v1alpha1/projects/%v/occurrences/%v", pID, oID), nil)
 	if err != nil {
 		t.Fatalf("Could not create httprequest %v", err)
 	}
 	w = httptest.NewRecorder()
-	h.DeleteNote(w, r)
+	h.DeleteOccurrence(w, r)
 	if w.Code != 200 {
 		t.Errorf("DeleteOccurrence got %v; %v, want 200", w.Code, w.Body)
 	}
@@ -135,35 +140,35 @@ func TestHandler_DeleteNote(t *testing.T) {
 	}
 
 }
-func createOccurrence(o swagger.Occurrence, g Handler) error {
+func createOccurrence(o swagger.Occurrence, g Handler) (*swagger.Occurrence, error) {
 	pID := "test-project"
 	rawOcc, err := json.Marshal(&o)
 	reader := bytes.NewReader(rawOcc)
 	if err != nil {
-		return errors.New(fmt.Sprintf("error marshalling json: %v", err))
+		return nil, errors.New(fmt.Sprintf("error marshalling json: %v", err))
 	}
 	r, err := http.NewRequest("POST",
 		fmt.Sprintf("/v1alpha1/projects/%v/occurrences", pID), reader)
 	if err != nil {
-		return errors.New(fmt.Sprintf("error creating http request %v", err))
+		return nil, errors.New(fmt.Sprintf("error creating http request %v", err))
 	}
 	w := httptest.NewRecorder()
 	g.CreateOccurrence(w, r)
 	if w.Code != 200 {
-		return errors.New(fmt.Sprintf("CreateOccurrence(%v) got %v want 200", o, w.Code))
+		return nil, errors.New(fmt.Sprintf("CreateOccurrence(%v) got %v want 200", o, w.Code))
 	}
 	got := swagger.Occurrence{}
 	json.Unmarshal(w.Body.Bytes(), &got)
 	if got.Name == "" {
-		return errors.New("got.Name got empty, want name")
+		return nil, errors.New("got.Name got empty, want name")
 	} else {
 		if gotID, _, err := name.ParseOccurrence(got.Name); err != nil {
-			return fmt.Errorf("Error parsing created occurrence name: %v", err)
+			return nil, fmt.Errorf("Error parsing created occurrence name: %v", err)
 		} else if gotID != pID {
-			return fmt.Errorf("Created Occurrence projectID: got %v, want %v", gotID, pID)
+			return nil, fmt.Errorf("Created Occurrence projectID: got %v, want %v", gotID, pID)
 		}
 	}
-	return nil
+	return &got, nil
 }
 
 func createNote(n swagger.Note, g Handler) error {
