@@ -39,6 +39,15 @@ func TestGrafeas_CreateOccurrence(t *testing.T) {
 		t.Errorf("CreateOccurrence(%v) got %v, want success", n, err)
 	}
 
+	// Try to insert an occurrence for a note that does not exist.
+	o.Name = "projects/testproject/occurrences/nonote"
+	o.NoteName = "projects/scan-provider/notes/notthere"
+	if err := g.CreateOccurrence(&o); err == nil {
+		t.Errorf("CreateOccurrence got success, want Error")
+	} else if err.StatusCode != http.StatusBadRequest {
+		t.Errorf("CreateOccurrence got code %v want %v", err.StatusCode, http.StatusBadRequest)
+	}
+
 }
 
 func TestGrafeas_CreateNote(t *testing.T) {

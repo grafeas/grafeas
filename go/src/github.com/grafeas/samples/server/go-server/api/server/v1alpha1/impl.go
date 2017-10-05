@@ -2,8 +2,10 @@
 package v1alpha1
 
 import (
+	"fmt"
 	"github.com/grafeas/samples/server/go-server/api"
 	"github.com/grafeas/samples/server/go-server/api/server/errors"
+	"github.com/grafeas/samples/server/go-server/api/server/name"
 	"github.com/grafeas/samples/server/go-server/api/server/storage"
 	"log"
 	"net/http"
@@ -32,6 +34,18 @@ func (g *Grafeas) CreateOccurrence(o *swagger.Occurrence) *errors.AppError {
 		return &errors.AppError{Err: "Invalid occurrence name", StatusCode: http.StatusBadRequest}
 	}
 	// TODO: Validate that note exists
+	if o.NoteName == "" {
+		log.Print("No note is associated with this occurrence")
+	}
+	pID, nID, err := name.ParseNote(o.NoteName)
+	if err != nil {
+		log.Printf("Invalid note name: %v", o.Name)
+		return &errors.AppError{Err: "Invalid note name", StatusCode: http.StatusBadRequest}
+	}
+	if n, err := g.S.GetNote(pID, nID); n == nil || err != nil {
+		log.Printf("Unable to getnote %v, err: %v", n, err)
+		return &errors.AppError{Err: fmt.Sprintf("Note %v not found", o.NoteName), StatusCode: http.StatusBadRequest}
+	}
 	// TODO: Validate that operation exists if it is specified
 	return g.S.CreateOccurrence(o)
 }
