@@ -2,6 +2,7 @@ package v1alpha1
 
 import (
 	"github.com/grafeas/samples/server/go-server/api"
+	"github.com/grafeas/samples/server/go-server/api/server/name"
 	"github.com/grafeas/samples/server/go-server/api/server/storage"
 	"github.com/grafeas/samples/server/go-server/api/server/testing"
 	"net/http"
@@ -39,6 +40,15 @@ func TestGrafeas_CreateOccurrence(t *testing.T) {
 		t.Errorf("CreateOccurrence(%v) got %v, want success", n, err)
 	}
 
+	// Try to insert an occurrence for a note that does not exist.
+	o.Name = "projects/testproject/occurrences/nonote"
+	o.NoteName = "projects/scan-provider/notes/notthere"
+	if err := g.CreateOccurrence(&o); err == nil {
+		t.Errorf("CreateOccurrence got success, want Error")
+	} else if err.StatusCode != http.StatusBadRequest {
+		t.Errorf("CreateOccurrence got code %v want %v", err.StatusCode, http.StatusBadRequest)
+	}
+
 }
 
 func TestGrafeas_CreateNote(t *testing.T) {
@@ -53,4 +63,23 @@ func TestGrafeas_CreateNote(t *testing.T) {
 	if err := g.CreateNote(&n); err != nil {
 		t.Errorf("CreateNote(%v) got %v, want success", n, err)
 	}
+}
+
+func TestGrafeas_DeleteNote(t *testing.T) {
+	g := Grafeas{storage.NewMemStore()}
+	n := testutil.Note()
+	pID, nID, err := name.ParseNote(n.Name)
+	if err != nil {
+		t.Fatalf("Error parsing note name %v", err)
+	}
+	if err := g.DeleteNote(pID, nID); err == nil {
+		t.Error("DeleteNote that doesn't exist got success, want err")
+	}
+	if err := g.CreateNote(&n); err != nil {
+		t.Fatalf("CreateNote(%v) got %v, want success", n, err)
+	}
+	if err := g.DeleteNote(pID, nID); err != nil {
+		t.Errorf("DeleteNote  got %v, want success", err)
+	}
+
 }

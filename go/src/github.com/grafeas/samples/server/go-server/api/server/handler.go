@@ -20,6 +20,7 @@ import (
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/grafeas/samples/server/go-server/api"
+	"github.com/grafeas/samples/server/go-server/api/server/errors"
 	"github.com/grafeas/samples/server/go-server/api/server/name"
 	"github.com/grafeas/samples/server/go-server/api/server/v1alpha1"
 	"io/ioutil"
@@ -89,6 +90,7 @@ func (h *Handler) CreateNote(w http.ResponseWriter, r *http.Request) {
 	}
 	w.WriteHeader(http.StatusOK)
 	w.Write(bytes)
+
 }
 
 // CreateOccurrence handles http requests to create occurrences in grafeas
@@ -133,7 +135,7 @@ func (h *Handler) CreateOccurrence(w http.ResponseWriter, r *http.Request) {
 	w.Write(bytes)
 }
 
-// CreateOperation handles http requests to create operation in grafeas
+// CreateOperation handles http requests to create an operation in Grafeas
 func (h *Handler) CreateOperation(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	oIDs, ok := r.URL.Query()["operationId"]
@@ -174,6 +176,7 @@ func (h *Handler) CreateOperation(w http.ResponseWriter, r *http.Request) {
 	if err := h.g.CreateOperation(&o); err != nil {
 		log.Printf("Error creating occurrence: %v", err)
 		http.Error(w, err.Err, err.StatusCode)
+		return
 	}
 
 	bytes, mErr := json.Marshal(&o)
@@ -188,7 +191,31 @@ func (h *Handler) CreateOperation(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handler) DeleteNote(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	pID, nID, appErr := projectNoteIDFromReq(r)
+	if appErr != nil {
+		http.Error(w, appErr.Err, appErr.StatusCode)
+		return
+	}
+	if err := h.g.DeleteNote(pID, nID); err != nil {
+		log.Printf("Unable to delete note %v", err)
+		http.Error(w, err.Err, err.StatusCode)
+		return
+
+	}
 	w.WriteHeader(http.StatusOK)
+}
+
+func projectNoteIDFromReq(r *http.Request) (string, string, *errors.AppError) {
+	// We need to trim twice because the path may or may not contain the leading "/"
+	nameString := strings.TrimPrefix(strings.TrimPrefix(r.URL.Path, "/"), "v1alpha1/")
+
+	pID, nID, err := name.ParseNote(nameString)
+	if err != nil {
+		log.Printf("error parsing path %v", err)
+		return "", "", &errors.AppError{Err: "Error processing request",
+			StatusCode: http.StatusInternalServerError}
+	}
+	return pID, nID, nil
 }
 
 func (h *Handler) DeleteOccurrence(w http.ResponseWriter, r *http.Request) {

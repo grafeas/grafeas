@@ -42,10 +42,6 @@ func (m *MemStore) CreateOccurrence(o *swagger.Occurrence) *errors.AppError {
 		return &errors.AppError{Err: fmt.Sprintf("Occurrence with name %q already exists", o.Name),
 			StatusCode: http.StatusBadRequest}
 	}
-	if _, ok := m.notesByID[o.NoteName]; !ok {
-		return &errors.AppError{Err: fmt.Sprintf("Occurrence references note %v which does not exist", o.NoteName),
-			StatusCode: http.StatusBadRequest}
-	}
 	m.occurrencesByID[o.Name] = *o
 	return nil
 }

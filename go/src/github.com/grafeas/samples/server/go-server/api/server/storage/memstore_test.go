@@ -61,15 +61,6 @@ func TestMemStore_CreateOccurrence(t *testing.T) {
 	} else if reflect.DeepEqual(got, o) {
 		t.Errorf("GetOccurrence got %v, want %v", got, o)
 	}
-
-	// Try to insert an occurrence for a note that does not exist.
-	o.Name = "projects/testproject/occurrences/nonote"
-	o.NoteName = "projects/scan-provider/notes/notthere"
-	if err := s.CreateOccurrence(&o); err == nil {
-		t.Errorf("CreateOccurrence got success, want Error")
-	} else if err.StatusCode != http.StatusBadRequest {
-		t.Errorf("CreateOccurrence got code %v want %v", err.StatusCode, http.StatusBadRequest)
-	}
 }
 
 func TestMemStore_CreateOperation(t *testing.T) {
