@@ -147,3 +147,23 @@ func TestGrafeas_GetOccurrence(t *testing.T) {
 		t.Errorf("GetOccurrence got %v, want %v", *got, n)
 	}
 }
+
+func TestGrafeas_GetOperation(t *testing.T) {
+	g := Grafeas{storage.NewMemStore()}
+	o := testutil.Operation()
+	pID, oID, err := name.ParseOperation(o.Name)
+	if err != nil {
+		t.Fatalf("Error parsing note name %v", err)
+	}
+	if _, err := g.GetOperation(pID, oID); err == nil {
+		t.Error("GetOperation that doesn't exist got success, want err")
+	}
+	if err := g.CreateOperation(&o); err != nil {
+		t.Fatalf("CreateOperation(%v) got %v, want success", o, err)
+	}
+	if got, err := g.GetOperation(pID, oID); err != nil {
+		t.Fatalf("GetNote(%v) got %v, want success", o, err)
+	} else if o.Name != got.Name || !reflect.DeepEqual(*got, o) {
+		t.Errorf("GetNote got %v, want %v", *got, o)
+	}
+}

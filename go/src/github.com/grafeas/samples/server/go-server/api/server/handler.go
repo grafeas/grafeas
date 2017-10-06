@@ -314,6 +314,25 @@ func (h *Handler) GetOccurrence(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handler) GetOperation(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	pID, oID, appErr := projectOperationIDFromReq(r)
+	if appErr != nil {
+		http.Error(w, appErr.Err, appErr.StatusCode)
+		return
+	}
+	o, err := h.g.GetOperation(pID, oID)
+	if err != nil {
+		log.Printf("Error getting note %v", err)
+		http.Error(w, err.Err, err.StatusCode)
+		return
+	}
+
+	bytes, mErr := json.Marshal(&o)
+	if mErr != nil {
+		log.Printf("Error marshalling bytes: %v", mErr)
+		http.Error(w, "Error getting Note", http.StatusInternalServerError)
+		return
+	}
+	w.Write(bytes)
 	w.WriteHeader(http.StatusOK)
 }
 

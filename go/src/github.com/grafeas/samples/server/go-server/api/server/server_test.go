@@ -146,6 +146,21 @@ func TestHandler_GetNote(t *testing.T) {
 	}
 }
 
+func TestHandler_GetOperation(t *testing.T) {
+	h := Handler{v1alpha1.Grafeas{S: storage.NewMemStore()}}
+	pID := "project"
+	oID := "operation"
+	r, err := http.NewRequest("GET", fmt.Sprintf("/v1alpha1/projects/%v/operations/%v", pID, oID), nil)
+	if err != nil {
+		t.Fatalf("Could not create httprequest %v", err)
+	}
+	w := httptest.NewRecorder()
+	h.GetOperation(w, r)
+	if w.Code != 400 {
+		t.Errorf("GetNote with no note got %v, want 400", w.Code)
+	}
+}
+
 func TestHandler_GetOccurrence(t *testing.T) {
 	h := Handler{v1alpha1.Grafeas{S: storage.NewMemStore()}}
 	pID := "project"
