@@ -205,18 +205,6 @@ func (h *Handler) DeleteNote(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func projectOccIDFromReq(r *http.Request) (string, string, *errors.AppError) {
-	// We need to trim twice because the path may or may not contain the leading "/"
-	nameString := strings.TrimPrefix(strings.TrimPrefix(r.URL.Path, "/"), "v1alpha1/")
-
-	pID, oID, err := name.ParseOccurrence(nameString)
-	if err != nil {
-		log.Printf("error parsing path %v", err)
-		return "", "", &errors.AppError{err.Err, err.StatusCode}
-	}
-	return pID, oID, nil
-}
-
 func projectNoteIDFromReq(r *http.Request) (string, string, *errors.AppError) {
 	// We need to trim twice because the path may or may not contain the leading "/"
 	nameString := strings.TrimPrefix(strings.TrimPrefix(r.URL.Path, "/"), "v1alpha1/")
