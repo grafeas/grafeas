@@ -26,7 +26,7 @@ package swagger
 type ListOperationsResponse struct {
 
 	// The operations requested.
-	Occurrences []Operation `json:"occurrences,omitempty"`
+	Operations []Operation `json:"occurrences,omitempty"`
 
 	// The next pagination token in the List response. It should be used as page_token for the following request. An empty value means no more results.
 	NextPageToken string `json:"nextPageToken,omitempty"`

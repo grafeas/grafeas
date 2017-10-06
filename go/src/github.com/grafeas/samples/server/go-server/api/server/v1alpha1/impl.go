@@ -77,5 +77,19 @@ func (g *Grafeas) DeleteOperation(pID, nID string) *errors.AppError {
 
 func (g *Grafeas) ListOperations(pID, fs string) (*swagger.ListOperationsResponse, *errors.AppError) {
 	// TODO: support filters
+	ops := g.S.ListOperations(pID, fs)
+	return &swagger.ListOperationsResponse{Operations: ops}, nil
+
+}
+func (g *Grafeas) ListNotes(pID, fs string) (*swagger.ListNotesResponse, *errors.AppError) {
+	// TODO: support filters
+	ns := g.S.ListNotes(pID, fs)
+	return &swagger.ListNotesResponse{Notes: ns}, nil
+
+}
+func (g *Grafeas) ListOccurrences(pID, fs string) (*swagger.ListOccurrencesResponse, *errors.AppError) {
+	// TODO: support filters
+	os := g.S.ListOperations(pID, fs)
+	return &swagger.ListOccurrencesResponse{Occurrences: os}, nil
 
 }

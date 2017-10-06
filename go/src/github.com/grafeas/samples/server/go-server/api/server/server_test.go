@@ -255,3 +255,15 @@ func createOperation(o swagger.Operation, g Handler, oID string) error {
 	}
 	return nil
 }
+
+func TestHandler_ListNotes(t *testing.T) {
+
+}
+
+func TestHandler_ListOccurrences(t *testing.T) {
+
+}
+
+func TestHandler_ListOperations(t *testing.T) {
+
+}

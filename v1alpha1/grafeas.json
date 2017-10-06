@@ -1533,7 +1533,7 @@
       "description": "Response including listed operations.",
       "type": "object",
       "properties": {
-        "occurrences": {
+        "operations": {
           "description": "The operations requested.",
           "type": "array",
           "items": {
