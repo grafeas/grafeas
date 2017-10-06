@@ -215,7 +215,7 @@ func TestHandler_GetOccurrence(t *testing.T) {
 
 	pID, oID, aErr := name.ParseOccurrence(got.Name)
 	if aErr != nil {
-		fmt.Errorf("Error parsing created occurrence name: %v", aErr)
+		t.Errorf("Error parsing created occurrence name: %v", aErr)
 	}
 	r, err = http.NewRequest("GET", fmt.Sprintf("/v1alpha1/projects/%v/occurrences/%v", pID, oID), nil)
 	if err != nil {
@@ -351,5 +351,4 @@ func TestHandler_GetOccurrenceNote(t *testing.T) {
 	if w.Code != 200 {
 		t.Errorf("GetOccurrenceNote with no occurrence got %v, want 200", w.Code)
 	}
-
 }
