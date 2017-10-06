@@ -83,6 +83,29 @@ func TestGrafeas_DeleteNote(t *testing.T) {
 	}
 }
 
+func TestGrafeas_DeleteOccurrence(t *testing.T) {
+	g := Grafeas{storage.NewMemStore()}
+	n := testutil.Note()
+	// CreateNote so we can create an occurrence
+	if err := g.CreateNote(&n); err != nil {
+		t.Fatalf("CreateNote(%v) got %v, want success", n, err)
+	}
+	o := testutil.Occurrence(n.Name)
+	pID, oID, err := name.ParseOccurrence(o.Name)
+	if err != nil {
+		t.Fatalf("Error parsing occurrence name %v", err)
+	}
+	if err := g.DeleteNote(pID, oID); err == nil {
+		t.Error("DeleteNote that doesn't exist got success, want err")
+	}
+	if err := g.CreateOccurrence(&o); err != nil {
+		t.Fatalf("CreateNote(%v) got %v, want success", n, err)
+	}
+	if err := g.DeleteOccurrence(pID, oID); err != nil {
+		t.Errorf("DeleteNote  got %v, want success", err)
+	}
+}
+
 func TestGrafeas_DeleteOperation(t *testing.T) {
 	g := Grafeas{storage.NewMemStore()}
 	o := testutil.Operation()
