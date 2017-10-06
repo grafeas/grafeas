@@ -84,3 +84,19 @@ func (g *Grafeas) GetOccurrence(pID, oID string) (*swagger.Occurrence, *errors.A
 func (g *Grafeas) GetOperation(pID, oID string) (*swagger.Operation, *errors.AppError) {
 	return g.S.GetOperation(pID, oID)
 }
+
+// GetOccurrence gets a occurrence from the datastore.
+func (g *Grafeas) GetOccurrenceNote(pID, oID string) (*swagger.Note, *errors.AppError) {
+	o, err := g.S.GetOccurrence(pID, oID)
+	if err != nil {
+		return nil, err
+	}
+	npID, nID, err := name.ParseNote(o.NoteName)
+	if err != nil {
+		log.Printf("Invalid note name: %v", o.Name)
+		return nil, &errors.AppError{Err: fmt.Sprintf("Invalid note name: %v", o.NoteName),
+			StatusCode: http.StatusBadRequest}
+	}
+
+	return g.S.GetNote(npID, nID)
+}

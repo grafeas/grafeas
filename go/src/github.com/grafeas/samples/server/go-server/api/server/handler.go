@@ -221,7 +221,8 @@ func projectNoteIDFromReq(r *http.Request) (string, string, *errors.AppError) {
 func projectOccIDFromReq(r *http.Request) (string, string, *errors.AppError) {
 	// We need to trim twice because the path may or may not contain the leading "/"
 	nameString := strings.TrimPrefix(strings.TrimPrefix(r.URL.Path, "/"), "v1alpha1/")
-
+	// Handle GetOccurrenceNotes too
+	nameString = strings.TrimSuffix(nameString, "/notes")
 	pID, oID, err := name.ParseOccurrence(nameString)
 	if err != nil {
 		log.Printf("error parsing path %v", err)
@@ -316,12 +317,13 @@ func (h *Handler) GetOperation(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	pID, oID, appErr := projectOperationIDFromReq(r)
 	if appErr != nil {
+		log.Printf("error parsing operation %v", appErr)
 		http.Error(w, appErr.Err, appErr.StatusCode)
 		return
 	}
 	o, err := h.g.GetOperation(pID, oID)
 	if err != nil {
-		log.Printf("Error getting note %v", err)
+		log.Printf("Error getting operation %v", err)
 		http.Error(w, err.Err, err.StatusCode)
 		return
 	}
@@ -329,7 +331,7 @@ func (h *Handler) GetOperation(w http.ResponseWriter, r *http.Request) {
 	bytes, mErr := json.Marshal(&o)
 	if mErr != nil {
 		log.Printf("Error marshalling bytes: %v", mErr)
-		http.Error(w, "Error getting Note", http.StatusInternalServerError)
+		http.Error(w, "Error getting operation", http.StatusInternalServerError)
 		return
 	}
 	w.Write(bytes)
@@ -338,6 +340,25 @@ func (h *Handler) GetOperation(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handler) GetOccurrenceNote(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	pID, oID, appErr := projectOccIDFromReq(r)
+	if appErr != nil {
+		http.Error(w, appErr.Err, appErr.StatusCode)
+		return
+	}
+	n, err := h.g.GetOccurrenceNote(pID, oID)
+	if err != nil {
+		log.Printf("Error getting occurrence %v", err)
+		http.Error(w, err.Err, err.StatusCode)
+		return
+	}
+
+	bytes, mErr := json.Marshal(&n)
+	if mErr != nil {
+		log.Printf("Error marshalling bytes: %v", mErr)
+		http.Error(w, "Error getting Note", http.StatusInternalServerError)
+		return
+	}
+	w.Write(bytes)
 	w.WriteHeader(http.StatusOK)
 }
 
