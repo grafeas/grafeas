@@ -95,14 +95,11 @@ func TestGrafeas_DeleteOccurrence(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Error parsing occurrence name %v", err)
 	}
-	if err := g.DeleteNote(pID, oID); err == nil {
-		t.Error("DeleteNote that doesn't exist got success, want err")
-	}
 	if err := g.CreateOccurrence(&o); err != nil {
-		t.Fatalf("CreateNote(%v) got %v, want success", n, err)
+		t.Fatalf("CreateOccurrence(%v) got %v, want success", n, err)
 	}
 	if err := g.DeleteOccurrence(pID, oID); err != nil {
-		t.Errorf("DeleteNote  got %v, want success", err)
+		t.Errorf("DeleteOccurrence  got %v, want success", err)
 	}
 }
 

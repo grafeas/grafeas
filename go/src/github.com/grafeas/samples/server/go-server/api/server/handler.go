@@ -260,13 +260,13 @@ func (h *Handler) DeleteOperation(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handler) DeleteOccurrence(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	pID, nID, appErr := projectOccIDFromReq(r)
+	pID, oID, appErr := projectOccIDFromReq(r)
 	if appErr != nil {
 		http.Error(w, appErr.Err, appErr.StatusCode)
 		return
 	}
-	if err := h.g.DeleteOccurrence(pID, nID); err != nil {
-		log.Printf("Unable to delete note %v", err)
+	if err := h.g.DeleteOccurrence(pID, oID); err != nil {
+		log.Printf("Unable to delete occurrence %v", err)
 		http.Error(w, err.Err, err.StatusCode)
 		return
 
