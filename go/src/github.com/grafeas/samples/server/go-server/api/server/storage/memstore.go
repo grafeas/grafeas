@@ -21,6 +21,7 @@ import (
 
 	"github.com/grafeas/samples/server/go-server/api/server/name"
 	"net/http"
+	"strings"
 )
 
 // Memstore is an in-memory storage solution for Grafeas
@@ -79,8 +80,14 @@ func (m *MemStore) GetOccurrence(pID, oID string) (*swagger.Occurrence, *errors.
 	return &o, nil
 }
 
-func (m *MemStore) ListOccurrences() *errors.AppError {
-	panic("implement me")
+func (m *MemStore) ListOccurrences(pID, filters string) ([]swagger.Occurrence, *errors.AppError) {
+	os := []swagger.Occurrence{}
+	for _, o := range m.occurrencesByID {
+		if strings.HasPrefix(o.Name, fmt.Sprintf("projects/%v", pID)) {
+			os = append(os, o)
+		}
+	}
+	return os, nil
 }
 
 // CreateNote adds the specified note to the mem store
@@ -142,10 +149,15 @@ func (m *MemStore) GetNoteByOccurrence(pID, oID string) (*swagger.Note, *errors.
 	return &n, nil
 }
 
-func (m *MemStore) ListNotes() *errors.AppError {
-	panic("implement me")
+func (m *MemStore) ListNotes(pID, filters string) ([]swagger.Note, *errors.AppError) {
+	ns := []swagger.Note{}
+	for _, n := range m.notesByID {
+		if strings.HasPrefix(n.Name, fmt.Sprintf("projects/%v", pID)) {
+			ns = append(ns, n)
+		}
+	}
+	return ns, nil
 }
-
 func (m *MemStore) ListNoteOccurrences() *errors.AppError {
 	panic("implement me")
 }
@@ -193,6 +205,12 @@ func (m *MemStore) UpdateOperation(pID, opID string, op *swagger.Operation) *err
 	return nil
 }
 
-func (m *MemStore) ListOperations() *errors.AppError {
-	panic("implement me")
+func (m *MemStore) ListOperations(pID, filters string) ([]swagger.Operation, *errors.AppError) {
+	ops := []swagger.Operation{}
+	for _, op := range m.opsByID {
+		if strings.HasPrefix(op.Name, fmt.Sprintf("projects/%v", pID)) {
+			ops = append(ops, op)
+		}
+	}
+	return ops, nil
 }

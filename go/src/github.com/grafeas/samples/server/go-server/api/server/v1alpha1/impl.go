@@ -74,3 +74,8 @@ func (g *Grafeas) DeleteOperation(pID, nID string) *errors.AppError {
 	// TODO: Check for occurrences and notes tied to this operation, and return an error if there are any before deletion.
 	return g.S.DeleteOperation(pID, nID)
 }
+
+func (g *Grafeas) ListOperations(pID, fs string) (*swagger.ListOperationsResponse, *errors.AppError) {
+	// TODO: support filters
+
+}
