@@ -58,6 +58,44 @@ func TestHandler_CreateOccurrence(t *testing.T) {
 	}
 }
 
+func TestHandler_DeleteOccurrence(t *testing.T) {
+	h := Handler{v1alpha1.Grafeas{S: storage.NewMemStore()}}
+	pID := "project"
+	oID := "occurrence"
+	r, err := http.NewRequest("DELETE", fmt.Sprintf("/v1alpha1/projects/%v/occurrences/%v", pID, oID), nil)
+	if err != nil {
+		t.Fatalf("Could not create httprequest %v", err)
+	}
+	w := httptest.NewRecorder()
+	h.DeleteOccurrence(w, r)
+	if w.Code != 400 {
+		t.Errorf("DeleteOccurrence with no occurrence got %v, want 400", w.Code)
+	}
+	n := testutil.Note()
+	if err := createNote(n, h); err != nil {
+		t.Errorf("%v", err)
+	}
+	o := testutil.Occurrence(n.Name)
+	got, err := createOccurrence(o, h)
+	if err != nil {
+		t.Fatalf("%v", err)
+	}
+	pID, oID, aErr := name.ParseOccurrence(got.Name)
+	if aErr != nil {
+		t.Fatalf("Error parsing note name: %v", aErr)
+	}
+	r, err = http.NewRequest("DELETE", fmt.Sprintf("/v1alpha1/projects/%v/occurrences/%v", pID, oID), nil)
+	if err != nil {
+		t.Fatalf("Could not create httprequest %v", err)
+	}
+	w = httptest.NewRecorder()
+	h.DeleteOccurrence(w, r)
+	if w.Code != 200 {
+		t.Errorf("DeleteOccurrence got %v; %v, want 200", w.Code, w.Body)
+	}
+
+}
+
 func TestHandler_CreateOperation(t *testing.T) {
 	h := Handler{v1alpha1.Grafeas{S: storage.NewMemStore()}}
 	o := testutil.Operation()
