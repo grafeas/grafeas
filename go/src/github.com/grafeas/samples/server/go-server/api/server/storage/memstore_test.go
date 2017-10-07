@@ -15,14 +15,16 @@
 package storage
 
 import (
+	"github.com/grafeas/samples/server/go-server/api"
 	"github.com/grafeas/samples/server/go-server/api/server/name"
 	"github.com/grafeas/samples/server/go-server/api/server/testing"
 	"net/http"
 	"reflect"
+	"strings"
 	"testing"
 )
 
-func TestMemStore_CreateNote(t *testing.T) {
+func TestCreateNote(t *testing.T) {
 	s := NewMemStore()
 	n := testutil.Note()
 	if err := s.CreateNote(&n); err != nil {
@@ -36,7 +38,7 @@ func TestMemStore_CreateNote(t *testing.T) {
 	}
 }
 
-func TestMemStore_CreateOccurrence(t *testing.T) {
+func TestCreateOccurrence(t *testing.T) {
 	s := NewMemStore()
 	n := testutil.Note()
 	if err := s.CreateNote(&n); err != nil {
@@ -63,11 +65,11 @@ func TestMemStore_CreateOccurrence(t *testing.T) {
 	}
 }
 
-func TestMemStore_CreateOperation(t *testing.T) {
+func TestCreateOperation(t *testing.T) {
 	s := NewMemStore()
 	op := testutil.Operation()
 	if err := s.CreateOperation(&op); err != nil {
-		t.Errorf("CreateNote got %v want success", err)
+		t.Errorf("CreateOperation got %v want success", err)
 	}
 	// Try to insert the same note twice, expect failure.
 	if err := s.CreateOperation(&op); err == nil {
@@ -77,7 +79,7 @@ func TestMemStore_CreateOperation(t *testing.T) {
 	}
 }
 
-func TestMemStore_DeleteOccurrence(t *testing.T) {
+func TestDeleteOccurrence(t *testing.T) {
 	s := NewMemStore()
 	n := testutil.Note()
 	if err := s.CreateNote(&n); err != nil {
@@ -100,7 +102,7 @@ func TestMemStore_DeleteOccurrence(t *testing.T) {
 	}
 }
 
-func TestMemStore_UpdateOccurrence(t *testing.T) {
+func TestUpdateOccurrence(t *testing.T) {
 	s := NewMemStore()
 	n := testutil.Note()
 	if err := s.CreateNote(&n); err != nil {
@@ -136,7 +138,7 @@ func TestMemStore_UpdateOccurrence(t *testing.T) {
 	}
 }
 
-func TestMemStore_DeleteNote(t *testing.T) {
+func TestDeleteNote(t *testing.T) {
 	s := NewMemStore()
 	n := testutil.Note()
 	// Delete before the note exists
@@ -156,7 +158,7 @@ func TestMemStore_DeleteNote(t *testing.T) {
 	}
 }
 
-func TestMemStore_UpdateNote(t *testing.T) {
+func TestUpdateNote(t *testing.T) {
 	s := NewMemStore()
 	n := testutil.Note()
 
@@ -189,7 +191,7 @@ func TestMemStore_UpdateNote(t *testing.T) {
 	}
 }
 
-func TestMemStore_GetOccurrence(t *testing.T) {
+func TestGetOccurrence(t *testing.T) {
 	s := NewMemStore()
 	n := testutil.Note()
 	if err := s.CreateNote(&n); err != nil {
@@ -213,7 +215,7 @@ func TestMemStore_GetOccurrence(t *testing.T) {
 	}
 }
 
-func TestMemStore_GetNote(t *testing.T) {
+func TestGetNote(t *testing.T) {
 	s := NewMemStore()
 	n := testutil.Note()
 
@@ -234,7 +236,7 @@ func TestMemStore_GetNote(t *testing.T) {
 	}
 }
 
-func TestMemStore_GetNoteByOccurrence(t *testing.T) {
+func TestGetNoteByOccurrence(t *testing.T) {
 	s := NewMemStore()
 	n := testutil.Note()
 	if err := s.CreateNote(&n); err != nil {
@@ -258,7 +260,7 @@ func TestMemStore_GetNoteByOccurrence(t *testing.T) {
 	}
 }
 
-func TestMemStore_GetOperation(t *testing.T) {
+func TestGetOperation(t *testing.T) {
 	s := NewMemStore()
 	o := testutil.Operation()
 
@@ -279,7 +281,7 @@ func TestMemStore_GetOperation(t *testing.T) {
 	}
 }
 
-func TestMemStore_DeleteOperation(t *testing.T) {
+func TestDeleteOperation(t *testing.T) {
 	s := NewMemStore()
 	o := testutil.Operation()
 	// Delete before the operation exists
@@ -299,7 +301,7 @@ func TestMemStore_DeleteOperation(t *testing.T) {
 	}
 }
 
-func TestMemStore_UpdateOperation(t *testing.T) {
+func TestUpdateOperation(t *testing.T) {
 	s := NewMemStore()
 	o := testutil.Operation()
 
@@ -329,5 +331,101 @@ func TestMemStore_UpdateOperation(t *testing.T) {
 		t.Fatalf("GetOperation got %v, want success", err)
 	} else if reflect.DeepEqual(got, o2) {
 		t.Errorf("GetOperation got %v, want %v", got, o2)
+	}
+}
+
+func TestListOperations(t *testing.T) {
+	s := NewMemStore()
+	ops := []swagger.Operation{}
+	findProject := "findThese"
+	dontFind := "dontFind"
+	for i := 0; i < 20; i++ {
+		o := testutil.Operation()
+		if i < 5 {
+			o.Name = name.FormatOperation(findProject, string(i))
+
+		} else {
+			o.Name = name.FormatOperation(dontFind, string(i))
+
+		}
+		if err := s.CreateOperation(&o); err != nil {
+			t.Fatalf("CreateOperation got %v want success", err)
+		}
+		ops = append(ops, o)
+	}
+	gotOs := s.ListOperations(findProject, "")
+
+	if len(gotOs) != 5 {
+		t.Errorf("ListOperations got %v operations, want 5", len(gotOs))
+	}
+	for _, o := range gotOs {
+		want := name.FormatProject(findProject)
+		if !strings.HasPrefix(o.Name, want) {
+			t.Errorf("ListOperations got %v want prefix %v", o.Name, want)
+		}
+	}
+}
+
+func TestListNotes(t *testing.T) {
+	s := NewMemStore()
+	ns := []swagger.Note{}
+	findProject := "findThese"
+	dontFind := "dontFind"
+	for i := 0; i < 20; i++ {
+		n := testutil.Note()
+		if i < 5 {
+			n.Name = name.FormatNote(findProject, string(i))
+
+		} else {
+			n.Name = name.FormatNote(dontFind, string(i))
+
+		}
+		if err := s.CreateNote(&n); err != nil {
+			t.Fatalf("CreateNote got %v want success", err)
+		}
+		ns = append(ns, n)
+	}
+	gotNs := s.ListNotes(findProject, "")
+	if len(gotNs) != 5 {
+		t.Errorf("ListNotes got %v operations, want 5", len(gotNs))
+	}
+	for _, n := range gotNs {
+		want := name.FormatProject(findProject)
+		if !strings.HasPrefix(n.Name, want) {
+			t.Errorf("ListNotes got %v want %v", n.Name, want)
+		}
+	}
+}
+
+func TestListOccurrences(t *testing.T) {
+	s := NewMemStore()
+	os := []swagger.Occurrence{}
+	findProject := "findThese"
+	dontFind := "dontFind"
+	n := testutil.Note()
+	if err := s.CreateNote(&n); err != nil {
+		t.Fatalf("CreateNote got %v want success", err)
+	}
+	for i := 0; i < 20; i++ {
+		o := testutil.Occurrence(n.Name)
+		if i < 5 {
+			o.Name = name.FormatOccurrence(findProject, string(i))
+		} else {
+			o.Name = name.FormatOccurrence(dontFind, string(i))
+		}
+		if err := s.CreateOccurrence(&o); err != nil {
+			t.Fatalf("CreateOccurrence got %v want success", err)
+		}
+		os = append(os, o)
+	}
+	gotOs := s.ListOccurrences(findProject, "")
+	if len(gotOs) != 5 {
+		t.Errorf("ListOccurrences got %v Occurrences, want 5", len(gotOs))
+	}
+	for _, o := range gotOs {
+		want := name.FormatProject(findProject)
+		if !strings.HasPrefix(o.Name, want) {
+			t.Errorf("ListOccurrences got %v want  %v", o.Name, want)
+		}
 	}
 }
