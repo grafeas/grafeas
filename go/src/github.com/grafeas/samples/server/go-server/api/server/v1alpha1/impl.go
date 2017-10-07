@@ -74,3 +74,34 @@ func (g *Grafeas) DeleteOperation(pID, nID string) *errors.AppError {
 	// TODO: Check for occurrences and notes tied to this operation, and return an error if there are any before deletion.
 	return g.S.DeleteOperation(pID, nID)
 }
+
+// GetNote gets a note from the datastore.
+func (g *Grafeas) GetNote(pID, nID string) (*swagger.Note, *errors.AppError) {
+	return g.S.GetNote(pID, nID)
+}
+
+// GetOccurrence gets a occurrence from the datastore.
+func (g *Grafeas) GetOccurrence(pID, oID string) (*swagger.Occurrence, *errors.AppError) {
+	return g.S.GetOccurrence(pID, oID)
+}
+
+// GetOccurrence gets a occurrence from the datastore.
+func (g *Grafeas) GetOperation(pID, oID string) (*swagger.Operation, *errors.AppError) {
+	return g.S.GetOperation(pID, oID)
+}
+
+// GetOccurrenceNote gets a the note for the provided occurrence from the datastore.
+func (g *Grafeas) GetOccurrenceNote(pID, oID string) (*swagger.Note, *errors.AppError) {
+	o, err := g.S.GetOccurrence(pID, oID)
+	if err != nil {
+		return nil, err
+	}
+	npID, nID, err := name.ParseNote(o.NoteName)
+	if err != nil {
+		log.Printf("Invalid note name: %v", o.Name)
+		return nil, &errors.AppError{Err: fmt.Sprintf("Invalid note name: %v", o.NoteName),
+			StatusCode: http.StatusBadRequest}
+	}
+
+	return g.S.GetNote(npID, nID)
+}

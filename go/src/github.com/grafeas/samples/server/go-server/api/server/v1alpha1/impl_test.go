@@ -6,6 +6,7 @@ import (
 	"github.com/grafeas/samples/server/go-server/api/server/storage"
 	"github.com/grafeas/samples/server/go-server/api/server/testing"
 	"net/http"
+	"reflect"
 	"testing"
 )
 
@@ -121,5 +122,97 @@ func TestGrafeas_DeleteOperation(t *testing.T) {
 	}
 	if err := g.DeleteOperation(pID, oID); err != nil {
 		t.Errorf("DeleteOperation  got %v, want success", err)
+	}
+}
+
+func TestGrafeas_GetNote(t *testing.T) {
+	g := Grafeas{storage.NewMemStore()}
+	n := testutil.Note()
+	pID, nID, err := name.ParseNote(n.Name)
+	if err != nil {
+		t.Fatalf("Error parsing note name %v", err)
+	}
+	if _, err := g.GetNote(pID, nID); err == nil {
+		t.Error("GetNote that doesn't exist got success, want err")
+	}
+	if err := g.CreateNote(&n); err != nil {
+		t.Fatalf("CreateNote(%v) got %v, want success", n, err)
+	}
+	if got, err := g.GetNote(pID, nID); err != nil {
+		t.Fatalf("GetNote(%v) got %v, want success", n, err)
+	} else if n.Name != got.Name || !reflect.DeepEqual(n.VulnerabilityType, got.VulnerabilityType) {
+		t.Errorf("GetNote got %v, want %v", *got, n)
+	}
+}
+
+func TestGrafeas_GetOccurrence(t *testing.T) {
+	g := Grafeas{storage.NewMemStore()}
+	n := testutil.Note()
+
+	o := testutil.Occurrence(n.Name)
+
+	pID, oID, err := name.ParseOccurrence(o.Name)
+	if err != nil {
+		t.Fatalf("Error parsing occurrence name %v", err)
+	}
+	if _, err := g.GetOccurrence(pID, oID); err == nil {
+		t.Error("GetOccurrence that doesn't exist got success, want err")
+	}
+	if err := g.CreateNote(&n); err != nil {
+		t.Fatalf("CreateNote(%v) got %v, want success", n, err)
+	}
+	if err := g.CreateOccurrence(&o); err != nil {
+		t.Fatalf("CreateOccurrence(%v) got %v, want success", n, err)
+	}
+	if got, err := g.GetOccurrence(pID, oID); err != nil {
+		t.Fatalf("GetOccurrence(%v) got %v, want success", o, err)
+	} else if o.Name != got.Name || !reflect.DeepEqual(o.VulnerabilityDetails, got.VulnerabilityDetails) {
+		t.Errorf("GetOccurrence got %v, want %v", *got, o)
+	}
+}
+
+func TestGrafeas_GetOperation(t *testing.T) {
+	g := Grafeas{storage.NewMemStore()}
+	o := testutil.Operation()
+	pID, oID, err := name.ParseOperation(o.Name)
+	if err != nil {
+		t.Fatalf("Error parsing note name %v", err)
+	}
+	if _, err := g.GetOperation(pID, oID); err == nil {
+		t.Error("GetOperation that doesn't exist got success, want err")
+	}
+	if err := g.CreateOperation(&o); err != nil {
+		t.Fatalf("CreateOperation(%v) got %v, want success", o, err)
+	}
+	if got, err := g.GetOperation(pID, oID); err != nil {
+		t.Fatalf("GetOperation(%v) got %v, want success", o, err)
+	} else if o.Name != got.Name || !reflect.DeepEqual(*got, o) {
+		t.Errorf("GetOperation got %v, want %v", *got, o)
+	}
+}
+
+func TestGrafeas_GetOccurrenceNote(t *testing.T) {
+	g := Grafeas{storage.NewMemStore()}
+	n := testutil.Note()
+
+	o := testutil.Occurrence(n.Name)
+
+	pID, oID, err := name.ParseOccurrence(o.Name)
+	if err != nil {
+		t.Fatalf("Error parsing occurrence name %v", err)
+	}
+	if _, err := g.GetOccurrenceNote(pID, oID); err == nil {
+		t.Error("GetOccurrenceNote that doesn't exist got success, want err")
+	}
+	if err := g.CreateNote(&n); err != nil {
+		t.Fatalf("CreateNote(%v) got %v, want success", n, err)
+	}
+	if err := g.CreateOccurrence(&o); err != nil {
+		t.Fatalf("CreateOccurrence(%v) got %v, want success", n, err)
+	}
+	if got, err := g.GetOccurrenceNote(pID, oID); err != nil {
+		t.Fatalf("GetOccurrenceNote(%v) got %v, want success", n, err)
+	} else if n.Name != got.Name || !reflect.DeepEqual(n.VulnerabilityType, got.VulnerabilityType) {
+		t.Errorf("GetOccurrenceNote got %v, want %v", *got, n)
 	}
 }
