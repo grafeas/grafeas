@@ -424,6 +424,31 @@ func TestHandler_ListNotes(t *testing.T) {
 }
 
 func TestHandler_ListOccurrences(t *testing.T) {
+	h := Handler{v1alpha1.Grafeas{S: storage.NewMemStore()}}
+	n := testutil.Note()
+	if err := createNote(n, h); err != nil {
+		t.Errorf("%v", err)
+	}
+	for i := 0; i < 20; i++ {
+		o := testutil.Occurrence(n.Name)
+		if _, err := createOccurrence(o, h); err != nil {
+			t.Errorf("%v", err)
+		}
+	}
+	o := testutil.Operation()
+	pID, _, aErr := name.ParseOperation(o.Name)
+	if aErr != nil {
+		t.Fatalf("Error parsing occurrence name: %v", aErr)
+	}
+	r, err := http.NewRequest("GET", fmt.Sprintf("/v1alpha1/projects/%v/occurrences/", pID), nil)
+	if err != nil {
+		t.Fatalf("Could not create httprequest %v", err)
+	}
+	w := httptest.NewRecorder()
+	h.ListOccurrences(w, r)
+	if w.Code != 200 {
+		t.Errorf("ListOccurrences  got %v, want 200", w.Code)
+	}
 
 }
 
