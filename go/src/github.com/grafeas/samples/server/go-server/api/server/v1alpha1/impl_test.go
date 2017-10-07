@@ -231,6 +231,9 @@ func TestGetOccurrenceNote(t *testing.T) {
 func TestListOccurrences(t *testing.T){
 	g := Grafeas{storage.NewMemStore()}
 	n := testutil.Note()
+	if err := g.CreateNote(&n); err != nil {
+		t.Fatalf("CreateNote got %v want success", err)
+	}
 	os := []swagger.Occurrence{}
 	findProject := "findThese"
 	dontFind := "dontFind"
