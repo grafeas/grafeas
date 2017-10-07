@@ -191,6 +191,9 @@ func TestHandler_GetNote(t *testing.T) {
 		t.Fatalf("Error parsing note name: %v", aErr)
 	}
 	r, err = http.NewRequest("GET", fmt.Sprintf("/v1alpha1/projects/%v/notes/%v", pID, nID), nil)
+	if err != nil {
+		t.Fatalf("Could not create httprequest %v", err)
+	}
 	w = httptest.NewRecorder()
 	h.GetNote(w, r)
 	if w.Code != 200 {
@@ -304,17 +307,21 @@ func createNote(n swagger.Note, g Handler) error {
 	if err != nil {
 		return errors.New(fmt.Sprintf("error marshalling json: %v", err))
 	}
+	pID, nID, aErr := name.ParseNote(n.Name)
+	if aErr != nil {
+		return errors.New(fmt.Sprintf("error parsing name %v", err))
+	}
 	r, err := http.NewRequest("POST",
-		"/v1alpha1/projects/vulnerability-scanner-a/notes?noteId=CVE-1999-0710", reader)
+		fmt.Sprintf("/v1alpha1/projects/%v/notes?noteId=%v", pID, nID), reader)
 	if err != nil {
-		return errors.New(fmt.Sprintf("error creating http request %v", err))
+		return errors.New(fmt.Sprintf("error creating http request %v with path %v", err, r.URL))
 	}
 
 	w := httptest.NewRecorder()
 	g.CreateNote(w, r)
 
 	if w.Code != 200 {
-		return errors.New(fmt.Sprintf("CreateNote(%v) got %v want 200", n, w.Code))
+		return errors.New(fmt.Sprintf("CreateNote(%v) got %v want 200", r, w.Code))
 	}
 	return nil
 }
@@ -388,5 +395,58 @@ func TestHandler_GetOccurrenceNote(t *testing.T) {
 	h.GetOccurrenceNote(w, r)
 	if w.Code != 200 {
 		t.Errorf("GetOccurrenceNote with no occurrence got %v, want 200", w.Code)
+	}
+}
+
+func TestHandler_ListNotes(t *testing.T) {
+	h := Handler{v1alpha1.Grafeas{S: storage.NewMemStore()}}
+	for i := 0; i < 20; i++ {
+		n := testutil.Note()
+		n.Name = fmt.Sprintf("%v-%d", n.Name, i)
+		if err := createNote(n, h); err != nil {
+			t.Errorf("%v", err)
+		}
+	}
+	n := testutil.Note()
+	pID, _, aErr := name.ParseNote(n.Name)
+	if aErr != nil {
+		t.Fatalf("Error parsing note name: %v", aErr)
+	}
+	r, err := http.NewRequest("GET", fmt.Sprintf("/v1alpha1/projects/%v/notes/", pID), nil)
+	if err != nil {
+		t.Fatalf("Could not create httprequest %v", err)
+	}
+	w := httptest.NewRecorder()
+	h.ListNotes(w, r)
+	if w.Code != 200 {
+		t.Errorf("ListNotes  got %v, want 200", w.Code)
+	}
+}
+
+func TestHandler_ListOccurrences(t *testing.T) {
+
+}
+
+func TestHandler_ListOperations(t *testing.T) {
+	h := Handler{v1alpha1.Grafeas{S: storage.NewMemStore()}}
+	for i := 0; i < 20; i++ {
+		o := testutil.Operation()
+		if _, err := createOperation(o, h, ""); err != nil {
+			t.Errorf("%v", err)
+		}
+	}
+	o := testutil.Operation()
+	pID, _, aErr := name.ParseOperation(o.Name)
+	if aErr != nil {
+		t.Fatalf("Error parsing operation name: %v", aErr)
+	}
+	r, err := http.NewRequest("GET", fmt.Sprintf("/v1alpha1/projects/%v/operations/", pID), nil)
+	if err != nil {
+		t.Fatalf("Could not create httprequest %v", err)
+	}
+	w := httptest.NewRecorder()
+	h.ListOperations(w, r)
+	if w.Code != 200 {
+		t.Errorf("ListOperations  got %v, want 200", w.Code)
 	}
 }

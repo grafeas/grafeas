@@ -1,3 +1,18 @@
+// Copyright 2017 The Grafeas Authors. All rights reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+
 package v1alpha1
 
 import (
@@ -10,7 +25,7 @@ import (
 	"testing"
 )
 
-func TestGrafeas_CreateOperation(t *testing.T) {
+func TestCreateOperation(t *testing.T) {
 	g := Grafeas{storage.NewMemStore()}
 	op := swagger.Operation{}
 	if err := g.CreateOperation(&op); err == nil {
@@ -24,7 +39,7 @@ func TestGrafeas_CreateOperation(t *testing.T) {
 	}
 }
 
-func TestGrafeas_CreateOccurrence(t *testing.T) {
+func TestCreateOccurrence(t *testing.T) {
 	g := Grafeas{storage.NewMemStore()}
 	n := testutil.Note()
 	if err := g.CreateNote(&n); err != nil {
@@ -49,10 +64,9 @@ func TestGrafeas_CreateOccurrence(t *testing.T) {
 	} else if err.StatusCode != http.StatusBadRequest {
 		t.Errorf("CreateOccurrence got code %v want %v", err.StatusCode, http.StatusBadRequest)
 	}
-
 }
 
-func TestGrafeas_CreateNote(t *testing.T) {
+func TestCreateNote(t *testing.T) {
 	g := Grafeas{storage.NewMemStore()}
 	n := swagger.Note{}
 	if err := g.CreateNote(&n); err == nil {
@@ -66,7 +80,7 @@ func TestGrafeas_CreateNote(t *testing.T) {
 	}
 }
 
-func TestGrafeas_DeleteNote(t *testing.T) {
+func TestDeleteNote(t *testing.T) {
 	g := Grafeas{storage.NewMemStore()}
 	n := testutil.Note()
 	pID, nID, err := name.ParseNote(n.Name)
@@ -84,7 +98,7 @@ func TestGrafeas_DeleteNote(t *testing.T) {
 	}
 }
 
-func TestGrafeas_DeleteOccurrence(t *testing.T) {
+func TestDeleteOccurrence(t *testing.T) {
 	g := Grafeas{storage.NewMemStore()}
 	n := testutil.Note()
 	// CreateNote so we can create an occurrence
@@ -96,18 +110,15 @@ func TestGrafeas_DeleteOccurrence(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Error parsing occurrence name %v", err)
 	}
-	if err := g.DeleteNote(pID, oID); err == nil {
-		t.Error("DeleteNote that doesn't exist got success, want err")
-	}
 	if err := g.CreateOccurrence(&o); err != nil {
-		t.Fatalf("CreateNote(%v) got %v, want success", n, err)
+		t.Fatalf("CreateOccurrence(%v) got %v, want success", n, err)
 	}
 	if err := g.DeleteOccurrence(pID, oID); err != nil {
-		t.Errorf("DeleteNote  got %v, want success", err)
+		t.Errorf("DeleteOccurrence  got %v, want success", err)
 	}
 }
 
-func TestGrafeas_DeleteOperation(t *testing.T) {
+func TestDeleteOperation(t *testing.T) {
 	g := Grafeas{storage.NewMemStore()}
 	o := testutil.Operation()
 	pID, oID, err := name.ParseOperation(o.Name)
@@ -125,7 +136,7 @@ func TestGrafeas_DeleteOperation(t *testing.T) {
 	}
 }
 
-func TestGrafeas_GetNote(t *testing.T) {
+func TestGetNote(t *testing.T) {
 	g := Grafeas{storage.NewMemStore()}
 	n := testutil.Note()
 	pID, nID, err := name.ParseNote(n.Name)
@@ -145,7 +156,7 @@ func TestGrafeas_GetNote(t *testing.T) {
 	}
 }
 
-func TestGrafeas_GetOccurrence(t *testing.T) {
+func TestGetOccurrence(t *testing.T) {
 	g := Grafeas{storage.NewMemStore()}
 	n := testutil.Note()
 
@@ -171,7 +182,7 @@ func TestGrafeas_GetOccurrence(t *testing.T) {
 	}
 }
 
-func TestGrafeas_GetOperation(t *testing.T) {
+func TestGetOperation(t *testing.T) {
 	g := Grafeas{storage.NewMemStore()}
 	o := testutil.Operation()
 	pID, oID, err := name.ParseOperation(o.Name)
@@ -191,7 +202,7 @@ func TestGrafeas_GetOperation(t *testing.T) {
 	}
 }
 
-func TestGrafeas_GetOccurrenceNote(t *testing.T) {
+func TestGetOccurrenceNote(t *testing.T) {
 	g := Grafeas{storage.NewMemStore()}
 	n := testutil.Note()
 
@@ -214,5 +225,87 @@ func TestGrafeas_GetOccurrenceNote(t *testing.T) {
 		t.Fatalf("GetOccurrenceNote(%v) got %v, want success", n, err)
 	} else if n.Name != got.Name || !reflect.DeepEqual(n.VulnerabilityType, got.VulnerabilityType) {
 		t.Errorf("GetOccurrenceNote got %v, want %v", *got, n)
+	}
+}
+
+func TestListOccurrences(t *testing.T){
+	g := Grafeas{storage.NewMemStore()}
+	n := testutil.Note()
+	os := []swagger.Occurrence{}
+	findProject := "findThese"
+	dontFind := "dontFind"
+	for i := 0; i < 20; i++ {
+		o := testutil.Occurrence(n.Name)
+		if i < 5 {
+			o.Name = name.FormatOccurrence(findProject, string(i))
+		} else {
+			o.Name = name.FormatOccurrence(dontFind, string(i))
+		}
+		if err := g.CreateOccurrence(&o); err != nil {
+			t.Fatalf("CreateOccurrence got %v want success", err)
+		}
+		os = append(os, o)
+	}
+
+	resp, err := g.ListOccurrences(findProject, "")
+	if err != nil {
+		t.Fatalf("ListOccurrences got %v want success", err)
+	}
+	if len(resp.Occurrences) != 5 {
+		t.Errorf("resp.Occurrences got %d, want 5", len(resp.Occurrences))
+	}
+}
+
+func TestListOperations(t *testing.T){
+	g := Grafeas{storage.NewMemStore()}
+	os := []swagger.Operation{}
+	findProject := "findThese"
+	dontFind := "dontFind"
+	for i := 0; i < 20; i++ {
+		o := testutil.Operation()
+		if i < 5 {
+			o.Name = name.FormatOperation(findProject, string(i))
+		} else {
+			o.Name = name.FormatOperation(dontFind, string(i))
+		}
+		if err := g.CreateOperation(&o); err != nil {
+			t.Fatalf("CreateOperation got %v want success", err)
+		}
+		os = append(os, o)
+	}
+
+	resp, err := g.ListOperations(findProject, "")
+	if err != nil {
+		t.Fatalf("ListOperations got %v want success", err)
+	}
+	if len(resp.Operations) != 5 {
+		t.Errorf("resp.Operations got %d, want 5", len(resp.Operations))
+	}
+}
+
+func TestListNotes(t *testing.T){
+	g := Grafeas{storage.NewMemStore()}
+	ns := []swagger.Note{}
+	findProject := "findThese"
+	dontFind := "dontFind"
+	for i := 0; i < 20; i++ {
+		n := testutil.Note()
+		if i < 5 {
+			n.Name = name.FormatNote(findProject, string(i))
+		} else {
+			n.Name = name.FormatNote(dontFind, string(i))
+		}
+		if  err := g.CreateNote(&n); err != nil {
+			t.Fatalf("CreateNote got %v want success", err)
+		}
+		ns = append(ns, n)
+	}
+
+	resp, err := g.ListNotes(findProject, "")
+	if err != nil {
+		t.Fatalf("ListNotes got %v want success", err)
+	}
+	if len(resp.Notes) != 5 {
+		t.Errorf("resp.Notes got %d, want 5", len(resp.Notes))
 	}
 }
