@@ -476,6 +476,51 @@
         }
       }
     },
+    "/v1alpha1/projects/{projectsId}/operations": {
+      "get": {
+        "tags": [
+          "grafeas"
+        ],
+        "operationId": "ListOperations",
+        "description": "Lists all operations for a given project.",
+        "parameters": [
+          {
+            "name": "projectsId",
+            "description": "Part of `parent`. This field contains the projectId for example:\n\"project\/{project_id}",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "filter",
+            "description": "The filter expression.",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "pageSize",
+            "description": "Number of operations to return in the list.",
+            "in": "query",
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pageToken",
+            "description": "Token to provide to skip to a particular spot in the list.",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/ListOperationsResponse"
+            }
+          }
+        }
+      }
+    },
     "/v1alpha1/projects/{projectsId}/operations/{operationsId}": {
       "get": {
         "tags": ["grafeas"],
@@ -484,13 +529,13 @@
         "parameters": [
           {
             "name": "projectsId",
-            "description": "Part of `name`. The name of the note in the form\n\"projects\/{project_id}\/operations\/{operation_id}\"",
+            "description": "Part of `name`. The name of the operation in the form\n\"projects\/{project_id}\/operations\/{operation_id}\"",
             "in": "path",
             "required": true,
             "type": "string"
           },
           {
-            "name": "notesId",
+            "name": "operationsId",
             "description": "Part of `name`. See documentation of `projectsId`.",
             "in": "path",
             "required": true,
@@ -1488,7 +1533,7 @@
       "description": "Response including listed operations.",
       "type": "object",
       "properties": {
-        "occurrences": {
+        "operations": {
           "description": "The operations requested.",
           "type": "array",
           "items": {

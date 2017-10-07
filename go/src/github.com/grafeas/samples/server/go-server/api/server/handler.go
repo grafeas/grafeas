@@ -261,13 +261,13 @@ func (h *Handler) DeleteOperation(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handler) DeleteOccurrence(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	pID, nID, appErr := projectOccIDFromReq(r)
+	pID, oID, appErr := projectOccIDFromReq(r)
 	if appErr != nil {
 		http.Error(w, appErr.Err, appErr.StatusCode)
 		return
 	}
-	if err := h.g.DeleteOccurrence(pID, nID); err != nil {
-		log.Printf("Unable to delete note %v", err)
+	if err := h.g.DeleteOccurrence(pID, oID); err != nil {
+		log.Printf("Unable to delete occurrence %v", err)
 		http.Error(w, err.Err, err.StatusCode)
 		return
 
@@ -379,6 +379,28 @@ func (h *Handler) ListNoteOccurrences(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handler) ListOperations(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	// Get project id
+	k, pID, err := name.ParseResourceKindAndProjectFromPath(strings.Trim(r.URL.Path, "/"))
+	if err != nil {
+		log.Printf("error parsing path %v", err)
+		http.Error(w, "Error processing request", http.StatusInternalServerError)
+		return
+	}
+	if k != name.Operation {
+		log.Printf("wrong object type %v", k)
+		http.Error(w, "Error processing request", http.StatusInternalServerError)
+		return
+	}
+	// TODO: Support filters
+	resp, err := h.g.ListOperations(pID, "")
+	// Convert response to bytes
+	bytes, mErr := json.Marshal(resp)
+	if mErr != nil {
+		log.Printf("Error marshalling bytes: %v", err)
+		http.Error(w, "Error processing request", http.StatusInternalServerError)
+		return
+	}
+	w.Write(bytes)
 	w.WriteHeader(http.StatusOK)
 }
 
