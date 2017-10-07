@@ -361,7 +361,7 @@ func TestListOperations(t *testing.T) {
 	for _, o := range gotOs {
 		want := name.FormatProject(findProject)
 		if !strings.HasPrefix(o.Name, want) {
-			t.Errorf("ListOccurrences got %v want prefix %v", o.Name, want)
+			t.Errorf("ListOperations got %v want prefix %v", o.Name, want)
 		}
 	}
 }

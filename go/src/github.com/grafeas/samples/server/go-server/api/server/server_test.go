@@ -419,7 +419,7 @@ func TestHandler_ListNotes(t *testing.T) {
 	w := httptest.NewRecorder()
 	h.ListNotes(w, r)
 	if w.Code != 200 {
-		t.Errorf("ListNotes  got %v, want 200", w.Code)
+		t.Errorf("ListNotes got %v, want 200", w.Code)
 	}
 }
 
@@ -435,11 +435,7 @@ func TestHandler_ListOccurrences(t *testing.T) {
 			t.Errorf("%v", err)
 		}
 	}
-	o := testutil.Operation()
-	pID, _, aErr := name.ParseOperation(o.Name)
-	if aErr != nil {
-		t.Fatalf("Error parsing occurrence name: %v", aErr)
-	}
+
 	r, err := http.NewRequest("GET", fmt.Sprintf("/v1alpha1/projects/%v/occurrences/", pID), nil)
 	if err != nil {
 		t.Fatalf("Could not create httprequest %v", err)
@@ -447,9 +443,8 @@ func TestHandler_ListOccurrences(t *testing.T) {
 	w := httptest.NewRecorder()
 	h.ListOccurrences(w, r)
 	if w.Code != 200 {
-		t.Errorf("ListOccurrences  got %v, want 200", w.Code)
+		t.Errorf("ListOccurrences got %v, want 200", w.Code)
 	}
-
 }
 
 func TestHandler_ListOperations(t *testing.T) {
@@ -472,6 +467,6 @@ func TestHandler_ListOperations(t *testing.T) {
 	w := httptest.NewRecorder()
 	h.ListOperations(w, r)
 	if w.Code != 200 {
-		t.Errorf("ListOperations  got %v, want 200", w.Code)
+		t.Errorf("ListOperations got %v, want 200", w.Code)
 	}
 }
