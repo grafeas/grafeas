@@ -436,6 +436,11 @@ func TestHandler_ListOccurrences(t *testing.T) {
 		}
 	}
 
+	o := testutil.Occurrence(n.Name)
+	pID, _, aErr := name.ParseOccurrence(o.Name)
+	if aErr != nil {
+		t.Fatalf("Error parsing occurrence name: %v", aErr)
+	}
 	r, err := http.NewRequest("GET", fmt.Sprintf("/v1alpha1/projects/%v/occurrences/", pID), nil)
 	if err != nil {
 		t.Fatalf("Could not create httprequest %v", err)
