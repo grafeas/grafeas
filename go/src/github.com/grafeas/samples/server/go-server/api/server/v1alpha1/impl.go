@@ -90,7 +90,7 @@ func (g *Grafeas) GetOperation(pID, oID string) (*swagger.Operation, *errors.App
 	return g.S.GetOperation(pID, oID)
 }
 
-// GetOccurrence gets a occurrence from the datastore.
+// GetOccurrenceNote gets a the note for the provided occurrence from the datastore.
 func (g *Grafeas) GetOccurrenceNote(pID, oID string) (*swagger.Note, *errors.AppError) {
 	o, err := g.S.GetOccurrence(pID, oID)
 	if err != nil {

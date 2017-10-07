@@ -140,7 +140,7 @@ func TestHandler_DeleteOperation(t *testing.T) {
 func TestHandler_DeleteNote(t *testing.T) {
 	h := Handler{v1alpha1.Grafeas{S: storage.NewMemStore()}}
 	pID := "project"
-	nID := "occurrence"
+	nID := "note"
 	r, err := http.NewRequest("DELETE", fmt.Sprintf("/v1alpha1/projects/%v/notes/%v", pID, nID), nil)
 	if err != nil {
 		t.Fatalf("Could not create httprequest %v", err)
