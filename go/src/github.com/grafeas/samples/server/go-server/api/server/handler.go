@@ -27,7 +27,7 @@ import (
 	"log"
 	"net/http"
 	"strings"
-	"github.com/grafeas/grafeas/samples/server/go-server/api"
+	"github.com/grafeas/samples/server/go-server/api"
 )
 
 // Handler accepts httpRequests, converts them to Grafeas objects - calls into Grafeas to operation on them
