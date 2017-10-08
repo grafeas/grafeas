@@ -212,7 +212,7 @@ func projectNoteIDFromReq(r *http.Request) (string, string, *errors.AppError) {
 	pID, nID, err := name.ParseNote(nameString)
 	if err != nil {
 		log.Printf("error parsing path %v", err)
-		return "", "", &errors.AppError{err.Err, err.StatusCode}
+		return "", "", &errors.AppError{Err: err.Err, StatusCode: err.StatusCode}
 	}
 	return pID, nID, nil
 }
@@ -225,7 +225,7 @@ func projectOccIDFromReq(r *http.Request) (string, string, *errors.AppError) {
 	pID, oID, err := name.ParseOccurrence(nameString)
 	if err != nil {
 		log.Printf("error parsing path %v", err)
-		return "", "", &errors.AppError{err.Err, err.StatusCode}
+		return "", "", &errors.AppError{Err: err.Err, StatusCode: err.StatusCode}
 	}
 	return pID, oID, nil
 }
