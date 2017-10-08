@@ -133,8 +133,18 @@ func (g *Grafeas) ListNotes(pID, fs string) (*swagger.ListNotesResponse, *errors
 	return &swagger.ListNotesResponse{Notes: ns}, nil
 
 }
+
 func (g *Grafeas) ListOccurrences(pID, fs string) (*swagger.ListOccurrencesResponse, *errors.AppError) {
 	// TODO: support filters - prioritizing resource url
 	os := g.S.ListOccurrences(pID, fs)
 	return &swagger.ListOccurrencesResponse{Occurrences: os}, nil
+}
+
+func (g *Grafeas) ListNoteOccurrences(pID, nID, fs string) (*swagger.ListNoteOccurrencesResponse, *errors.AppError) {
+	// TODO: support filters - prioritizing resource url
+	os, err := g.S.ListNoteOccurrences(pID, nID, fs)
+	if err != nil {
+		return nil, err
+	}
+	return &swagger.ListNoteOccurrencesResponse{Occurrences: os}, nil
 }

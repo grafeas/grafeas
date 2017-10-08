@@ -261,7 +261,6 @@ func TestListOccurrences(t *testing.T){
 
 func TestListOperations(t *testing.T){
 	g := Grafeas{storage.NewMemStore()}
-	os := []swagger.Operation{}
 	findProject := "findThese"
 	dontFind := "dontFind"
 	for i := 0; i < 20; i++ {
@@ -274,7 +273,6 @@ func TestListOperations(t *testing.T){
 		if err := g.CreateOperation(&o); err != nil {
 			t.Fatalf("CreateOperation got %v want success", err)
 		}
-		os = append(os, o)
 	}
 
 	resp, err := g.ListOperations(findProject, "")
@@ -288,7 +286,6 @@ func TestListOperations(t *testing.T){
 
 func TestListNotes(t *testing.T){
 	g := Grafeas{storage.NewMemStore()}
-	ns := []swagger.Note{}
 	findProject := "findThese"
 	dontFind := "dontFind"
 	for i := 0; i < 20; i++ {
@@ -301,7 +298,6 @@ func TestListNotes(t *testing.T){
 		if  err := g.CreateNote(&n); err != nil {
 			t.Fatalf("CreateNote got %v want success", err)
 		}
-		ns = append(ns, n)
 	}
 
 	resp, err := g.ListNotes(findProject, "")
@@ -310,5 +306,47 @@ func TestListNotes(t *testing.T){
 	}
 	if len(resp.Notes) != 5 {
 		t.Errorf("resp.Notes got %d, want 5", len(resp.Notes))
+	}
+}
+
+func TestListNoteOccurrences(t *testing.T){
+	g := Grafeas{storage.NewMemStore()}
+	n := testutil.Note()
+	if err := g.CreateNote(&n); err != nil {
+		t.Fatalf("CreateNote got %v want success", err)
+	}
+	findProject := "project"
+	dontFind := "otherProject"
+	for i := 0; i < 20; i++ {
+		o := testutil.Occurrence(n.Name)
+		if i < 5 {
+			o.Name = name.FormatOccurrence(findProject, string(i))
+		} else {
+			o.Name = name.FormatOccurrence(dontFind, string(i))
+		}
+		if err := g.CreateOccurrence(&o); err != nil {
+			t.Fatalf("CreateOccurrence got %v want success", err)
+		}
+	}
+	// Create an occurrence tied to another note, to make sure we don't find it.
+	otherN := testutil.Note()
+	otherN.Name = "projects/np/notes/not-to-find"
+	if err := g.CreateNote(&otherN); err != nil {
+		t.Fatalf("CreateNote got %v want success", err)
+	}
+	o := testutil.Occurrence(otherN.Name)
+	if err := g.CreateOccurrence(&o); err != nil {
+		t.Fatalf("CreateOccurrence got %v want success", err)
+	}
+    pID, nID, err := name.ParseNote(n.Name)
+    if err != nil {
+    	t.Fatalf("Error parsing note name %v", err)
+	}
+	resp, err := g.ListNoteOccurrences(pID, nID, "")
+	if err != nil {
+		t.Fatalf("ListNoteOccurrences got %v want success", err)
+	}
+	if len(resp.Occurrences) != 20 {
+		t.Errorf("resp.Occurrences got %d, want 20", len(resp.Occurrences))
 	}
 }

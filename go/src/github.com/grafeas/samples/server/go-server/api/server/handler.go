@@ -208,7 +208,8 @@ func (h *Handler) DeleteNote(w http.ResponseWriter, r *http.Request) {
 func projectNoteIDFromReq(r *http.Request) (string, string, *errors.AppError) {
 	// We need to trim twice because the path may or may not contain the leading "/"
 	nameString := strings.TrimPrefix(strings.TrimPrefix(r.URL.Path, "/"), "v1alpha1/")
-
+	// Handle GetNoteOccurrences too
+	nameString = strings.TrimSuffix(nameString, "/occurrences")
 	pID, nID, err := name.ParseNote(nameString)
 	if err != nil {
 		log.Printf("error parsing path %v", err)
@@ -374,6 +375,24 @@ func (h *Handler) GetOccurrenceNote(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handler) ListNoteOccurrences(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	// Get project id
+	pID, nID, err := projectNoteIDFromReq(r)
+	if err != nil {
+		log.Printf("error parsing path %v", err)
+		http.Error(w, "Error processing request", http.StatusInternalServerError)
+		return
+	}
+
+	// TODO: Support filters
+	resp, err := h.g.ListNoteOccurrences(pID, nID, "")
+	// Convert response to bytes
+	bytes, mErr := json.Marshal(resp)
+	if mErr != nil {
+		log.Printf("Error marshalling bytes: %v", err)
+		http.Error(w, "Error processing request", http.StatusInternalServerError)
+		return
+	}
+	w.Write(bytes)
 	w.WriteHeader(http.StatusOK)
 }
 
@@ -406,11 +425,55 @@ func (h *Handler) ListOperations(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handler) ListNotes(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	// Get project id
+	k, pID, err := name.ParseResourceKindAndProjectFromPath(strings.Trim(r.URL.Path, "/"))
+	if err != nil {
+		log.Printf("error parsing path %v", err)
+		http.Error(w, "Error processing request", http.StatusInternalServerError)
+		return
+	}
+	if k != name.Note {
+		log.Printf("wrong object type %v", k)
+		http.Error(w, "Error processing request", http.StatusInternalServerError)
+		return
+	}
+	// TODO: Support filters
+	resp, err := h.g.ListNotes(pID, "")
+	// Convert response to bytes
+	bytes, mErr := json.Marshal(resp)
+	if mErr != nil {
+		log.Printf("Error marshalling bytes: %v", err)
+		http.Error(w, "Error processing request", http.StatusInternalServerError)
+		return
+	}
+	w.Write(bytes)
 	w.WriteHeader(http.StatusOK)
 }
 
 func (h *Handler) ListOccurrences(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	// Get project id
+	k, pID, err := name.ParseResourceKindAndProjectFromPath(strings.Trim(r.URL.Path, "/"))
+	if err != nil {
+		log.Printf("error parsing path %v", err)
+		http.Error(w, "Error processing request", http.StatusInternalServerError)
+		return
+	}
+	if k != name.Occurrence {
+		log.Printf("wrong object type %v", k)
+		http.Error(w, "Error processing request", http.StatusInternalServerError)
+		return
+	}
+	// TODO: Support filters
+	resp, err := h.g.ListOccurrences(pID, "")
+	// Convert response to bytes
+	bytes, mErr := json.Marshal(resp)
+	if mErr != nil {
+		log.Printf("Error marshalling bytes: %v", err)
+		http.Error(w, "Error processing request", http.StatusInternalServerError)
+		return
+	}
+	w.Write(bytes)
 	w.WriteHeader(http.StatusOK)
 }
 
