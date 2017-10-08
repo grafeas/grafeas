@@ -418,7 +418,7 @@ func TestListOccurrences(t *testing.T) {
 		}
 		os = append(os, o)
 	}
-	gotOs  := s.ListOccurrences(findProject, "")
+	gotOs := s.ListOccurrences(findProject, "")
 	if len(gotOs) != 5 {
 		t.Errorf("ListOccurrences got %v Occurrences, want 5", len(gotOs))
 	}

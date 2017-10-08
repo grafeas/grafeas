@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 // package v1alpha1 is an implementation of the v1alpha1 version of Grafeas.
 package v1alpha1
 
@@ -121,7 +120,7 @@ func (g *Grafeas) GetOccurrenceNote(pID, oID string) (*swagger.Note, *errors.App
 	return g.S.GetNote(npID, nID)
 }
 
-	func (g *Grafeas) ListOperations(pID, fs string) (*swagger.ListOperationsResponse, *errors.AppError) {
+func (g *Grafeas) ListOperations(pID, fs string) (*swagger.ListOperationsResponse, *errors.AppError) {
 	// TODO: support filters
 	ops := g.S.ListOperations(pID, fs)
 	return &swagger.ListOperationsResponse{Operations: ops}, nil

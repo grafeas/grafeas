@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 package v1alpha1
 
 import (
@@ -228,7 +227,7 @@ func TestGetOccurrenceNote(t *testing.T) {
 	}
 }
 
-func TestListOccurrences(t *testing.T){
+func TestListOccurrences(t *testing.T) {
 	g := Grafeas{storage.NewMemStore()}
 	n := testutil.Note()
 	if err := g.CreateNote(&n); err != nil {
@@ -259,7 +258,7 @@ func TestListOccurrences(t *testing.T){
 	}
 }
 
-func TestListOperations(t *testing.T){
+func TestListOperations(t *testing.T) {
 	g := Grafeas{storage.NewMemStore()}
 	os := []swagger.Operation{}
 	findProject := "findThese"
@@ -286,7 +285,7 @@ func TestListOperations(t *testing.T){
 	}
 }
 
-func TestListNotes(t *testing.T){
+func TestListNotes(t *testing.T) {
 	g := Grafeas{storage.NewMemStore()}
 	ns := []swagger.Note{}
 	findProject := "findThese"
@@ -298,7 +297,7 @@ func TestListNotes(t *testing.T){
 		} else {
 			n.Name = name.FormatNote(dontFind, string(i))
 		}
-		if  err := g.CreateNote(&n); err != nil {
+		if err := g.CreateNote(&n); err != nil {
 			t.Fatalf("CreateNote got %v want success", err)
 		}
 		ns = append(ns, n)
