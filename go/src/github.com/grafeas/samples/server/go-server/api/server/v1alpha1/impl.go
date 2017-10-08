@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 // package v1alpha1 is an implementation of the v1alpha1 version of Grafeas.
 package v1alpha1
 
@@ -117,11 +116,94 @@ func (g *Grafeas) GetOccurrenceNote(pID, oID string) (*swagger.Note, *errors.App
 		return nil, &errors.AppError{Err: fmt.Sprintf("Invalid note name: %v", o.NoteName),
 			StatusCode: http.StatusBadRequest}
 	}
-
 	return g.S.GetNote(npID, nID)
 }
 
-	func (g *Grafeas) ListOperations(pID, fs string) (*swagger.ListOperationsResponse, *errors.AppError) {
+func (g *Grafeas) UpdateNote(pID, nID string, n *swagger.Note) (*swagger.Note, *errors.AppError) {
+	// get existing note
+	existing, err := g.GetNote(pID, nID)
+	if err != nil {
+		return nil, err
+	}
+	// verify that name didnt change
+	if n.Name != existing.Name {
+		log.Printf("Cannot change note name: %v", n.Name)
+		return nil, &errors.AppError{Err: fmt.Sprintf("Cannot change note name: %v", n.Name),
+			StatusCode: http.StatusBadRequest}
+	}
+
+	// update note
+	if err = g.S.UpdateNote(pID, nID, n); err != nil {
+		log.Printf("Cannot update note : %v", n.Name)
+		return nil, &errors.AppError{Err: fmt.Sprintf("Cannot change note name: %v", n.Name),
+			StatusCode: http.StatusInternalServerError}
+	}
+	return n, nil
+}
+
+func (g *Grafeas) UpdateOccurrence(pID, oID string, o *swagger.Occurrence) (*swagger.Occurrence, *errors.AppError) {
+	// get existing Occurrence
+	existing, err := g.GetOccurrence(pID, oID)
+	if err != nil {
+		return nil, err
+	}
+
+	// verify that name didnt change
+	if o.Name != existing.Name {
+		log.Printf("Cannot change occurrence name: %v", o.Name)
+		return nil, &errors.AppError{Err: fmt.Sprintf("Cannot change occurrence name: %v", o.Name),
+			StatusCode: http.StatusBadRequest}
+	}
+	// verify that if note name changed, it still exists
+	if o.NoteName != existing.NoteName {
+		npID, nID, err := name.ParseNote(o.NoteName)
+		if err != nil {
+			return nil, err
+		}
+		if newN, err := g.GetNote(npID, nID); newN == nil || err != nil {
+			return nil, err
+		}
+	}
+
+	// update Occurrence
+	if err = g.S.UpdateOccurrence(pID, oID, o); err != nil {
+		log.Printf("Cannot update occurrence : %v", o.Name)
+		return nil, &errors.AppError{Err: fmt.Sprintf("Cannot update Occurrences: %v", err),
+			StatusCode: http.StatusInternalServerError}
+	}
+	return o, nil
+}
+
+func (g *Grafeas) UpdateOperation(pID, oID string, o *swagger.Operation) (*swagger.Operation, *errors.AppError) {
+	// get existing operation
+	existing, err := g.GetOperation(pID, oID)
+	if err != nil {
+		return nil, err
+	}
+
+	// verify that operation isn't marked done
+	if o.Done != existing.Done && existing.Done {
+		log.Printf("Trying to update a done operation")
+		return nil, &errors.AppError{Err: fmt.Sprintf("Cannot update operation in status done: %v", o.Name),
+			StatusCode: http.StatusBadRequest}
+	}
+
+	// verify that name didnt change
+	if o.Name != existing.Name {
+		log.Printf("Cannot change operation name: %v", o.Name)
+		return nil, &errors.AppError{Err: fmt.Sprintf("Cannot change operation name: %v", o.Name),
+			StatusCode: http.StatusBadRequest}
+	}
+
+	// update operation
+	if err = g.S.UpdateOperation(pID, oID, o); err != nil {
+		log.Printf("Cannot update operation : %v", o.Name)
+		return nil, &errors.AppError{Err: fmt.Sprintf("Cannot update Opreation: %v", err),
+			StatusCode: http.StatusInternalServerError}
+	}
+	return o, nil
+}
+func (g *Grafeas) ListOperations(pID, fs string) (*swagger.ListOperationsResponse, *errors.AppError) {
 	// TODO: support filters
 	ops := g.S.ListOperations(pID, fs)
 	return &swagger.ListOperationsResponse{Operations: ops}, nil
@@ -133,8 +215,18 @@ func (g *Grafeas) ListNotes(pID, fs string) (*swagger.ListNotesResponse, *errors
 	return &swagger.ListNotesResponse{Notes: ns}, nil
 
 }
+
 func (g *Grafeas) ListOccurrences(pID, fs string) (*swagger.ListOccurrencesResponse, *errors.AppError) {
 	// TODO: support filters - prioritizing resource url
 	os := g.S.ListOccurrences(pID, fs)
 	return &swagger.ListOccurrencesResponse{Occurrences: os}, nil
+}
+
+func (g *Grafeas) ListNoteOccurrences(pID, nID, fs string) (*swagger.ListNoteOccurrencesResponse, *errors.AppError) {
+	// TODO: support filters - prioritizing resource url
+	os, err := g.S.ListNoteOccurrences(pID, nID, fs)
+	if err != nil {
+		return nil, err
+	}
+	return &swagger.ListNoteOccurrencesResponse{Occurrences: os}, nil
 }

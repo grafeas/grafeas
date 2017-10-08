@@ -31,7 +31,7 @@ import (
 	"github.com/grafeas/samples/server/go-server/api/server/v1alpha1"
 )
 
-func TestHandler_CreateNote(t *testing.T) {
+func TestCreateNote(t *testing.T) {
 	h := Handler{v1alpha1.Grafeas{S: storage.NewMemStore()}}
 	n := testutil.Note()
 	if err := createNote(n, h); err != nil {
@@ -46,7 +46,7 @@ func TestHandler_CreateNote(t *testing.T) {
 
 }
 
-func TestHandler_CreateOccurrence(t *testing.T) {
+func TestCreateOccurrence(t *testing.T) {
 	h := Handler{v1alpha1.Grafeas{S: storage.NewMemStore()}}
 	n := testutil.Note()
 	if err := createNote(n, h); err != nil {
@@ -58,7 +58,7 @@ func TestHandler_CreateOccurrence(t *testing.T) {
 	}
 }
 
-func TestHandler_DeleteOccurrence(t *testing.T) {
+func TestDeleteOccurrence(t *testing.T) {
 	h := Handler{v1alpha1.Grafeas{S: storage.NewMemStore()}}
 	pID := "project"
 	oID := "occurrence"
@@ -96,7 +96,7 @@ func TestHandler_DeleteOccurrence(t *testing.T) {
 
 }
 
-func TestHandler_CreateOperation(t *testing.T) {
+func TestCreateOperation(t *testing.T) {
 	h := Handler{v1alpha1.Grafeas{S: storage.NewMemStore()}}
 	o := testutil.Operation()
 	if _, err := createOperation(o, h, ""); err != nil {
@@ -108,7 +108,7 @@ func TestHandler_CreateOperation(t *testing.T) {
 	}
 }
 
-func TestHandler_DeleteOperation(t *testing.T) {
+func TestDeleteOperation(t *testing.T) {
 	h := Handler{v1alpha1.Grafeas{S: storage.NewMemStore()}}
 	pID := "vulnerability-scanner-a"
 	oID := "operation"
@@ -137,7 +137,7 @@ func TestHandler_DeleteOperation(t *testing.T) {
 	}
 }
 
-func TestHandler_DeleteNote(t *testing.T) {
+func TestDeleteNote(t *testing.T) {
 	h := Handler{v1alpha1.Grafeas{S: storage.NewMemStore()}}
 	pID := "project"
 	nID := "note"
@@ -169,7 +169,7 @@ func TestHandler_DeleteNote(t *testing.T) {
 	}
 }
 
-func TestHandler_GetNote(t *testing.T) {
+func TestGetNote(t *testing.T) {
 	h := Handler{v1alpha1.Grafeas{S: storage.NewMemStore()}}
 	pID := "project"
 	nID := "note"
@@ -201,7 +201,7 @@ func TestHandler_GetNote(t *testing.T) {
 	}
 }
 
-func TestHandler_GetOperation(t *testing.T) {
+func TestGetOperation(t *testing.T) {
 	h := Handler{v1alpha1.Grafeas{S: storage.NewMemStore()}}
 	pID := "project"
 	oID := "operation"
@@ -231,7 +231,7 @@ func TestHandler_GetOperation(t *testing.T) {
 	}
 }
 
-func TestHandler_GetOccurrence(t *testing.T) {
+func TestGetOccurrence(t *testing.T) {
 	h := Handler{v1alpha1.Grafeas{S: storage.NewMemStore()}}
 	pID := "project"
 	oID := "occurrence"
@@ -361,7 +361,7 @@ func createOperation(o swagger.Operation, g Handler, oID string) (*swagger.Opera
 	return &got, nil
 }
 
-func TestHandler_GetOccurrenceNote(t *testing.T) {
+func TestGetOccurrenceNote(t *testing.T) {
 	h := Handler{v1alpha1.Grafeas{S: storage.NewMemStore()}}
 	pID := "project"
 	oID := "note"
@@ -398,20 +398,10 @@ func TestHandler_GetOccurrenceNote(t *testing.T) {
 	}
 }
 
-func TestHandler_ListNotes(t *testing.T) {
+func TestListNotes(t *testing.T) {
 	h := Handler{v1alpha1.Grafeas{S: storage.NewMemStore()}}
-	for i := 0; i < 20; i++ {
-		n := testutil.Note()
-		n.Name = fmt.Sprintf("%v-%d", n.Name, i)
-		if err := createNote(n, h); err != nil {
-			t.Errorf("%v", err)
-		}
-	}
 	n := testutil.Note()
 	pID, _, aErr := name.ParseNote(n.Name)
-	if aErr != nil {
-		t.Fatalf("Error parsing note name: %v", aErr)
-	}
 	r, err := http.NewRequest("GET", fmt.Sprintf("/v1alpha1/projects/%v/notes/", pID), nil)
 	if err != nil {
 		t.Fatalf("Could not create httprequest %v", err)
@@ -419,23 +409,44 @@ func TestHandler_ListNotes(t *testing.T) {
 	w := httptest.NewRecorder()
 	h.ListNotes(w, r)
 	if w.Code != 200 {
-		t.Errorf("ListNotes got %v, want 200", w.Code)
+		t.Errorf("ListNotes with no notes got %v, want 200", w.Code)
 	}
-}
+	got := swagger.ListNotesResponse{}
+	json.Unmarshal(w.Body.Bytes(), &got)
+	if len(got.Notes) != 0 {
+		t.Errorf("ListNotes got %d, want 0", len(got.Notes))
+	}
 
-func TestHandler_ListOccurrences(t *testing.T) {
-	h := Handler{v1alpha1.Grafeas{S: storage.NewMemStore()}}
-	n := testutil.Note()
-	if err := createNote(n, h); err != nil {
-		t.Errorf("%v", err)
+	if aErr != nil {
+		t.Fatalf("Error parsing note name: %v", aErr)
 	}
 	for i := 0; i < 20; i++ {
-		o := testutil.Occurrence(n.Name)
-		if _, err := createOccurrence(o, h); err != nil {
+		n := testutil.Note()
+		n.Name = fmt.Sprintf("%v-%d", n.Name, i)
+		if err := createNote(n, h); err != nil {
 			t.Errorf("%v", err)
 		}
 	}
 
+	r, err = http.NewRequest("GET", fmt.Sprintf("/v1alpha1/projects/%v/notes/", pID), nil)
+	if err != nil {
+		t.Fatalf("Could not create httprequest %v", err)
+	}
+	w = httptest.NewRecorder()
+	h.ListNotes(w, r)
+	if w.Code != 200 {
+		t.Errorf("ListNotes got %v, want 200", w.Code)
+	}
+	got = swagger.ListNotesResponse{}
+	json.Unmarshal(w.Body.Bytes(), &got)
+	if len(got.Notes) != 20 {
+		t.Errorf("ListNotes got %d, want 20", len(got.Notes))
+	}
+}
+
+func TestListOccurrences(t *testing.T) {
+	h := Handler{v1alpha1.Grafeas{S: storage.NewMemStore()}}
+	n := testutil.Note()
 	o := testutil.Occurrence(n.Name)
 	pID, _, aErr := name.ParseOccurrence(o.Name)
 	if aErr != nil {
@@ -448,23 +459,43 @@ func TestHandler_ListOccurrences(t *testing.T) {
 	w := httptest.NewRecorder()
 	h.ListOccurrences(w, r)
 	if w.Code != 200 {
-		t.Errorf("ListOccurrences got %v, want 200", w.Code)
+		t.Errorf("ListOccurrences no occurrences got %v, want 200", w.Code)
 	}
-}
-
-func TestHandler_ListOperations(t *testing.T) {
-	h := Handler{v1alpha1.Grafeas{S: storage.NewMemStore()}}
+	got := swagger.ListOccurrencesResponse{}
+	json.Unmarshal(w.Body.Bytes(), &got)
+	if len(got.Occurrences) != 0 {
+		t.Errorf("ListOccurrences got %d, want 0", len(got.Occurrences))
+	}
+	if err := createNote(n, h); err != nil {
+		t.Errorf("%v", err)
+	}
 	for i := 0; i < 20; i++ {
-		o := testutil.Operation()
-		if _, err := createOperation(o, h, ""); err != nil {
+		o := testutil.Occurrence(n.Name)
+		if _, err := createOccurrence(o, h); err != nil {
 			t.Errorf("%v", err)
 		}
 	}
+
+	r, err = http.NewRequest("GET", fmt.Sprintf("/v1alpha1/projects/%v/occurrences/", pID), nil)
+	if err != nil {
+		t.Fatalf("Could not create httprequest %v", err)
+	}
+	w = httptest.NewRecorder()
+	h.ListOccurrences(w, r)
+	if w.Code != 200 {
+		t.Errorf("ListOccurrences got %v, want 200", w.Code)
+	}
+	got = swagger.ListOccurrencesResponse{}
+	json.Unmarshal(w.Body.Bytes(), &got)
+	if len(got.Occurrences) != 20 {
+		t.Errorf("ListOccurrences got %d, want 20", len(got.Occurrences))
+	}
+}
+
+func TestListOperations(t *testing.T) {
+	h := Handler{v1alpha1.Grafeas{S: storage.NewMemStore()}}
 	o := testutil.Operation()
 	pID, _, aErr := name.ParseOperation(o.Name)
-	if aErr != nil {
-		t.Fatalf("Error parsing operation name: %v", aErr)
-	}
 	r, err := http.NewRequest("GET", fmt.Sprintf("/v1alpha1/projects/%v/operations/", pID), nil)
 	if err != nil {
 		t.Fatalf("Could not create httprequest %v", err)
@@ -473,5 +504,239 @@ func TestHandler_ListOperations(t *testing.T) {
 	h.ListOperations(w, r)
 	if w.Code != 200 {
 		t.Errorf("ListOperations got %v, want 200", w.Code)
+	}
+	got := swagger.ListOperationsResponse{}
+	json.Unmarshal(w.Body.Bytes(), &got)
+	if len(got.Operations) != 0 {
+		t.Errorf("ListOccurrences got %d, want 0", len(got.Operations))
+	}
+	if aErr != nil {
+		t.Fatalf("Error parsing operation name: %v", aErr)
+	}
+	for i := 0; i < 20; i++ {
+		o := testutil.Operation()
+		if _, err := createOperation(o, h, ""); err != nil {
+			t.Errorf("%v", err)
+		}
+	}
+
+	r, err = http.NewRequest("GET", fmt.Sprintf("/v1alpha1/projects/%v/operations/", pID), nil)
+	if err != nil {
+		t.Fatalf("Could not create httprequest %v", err)
+	}
+	w = httptest.NewRecorder()
+	h.ListOperations(w, r)
+	if w.Code != 200 {
+		t.Errorf("ListOperations got %v, want 200", w.Code)
+	}
+	got = swagger.ListOperationsResponse{}
+	json.Unmarshal(w.Body.Bytes(), &got)
+	if len(got.Operations) != 20 {
+		t.Errorf("ListOperations got %d, want 20", len(got.Operations))
+	}
+}
+
+func TestListNoteOccurrences(t *testing.T) {
+	h := Handler{v1alpha1.Grafeas{S: storage.NewMemStore()}}
+	n := testutil.Note()
+	pID, nID, aErr := name.ParseNote(n.Name)
+	if aErr != nil {
+		t.Fatalf("Error parsing note name: %v", aErr)
+	}
+	r, err := http.NewRequest("GET", fmt.Sprintf("/v1alpha1/projects/%v/notes/%v/occurrences", pID, nID), nil)
+	if err != nil {
+		t.Fatalf("Could not create httprequest %v", err)
+	}
+	w := httptest.NewRecorder()
+	h.ListNoteOccurrences(w, r)
+	if w.Code != 200 {
+		t.Errorf("ListNoteOccurrences no occurrences got %v, want 200", w.Code)
+	}
+	got := swagger.ListNoteOccurrencesResponse{}
+	json.Unmarshal(w.Body.Bytes(), &got)
+	if len(got.Occurrences) != 0 {
+		t.Errorf("ListNoteOccurrences got %d, want 0", len(got.Occurrences))
+	}
+	if err := createNote(n, h); err != nil {
+		t.Errorf("%v", err)
+	}
+	for i := 0; i < 20; i++ {
+		o := testutil.Occurrence(n.Name)
+		if _, err := createOccurrence(o, h); err != nil {
+			t.Errorf("%v", err)
+		}
+	}
+
+	r, err = http.NewRequest("GET",
+		fmt.Sprintf("/v1alpha1/projects/%v/notes/%v/occurrences", pID, nID), nil)
+	if err != nil {
+		t.Fatalf("Could not create httprequest %v", err)
+	}
+	w = httptest.NewRecorder()
+	h.ListNoteOccurrences(w, r)
+	if w.Code != 200 {
+		t.Fatalf("ListNoteOccurrences got %v, want 200", w.Code)
+	}
+	got = swagger.ListNoteOccurrencesResponse{}
+	json.Unmarshal(w.Body.Bytes(), &got)
+	if len(got.Occurrences) != 20 {
+		t.Errorf("ListNoteOccurrences got %d, want 20", len(got.Occurrences))
+	}
+}
+
+func TestUpdateNote(t *testing.T) {
+		h := Handler{v1alpha1.Grafeas{S: storage.NewMemStore()}}
+		n := testutil.Note()
+		if err := createNote(n, h); err != nil {
+			t.Errorf("%v", err)
+		}
+		// update note Name, verify 400 error
+		update := testutil.Note()
+		update.Name = "projects/p/notes/thisisbad"
+		rawNote, err := json.Marshal(&update)
+		reader := bytes.NewReader(rawNote)
+		if err != nil {
+			t.Errorf(fmt.Sprintf("error marshalling json: %v", err))
+		}
+		pID, nID, pErr := name.ParseNote(n.Name)
+		if pErr != nil {
+			t.Fatalf("Error parsing Note; %v", pErr)
+		}
+		r, err := http.NewRequest("PUT",
+			fmt.Sprintf("/v1alpha1/projects/%v/notes/%v", pID, nID), reader)
+		if err != nil {
+			t.Fatalf("Could not create httprequest %v", err)
+		}
+		w := httptest.NewRecorder()
+
+		h.UpdateNote(w, r)
+		if w.Code != 400 {
+			t.Errorf("UpdateNote with no new name got %v, want 400", w.Code)
+		}
+		// update note description, verify 200
+		update = testutil.Note()
+		update.LongDescription = "This note needs a new long description"
+		rawNote, err = json.Marshal(&update)
+		reader = bytes.NewReader(rawNote)
+		if err != nil {
+			t.Errorf(fmt.Sprintf("error marshalling json: %v", err))
+		}
+
+		r, err = http.NewRequest("PUT",
+			fmt.Sprintf("/v1alpha1/projects/%v/notes/%v", pID, nID), reader)
+		if err != nil {
+			t.Fatalf("Could not create httprequest %v", err)
+		}
+		w = httptest.NewRecorder()
+		h.UpdateNote(w, r)
+		if w.Code != 200 {
+			t.Errorf("UpdateNote got %v, want 200", w.Code)
+		}
+	}
+
+func TestUpdateOperation(t *testing.T) {
+	h := Handler{v1alpha1.Grafeas{S: storage.NewMemStore()}}
+	o := testutil.Operation()
+	created, err := createOperation(o, h, "")
+	if err != nil {
+		t.Errorf("%v", err)
+	}
+	// update operation Name, verify 400 error
+	update := testutil.Operation()
+	update.Name = "projects/p/operations/thisisbad"
+	rawOperation, err := json.Marshal(&update)
+	reader := bytes.NewReader(rawOperation)
+	if err != nil {
+		t.Errorf(fmt.Sprintf("error marshalling json: %v", err))
+	}
+	pID, oID, pErr := name.ParseOperation(created.Name)
+	if pErr != nil {
+		t.Fatalf("Error parsing operation; %v", pErr)
+	}
+	r, err := http.NewRequest("PUT",
+		fmt.Sprintf("/v1alpha1/projects/%v/operations/%v", pID, oID), reader)
+	if err != nil {
+		t.Fatalf("Could not create httprequest %v", err)
+	}
+	w := httptest.NewRecorder()
+	h.UpdateOperation(w, r)
+	if w.Code != 400 {
+		t.Errorf("UpdateOperation with no new name got %v, want 400", w.Code)
+	}
+	// update operation done, verify 200
+	update = testutil.Operation()
+	update.Done = true
+	update.Name = created.Name
+	rawOperation, err = json.Marshal(&update)
+	reader = bytes.NewReader(rawOperation)
+	if err != nil {
+		t.Errorf(fmt.Sprintf("error marshalling json: %v", err))
+	}
+
+	r, err = http.NewRequest("PUT",
+		fmt.Sprintf("/v1alpha1/projects/%v/operations/%v", pID, oID), reader)
+	if err != nil {
+		t.Fatalf("Could not create httprequest %v", err)
+	}
+	w = httptest.NewRecorder()
+	h.UpdateOperation(w, r)
+	if w.Code != 200 {
+		t.Errorf("UpdateOperation got %v, want 200", w.Code)
+	}
+}
+
+func TestUpdateOccurrence(t *testing.T) {
+	h := Handler{v1alpha1.Grafeas{S: storage.NewMemStore()}}
+	n := testutil.Note()
+	if err := createNote(n, h); err != nil {
+		t.Errorf("%v", err)
+	}
+	o := testutil.Occurrence(n.Name)
+	created, err := createOccurrence(o, h)
+	if err != nil {
+		t.Errorf("%v", err)
+	}
+	// update name, verify 400 error
+	update := testutil.Occurrence(n.Name)
+	update.Name = "projects/p/occurrences/thisisbad"
+	rawOccurrence, err := json.Marshal(&update)
+	reader := bytes.NewReader(rawOccurrence)
+	if err != nil {
+		t.Errorf(fmt.Sprintf("error marshalling json: %v", err))
+	}
+	pID, oID, pErr := name.ParseOccurrence(created.Name)
+	if pErr != nil {
+		t.Fatalf("Error parsing Occurrence; %v", pErr)
+	}
+	r, err := http.NewRequest("PUT",
+		fmt.Sprintf("/v1alpha1/projects/%v/occurrences/%v", pID, oID), reader)
+	if err != nil {
+		t.Fatalf("Could not create httprequest %v", err)
+	}
+	w := httptest.NewRecorder()
+	h.UpdateOccurrence(w, r)
+	if w.Code != 400 {
+		t.Errorf("UpdateOccurrence with no new name got %v, want 400", w.Code)
+	}
+	// update a different field, verify 200
+	update = testutil.Occurrence(n.Name)
+	update.Remediation = "updgrade to latest"
+	update.Name = created.Name
+	rawOccurrence, err = json.Marshal(&update)
+	reader = bytes.NewReader(rawOccurrence)
+	if err != nil {
+		t.Errorf(fmt.Sprintf("error marshalling json: %v", err))
+	}
+
+	r, err = http.NewRequest("PUT",
+		fmt.Sprintf("/v1alpha1/projects/%v/occurrences/%v", pID, oID), reader)
+	if err != nil {
+		t.Fatalf("Could not create httprequest %v", err)
+	}
+	w = httptest.NewRecorder()
+
+	h.UpdateOccurrence(w, r)
+	if w.Code != 200 {
+		t.Errorf("UpdateOccurrence got %v, want 200", w.Code)
 	}
 }
