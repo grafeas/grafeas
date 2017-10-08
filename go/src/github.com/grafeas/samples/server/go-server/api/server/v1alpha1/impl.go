@@ -182,7 +182,7 @@ func (g *Grafeas) UpdateOperation(pID, oID string, o *swagger.Operation) (*swagg
 	}
 
 	// verify that operation isn't marked done
-	if o.Done != existing.Done && !existing.Done {
+	if o.Done != existing.Done && existing.Done {
 		log.Printf("Trying to update a done operation")
 		return nil, &errors.AppError{Err: fmt.Sprintf("Cannot update operation in status done: %v", o.Name),
 			StatusCode: http.StatusBadRequest}
