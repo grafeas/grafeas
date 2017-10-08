@@ -8,7 +8,7 @@ export GOPATH
 
 
 build:  vet fmt 
-	go build -v ....
+	go build -v ./...
 
 
 # http://golang.org/cmd/go/#hdr-Run_gofmt_on_package_sources
