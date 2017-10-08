@@ -3,7 +3,7 @@
 # Check https://circleci.com/docs/2.0/language-go/ for more details
 version: 2
 jobs:
-  build:
+  build-go:
     docker:
       # specify the version
       - image: circleci/golang:1.8
@@ -21,4 +21,25 @@ jobs:
       - checkout
       # specify any bash command here prefixed with `run: `
       - run: make; make test
-      - run: cd clients/java; mvn install
+
+  build-java:
+     working_directory: ~/grafeas
+     docker:
+           - image: circleci/openjdk:8-jdk-browsers
+      steps:
+
+           - checkout
+
+           - restore_cache:
+               key: grafeas-{{ checksum "pom.xml" }}
+
+           - run: mvn dependency:go-offline
+
+           - save_cache:
+               paths:
+                 - ~/.m2
+               key: grafeas-{{ checksum "pom.xml" }}
+
+           - run: cd clients/java; mvn package
+
+          
