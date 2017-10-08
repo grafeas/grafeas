@@ -3,7 +3,7 @@
 # Check https://circleci.com/docs/2.0/language-go/ for more details
 version: 2
 jobs:
-  build-go:
+  build:
     docker:
       # specify the version
       - image: circleci/golang:1.8
@@ -22,7 +22,7 @@ jobs:
       # specify any bash command here prefixed with `run: `
       - run: make; make test
 
-  build-java:
+  build:
      working_directory: ~/grafeas
      docker:
            - image: circleci/openjdk:8-jdk-browsers
@@ -42,4 +42,4 @@ jobs:
 
            - run: cd clients/java; mvn package
 
-          
+
