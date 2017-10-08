@@ -29,6 +29,8 @@ import (
 	"github.com/grafeas/samples/server/go-server/api/server/storage"
 	"github.com/grafeas/samples/server/go-server/api/server/testing"
 	"github.com/grafeas/samples/server/go-server/api/server/v1alpha1"
+	"github.com/grafeas/grafeas/samples/server/go-server/api/server/testing"
+	"github.com/grafeas/grafeas/samples/server/go-server/api"
 )
 
 func TestCreateNote(t *testing.T) {
@@ -627,7 +629,7 @@ func TestUpdateOccurrence(t *testing.T) {
 	w = httptest.NewRecorder()
 	h.UpdateOccurrence(w, r)
 	if w.Code != 200 {
-		t.Errorf("UpdateOperation got %v, want 200", w.Code)
+		t.Errorf("UpdateOccurrence got %v, want 200", w.Code)
 	}
 
 }

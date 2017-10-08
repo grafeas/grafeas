@@ -27,6 +27,7 @@ import (
 	"log"
 	"net/http"
 	"strings"
+	"github.com/grafeas/grafeas/samples/server/go-server/api"
 )
 
 // Handler accepts httpRequests, converts them to Grafeas objects - calls into Grafeas to operation on them
@@ -460,14 +461,14 @@ func (h *Handler) UpdateOccurrence(w http.ResponseWriter, r *http.Request) {
 	json.Unmarshal(body, &o)
 	resp, err := h.g.UpdateOccurrence(pID, oID, &o)
 	if err != nil {
-		log.Printf("Error updating operation: %v", err)
+		log.Printf("Error updating occurrence: %v", err)
 		http.Error(w, err.Err, err.StatusCode)
 		return
 	}
 	bytes, mErr := json.Marshal(&resp)
 	if mErr != nil {
 		log.Printf("Error marshalling bytes: %v", mErr)
-		http.Error(w, "Error getting Operation", http.StatusInternalServerError)
+		http.Error(w, "Error getting occurrence", http.StatusInternalServerError)
 		return
 	}
 	w.Write(bytes)

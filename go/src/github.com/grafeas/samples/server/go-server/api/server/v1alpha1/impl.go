@@ -23,6 +23,7 @@ import (
 	"github.com/grafeas/samples/server/go-server/api/server/storage"
 	"log"
 	"net/http"
+	"github.com/grafeas/grafeas/samples/server/go-server/api"
 )
 
 // Grafeas is an implementation of the Grafeas API, which should be called by handler methods for verification of logic
@@ -151,7 +152,7 @@ func (g *Grafeas) UpdateOccurrence(pID, oID string, o *swagger.Occurrence) (*swa
 	// verify that name didnt change
 	if o.Name != existing.Name {
 		log.Printf("Cannot change occurrence name: %v", o.Name)
-		return nil, &errors.AppError{Err: fmt.Sprintf("Cannot change note name: %v", o.Name),
+		return nil, &errors.AppError{Err: fmt.Sprintf("Cannot change occurrence name: %v", o.Name),
 			StatusCode: http.StatusBadRequest}
 	}
 	// verify that if note name changed, it still exists
@@ -196,13 +197,11 @@ func (g *Grafeas) UpdateOperation(pID, oID string, o *swagger.Operation) (*swagg
 	}
 
 	// update operation
-
 	if err = g.S.UpdateOperation(pID, oID, o); err != nil {
 		log.Printf("Cannot update operation : %v", o.Name)
-		return nil, &errors.AppError{Err: fmt.Sprintf("Cannot update Occurrences: %v", err),
+		return nil, &errors.AppError{Err: fmt.Sprintf("Cannot update Opreation: %v", err),
 			StatusCode: http.StatusInternalServerError}
 	}
-	// return updated note
 	return o, nil
 }
 func (g *Grafeas) ListOperations(pID, fs string) (*swagger.ListOperationsResponse, *errors.AppError) {
