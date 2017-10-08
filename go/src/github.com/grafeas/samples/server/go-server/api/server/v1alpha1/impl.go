@@ -23,7 +23,6 @@ import (
 	"github.com/grafeas/samples/server/go-server/api/server/storage"
 	"log"
 	"net/http"
-	"github.com/grafeas/samples/server/go-server/api"
 )
 
 // Grafeas is an implementation of the Grafeas API, which should be called by handler methods for verification of logic

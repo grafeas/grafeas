@@ -29,8 +29,6 @@ import (
 	"github.com/grafeas/samples/server/go-server/api/server/storage"
 	"github.com/grafeas/samples/server/go-server/api/server/testing"
 	"github.com/grafeas/samples/server/go-server/api/server/v1alpha1"
-	"github.com/grafeas/grafeas/samples/server/go-server/api/server/testing"
-	"github.com/grafeas/grafeas/samples/server/go-server/api"
 )
 
 func TestCreateNote(t *testing.T) {
@@ -571,6 +569,10 @@ func TestListNoteOccurrences(t *testing.T) {
 
 	r, err = http.NewRequest("GET",
 		fmt.Sprintf("/v1alpha1/projects/%v/notes/%v/occurrences", pID, nID), nil)
+	if err != nil {
+		t.Fatalf("Could not create httprequest %v", err)
+	}
+	w = httptest.NewRecorder()
 	h.ListNoteOccurrences(w, r)
 	if w.Code != 200 {
 		t.Fatalf("ListNoteOccurrences got %v, want 200", w.Code)
@@ -580,9 +582,9 @@ func TestListNoteOccurrences(t *testing.T) {
 	if len(got.Occurrences) != 20 {
 		t.Errorf("ListNoteOccurrences got %d, want 20", len(got.Occurrences))
 	}
-
 }
-func TestUpdateNote(t * testing.T){
+
+func TestUpdateNote(t *testing.T) {
 		h := Handler{v1alpha1.Grafeas{S: storage.NewMemStore()}}
 		n := testutil.Note()
 		if err := createNote(n, h); err != nil {
@@ -631,7 +633,7 @@ func TestUpdateNote(t * testing.T){
 			t.Errorf("UpdateNote got %v, want 200", w.Code)
 		}
 	}
-}
+
 func TestUpdateOperation(t *testing.T) {
 	h := Handler{v1alpha1.Grafeas{S: storage.NewMemStore()}}
 	o := testutil.Operation()

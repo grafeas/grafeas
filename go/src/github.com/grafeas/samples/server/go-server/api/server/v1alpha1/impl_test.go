@@ -23,8 +23,6 @@ import (
 	"net/http"
 	"reflect"
 	"testing"
-	"github.com/grafeas/grafeas/samples/server/go-server/api"
-	"github.com/grafeas/grafeas/samples/server/go-server/api/server/testing"
 )
 
 func TestCreateOperation(t *testing.T) {
