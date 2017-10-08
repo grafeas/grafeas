@@ -27,6 +27,7 @@ import (
 	"log"
 	"net/http"
 	"strings"
+	"github.com/grafeas/samples/server/go-server/api"
 )
 
 // Handler accepts httpRequests, converts them to Grafeas objects - calls into Grafeas to operation on them
@@ -38,7 +39,6 @@ type Handler struct {
 // CreateNote handles http requests to create notes in grafeas
 func (h *Handler) CreateNote(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	n := swagger.Note{}
 	nIDs, ok := r.URL.Query()["noteId"]
 	if !ok {
 		log.Print("noteId is not specified")
@@ -69,7 +69,7 @@ func (h *Handler) CreateNote(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "can't read body", http.StatusBadRequest)
 		return
 	}
-
+	n := swagger.Note{}
 	json.Unmarshal(body, &n)
 	genName := name.FormatNote(pID, nID)
 	if genName != n.Name {
@@ -90,7 +90,6 @@ func (h *Handler) CreateNote(w http.ResponseWriter, r *http.Request) {
 	}
 	w.WriteHeader(http.StatusOK)
 	w.Write(bytes)
-
 }
 
 // CreateOccurrence handles http requests to create occurrences in grafeas
@@ -213,7 +212,7 @@ func projectNoteIDFromReq(r *http.Request) (string, string, *errors.AppError) {
 	pID, nID, err := name.ParseNote(nameString)
 	if err != nil {
 		log.Printf("error parsing path %v", err)
-		return "", "", &errors.AppError{err.Err, err.StatusCode}
+		return "", "", &errors.AppError{Err: err.Err, StatusCode: err.StatusCode}
 	}
 	return pID, nID, nil
 }
@@ -226,7 +225,7 @@ func projectOccIDFromReq(r *http.Request) (string, string, *errors.AppError) {
 	pID, oID, err := name.ParseOccurrence(nameString)
 	if err != nil {
 		log.Printf("error parsing path %v", err)
-		return "", "", &errors.AppError{err.Err, err.StatusCode}
+		return "", "", &errors.AppError{Err: err.Err, StatusCode: err.StatusCode}
 	}
 	return pID, oID, nil
 }
@@ -479,15 +478,93 @@ func (h *Handler) ListOccurrences(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handler) UpdateNote(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	pID, nID, appErr := projectNoteIDFromReq(r)
+	if appErr != nil {
+		http.Error(w, appErr.Err, appErr.StatusCode)
+		return
+	}
+	body, readErr := ioutil.ReadAll(r.Body)
+	if readErr != nil {
+		log.Printf("Error reading body: %v", readErr)
+		http.Error(w, "can't read body", http.StatusBadRequest)
+		return
+	}
+	n := swagger.Note{}
+	json.Unmarshal(body, &n)
+	resp, err := h.g.UpdateNote(pID, nID, &n)
+	if err != nil {
+		log.Printf("Error updating note: %v", err)
+		http.Error(w, err.Err, err.StatusCode)
+		return
+	}
+	bytes, mErr := json.Marshal(&resp)
+	if mErr != nil {
+		log.Printf("Error marshalling bytes: %v", mErr)
+		http.Error(w, "Error getting Note", http.StatusInternalServerError)
+		return
+	}
+	w.Write(bytes)
 	w.WriteHeader(http.StatusOK)
 }
 
 func (h *Handler) UpdateOccurrence(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	pID, oID, appErr := projectOccIDFromReq(r)
+	if appErr != nil {
+		http.Error(w, appErr.Err, appErr.StatusCode)
+		return
+	}
+	body, readErr := ioutil.ReadAll(r.Body)
+	if readErr != nil {
+		log.Printf("Error reading body: %v", readErr)
+		http.Error(w, "can't read body", http.StatusBadRequest)
+		return
+	}
+	o := swagger.Occurrence{}
+	json.Unmarshal(body, &o)
+	resp, err := h.g.UpdateOccurrence(pID, oID, &o)
+	if err != nil {
+		log.Printf("Error updating occurrence: %v", err)
+		http.Error(w, err.Err, err.StatusCode)
+		return
+	}
+	bytes, mErr := json.Marshal(&resp)
+	if mErr != nil {
+		log.Printf("Error marshalling bytes: %v", mErr)
+		http.Error(w, "Error getting occurrence", http.StatusInternalServerError)
+		return
+	}
+	w.Write(bytes)
 	w.WriteHeader(http.StatusOK)
 }
 
 func (h *Handler) UpdateOperation(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	pID, oID, appErr := projectOperationIDFromReq(r)
+	if appErr != nil {
+		http.Error(w, appErr.Err, appErr.StatusCode)
+		return
+	}
+	body, readErr := ioutil.ReadAll(r.Body)
+	if readErr != nil {
+		log.Printf("Error reading body: %v", readErr)
+		http.Error(w, "can't read body", http.StatusBadRequest)
+		return
+	}
+	o := swagger.Operation{}
+	json.Unmarshal(body, &o)
+	resp, err := h.g.UpdateOperation(pID, oID, &o)
+	if err != nil {
+		log.Printf("Error updating operation: %v", err)
+		http.Error(w, err.Err, err.StatusCode)
+		return
+	}
+	bytes, mErr := json.Marshal(&resp)
+	if mErr != nil {
+		log.Printf("Error marshalling bytes: %v", mErr)
+		http.Error(w, "Error getting Operation", http.StatusInternalServerError)
+		return
+	}
+	w.Write(bytes)
 	w.WriteHeader(http.StatusOK)
 }

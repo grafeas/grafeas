@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 package v1alpha1
 
 import (
+	"fmt"
 	"github.com/grafeas/samples/server/go-server/api"
 	"github.com/grafeas/samples/server/go-server/api/server/name"
 	"github.com/grafeas/samples/server/go-server/api/server/storage"
@@ -23,6 +23,8 @@ import (
 	"net/http"
 	"reflect"
 	"testing"
+	"github.com/grafeas/grafeas/samples/server/go-server/api"
+	"github.com/grafeas/grafeas/samples/server/go-server/api/server/testing"
 )
 
 func TestCreateOperation(t *testing.T) {
@@ -228,7 +230,105 @@ func TestGetOccurrenceNote(t *testing.T) {
 	}
 }
 
-func TestListOccurrences(t *testing.T){
+func TestUpdateNote(t *testing.T) {
+	// Update Note that doesn't exist
+	updateDesc := "this is a new description"
+	g := Grafeas{storage.NewMemStore()}
+	n := testutil.Note()
+	pID, nID, err := name.ParseNote(n.Name)
+	if err != nil {
+		t.Fatalf("Error parsing note name %v", err)
+	}
+	update := testutil.Note()
+	update.LongDescription = updateDesc
+	if _, err := g.UpdateNote(pID, nID, &update); err == nil {
+		t.Error("UpdateNote that doesn't exist got success, want err")
+	}
+
+	// Actually create note
+	if err := g.CreateNote(&n); err != nil {
+		t.Fatalf("CreateNote(%v) got %v, want success", n, err)
+	}
+
+	// Update Note name and fail
+	update.Name = "New name"
+	if _, err := g.UpdateNote(pID, nID, &update); err == nil {
+		t.Error("UpdateNote that with name change got success, want err")
+	}
+
+	// Update Note and verify that update worked.
+	update = testutil.Note()
+	update.LongDescription = updateDesc
+	if got, err := g.UpdateNote(pID, nID, &update); err != nil {
+		t.Errorf("UpdateNote got %v, want success", err)
+	} else if updateDesc != update.LongDescription {
+		t.Errorf("UpdateNote got %v, want %v",
+			got.LongDescription, updateDesc)
+	}
+	if got, err := g.GetNote(pID, nID); err != nil {
+		t.Fatalf("GetNote(%v) got %v, want success", n, err)
+	} else if updateDesc != got.LongDescription {
+		t.Errorf("GetNote got %v, want %v", got.LongDescription, updateDesc)
+	}
+}
+
+func TestUpdateOccurrence(t *testing.T) {
+	// Update occurrence that doesn't exist
+	g := Grafeas{storage.NewMemStore()}
+	n := testutil.Note()
+	if err := g.CreateNote(&n); err != nil {
+		t.Fatalf("CreateNote(%v) got %v, want success", n, err)
+	}
+	o := testutil.Occurrence(n.Name)
+
+	pID, oID, err := name.ParseOccurrence(o.Name)
+	if err != nil {
+		t.Fatalf("Error parsing occurrence name %v", err)
+	}
+	if _, err := g.UpdateOccurrence(pID, oID, &o); err == nil {
+		t.Error("UpdateOccurrence that doesn't exist got success, want err")
+	}
+	// Create an occurrence to update
+	if err := g.CreateOccurrence(&o); err != nil {
+		t.Fatalf("CreateOccurrence(%v) got %v, want success", n, err)
+	}
+	// update occurrence name
+	update := testutil.Occurrence(n.Name)
+	update.Name = "New name"
+	if _, err := g.UpdateOccurrence(pID, oID, &update); err == nil {
+		t.Error("UpdateOccurrence that with name change got success, want err")
+	}
+
+	// update note name to a note that doesn't exist
+	update = testutil.Occurrence("projects/p/notes/bar")
+	if _, err := g.UpdateOccurrence(pID, oID, &update); err == nil {
+		t.Error("UpdateOccurrence that with note name that doesn't exist" +
+			" got success, want err")
+	}
+
+	// update note name to a note that does exist
+	n = testutil.Note()
+	newName := fmt.Sprintf("%v-new", n.Name)
+	n.Name = newName
+	if err := g.CreateNote(&n); err != nil {
+		t.Fatalf("CreateNote(%v) got %v, want success", n, err)
+	}
+	update = testutil.Occurrence(n.Name)
+	if got, err := g.UpdateOccurrence(pID, oID, &update); err != nil {
+		t.Errorf("UpdateOccurrence got %v, want success", err)
+	} else if n.Name != got.NoteName {
+		t.Errorf("UpdateOccurrence got %v, want %v",
+			got.NoteName, n.Name)
+	}
+	if got, err := g.GetOccurrence(pID, oID); err != nil {
+		t.Fatalf("GetOccurrence(%v) got %v, want success", n, err)
+	} else if n.Name != got.NoteName {
+		t.Errorf("GetOccurrence got %v, want %v",
+			got.NoteName, n.Name)
+	}
+}
+
+func TestListOccurrences(t *testing.T) {
 	g := Grafeas{storage.NewMemStore()}
 	n := testutil.Note()
 	if err := g.CreateNote(&n); err != nil {
@@ -259,7 +359,7 @@ func TestListOccurrences(t *testing.T){
 	}
 }
 
-func TestListOperations(t *testing.T){
+func TestListOperations(t *testing.T) {
 	g := Grafeas{storage.NewMemStore()}
 	findProject := "findThese"
 	dontFind := "dontFind"
@@ -284,7 +384,7 @@ func TestListOperations(t *testing.T){
 	}
 }
 
-func TestListNotes(t *testing.T){
+func TestListNotes(t *testing.T) {
 	g := Grafeas{storage.NewMemStore()}
 	findProject := "findThese"
 	dontFind := "dontFind"
@@ -295,7 +395,7 @@ func TestListNotes(t *testing.T){
 		} else {
 			n.Name = name.FormatNote(dontFind, string(i))
 		}
-		if  err := g.CreateNote(&n); err != nil {
+		if err := g.CreateNote(&n); err != nil {
 			t.Fatalf("CreateNote got %v want success", err)
 		}
 	}
@@ -350,3 +450,4 @@ func TestListNoteOccurrences(t *testing.T){
 		t.Errorf("resp.Occurrences got %d, want 20", len(resp.Occurrences))
 	}
 }
+
