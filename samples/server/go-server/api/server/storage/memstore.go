@@ -158,8 +158,20 @@ func (m *MemStore) ListNotes(pID, filters string) []swagger.Note {
 	}
 	return ns
 }
-func (m *MemStore) ListNoteOccurrences() *errors.AppError {
-	panic("implement me")
+func (m *MemStore) ListNoteOccurrences(pID, nID, filters string) ([]swagger.Occurrence, *errors.AppError) {
+	// TODO: use filters
+	// Verify that note exists
+	if _, err := m.GetNote(pID, nID); err != nil {
+		return nil, err
+	}
+	nName := name.FormatNote(pID, nID)
+	os := []swagger.Occurrence{}
+	for _, o := range(m.occurrencesByID) {
+		if o.NoteName == nName {
+			os = append(os, o)
+		}
+	}
+   return os, nil
 }
 
 // GetOperation returns the operation with pID and oID

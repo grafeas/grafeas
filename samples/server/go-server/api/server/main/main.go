@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package server
+package main
 
 import (
 	"log"
@@ -20,11 +20,13 @@ import (
 
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/storage"
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/v1alpha1"
+	"github.com/grafeas/grafeas/samples/server/go-server/api/server"
+
 )
 
 func main() {
 	log.Printf("Server started")
 	s := storage.NewMemStore()
-	router := NewRouter(v1alpha1.Grafeas{S: s})
+	router := server.NewRouter(v1alpha1.Grafeas{S: s})
 	log.Fatal(http.ListenAndServe(":8080", router))
 }
