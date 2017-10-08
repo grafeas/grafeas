@@ -16,10 +16,10 @@ package storage
 
 import (
 	"fmt"
-	"github.com/grafeas/samples/server/go-server/api"
-	"github.com/grafeas/samples/server/go-server/api/server/errors"
+	"github.com/grafeas/grafeas/samples/server/go-server/api"
+	"github.com/grafeas/grafeas/samples/server/go-server/api/server/errors"
 
-	"github.com/grafeas/samples/server/go-server/api/server/name"
+	"github.com/grafeas/grafeas/samples/server/go-server/api/server/name"
 	"net/http"
 	"strings"
 )

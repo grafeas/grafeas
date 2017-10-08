@@ -15,9 +15,9 @@
 package storage
 
 import (
-	"github.com/grafeas/samples/server/go-server/api"
-	"github.com/grafeas/samples/server/go-server/api/server/name"
-	"github.com/grafeas/samples/server/go-server/api/server/testing"
+	"github.com/grafeas/grafeas/samples/server/go-server/api"
+	"github.com/grafeas/grafeas/samples/server/go-server/api/server/name"
+	"github.com/grafeas/grafeas/samples/server/go-server/api/server/testing"
 	"net/http"
 	"reflect"
 	"strings"

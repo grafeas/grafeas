@@ -24,11 +24,11 @@ import (
 
 	"errors"
 	"fmt"
-	"github.com/grafeas/samples/server/go-server/api"
-	"github.com/grafeas/samples/server/go-server/api/server/name"
-	"github.com/grafeas/samples/server/go-server/api/server/storage"
-	"github.com/grafeas/samples/server/go-server/api/server/testing"
-	"github.com/grafeas/samples/server/go-server/api/server/v1alpha1"
+	"github.com/grafeas/grafeas/samples/server/go-server/api"
+	"github.com/grafeas/grafeas/samples/server/go-server/api/server/name"
+	"github.com/grafeas/grafeas/samples/server/go-server/api/server/storage"
+	"github.com/grafeas/grafeas/samples/server/go-server/api/server/testing"
+	"github.com/grafeas/grafeas/samples/server/go-server/api/server/v1alpha1"
 )
 
 func TestHandler_CreateNote(t *testing.T) {

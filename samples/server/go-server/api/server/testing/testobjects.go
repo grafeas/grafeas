@@ -14,7 +14,7 @@
 
 package testutil
 
-import "github.com/grafeas/samples/server/go-server/api"
+import "github.com/grafeas/grafeas/samples/server/go-server/api"
 
 func Occurrence(noteName string) swagger.Occurrence {
 	return swagger.Occurrence{
