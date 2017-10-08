@@ -532,7 +532,7 @@ func TestListOperations(t *testing.T) {
 	got = swagger.ListOperationsResponse{}
 	json.Unmarshal(w.Body.Bytes(), &got)
 	if len(got.Operations) != 20 {
-		t.Errorf("ListOccurrences got %d, want 20", len(got.Operations))
+		t.Errorf("ListOperations got %d, want 20", len(got.Operations))
 	}
 }
 
@@ -541,7 +541,7 @@ func TestListNoteOccurrences(t *testing.T) {
 	n := testutil.Note()
 	pID, nID, aErr := name.ParseNote(n.Name)
 	if aErr != nil {
-		t.Fatalf("Error parsing occurrence name: %v", aErr)
+		t.Fatalf("Error parsing note name: %v", aErr)
 	}
 	r, err := http.NewRequest("GET", fmt.Sprintf("/v1alpha1/projects/%v/notes/%v/occurrences", pID, nID), nil)
 	if err != nil {
