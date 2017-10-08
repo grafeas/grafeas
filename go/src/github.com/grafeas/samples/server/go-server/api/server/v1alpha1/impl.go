@@ -23,7 +23,6 @@ import (
 	"github.com/grafeas/samples/server/go-server/api/server/storage"
 	"log"
 	"net/http"
-	"github.com/grafeas/samples/server/go-server/api"
 )
 
 // Grafeas is an implementation of the Grafeas API, which should be called by handler methods for verification of logic
@@ -221,4 +220,13 @@ func (g *Grafeas) ListOccurrences(pID, fs string) (*swagger.ListOccurrencesRespo
 	// TODO: support filters - prioritizing resource url
 	os := g.S.ListOccurrences(pID, fs)
 	return &swagger.ListOccurrencesResponse{Occurrences: os}, nil
+}
+
+func (g *Grafeas) ListNoteOccurrences(pID, nID, fs string) (*swagger.ListNoteOccurrencesResponse, *errors.AppError) {
+	// TODO: support filters - prioritizing resource url
+	os, err := g.S.ListNoteOccurrences(pID, nID, fs)
+	if err != nil {
+		return nil, err
+	}
+	return &swagger.ListNoteOccurrencesResponse{Occurrences: os}, nil
 }

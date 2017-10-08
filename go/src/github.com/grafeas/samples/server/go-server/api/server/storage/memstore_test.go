@@ -429,3 +429,42 @@ func TestListOccurrences(t *testing.T) {
 		}
 	}
 }
+
+func TestListNoteOccurrences(t *testing.T) {
+	s := NewMemStore()
+	os := []swagger.Occurrence{}
+	findProject := "findThese"
+	dontFind := "dontFind"
+	n := testutil.Note()
+	if err := s.CreateNote(&n); err != nil {
+		t.Fatalf("CreateNote got %v want success", err)
+	}
+	for i := 0; i < 20; i++ {
+		o := testutil.Occurrence(n.Name)
+		if i < 5 {
+			o.Name = name.FormatOccurrence(findProject, string(i))
+		} else {
+			o.Name = name.FormatOccurrence(dontFind, string(i))
+		}
+		if err := s.CreateOccurrence(&o); err != nil {
+			t.Fatalf("CreateOccurrence got %v want success", err)
+		}
+		os = append(os, o)
+	}
+	pID, nID, err := name.ParseNote(n.Name)
+	if err != nil {
+		t.Fatalf("Error parsing note name %v", err)
+	}
+	gotOs, err  := s.ListNoteOccurrences(pID, nID, "")
+	if err != nil {
+		t.Fatalf("ListNoteOccurrences got %v want success", err)
+	}
+	if len(gotOs) != 20 {
+		t.Errorf("ListNoteOccurrences got %v Occurrences, want 20", len(gotOs))
+	}
+	for _, o := range gotOs {
+		if o.NoteName != n.Name {
+			t.Errorf("ListNoteOccurrences got %v want  %v", o.Name, o.NoteName)
+		}
+	}
+}
