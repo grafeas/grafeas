@@ -23,16 +23,16 @@
  */
 
 
-package java.io.grafeas.client;
+package io.grafeas.client;
 
 import java.util.Objects;
 import com.google.gson.annotations.SerializedName;
+import io.grafeas.client.ExtendedSourceContext;
+import io.grafeas.client.FileHashes;
+import io.grafeas.client.RepoSource;
+import io.grafeas.client.StorageSource;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.io.grafeas.client.ExtendedSourceContext;
-import java.io.grafeas.client.FileHashes;
-import java.io.grafeas.client.RepoSource;
-import java.io.grafeas.client.StorageSource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -43,7 +43,7 @@ import java.util.Map;
  * Source describes the location of the source used for the build.
  */
 @ApiModel(description = "Source describes the location of the source used for the build.")
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-08T12:57:49.437-04:00")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-08T14:08:45.411-04:00")
 public class Source   {
   @SerializedName("storageSource")
   private StorageSource storageSource = null;

@@ -23,20 +23,20 @@
  */
 
 
-package java.io.grafeas.client;
+package io.grafeas.client;
 
 import java.util.Objects;
 import com.google.gson.annotations.SerializedName;
+import io.grafeas.client.RepoId;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.io.grafeas.client.RepoId;
 
 
 /**
  * A CloudWorkspaceId is a unique identifier for a cloud workspace. A cloud workspace is a place associated with a repo where modified files can be stored before they are committed.
  */
 @ApiModel(description = "A CloudWorkspaceId is a unique identifier for a cloud workspace. A cloud workspace is a place associated with a repo where modified files can be stored before they are committed.")
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-08T12:57:49.437-04:00")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-08T14:08:45.411-04:00")
 public class CloudWorkspaceId   {
   @SerializedName("repoId")
   private RepoId repoId = null;

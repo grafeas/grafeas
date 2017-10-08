@@ -58,9 +58,9 @@ Please follow the [installation](#installation) instruction and execute the foll
 
 ```java
 
-import java.io.grafeas.*;
-import java.io.grafeas.auth.*;
-import java.io.grafeas.model.*;
+import io.grafeas.*;
+import io.grafeas.auth.*;
+import io.grafeas.model.*;
 import io.swagger.client.api.GrafeasApi;
 
 import java.io.File;

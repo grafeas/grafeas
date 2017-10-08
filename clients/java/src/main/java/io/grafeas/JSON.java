@@ -23,7 +23,7 @@
  */
 
 
-package java.io.grafeas;
+package io.grafeas;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

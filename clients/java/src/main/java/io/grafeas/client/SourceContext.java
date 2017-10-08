@@ -23,23 +23,23 @@
  */
 
 
-package java.io.grafeas.client;
+package io.grafeas.client;
 
 import java.util.Objects;
 import com.google.gson.annotations.SerializedName;
+import io.grafeas.client.CloudRepoSourceContext;
+import io.grafeas.client.CloudWorkspaceSourceContext;
+import io.grafeas.client.GerritSourceContext;
+import io.grafeas.client.GitSourceContext;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.io.grafeas.client.CloudRepoSourceContext;
-import java.io.grafeas.client.CloudWorkspaceSourceContext;
-import java.io.grafeas.client.GerritSourceContext;
-import java.io.grafeas.client.GitSourceContext;
 
 
 /**
  * A SourceContext is a reference to a tree of files. A SourceContext together with a path point to a unique revision of a single file or directory.
  */
 @ApiModel(description = "A SourceContext is a reference to a tree of files. A SourceContext together with a path point to a unique revision of a single file or directory.")
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-08T12:57:49.437-04:00")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-08T14:08:45.411-04:00")
 public class SourceContext   {
   @SerializedName("cloudRepo")
   private CloudRepoSourceContext cloudRepo = null;

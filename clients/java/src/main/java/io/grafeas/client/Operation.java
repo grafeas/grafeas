@@ -23,13 +23,13 @@
  */
 
 
-package java.io.grafeas.client;
+package io.grafeas.client;
 
 import java.util.Objects;
 import com.google.gson.annotations.SerializedName;
+import io.grafeas.client.Status;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.io.grafeas.client.Status;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +39,7 @@ import java.util.Map;
  * This resource represents a long-running operation that is the result of a network API call.
  */
 @ApiModel(description = "This resource represents a long-running operation that is the result of a network API call.")
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-08T12:57:49.437-04:00")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-08T14:08:45.411-04:00")
 public class Operation   {
   @SerializedName("name")
   private String name = null;

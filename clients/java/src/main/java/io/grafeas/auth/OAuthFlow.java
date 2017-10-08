@@ -23,7 +23,7 @@
  */
 
 
-package java.io.grafeas.auth;
+package io.grafeas.auth;
 
 public enum OAuthFlow {
     accessCode, implicit, password, application

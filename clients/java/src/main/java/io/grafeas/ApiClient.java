@@ -23,7 +23,7 @@
  */
 
 
-package java.io.grafeas;
+package io.grafeas;
 
 import com.squareup.okhttp.Call;
 import com.squareup.okhttp.Callback;
@@ -86,10 +86,10 @@ import javax.net.ssl.X509TrustManager;
 import okio.BufferedSink;
 import okio.Okio;
 
-import java.io.grafeas.auth.Authentication;
-import java.io.grafeas.auth.HttpBasicAuth;
-import java.io.grafeas.auth.ApiKeyAuth;
-import java.io.grafeas.auth.OAuth;
+import io.grafeas.auth.Authentication;
+import io.grafeas.auth.HttpBasicAuth;
+import io.grafeas.auth.ApiKeyAuth;
+import io.grafeas.auth.OAuth;
 
 public class ApiClient {
     public static final double JAVA_VERSION;

@@ -23,21 +23,21 @@
  */
 
 
-package java.io.grafeas.client;
+package io.grafeas.client;
 
 import java.util.Objects;
 import com.google.gson.annotations.SerializedName;
+import io.grafeas.client.Version;
+import io.grafeas.client.VulnerabilityLocation;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.io.grafeas.client.Version;
-import java.io.grafeas.client.VulnerabilityLocation;
 
 
 /**
  * Identifies all occurences of this vulnerability in the package for a specific distro/location For example: glibc in cpe:/o:debian:debian_linux:8 for versions 2.1 - 2.2
  */
 @ApiModel(description = "Identifies all occurences of this vulnerability in the package for a specific distro/location For example: glibc in cpe:/o:debian:debian_linux:8 for versions 2.1 - 2.2")
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-08T12:57:49.437-04:00")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-08T14:08:45.411-04:00")
 public class Detail   {
   @SerializedName("cpeUri")
   private String cpeUri = null;

@@ -23,7 +23,7 @@
  */
 
 
-package java.io.grafeas.client;
+package io.grafeas.client;
 
 import java.util.Objects;
 import com.google.gson.annotations.SerializedName;
@@ -37,7 +37,7 @@ import java.util.List;
  * A set of properties that uniquely identify a given Docker image.
  */
 @ApiModel(description = "A set of properties that uniquely identify a given Docker image.")
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-08T12:57:49.437-04:00")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-08T14:08:45.411-04:00")
 public class Fingerprint   {
   @SerializedName("v1Name")
   private String v1Name = null;

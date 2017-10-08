@@ -23,14 +23,14 @@
  */
 
 
-package java.io.grafeas.auth;
+package io.grafeas.auth;
 
-import java.io.grafeas.Pair;
+import io.grafeas.Pair;
 
 import java.util.Map;
 import java.util.List;
 
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-08T12:57:49.437-04:00")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-08T14:08:45.411-04:00")
 public class ApiKeyAuth implements Authentication {
   private final String location;
   private final String paramName;

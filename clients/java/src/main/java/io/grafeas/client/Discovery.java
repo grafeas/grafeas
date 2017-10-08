@@ -23,7 +23,7 @@
  */
 
 
-package java.io.grafeas.client;
+package io.grafeas.client;
 
 import java.util.Objects;
 import com.google.gson.annotations.SerializedName;
@@ -35,7 +35,7 @@ import io.swagger.annotations.ApiModelProperty;
  * Note that indicates a type of analysis and exists in a provider project to indicate the status of an analysis on a resource. Absence of an occurrence linked to this note for a resource indicates that analysis hasn&#39;t started.
  */
 @ApiModel(description = "Note that indicates a type of analysis and exists in a provider project to indicate the status of an analysis on a resource. Absence of an occurrence linked to this note for a resource indicates that analysis hasn't started.")
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-08T12:57:49.437-04:00")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-08T14:08:45.411-04:00")
 public class Discovery   {
   /**
    * The kind of analysis that is handled by this discovery.

@@ -23,7 +23,7 @@
  */
 
 
-package java.io.grafeas.client;
+package io.grafeas.client;
 
 import java.util.Objects;
 import com.google.gson.annotations.SerializedName;
@@ -35,7 +35,7 @@ import io.swagger.annotations.ApiModelProperty;
  * RepoSource describes the location of the source in a Google Cloud Source Repository.
  */
 @ApiModel(description = "RepoSource describes the location of the source in a Google Cloud Source Repository.")
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-08T12:57:49.437-04:00")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-08T14:08:45.411-04:00")
 public class RepoSource   {
   @SerializedName("projectId")
   private String projectId = null;

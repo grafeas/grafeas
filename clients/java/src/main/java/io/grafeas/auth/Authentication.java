@@ -23,9 +23,9 @@
  */
 
 
-package java.io.grafeas.auth;
+package io.grafeas.auth;
 
-import java.io.grafeas.Pair;
+import io.grafeas.Pair;
 
 import java.util.Map;
 import java.util.List;

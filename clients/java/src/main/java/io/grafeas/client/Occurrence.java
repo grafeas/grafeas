@@ -23,26 +23,26 @@
  */
 
 
-package java.io.grafeas.client;
+package io.grafeas.client;
 
 import java.util.Objects;
 import com.google.gson.annotations.SerializedName;
+import io.grafeas.client.BuildDetails;
+import io.grafeas.client.CustomDetails;
+import io.grafeas.client.Deployment;
+import io.grafeas.client.Derived;
+import io.grafeas.client.Discovered;
+import io.grafeas.client.Installation;
+import io.grafeas.client.VulnerabilityDetails;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.io.grafeas.client.BuildDetails;
-import java.io.grafeas.client.CustomDetails;
-import java.io.grafeas.client.Deployment;
-import java.io.grafeas.client.Derived;
-import java.io.grafeas.client.Discovered;
-import java.io.grafeas.client.Installation;
-import java.io.grafeas.client.VulnerabilityDetails;
 
 
 /**
  * Occurrence includes information about analysis occurrences for an image. &#x60;&#x60;
  */
 @ApiModel(description = "Occurrence includes information about analysis occurrences for an image. ``")
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-08T12:57:49.437-04:00")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-08T14:08:45.411-04:00")
 public class Occurrence   {
   @SerializedName("name")
   private String name = null;

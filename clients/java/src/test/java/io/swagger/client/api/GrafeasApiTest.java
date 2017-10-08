@@ -25,16 +25,16 @@
 
 package io.swagger.client.api;
 
-import java.io.grafeas.ApiException;
-import java.io.grafeas.client.Note;
-import java.io.grafeas.client.Occurrence;
-import java.io.grafeas.client.Empty;
-import java.io.grafeas.client.Operation;
-import java.io.grafeas.client.ListNoteOccurrencesResponse;
-import java.io.grafeas.client.ListNotesResponse;
-import java.io.grafeas.client.ListOccurrencesResponse;
-import java.io.grafeas.client.ListOperationsResponse;
-import java.io.grafeas.client.UpdateOperationRequest;
+import io.grafeas.ApiException;
+import io.grafeas.client.Note;
+import io.grafeas.client.Occurrence;
+import io.grafeas.client.Empty;
+import io.grafeas.client.Operation;
+import io.grafeas.client.ListNoteOccurrencesResponse;
+import io.grafeas.client.ListNotesResponse;
+import io.grafeas.client.ListOccurrencesResponse;
+import io.grafeas.client.ListOperationsResponse;
+import io.grafeas.client.UpdateOperationRequest;
 import org.junit.Test;
 
 import java.util.ArrayList;

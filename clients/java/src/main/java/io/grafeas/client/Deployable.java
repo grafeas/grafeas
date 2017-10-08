@@ -23,7 +23,7 @@
  */
 
 
-package java.io.grafeas.client;
+package io.grafeas.client;
 
 import java.util.Objects;
 import com.google.gson.annotations.SerializedName;
@@ -37,7 +37,7 @@ import java.util.List;
  * An artifact that can be deployed in some runtime.
  */
 @ApiModel(description = "An artifact that can be deployed in some runtime.")
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-08T12:57:49.437-04:00")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2017-10-08T14:08:45.411-04:00")
 public class Deployable   {
   @SerializedName("resourceUri")
   private List<String> resourceUri = new ArrayList<String>();

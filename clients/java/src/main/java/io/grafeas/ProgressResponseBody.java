@@ -23,7 +23,7 @@
  */
 
 
-package java.io.grafeas;
+package io.grafeas;
 
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.ResponseBody;

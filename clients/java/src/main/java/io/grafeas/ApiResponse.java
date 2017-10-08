@@ -23,7 +23,7 @@
  */
 
 
-package java.io.grafeas;
+package io.grafeas;
 
 import java.util.List;
 import java.util.Map;
