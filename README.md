@@ -4,13 +4,13 @@ Grafeas defines metadata API spec for computing components (e.g., VM images, con
 ## Definition of terms
 **Notes**: A note is an item or condition that can be found via an analysis or something that is used multiple times in a process. For example, a CVE could be the result of a vulnerability analysis of a Linux package. In a build process, we would store information about our builder in a note. 
 
-A note name should take the format /projects/<project_id>/notes/<note_id> where the project_id would typically be different from the project where the occurrence is created and the note_id would be unique per note-project, and informative if possible. 
+A note name should take the format `/projects/<project_id>/notes/<note_id>` where the project_id would typically be different from the project where the occurrence is created and the note_id would be unique per note-project, and informative if possible. 
 
 Access to notes should be read-only for users who have access to occurrences referencing them, and editable only by the note owner.
 
 **Occurrences**: An occurrence can be thought of as an instantiation of a note and describes how the note was found in a specific cloud resource or project (e.g., location, specific remediation steps, etc.), or what the results of a specific note were (e.g., the container images that resulted from a build). For example, an occurrence might report that the heartbleed OpenSSL bug (a possible Note) was found in a specific package of a container image, and include information about how to remedy the heartbleed bug based on the customer’s package.
 
-An occurrence name should take the format /projects/<project_id>/notes/<occurrence_id> where the project_id would typically be different from the project where the note is created and the occurrence_id would be unique per occurrence-project, and would often be random. 
+An occurrence name should take the format `/projects/<project_id>/notes/<occurrence_id>` where the project_id would typically be different from the project where the note is created and the occurrence_id would be unique per occurrence-project, and would often be random. 
 
 Write access to occurrences should only be granted to users who have access to link a note to the occurrence. Any users can have read access to occurrences. 
 
@@ -18,7 +18,7 @@ Write access to occurrences should only be granted to users who have access to l
 In order to properly aggregate over metadata stored in Grafeas, each kind of information stored has a strict schema. These schemas allow normalization of data from multiple providers, giving users the ability to see meaningful insights in their components over time. Defined below are the currently supported kinds, and a brief summary of what the notes and occurrences for each of them will contain.
 Specifying a kind in our notes and occurrences makes Grafeas extensible. As new metadata types need support, new kinds can be added, each with their own schema.
 
-TODO:Document the process for adding a new kind to the spec and generating the model, documents, and client libraries to include that kind.
+>TODO:Document the process for adding a new kind to the spec and generating the model, documents, and client libraries to include that kind.
 
 
 |Kind                 |Note Summary                                                             |Occurrence Summary                               |
@@ -30,7 +30,7 @@ TODO:Document the process for adding a new kind to the spec and generating the m
 |DEPLOYMENT_HISTORY   |A resource that can be deployed                                          |Details of each deployment of the resource|
 
 
-Examples
+## Examples
 A vulnerability scanning provider would create a note under their project with the following json for CVE-2017-14159
 ```
 {
@@ -204,7 +204,7 @@ Component Type|Identifier                                  |Example|
 |Docker       |https://Namespace/name@sha256:<Checksum>    |https://gcr.io/scanning-customer/dockerimage@sha256:244fd47e07d1004f0aed9c156aa09083c82bf8944eceb67c946ff7430510a77b|
 |Generic file |file://sha256:<Checksum>:name               |file://sha256:244fd47e07d1004f0aed9c156aa09083c82bf8944eceb67c946ff7430510a77b:foo.jar|
 |Maven        |gav://group:artifact:version                |gav://ant:ant:1.6.5|
-|NPM          |npm://package:version                       |npm://mocha:2.4.5|
+|NPM          |npm://package:version                       |`npm://mocha:2.4.5`|
 |NuGet        |nuget://module:version                      |nuget://log4net:9.0.1|
 |Python       |pip://package:version                       |pip://raven:5.13.0|
 |RPM          |rpm://dist(optional):arch:name:version      |rpm://el6:i386:ImageMagick:6.7.2.7-4|
