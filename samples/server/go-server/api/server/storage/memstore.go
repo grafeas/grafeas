@@ -166,12 +166,12 @@ func (m *MemStore) ListNoteOccurrences(pID, nID, filters string) ([]swagger.Occu
 	}
 	nName := name.FormatNote(pID, nID)
 	os := []swagger.Occurrence{}
-	for _, o := range(m.occurrencesByID) {
+	for _, o := range m.occurrencesByID {
 		if o.NoteName == nName {
 			os = append(os, o)
 		}
 	}
-   return os, nil
+	return os, nil
 }
 
 // GetOperation returns the operation with pID and oID

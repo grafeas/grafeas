@@ -18,10 +18,9 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/grafeas/grafeas/samples/server/go-server/api/server"
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/storage"
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/v1alpha1"
-	"github.com/grafeas/grafeas/samples/server/go-server/api/server"
-
 )
 
 func main() {
