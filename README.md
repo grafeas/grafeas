@@ -28,6 +28,8 @@ Specifying a kind in our notes and occurrences makes Grafeas extensible. As new 
 |IMAGE_BASIS          |Base Image for a container                                               |An image that uses the base image, and layers included on top of base image|
 |PACKAGE_MANAGER      |Package Descriptions                                                     |Filesystem locations of where the package is installed in a specific resource|
 |DEPLOYMENT_HISTORY   |A resource that can be deployed                                          |Details of each deployment of the resource|
+|ATTESTATION          |Anchor for attestations for this authority                               |An attestion on a specific component|
+
 
 
 ## Examples

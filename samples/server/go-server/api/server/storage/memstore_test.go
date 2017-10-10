@@ -455,7 +455,7 @@ func TestListNoteOccurrences(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Error parsing note name %v", err)
 	}
-	gotOs, err  := s.ListNoteOccurrences(pID, nID, "")
+	gotOs, err := s.ListNoteOccurrences(pID, nID, "")
 	if err != nil {
 		t.Fatalf("ListNoteOccurrences got %v want success", err)
 	}

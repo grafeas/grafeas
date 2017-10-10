@@ -585,54 +585,54 @@ func TestListNoteOccurrences(t *testing.T) {
 }
 
 func TestUpdateNote(t *testing.T) {
-		h := Handler{v1alpha1.Grafeas{S: storage.NewMemStore()}}
-		n := testutil.Note()
-		if err := createNote(n, h); err != nil {
-			t.Errorf("%v", err)
-		}
-		// update note Name, verify 400 error
-		update := testutil.Note()
-		update.Name = "projects/p/notes/thisisbad"
-		rawNote, err := json.Marshal(&update)
-		reader := bytes.NewReader(rawNote)
-		if err != nil {
-			t.Errorf(fmt.Sprintf("error marshalling json: %v", err))
-		}
-		pID, nID, pErr := name.ParseNote(n.Name)
-		if pErr != nil {
-			t.Fatalf("Error parsing Note; %v", pErr)
-		}
-		r, err := http.NewRequest("PUT",
-			fmt.Sprintf("/v1alpha1/projects/%v/notes/%v", pID, nID), reader)
-		if err != nil {
-			t.Fatalf("Could not create httprequest %v", err)
-		}
-		w := httptest.NewRecorder()
-
-		h.UpdateNote(w, r)
-		if w.Code != 400 {
-			t.Errorf("UpdateNote with no new name got %v, want 400", w.Code)
-		}
-		// update note description, verify 200
-		update = testutil.Note()
-		update.LongDescription = "This note needs a new long description"
-		rawNote, err = json.Marshal(&update)
-		reader = bytes.NewReader(rawNote)
-		if err != nil {
-			t.Errorf(fmt.Sprintf("error marshalling json: %v", err))
-		}
-
-		r, err = http.NewRequest("PUT",
-			fmt.Sprintf("/v1alpha1/projects/%v/notes/%v", pID, nID), reader)
-		if err != nil {
-			t.Fatalf("Could not create httprequest %v", err)
-		}
-		w = httptest.NewRecorder()
-		h.UpdateNote(w, r)
-		if w.Code != 200 {
-			t.Errorf("UpdateNote got %v, want 200", w.Code)
-		}
+	h := Handler{v1alpha1.Grafeas{S: storage.NewMemStore()}}
+	n := testutil.Note()
+	if err := createNote(n, h); err != nil {
+		t.Errorf("%v", err)
 	}
+	// update note Name, verify 400 error
+	update := testutil.Note()
+	update.Name = "projects/p/notes/thisisbad"
+	rawNote, err := json.Marshal(&update)
+	reader := bytes.NewReader(rawNote)
+	if err != nil {
+		t.Errorf(fmt.Sprintf("error marshalling json: %v", err))
+	}
+	pID, nID, pErr := name.ParseNote(n.Name)
+	if pErr != nil {
+		t.Fatalf("Error parsing Note; %v", pErr)
+	}
+	r, err := http.NewRequest("PUT",
+		fmt.Sprintf("/v1alpha1/projects/%v/notes/%v", pID, nID), reader)
+	if err != nil {
+		t.Fatalf("Could not create httprequest %v", err)
+	}
+	w := httptest.NewRecorder()
+
+	h.UpdateNote(w, r)
+	if w.Code != 400 {
+		t.Errorf("UpdateNote with no new name got %v, want 400", w.Code)
+	}
+	// update note description, verify 200
+	update = testutil.Note()
+	update.LongDescription = "This note needs a new long description"
+	rawNote, err = json.Marshal(&update)
+	reader = bytes.NewReader(rawNote)
+	if err != nil {
+		t.Errorf(fmt.Sprintf("error marshalling json: %v", err))
+	}
+
+	r, err = http.NewRequest("PUT",
+		fmt.Sprintf("/v1alpha1/projects/%v/notes/%v", pID, nID), reader)
+	if err != nil {
+		t.Fatalf("Could not create httprequest %v", err)
+	}
+	w = httptest.NewRecorder()
+	h.UpdateNote(w, r)
+	if w.Code != 200 {
+		t.Errorf("UpdateNote got %v, want 200", w.Code)
+	}
+}
 
 func TestUpdateOperation(t *testing.T) {
 	h := Handler{v1alpha1.Grafeas{S: storage.NewMemStore()}}

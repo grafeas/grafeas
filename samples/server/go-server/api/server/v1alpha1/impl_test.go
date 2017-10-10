@@ -20,10 +20,10 @@ import (
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/storage"
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/testing"
 
+	"fmt"
 	"net/http"
 	"reflect"
 	"testing"
-	"fmt"
 )
 
 func TestCreateOperation(t *testing.T) {
@@ -408,7 +408,7 @@ func TestListNotes(t *testing.T) {
 	}
 }
 
-func TestListNoteOccurrences(t *testing.T){
+func TestListNoteOccurrences(t *testing.T) {
 	g := Grafeas{storage.NewMemStore()}
 	n := testutil.Note()
 	if err := g.CreateNote(&n); err != nil {
@@ -437,9 +437,9 @@ func TestListNoteOccurrences(t *testing.T){
 	if err := g.CreateOccurrence(&o); err != nil {
 		t.Fatalf("CreateOccurrence got %v want success", err)
 	}
-    pID, nID, err := name.ParseNote(n.Name)
-    if err != nil {
-    	t.Fatalf("Error parsing note name %v", err)
+	pID, nID, err := name.ParseNote(n.Name)
+	if err != nil {
+		t.Fatalf("Error parsing note name %v", err)
 	}
 	resp, err := g.ListNoteOccurrences(pID, nID, "")
 	if err != nil {
@@ -449,4 +449,3 @@ func TestListNoteOccurrences(t *testing.T){
 		t.Errorf("resp.Occurrences got %d, want 20", len(resp.Occurrences))
 	}
 }
-
