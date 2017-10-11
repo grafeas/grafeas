@@ -17,18 +17,19 @@ package v1alpha1
 
 import (
 	"fmt"
+	"log"
+	"net/http"
+
 	"github.com/grafeas/grafeas/samples/server/go-server/api"
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/errors"
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/name"
-	"github.com/grafeas/grafeas/samples/server/go-server/api/server/storage"
-	"log"
-	"net/http"
+	server "github.com/grafeas/grafeas/server-go"
 )
 
 // Grafeas is an implementation of the Grafeas API, which should be called by handler methods for verification of logic
 // and storage.
 type Grafeas struct {
-	S *storage.MemStore
+	S server.Storager
 }
 
 // CreateNote validates that a note is valid and then creates a note in the backing datastore.
