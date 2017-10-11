@@ -18,7 +18,7 @@ Write access to occurrences should only be granted to users who have access to l
 In order to properly aggregate over metadata stored in Grafeas, each kind of information stored has a strict schema. These schemas allow normalization of data from multiple providers, giving users the ability to see meaningful insights in their components over time. Defined below are the currently supported kinds, and a brief summary of what the notes and occurrences for each of them will contain.
 Specifying a kind in our notes and occurrences makes Grafeas extensible. As new metadata types need support, new kinds can be added, each with their own schema.
 
->TODO:Document the process for adding a new kind to the spec and generating the model, documents, and client libraries to include that kind.
+>TODO:Document the process for adding a new kind to the spec and generating the model, documents, and client libraries to include that kind. #38
 
 
 |Kind                 |Note Summary                                                             |Occurrence Summary                               |
