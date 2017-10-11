@@ -16,15 +16,17 @@ package storage
 
 import (
 	"fmt"
+
 	"github.com/grafeas/grafeas/samples/server/go-server/api"
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/errors"
 
-	"github.com/grafeas/grafeas/samples/server/go-server/api/server/name"
 	"net/http"
 	"strings"
+
+	"github.com/grafeas/grafeas/samples/server/go-server/api/server/name"
 )
 
-// Memstore is an in-memory storage solution for Grafeas
+// MemStore is an in-memory storage solution for Grafeas
 type MemStore struct {
 	occurrencesByID map[string]swagger.Occurrence
 	notesByID       map[string]swagger.Note
@@ -80,6 +82,7 @@ func (m *MemStore) GetOccurrence(pID, oID string) (*swagger.Occurrence, *errors.
 	return &o, nil
 }
 
+// ListOccurrences returns the occurrences for this project ID (pID)
 func (m *MemStore) ListOccurrences(pID, filters string) []swagger.Occurrence {
 	os := []swagger.Occurrence{}
 	for _, o := range m.occurrencesByID {
@@ -149,6 +152,7 @@ func (m *MemStore) GetNoteByOccurrence(pID, oID string) (*swagger.Note, *errors.
 	return &n, nil
 }
 
+// ListNotes returns the notes available for project ID (pID)
 func (m *MemStore) ListNotes(pID, filters string) []swagger.Note {
 	ns := []swagger.Note{}
 	for _, n := range m.notesByID {
@@ -158,6 +162,8 @@ func (m *MemStore) ListNotes(pID, filters string) []swagger.Note {
 	}
 	return ns
 }
+
+// ListNoteOccurrences returns the occcurrences on the particular note (nID) for this project (pID)
 func (m *MemStore) ListNoteOccurrences(pID, nID, filters string) ([]swagger.Occurrence, *errors.AppError) {
 	// TODO: use filters
 	// Verify that note exists
@@ -217,6 +223,7 @@ func (m *MemStore) UpdateOperation(pID, opID string, op *swagger.Operation) *err
 	return nil
 }
 
+// ListOperations returns the operations for this project (pID)
 func (m *MemStore) ListOperations(pID, filters string) []swagger.Operation {
 	ops := []swagger.Operation{}
 	for _, op := range m.opsByID {
