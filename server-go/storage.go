@@ -2,7 +2,7 @@ package server
 
 import (
 	"github.com/grafeas/grafeas/samples/server/go-server/api"
-	"github.com/grafeas/grafeas/samples/server/go-server/api/server/errors"
+	"github.com/grafeas/grafeas/server-go/errors"
 )
 
 // Storager is the interface that a Grafeas storage implementation would provide

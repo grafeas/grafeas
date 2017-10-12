@@ -21,9 +21,9 @@ import (
 	"net/http"
 
 	"github.com/grafeas/grafeas/samples/server/go-server/api"
-	"github.com/grafeas/grafeas/samples/server/go-server/api/server/errors"
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/name"
 	server "github.com/grafeas/grafeas/server-go"
+	"github.com/grafeas/grafeas/server-go/errors"
 )
 
 // Grafeas is an implementation of the Grafeas API, which should be called by handler methods for verification of logic
@@ -80,13 +80,13 @@ func (g *Grafeas) DeleteOccurrence(pID, oID string) *errors.AppError {
 
 // DeleteNote deletes a note from the datastore.
 func (g *Grafeas) DeleteNote(pID, nID string) *errors.AppError {
-	// TODO: Check for occurrences tied to this note, and return an error if there are any before deletion.
+	// TODO: Check for occurrences tied to this note, and return an *errors.AppError if there are any before deletion.
 	return g.S.DeleteNote(pID, nID)
 }
 
 // DeleteOperation deletes an operation from the datastore.
 func (g *Grafeas) DeleteOperation(pID, nID string) *errors.AppError {
-	// TODO: Check for occurrences and notes tied to this operation, and return an error if there are any before deletion.
+	// TODO: Check for occurrences and notes tied to this operation, and return an *errors.AppError if there are any before deletion.
 	return g.S.DeleteOperation(pID, nID)
 }
 

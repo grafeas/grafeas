@@ -20,9 +20,9 @@ import (
 	"strings"
 
 	"github.com/grafeas/grafeas/samples/server/go-server/api"
-	"github.com/grafeas/grafeas/samples/server/go-server/api/server/errors"
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/name"
 	"github.com/grafeas/grafeas/server-go"
+	"github.com/grafeas/grafeas/server-go/errors"
 )
 
 // memStore is an in-memory storage solution for Grafeas
