@@ -18,15 +18,16 @@ package server
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/google/uuid"
-	"github.com/grafeas/grafeas/samples/server/go-server/api"
-	"github.com/grafeas/grafeas/samples/server/go-server/api/server/errors"
-	"github.com/grafeas/grafeas/samples/server/go-server/api/server/name"
-	"github.com/grafeas/grafeas/samples/server/go-server/api/server/v1alpha1"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"strings"
+
+	"github.com/google/uuid"
+	"github.com/grafeas/grafeas/samples/server/go-server/api"
+	"github.com/grafeas/grafeas/samples/server/go-server/api/server/name"
+	"github.com/grafeas/grafeas/samples/server/go-server/api/server/v1alpha1"
+	"github.com/grafeas/grafeas/server-go/errors"
 )
 
 // Handler accepts httpRequests, converts them to Grafeas objects - calls into Grafeas to operation on them
@@ -81,6 +82,7 @@ func (h *Handler) CreateNote(w http.ResponseWriter, r *http.Request) {
 	if err := h.g.CreateNote(&n); err != nil {
 		log.Printf("Error creating note: %v", err)
 		http.Error(w, err.Err, err.StatusCode)
+		return
 	}
 	bytes, mErr := json.Marshal(&n)
 	if err != nil {
