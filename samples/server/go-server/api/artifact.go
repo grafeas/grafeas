@@ -22,7 +22,7 @@
 
 package swagger
 
-// Artifact destribes a build product.
+// Artifact describes a build product.
 type Artifact struct {
 
 	// Hash or checksum value of a binary, or Docker Registry 2.0 digest of a container.
