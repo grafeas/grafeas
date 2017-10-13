@@ -10,7 +10,7 @@ Access to notes should be read-only for users who have access to occurrences ref
 
 **Occurrences**: An occurrence can be thought of as an instantiation of a note and describes how the note was found in a specific cloud resource or project (e.g., location, specific remediation steps, etc.), or what the results of a specific note were (e.g., the container images that resulted from a build). For example, an occurrence might report that the heartbleed OpenSSL bug (a possible Note) was found in a specific package of a container image, and include information about how to remedy the heartbleed bug based on the customer’s package.
 
-An occurrence name should take the format `/projects/<project_id>/notes/<occurrence_id>` where the project_id would typically be different from the project where the note is created and the occurrence_id would be unique per occurrence-project, and would often be random. 
+An occurrence name should take the format `/projects/<project_id>/occurrences/<occurrence_id>` where the project_id would typically be different from the project where the note is created and the occurrence_id would be unique per occurrence-project, and would often be random. 
 
 Write access to occurrences should only be granted to users who have access to link a note to the occurrence. Any users can have read access to occurrences. 
 
