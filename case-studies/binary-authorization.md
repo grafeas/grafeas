@@ -113,7 +113,7 @@ through Grafeas as a dedicated Kind `ATTESTATION`.
 
 ### Deployment Environments
 
-Google Compute Platform (GCP) uses projects and service accounts as security
+Google Cloud Platform (GCP) uses projects and service accounts as security
 boundaries. In addition to that, GKE uses clusters as a security boundary (a
 Kubernetes cluster can have its own secrets for example). These are some of the
 deployment targets that we plan to support as subjects of BinAuthz policy
