@@ -37,6 +37,9 @@ type Occurrence struct {
 	// This explicitly denotes which of the occurrence details is specified. This field can be used as a filter in list requests. @OutputOnly
 	Kind string `json:"kind,omitempty"`
 
+	// Describes an attestation.
+	Attestation Attestation `json:"attestation,omitempty"`
+
 	// Details of the custom note.
 	CustomDetails CustomDetails `json:"customDetails,omitempty"`
 
