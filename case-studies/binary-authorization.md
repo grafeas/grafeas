@@ -24,7 +24,7 @@ artifacts have been prepared according to organization’s standards. It does so
 through attestation and enforcement: a deployment is prevented unless the
 artifact is conformant to central policy; and to express evidence of
 conformance, teams use trusted attestations. A Binary Authorization policy then
-states attestation requirements necessary for artifact deployment. Policy then
+states attestation requirements necessary for artifact deployment. Policy thus
 codifies an important part of organization’s life cycle policy.
 
 ### Scope
@@ -168,7 +168,7 @@ Kubernetes orchestrates the execution of containers, predominantly focusing on
 Docker as the container runtime. Pod is the lowest level abstraction of a
 running container. Users can create Pods directly, or users can create
 Controllers (such as ReplicaSet) which then mediate Pod creation. We chose Pod
-admission as the interception point. At this time, information which BinAuthz
+admission as the interception point. At Pod admission time, information which BinAuthz
 needs is available: artifact identifier (container image URL), deploy target
 (project, service account, cluster). And Pod creation is the chokepoint through
 which flow all code paths to run a Docker container. Intercepting at Pod
