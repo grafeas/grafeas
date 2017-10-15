@@ -197,7 +197,7 @@ to BinAuthz, a tag based deployment is automatically disallowed as it is
 impossible to decide the actual version that will be used once the Pod is
 created. Besides giving clearer BinAuthz semantics, we believe that digest based
 deployments are better production hygiene and thus were favored strongly by
-customers we worked with As an exception to this rule, our policy language
+customers we worked with. As an exception to this rule, our policy language
 allows glob-based container image whitelisting, through which even tag based
 deployments may be allowed. This is useful for images that don’t go through the
 same internal vetting process (e.g., various sidecar containers). Longer-term
