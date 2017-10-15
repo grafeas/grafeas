@@ -37,6 +37,9 @@ type Note struct {
 	// This explicitly denotes which kind of note is specified. This field can be used as a filter in list requests. @OutputOnly
 	Kind string `json:"kind,omitempty"`
 
+	// A note describing a logical attestation.
+	AttestationAuthority AttestationAuthority `json:"attestationAuthority,omitempty"`
+
 	// A package vulnerability type of note.
 	VulnerabilityType VulnerabilityType `json:"vulnerabilityType,omitempty"`
 
