@@ -22,19 +22,19 @@ jobs:
       - run:
           name: Install protoc
           command: >
-            apt-get update
+            sudo apt-get update
 
-            wget
+            sudo wget
             https://github.com/google/protobuf/releases/download/v3.3.0/protoc-3.3.0-linux-x86_64.zip
 
             unzip protoc-3.3.0-linux-x86_64.zip -d /usr/local
 
             rm protoc-3.3.0-linux-x86_64.zip
 
-            apt-get remove -y wget unzip
+            sudo apt-get remove -y wget unzip
 
-            apt-get autoremove -y
-            
+            sudo apt-get autoremove -y
+
       - run:
           name: Install go dependencies
           command: >
