@@ -35,10 +35,6 @@ jobs:
 
             sudo apt-get autoremove -y
 
-            PATH = $PATH:./protoc-3.3.0-linux-x86_64/bin/
-
-            export PATH
-
 
       - run:
           name: Install go dependencies
