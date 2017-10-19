@@ -35,6 +35,10 @@ jobs:
 
             sudo apt-get autoremove -y
 
+            protoc = ./protoc-3.3.0-linux-x86_64/bin/protoc
+
+            export protoc
+
       - run:
           name: Install go dependencies
           command: go get -u -v github.com/golang/protobuf/protoc-gen-go
