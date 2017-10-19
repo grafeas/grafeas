@@ -7,10 +7,6 @@ GOPATH := ${PWD}/vendor:${GOPATH}
 export GOPATH
 SRC = $(shell find . -type f -name '*.go' -not -path "./vendor/*")
 
-
-install:
-	go get -u github.com/golang/protobuf/protoc-gen-go
-
 build:  vet fmt grafeas_go
 	go build -v ./...
 

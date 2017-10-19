@@ -19,5 +19,20 @@ jobs:
     working_directory: /go/src/github.com/grafeas/grafeas/
     steps:
       - checkout
+       - run:
+                name: Install protoc
+                command: >
+                  apt-get update
+                  wget
+                  https://github.com/google/protobuf/releases/download/v3.3.0/protoc-3.3.0-linux-x86_64.zip
+                  unzip protoc-3.3.0-linux-x86_64.zip -d /usr/local
+                  rm protoc-3.3.0-linux-x86_64.zip
+                  apt-get remove -y wget unzip
+                  apt-get autoremove -y
+            - run:
+                name: Install go dependencies
+                command: >
+                  make install
+                  go get -u -v github.com/golang/protobuf/protoc-gen-go
       # specify any bash command here prefixed with `run: `
-      - run: make install; make build; make test
+      - run: make build; make test
