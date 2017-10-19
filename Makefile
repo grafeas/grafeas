@@ -5,11 +5,12 @@
 # # our third party snapshots.
 GOPATH := ${PWD}/vendor:${GOPATH}
 export GOPATH
-PATH = $PATH:./protoc-3.3.0-linux-x86_64/bin/
-export PATH
 SRC = $(shell find . -type f -name '*.go' -not -path "./vendor/*")
 
-build:  vet fmt grafeas_go
+install:
+	go get -u -v github.com/golang/protobuf/protoc-gen-go
+
+build:  vet fmt install grafeas_go
 	go build -v ./...
 
 
