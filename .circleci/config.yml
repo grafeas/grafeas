@@ -20,4 +20,4 @@ jobs:
     steps:
       - checkout
       # specify any bash command here prefixed with `run: `
-      - run: make; make test
+      - run: make install; make build; make test

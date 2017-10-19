@@ -8,6 +8,9 @@ export GOPATH
 SRC = $(shell find . -type f -name '*.go' -not -path "./vendor/*")
 
 
+install:
+	go get -u github.com/golang/protobuf/protoc-gen-go
+
 build:  vet fmt grafeas_go
 	go build -v ./...
 
@@ -28,6 +31,7 @@ grafeas_go: protoc_middleman_go
 vet:
 	@go tool vet ${SRC}
 
-
 clean:
+	go clean ./...
 	rm -f protoc_middleman_go v1alpha1/proto/*.pb.go
+
