@@ -153,6 +153,18 @@
 			"revisionTime": "2017-10-02T23:26:14Z"
 		},
 		{
+			"checksumSHA1": "FVmNvRhYvdljdHlCHCEtoXb8WuI=",
+			"path": "google.golang.org/genproto/googleapis/devtools/source/v1",
+			"revision": "f676e0f3ac6395ff1a529ae59a6670878a8371a6",
+			"revisionTime": "2017-10-02T23:26:14Z"
+		},
+		{
+			"checksumSHA1": "fau7fK0XvEJu/gw9ek0B1IZfcxQ=",
+			"path": "google.golang.org/genproto/googleapis/longrunning",
+			"revision": "f676e0f3ac6395ff1a529ae59a6670878a8371a6",
+			"revisionTime": "2017-10-02T23:26:14Z"
+		},
+		{
 			"checksumSHA1": "Tc3BU26zThLzcyqbVtiSEp7EpU8=",
 			"path": "google.golang.org/genproto/googleapis/rpc/status",
 			"revision": "f676e0f3ac6395ff1a529ae59a6670878a8371a6",
