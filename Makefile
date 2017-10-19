@@ -5,6 +5,8 @@
 # # our third party snapshots.
 GOPATH := ${PWD}/vendor:${GOPATH}
 export GOPATH
+SRC = $(shell find . -type f -name '*.go' -not -path "./vendor/*")
+
 
 build:  vet fmt grafeas_go
 	go build -v ./...
@@ -12,10 +14,10 @@ build:  vet fmt grafeas_go
 
 # http://golang.org/cmd/go/#hdr-Run_gofmt_on_package_sources
 fmt:
-	go fmt ./... -./vendor/...
+	@gofmt -l -w $(SRC)
 
 test:
-	@go test -v ./... -./vendor/...
+	@go test -v ./... 
 
 protoc_middleman_go: v1alpha1/proto/grafeas.proto
 	protoc -I. -I vendor/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis -I vendor/github.com/googleapis/googleapis --go_out=. v1alpha1/proto/grafeas.proto
@@ -24,7 +26,7 @@ protoc_middleman_go: v1alpha1/proto/grafeas.proto
 grafeas_go: protoc_middleman_go
 
 vet:
-	go vet ./... -./vendor/... 
+	@go tool vet ${SRC}
 
 
 clean:
