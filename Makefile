@@ -1,4 +1,4 @@
-.PHONY: build fmt lint test vet
+.PHONY: build fmt test vet clean
 
 # Prepend our _vendor directory to the system GOPATH
 # # so that import path resolution will prioritize
@@ -6,8 +6,7 @@
 GOPATH := ${PWD}/vendor:${GOPATH}
 export GOPATH
 
-
-build:  vet fmt 
+build:  vet fmt grafeas_go
 	go build -v ./...
 
 
@@ -18,9 +17,15 @@ fmt:
 test:
 	@go test -v ./...
 
+protoc_middleman_go: v1alpha1/proto/grafeas.proto
+	protoc -I. -I vendor/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis -I vendor/github.com/googleapis/googleapis --go_out=. v1alpha1/proto/grafeas.proto
+	@touch protoc_middleman_go
 
-# http://godoc.org/code.google.com/p/go.tools/cmd/vet
-# go get code.google.com/p/go.tools/cmd/vet
+grafeas_go: protoc_middleman_go
+
 vet:
 	go vet ./...
 
+
+clean:
+	rm -f protoc_middleman_go v1alpha1/proto/*.pb.go
