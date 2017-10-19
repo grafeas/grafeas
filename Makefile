@@ -12,10 +12,10 @@ build:  vet fmt grafeas_go
 
 # http://golang.org/cmd/go/#hdr-Run_gofmt_on_package_sources
 fmt:
-	go fmt ./...
+	go fmt ./... -./vendor/...
 
 test:
-	@go test -v ./...
+	@go test -v ./... -./vendor/...
 
 protoc_middleman_go: v1alpha1/proto/grafeas.proto
 	protoc -I. -I vendor/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis -I vendor/github.com/googleapis/googleapis --go_out=. v1alpha1/proto/grafeas.proto
@@ -24,7 +24,7 @@ protoc_middleman_go: v1alpha1/proto/grafeas.proto
 grafeas_go: protoc_middleman_go
 
 vet:
-	go vet ./...
+	go vet ./... -./vendor/... 
 
 
 clean:
