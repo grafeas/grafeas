@@ -21,7 +21,7 @@ import "google/longrunning/operations.proto";
 import "google/devtools/source/v1/source_context.proto";
 
 package grafeas.v1alpha1.api;
-option go_package = "github.com/grafeas/model-go/v1alpha1";
+option go_package = "grafeas";
 
 // Request to get a Occurrence.
 message GetOccurrenceRequest {
