@@ -881,7 +881,7 @@
           "format": "google-datetime"
         },
         "finishTime": {
-          "description": "Time at whihc execution of the build was finished.",
+          "description": "Time at which execution of the build was finished.",
           "type": "string",
           "format": "google-datetime"
         },
@@ -961,7 +961,7 @@
     },
     "Artifact": {
       "id": "Artifact",
-      "description": "Artifact destribes a build product.",
+      "description": "Artifact describes a build product.",
       "type": "object",
       "properties": {
         "checksum": {
@@ -1543,7 +1543,7 @@
           ]
         },
         "pgpKeyId": {
-          "description": "The ID of the key, as output by `gpg --list-keys`.  This should be 8\nhexidecimal digits, capitalized.  e.g.\n$ gpg --list-keys pub\n2048R\/A663AEEA 2017-08-01 ui Fake Name\n<example-attesting-user@google.com>\nIn the above example, the `key_id` is \"A663AEEA\".\nNote that in practice this ID is the last 64 bits of the key fingerprint.",
+          "description": "The ID of the key, as output by `gpg --list-keys`.  This should be 8\nhexadecimal digits, capitalized.  e.g.\n$ gpg --list-keys pub\n2048R\/A663AEEA 2017-08-01 ui Fake Name\n<example-attesting-user@google.com>\nIn the above example, the `key_id` is \"A663AEEA\".\nNote that in practice this ID is the last 64 bits of the key fingerprint.",
           "type": "string"
         }
       }
@@ -1723,7 +1723,7 @@
     },
     "Detail": {
       "id": "Detail",
-      "description": "Identifies all occurences of this vulnerability in the package for a\nspecific distro\/location\nFor example: glibc in cpe:\/o:debian:debian_linux:8 for versions 2.1 - 2.2",
+      "description": "Identifies all occurrences of this vulnerability in the package for a\nspecific distro\/location\nFor example: glibc in cpe:\/o:debian:debian_linux:8 for versions 2.1 - 2.2",
       "type": "object",
       "properties": {
         "cpeUri": {
