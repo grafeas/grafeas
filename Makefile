@@ -30,7 +30,7 @@ model-go/v1alpha1/v1alpha1/proto/grafeas.pb.go: .install.protoc-gen-go v1alpha1/
 		-I. \
 		-I ./vendor/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
 		-I ./vendor/github.com/googleapis/googleapis \
-		--go_out=./v1alpha1/ \
+		--go_out=./ \
 		v1alpha1/proto/grafeas.proto
 
 .PHONY: grafeas_go
@@ -39,4 +39,3 @@ grafeas_go: model-go/v1alpha1/v1alpha1/proto/grafeas.pb.go
 clean:
 	go clean ./...
 	rm -f $(CLEAN)
-
