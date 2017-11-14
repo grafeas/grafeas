@@ -24,17 +24,16 @@ test:
 vet:
 	@go tool vet ${SRC}
 
-model-go/v1alpha1/v1alpha1/proto/grafeas.pb.go: .install.protoc-gen-go v1alpha1/proto/grafeas.proto
-	@mkdir -p ./model-go/v1alpha1/
+model-go/v1alpha1/proto/grafeas.pb.go: .install.protoc-gen-go v1alpha1/proto/grafeas.proto
 	protoc \
-		-I. \
-		-I ./vendor/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
-		-I ./vendor/github.com/googleapis/googleapis \
+		-I ./ \
+		-I vendor/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
+		-I vendor/github.com/googleapis/googleapis \
 		--go_out=./ \
 		v1alpha1/proto/grafeas.proto
 
 .PHONY: grafeas_go
-grafeas_go: model-go/v1alpha1/v1alpha1/proto/grafeas.pb.go
+grafeas_go: model-go/v1alpha1/proto/grafeas.pb.go
 
 clean:
 	go clean ./...
