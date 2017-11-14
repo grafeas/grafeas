@@ -32,11 +32,6 @@ message GetOccurrenceRequest {
 
 // Request to list occurrences.
 message ListOccurrencesRequest {
-  // The name field contains the project Id. For example:
-  // "projects/{project_id}
-  // @Deprecated
-  string name = 1;
-
   // This contains the project Id for example: projects/{project_id}.
   string parent = 5;
 
@@ -59,10 +54,6 @@ message DeleteOccurrenceRequest {
 
 // Request to insert a new occurrence.
 message CreateOccurrenceRequest {
-  // The name of the project.  Should be of the form "projects/{project_id}".
-  // @Deprecated
-  string name = 1;
-
   // This field contains the project Id for example: "projects/{project_id}"
   string parent = 3;
 
@@ -99,11 +90,6 @@ message GetOccurrenceNoteRequest {
 
 // Request to list notes.
 message ListNotesRequest {
-  // The name field will contain the project Id for example:
-  // "providers/{provider_id}
-  // @Deprecated
-  string name = 1;
-
   // This field contains the project Id for example:
   // "project/{project_id}
   string parent = 5;
@@ -127,11 +113,6 @@ message DeleteNoteRequest {
 
 // Request to insert a new note
 message CreateNoteRequest {
-  // The name of the project.
-  // Should be of the form "providers/{provider_id}".
-  // @Deprecated
-  string name = 1;
-
   // This field contains the project Id for example:
   // "project/{project_id}
   string parent = 4;
