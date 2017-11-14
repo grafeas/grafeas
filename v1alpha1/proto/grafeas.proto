@@ -90,8 +90,7 @@ message GetOccurrenceNoteRequest {
 
 // Request to list notes.
 message ListNotesRequest {
-  // This field contains the project Id for example:
-  // "project/{project_id}
+  // This field contains the project ID for example: "projects/{project_id}".
   string parent = 5;
 
   // The filter expression.
