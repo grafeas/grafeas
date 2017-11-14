@@ -171,6 +171,12 @@
 			"revisionTime": "2017-10-02T23:26:14Z"
 		},
 		{
+			"checksumSHA1": "7BgZVAlEEC50heDQUaUHdiLKkzQ=",
+			"path": "google.golang.org/genproto/protobuf/field_mask",
+			"revision": "11c7f9e547da6db876260ce49ea7536985904c9b",
+			"revisionTime": "2017-11-03T03:06:25Z"
+		},
+		{
 			"checksumSHA1": "x1CAqMPlmgTkXPrnmQJcm75nj5E=",
 			"path": "google.golang.org/grpc",
 			"revision": "c209cdff16049a924bef4aa5c6f7588f0b42b2fa",
