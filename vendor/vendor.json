@@ -51,12 +51,6 @@
 			"revisionTime": "2017-10-02T23:26:14Z"
 		},
 		{
-			"checksumSHA1": "lwiBn2+6aq1U47O0Mn9nS55NQY4=",
-			"path": "github.com/googleapis/googleapis/google/devtools/source/v1",
-			"revision": "ffe0aaf5fb0229072ffc3a47e075a8ab7980fc26",
-			"revisionTime": "2017-10-17T19:03:09Z"
-		},
-		{
 			"checksumSHA1": "lEWrdtbdojb11jSHJxEJLh/IsRA=",
 			"path": "github.com/googleapis/googleapis/google/longrunning",
 			"revision": "ffe0aaf5fb0229072ffc3a47e075a8ab7980fc26",
@@ -153,12 +147,6 @@
 			"revisionTime": "2017-10-02T23:26:14Z"
 		},
 		{
-			"checksumSHA1": "FVmNvRhYvdljdHlCHCEtoXb8WuI=",
-			"path": "google.golang.org/genproto/googleapis/devtools/source/v1",
-			"revision": "f676e0f3ac6395ff1a529ae59a6670878a8371a6",
-			"revisionTime": "2017-10-02T23:26:14Z"
-		},
-		{
 			"checksumSHA1": "fau7fK0XvEJu/gw9ek0B1IZfcxQ=",
 			"path": "google.golang.org/genproto/googleapis/longrunning",
 			"revision": "f676e0f3ac6395ff1a529ae59a6670878a8371a6",
@@ -169,6 +157,12 @@
 			"path": "google.golang.org/genproto/googleapis/rpc/status",
 			"revision": "f676e0f3ac6395ff1a529ae59a6670878a8371a6",
 			"revisionTime": "2017-10-02T23:26:14Z"
+		},
+		{
+			"checksumSHA1": "7BgZVAlEEC50heDQUaUHdiLKkzQ=",
+			"path": "google.golang.org/genproto/protobuf/field_mask",
+			"revision": "11c7f9e547da6db876260ce49ea7536985904c9b",
+			"revisionTime": "2017-11-03T03:06:25Z"
 		},
 		{
 			"checksumSHA1": "x1CAqMPlmgTkXPrnmQJcm75nj5E=",

@@ -47,6 +47,13 @@ It has these top-level messages:
 	RepoSource
 	StorageSource
 	VulnerabilityType
+	SourceContext
+	AliasContext
+	CloudRepoSourceContext
+	GerritSourceContext
+	GitSourceContext
+	RepoId
+	ProjectRepoId
 */
 package grafeas
 
@@ -55,9 +62,9 @@ import fmt "fmt"
 import math "math"
 import _ "github.com/golang/protobuf/ptypes/empty"
 import _ "google.golang.org/genproto/googleapis/api/annotations"
-import google_protobuf2 "github.com/golang/protobuf/ptypes/timestamp"
+import google_protobuf2 "google.golang.org/genproto/protobuf/field_mask"
+import google_protobuf3 "github.com/golang/protobuf/ptypes/timestamp"
 import google_longrunning "google.golang.org/genproto/googleapis/longrunning"
-import google_devtools_source_v1 "google.golang.org/genproto/googleapis/devtools/source/v1"
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
@@ -70,25 +77,27 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
-// The type of the key, either stored in `public_key` or referenced in
-// `key_id`
+// Public key formats
 type BuildSignature_KeyType int32
 
 const (
-	BuildSignature_UNSET             BuildSignature_KeyType = 0
+	// `KeyType` is not set.
+	BuildSignature_KEY_TYPE_UNSPECIFIED BuildSignature_KeyType = 0
+	// `PGP ASCII Armored` public key.
 	BuildSignature_PGP_ASCII_ARMORED BuildSignature_KeyType = 1
-	BuildSignature_PKIX_PEM          BuildSignature_KeyType = 2
+	// `PKIX PEM` public key.
+	BuildSignature_PKIX_PEM BuildSignature_KeyType = 2
 )
 
 var BuildSignature_KeyType_name = map[int32]string{
-	0: "UNSET",
+	0: "KEY_TYPE_UNSPECIFIED",
 	1: "PGP_ASCII_ARMORED",
 	2: "PKIX_PEM",
 }
 var BuildSignature_KeyType_value = map[string]int32{
-	"UNSET":             0,
-	"PGP_ASCII_ARMORED": 1,
-	"PKIX_PEM":          2,
+	"KEY_TYPE_UNSPECIFIED": 0,
+	"PGP_ASCII_ARMORED":    1,
+	"PKIX_PEM":             2,
 }
 
 func (x BuildSignature_KeyType) String() string {
@@ -96,32 +105,84 @@ func (x BuildSignature_KeyType) String() string {
 }
 func (BuildSignature_KeyType) EnumDescriptor() ([]byte, []int) { return fileDescriptor0, []int{23, 0} }
 
-// The recovered Dockerfile directive used to construct this layer.
+// Types of platforms.
+type Deployable_Deployment_Platform int32
+
+const (
+	// Unknown
+	Deployable_Deployment_PLATFORM_UNSPECIFIED Deployable_Deployment_Platform = 0
+	// Google Container Engine
+	Deployable_Deployment_GKE Deployable_Deployment_Platform = 1
+	// Google App Engine: Flexible Environment
+	Deployable_Deployment_FLEX Deployable_Deployment_Platform = 2
+	// Custom user-defined platform
+	Deployable_Deployment_CUSTOM Deployable_Deployment_Platform = 3
+)
+
+var Deployable_Deployment_Platform_name = map[int32]string{
+	0: "PLATFORM_UNSPECIFIED",
+	1: "GKE",
+	2: "FLEX",
+	3: "CUSTOM",
+}
+var Deployable_Deployment_Platform_value = map[string]int32{
+	"PLATFORM_UNSPECIFIED": 0,
+	"GKE":    1,
+	"FLEX":   2,
+	"CUSTOM": 3,
+}
+
+func (x Deployable_Deployment_Platform) String() string {
+	return proto.EnumName(Deployable_Deployment_Platform_name, int32(x))
+}
+func (Deployable_Deployment_Platform) EnumDescriptor() ([]byte, []int) {
+	return fileDescriptor0, []int{26, 0, 0}
+}
+
+// Instructions from dockerfile
 type DockerImage_Layer_Directive int32
 
 const (
-	DockerImage_Layer_UNKNOWN_DIRECTIVE DockerImage_Layer_Directive = 0
-	DockerImage_Layer_MAINTAINER        DockerImage_Layer_Directive = 1
-	DockerImage_Layer_RUN               DockerImage_Layer_Directive = 2
-	DockerImage_Layer_CMD               DockerImage_Layer_Directive = 3
-	DockerImage_Layer_LABEL             DockerImage_Layer_Directive = 4
-	DockerImage_Layer_EXPOSE            DockerImage_Layer_Directive = 5
-	DockerImage_Layer_ENV               DockerImage_Layer_Directive = 6
-	DockerImage_Layer_ADD               DockerImage_Layer_Directive = 7
-	DockerImage_Layer_COPY              DockerImage_Layer_Directive = 8
-	DockerImage_Layer_ENTRYPOINT        DockerImage_Layer_Directive = 9
-	DockerImage_Layer_VOLUME            DockerImage_Layer_Directive = 10
-	DockerImage_Layer_USER              DockerImage_Layer_Directive = 11
-	DockerImage_Layer_WORKDIR           DockerImage_Layer_Directive = 12
-	DockerImage_Layer_ARG               DockerImage_Layer_Directive = 13
-	DockerImage_Layer_ONBUILD           DockerImage_Layer_Directive = 14
-	DockerImage_Layer_STOPSIGNAL        DockerImage_Layer_Directive = 15
-	DockerImage_Layer_HEALTHCHECK       DockerImage_Layer_Directive = 16
-	DockerImage_Layer_SHELL             DockerImage_Layer_Directive = 17
+	// Default value for unsupported/missing directive
+	DockerImage_Layer_DIRECTIVE_UNSPECIFIED DockerImage_Layer_Directive = 0
+	// https://docs.docker.com/reference/builder/#maintainer
+	DockerImage_Layer_MAINTAINER DockerImage_Layer_Directive = 1
+	// https://docs.docker.com/reference/builder/#run
+	DockerImage_Layer_RUN DockerImage_Layer_Directive = 2
+	// https://docs.docker.com/reference/builder/#cmd
+	DockerImage_Layer_CMD DockerImage_Layer_Directive = 3
+	// https://docs.docker.com/reference/builder/#label
+	DockerImage_Layer_LABEL DockerImage_Layer_Directive = 4
+	// https://docs.docker.com/reference/builder/#expose
+	DockerImage_Layer_EXPOSE DockerImage_Layer_Directive = 5
+	// https://docs.docker.com/reference/builder/#env
+	DockerImage_Layer_ENV DockerImage_Layer_Directive = 6
+	// https://docs.docker.com/reference/builder/#add
+	DockerImage_Layer_ADD DockerImage_Layer_Directive = 7
+	// https://docs.docker.com/reference/builder/#copy
+	DockerImage_Layer_COPY DockerImage_Layer_Directive = 8
+	// https://docs.docker.com/reference/builder/#entrypoint
+	DockerImage_Layer_ENTRYPOINT DockerImage_Layer_Directive = 9
+	// https://docs.docker.com/reference/builder/#volume
+	DockerImage_Layer_VOLUME DockerImage_Layer_Directive = 10
+	// https://docs.docker.com/reference/builder/#user
+	DockerImage_Layer_USER DockerImage_Layer_Directive = 11
+	// https://docs.docker.com/reference/builder/#workdir
+	DockerImage_Layer_WORKDIR DockerImage_Layer_Directive = 12
+	// https://docs.docker.com/reference/builder/#arg
+	DockerImage_Layer_ARG DockerImage_Layer_Directive = 13
+	// https://docs.docker.com/reference/builder/#onbuild
+	DockerImage_Layer_ONBUILD DockerImage_Layer_Directive = 14
+	// https://docs.docker.com/reference/builder/#stopsignal
+	DockerImage_Layer_STOPSIGNAL DockerImage_Layer_Directive = 15
+	// https://docs.docker.com/reference/builder/#healthcheck
+	DockerImage_Layer_HEALTHCHECK DockerImage_Layer_Directive = 16
+	// https://docs.docker.com/reference/builder/#shell
+	DockerImage_Layer_SHELL DockerImage_Layer_Directive = 17
 )
 
 var DockerImage_Layer_Directive_name = map[int32]string{
-	0:  "UNKNOWN_DIRECTIVE",
+	0:  "DIRECTIVE_UNSPECIFIED",
 	1:  "MAINTAINER",
 	2:  "RUN",
 	3:  "CMD",
@@ -141,24 +202,24 @@ var DockerImage_Layer_Directive_name = map[int32]string{
 	17: "SHELL",
 }
 var DockerImage_Layer_Directive_value = map[string]int32{
-	"UNKNOWN_DIRECTIVE": 0,
-	"MAINTAINER":        1,
-	"RUN":               2,
-	"CMD":               3,
-	"LABEL":             4,
-	"EXPOSE":            5,
-	"ENV":               6,
-	"ADD":               7,
-	"COPY":              8,
-	"ENTRYPOINT":        9,
-	"VOLUME":            10,
-	"USER":              11,
-	"WORKDIR":           12,
-	"ARG":               13,
-	"ONBUILD":           14,
-	"STOPSIGNAL":        15,
-	"HEALTHCHECK":       16,
-	"SHELL":             17,
+	"DIRECTIVE_UNSPECIFIED": 0,
+	"MAINTAINER":            1,
+	"RUN":                   2,
+	"CMD":                   3,
+	"LABEL":                 4,
+	"EXPOSE":                5,
+	"ENV":                   6,
+	"ADD":                   7,
+	"COPY":                  8,
+	"ENTRYPOINT":            9,
+	"VOLUME":                10,
+	"USER":                  11,
+	"WORKDIR":               12,
+	"ARG":                   13,
+	"ONBUILD":               14,
+	"STOPSIGNAL":            15,
+	"HEALTHCHECK":           16,
+	"SHELL":                 17,
 }
 
 func (x DockerImage_Layer_Directive) String() string {
@@ -168,30 +229,29 @@ func (DockerImage_Layer_Directive) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor0, []int{27, 0, 0}
 }
 
-// The type of hash that was performed.
-type Hash_Type int32
+// Specifies the hash algorithm, if any.
+type Hash_HashType int32
 
 const (
-	Hash_NONE   Hash_Type = 0
-	Hash_SHA256 Hash_Type = 1
-	Hash_MD5    Hash_Type = 2
+	// No hash requested.
+	Hash_NONE Hash_HashType = 0
+	// A sha256 hash.
+	Hash_SHA256 Hash_HashType = 1
 )
 
-var Hash_Type_name = map[int32]string{
+var Hash_HashType_name = map[int32]string{
 	0: "NONE",
 	1: "SHA256",
-	2: "MD5",
 }
-var Hash_Type_value = map[string]int32{
+var Hash_HashType_value = map[string]int32{
 	"NONE":   0,
 	"SHA256": 1,
-	"MD5":    2,
 }
 
-func (x Hash_Type) String() string {
-	return proto.EnumName(Hash_Type_name, int32(x))
+func (x Hash_HashType) String() string {
+	return proto.EnumName(Hash_HashType_name, int32(x))
 }
-func (Hash_Type) EnumDescriptor() ([]byte, []int) { return fileDescriptor0, []int{30, 0} }
+func (Hash_HashType) EnumDescriptor() ([]byte, []int) { return fileDescriptor0, []int{30, 0} }
 
 // This must be 1:1 with members of our oneofs, it can be used for filtering
 // Note and Occurrence on their kind.
@@ -201,40 +261,36 @@ const (
 	// Unknown
 	Note_KIND_UNSPECIFIED Note_Kind = 0
 	// The note and occurrence represent a package vulnerability.
-	Note_PACKAGE_VULNERABILITY Note_Kind = 1
+	Note_PACKAGE_VULNERABILITY Note_Kind = 2
 	// The note and occurrence assert build provenance.
-	Note_BUILD_DETAILS Note_Kind = 2
+	Note_BUILD_DETAILS Note_Kind = 3
 	// This represents an image basis relationship.
-	Note_IMAGE_BASIS Note_Kind = 3
+	Note_IMAGE_BASIS Note_Kind = 4
 	// This represents a package installed via a package manager.
-	Note_PACKAGE_MANAGER Note_Kind = 4
+	Note_PACKAGE_MANAGER Note_Kind = 5
 	// The note and occurrence track deployment events.
-	Note_DEPLOYABLE Note_Kind = 5
+	Note_DEPLOYABLE Note_Kind = 6
 	// The note and occurrence track the initial discovery status of a resource.
-	Note_DISCOVERY Note_Kind = 6
-	// This represents a logical "role" that can attest to artifacts.
-	Note_ATTESTATION_AUTHORITY Note_Kind = 7
+	Note_DISCOVERY Note_Kind = 7
 )
 
 var Note_Kind_name = map[int32]string{
 	0: "KIND_UNSPECIFIED",
-	1: "PACKAGE_VULNERABILITY",
-	2: "BUILD_DETAILS",
-	3: "IMAGE_BASIS",
-	4: "PACKAGE_MANAGER",
-	5: "DEPLOYABLE",
-	6: "DISCOVERY",
-	7: "ATTESTATION_AUTHORITY",
+	2: "PACKAGE_VULNERABILITY",
+	3: "BUILD_DETAILS",
+	4: "IMAGE_BASIS",
+	5: "PACKAGE_MANAGER",
+	6: "DEPLOYABLE",
+	7: "DISCOVERY",
 }
 var Note_Kind_value = map[string]int32{
 	"KIND_UNSPECIFIED":      0,
-	"PACKAGE_VULNERABILITY": 1,
-	"BUILD_DETAILS":         2,
-	"IMAGE_BASIS":           3,
-	"PACKAGE_MANAGER":       4,
-	"DEPLOYABLE":            5,
-	"DISCOVERY":             6,
-	"ATTESTATION_AUTHORITY": 7,
+	"PACKAGE_VULNERABILITY": 2,
+	"BUILD_DETAILS":         3,
+	"IMAGE_BASIS":           4,
+	"PACKAGE_MANAGER":       5,
+	"DEPLOYABLE":            6,
+	"DISCOVERY":             7,
 }
 
 func (x Note_Kind) String() string {
@@ -242,65 +298,34 @@ func (x Note_Kind) String() string {
 }
 func (Note_Kind) EnumDescriptor() ([]byte, []int) { return fileDescriptor0, []int{31, 0} }
 
-// The CPU architecture for which packages in this distribution
-// channel were built
-type PackageManager_Distribution_Architecture int32
+// Instruction set architectures supported by various package managers.
+type PackageManager_Architecture int32
 
 const (
-	PackageManager_Distribution_UNKNOWN PackageManager_Distribution_Architecture = 0
-	PackageManager_Distribution_X86     PackageManager_Distribution_Architecture = 1
-	PackageManager_Distribution_X64     PackageManager_Distribution_Architecture = 2
+	// Unknown architecture
+	PackageManager_ARCHITECTURE_UNSPECIFIED PackageManager_Architecture = 0
+	// X86 architecture
+	PackageManager_X86 PackageManager_Architecture = 1
+	// X64 architecture
+	PackageManager_X64 PackageManager_Architecture = 2
 )
 
-var PackageManager_Distribution_Architecture_name = map[int32]string{
-	0: "UNKNOWN",
+var PackageManager_Architecture_name = map[int32]string{
+	0: "ARCHITECTURE_UNSPECIFIED",
 	1: "X86",
 	2: "X64",
 }
-var PackageManager_Distribution_Architecture_value = map[string]int32{
-	"UNKNOWN": 0,
-	"X86":     1,
-	"X64":     2,
+var PackageManager_Architecture_value = map[string]int32{
+	"ARCHITECTURE_UNSPECIFIED": 0,
+	"X86": 1,
+	"X64": 2,
 }
 
-func (x PackageManager_Distribution_Architecture) String() string {
-	return proto.EnumName(PackageManager_Distribution_Architecture_name, int32(x))
+func (x PackageManager_Architecture) String() string {
+	return proto.EnumName(PackageManager_Architecture_name, int32(x))
 }
-func (PackageManager_Distribution_Architecture) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor0, []int{33, 1, 0}
-}
-
-// Whether this is an ordinary package version or a
-// sentinel MIN/MAX version.
-type PackageManager_Version_VersionKind int32
-
-const (
-	// A standard package version, defined by the other fields.
-	PackageManager_Version_NORMAL PackageManager_Version_VersionKind = 0
-	// A special version representing negative infinity,
-	// other fields are ignored.
-	PackageManager_Version_MINIMUM PackageManager_Version_VersionKind = 1
-	// A special version representing positive infinity,
-	// other fields are ignored.
-	PackageManager_Version_MAXIMUM PackageManager_Version_VersionKind = 2
-)
-
-var PackageManager_Version_VersionKind_name = map[int32]string{
-	0: "NORMAL",
-	1: "MINIMUM",
-	2: "MAXIMUM",
-}
-var PackageManager_Version_VersionKind_value = map[string]int32{
-	"NORMAL":  0,
-	"MINIMUM": 1,
-	"MAXIMUM": 2,
-}
-
-func (x PackageManager_Version_VersionKind) String() string {
-	return proto.EnumName(PackageManager_Version_VersionKind_name, int32(x))
-}
-func (PackageManager_Version_VersionKind) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor0, []int{33, 2, 0}
+func (PackageManager_Architecture) EnumDescriptor() ([]byte, []int) {
+	return fileDescriptor0, []int{33, 0}
 }
 
 // Type (e.g. schema) of the attestation payload that was signed.
@@ -336,12 +361,18 @@ func (PgpSignedAttestation_ContentType) EnumDescriptor() ([]byte, []int) {
 type VulnerabilityType_Severity int32
 
 const (
+	// Unknown Impact
 	VulnerabilityType_SEVERITY_UNSPECIFIED VulnerabilityType_Severity = 0
-	VulnerabilityType_MINIMAL              VulnerabilityType_Severity = 1
-	VulnerabilityType_LOW                  VulnerabilityType_Severity = 2
-	VulnerabilityType_MEDIUM               VulnerabilityType_Severity = 3
-	VulnerabilityType_HIGH                 VulnerabilityType_Severity = 4
-	VulnerabilityType_CRITICAL             VulnerabilityType_Severity = 5
+	// Minimal Impact
+	VulnerabilityType_MINIMAL VulnerabilityType_Severity = 1
+	// Low Impact
+	VulnerabilityType_LOW VulnerabilityType_Severity = 2
+	// Medium Impact
+	VulnerabilityType_MEDIUM VulnerabilityType_Severity = 3
+	// High Impact
+	VulnerabilityType_HIGH VulnerabilityType_Severity = 4
+	// Critical Impact
+	VulnerabilityType_CRITICAL VulnerabilityType_Severity = 5
 )
 
 var VulnerabilityType_Severity_name = map[int32]string{
@@ -401,10 +432,43 @@ func (VulnerabilityType_Version_VersionKind) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor0, []int{38, 0, 0}
 }
 
+// The type of an alias.
+type AliasContext_Kind int32
+
+const (
+	// Unknown.
+	AliasContext_KIND_UNSPECIFIED AliasContext_Kind = 0
+	// Git tag.
+	AliasContext_FIXED AliasContext_Kind = 1
+	// Git branch.
+	AliasContext_MOVABLE AliasContext_Kind = 2
+	// Used to specify non-standard aliases. For example, if a Git repo has a
+	// ref named "refs/foo/bar".
+	AliasContext_OTHER AliasContext_Kind = 4
+)
+
+var AliasContext_Kind_name = map[int32]string{
+	0: "KIND_UNSPECIFIED",
+	1: "FIXED",
+	2: "MOVABLE",
+	4: "OTHER",
+}
+var AliasContext_Kind_value = map[string]int32{
+	"KIND_UNSPECIFIED": 0,
+	"FIXED":            1,
+	"MOVABLE":          2,
+	"OTHER":            4,
+}
+
+func (x AliasContext_Kind) String() string {
+	return proto.EnumName(AliasContext_Kind_name, int32(x))
+}
+func (AliasContext_Kind) EnumDescriptor() ([]byte, []int) { return fileDescriptor0, []int{40, 0} }
+
 // Request to get a Occurrence.
 type GetOccurrenceRequest struct {
-	// The name of the occurrence in the form
-	// "projects/{project_id}/occurrences/{occurrence_id}"
+	// The name of the occurrence of the form
+	// "projects/{project_id}/occurrences/{OCCURRENCE_ID}"
 	Name string `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
 }
 
@@ -422,7 +486,11 @@ func (m *GetOccurrenceRequest) GetName() string {
 
 // Request to list occurrences.
 type ListOccurrencesRequest struct {
-	// This contains the projectId for example: projects/{project_id}
+	// The name field contains the project Id. For example:
+	// "projects/{project_id}
+	// @Deprecated
+	Name string `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
+	// This contains the project Id for example: projects/{project_id}.
 	Parent string `protobuf:"bytes,5,opt,name=parent" json:"parent,omitempty"`
 	// The filter expression.
 	Filter string `protobuf:"bytes,2,opt,name=filter" json:"filter,omitempty"`
@@ -436,6 +504,13 @@ func (m *ListOccurrencesRequest) Reset()                    { *m = ListOccurrenc
 func (m *ListOccurrencesRequest) String() string            { return proto.CompactTextString(m) }
 func (*ListOccurrencesRequest) ProtoMessage()               {}
 func (*ListOccurrencesRequest) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{1} }
+
+func (m *ListOccurrencesRequest) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
 
 func (m *ListOccurrencesRequest) GetParent() string {
 	if m != nil {
@@ -467,8 +542,8 @@ func (m *ListOccurrencesRequest) GetPageToken() string {
 
 // Request to delete a occurrence
 type DeleteOccurrenceRequest struct {
-	// The name of the occurrence in the form
-	// "projects/{project_id}/occurrences/{occurrence_id}"
+	// The name of the occurrence in the form of
+	// "projects/{project_id}/occurrences/{OCCURRENCE_ID}"
 	Name string `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
 }
 
@@ -484,9 +559,12 @@ func (m *DeleteOccurrenceRequest) GetName() string {
 	return ""
 }
 
-// Request to insert a new occurrence
+// Request to insert a new occurrence.
 type CreateOccurrenceRequest struct {
-	// This field contains the projectId for example: "projects/{project_id}"
+	// The name of the project.  Should be of the form "projects/{project_id}".
+	// @Deprecated
+	Name string `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
+	// This field contains the project Id for example: "projects/{project_id}"
 	Parent string `protobuf:"bytes,3,opt,name=parent" json:"parent,omitempty"`
 	// The occurrence to be inserted
 	Occurrence *Occurrence `protobuf:"bytes,2,opt,name=occurrence" json:"occurrence,omitempty"`
@@ -496,6 +574,13 @@ func (m *CreateOccurrenceRequest) Reset()                    { *m = CreateOccurr
 func (m *CreateOccurrenceRequest) String() string            { return proto.CompactTextString(m) }
 func (*CreateOccurrenceRequest) ProtoMessage()               {}
 func (*CreateOccurrenceRequest) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{3} }
+
+func (m *CreateOccurrenceRequest) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
 
 func (m *CreateOccurrenceRequest) GetParent() string {
 	if m != nil {
@@ -514,10 +599,12 @@ func (m *CreateOccurrenceRequest) GetOccurrence() *Occurrence {
 // Request to update an existing occurrence
 type UpdateOccurrenceRequest struct {
 	// The name of the occurrence.
-	// Should be of the form "projects/{project_id}/occurrences/{occurrence_id}".
+	// Should be of the form "projects/{project_id}/occurrences/{OCCURRENCE_ID}".
 	Name string `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
 	// The updated occurrence.
 	Occurrence *Occurrence `protobuf:"bytes,2,opt,name=occurrence" json:"occurrence,omitempty"`
+	// The fields to update.
+	UpdateMask *google_protobuf2.FieldMask `protobuf:"bytes,3,opt,name=update_mask,json=updateMask" json:"update_mask,omitempty"`
 }
 
 func (m *UpdateOccurrenceRequest) Reset()                    { *m = UpdateOccurrenceRequest{} }
@@ -539,10 +626,17 @@ func (m *UpdateOccurrenceRequest) GetOccurrence() *Occurrence {
 	return nil
 }
 
+func (m *UpdateOccurrenceRequest) GetUpdateMask() *google_protobuf2.FieldMask {
+	if m != nil {
+		return m.UpdateMask
+	}
+	return nil
+}
+
 // Request to get a Note.
 type GetNoteRequest struct {
-	// The name of the note in the form
-	// "providers/{provider_id}/notes/{note_id}"
+	// The name of the note in the form of
+	// "providers/{provider_id}/notes/{NOTE_ID}"
 	Name string `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
 }
 
@@ -561,7 +655,7 @@ func (m *GetNoteRequest) GetName() string {
 // Request to get the note to which this occurrence is attached.
 type GetOccurrenceNoteRequest struct {
 	// The name of the occurrence in the form
-	// "projects/{project_id}/occurrences/{occurrence_id}"
+	// "projects/{project_id}/occurrences/{OCCURRENCE_ID}"
 	Name string `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
 }
 
@@ -579,11 +673,11 @@ func (m *GetOccurrenceNoteRequest) GetName() string {
 
 // Request to list notes.
 type ListNotesRequest struct {
-	// The name field will contain the projectId for example:
+	// The name field will contain the project Id for example:
 	// "providers/{provider_id}
 	// @Deprecated
 	Name string `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
-	// This field contains the projectId for example:
+	// This field contains the project Id for example:
 	// "project/{project_id}
 	Parent string `protobuf:"bytes,5,opt,name=parent" json:"parent,omitempty"`
 	// The filter expression.
@@ -636,8 +730,8 @@ func (m *ListNotesRequest) GetPageToken() string {
 
 // Request to delete a note
 type DeleteNoteRequest struct {
-	// The name of the note in the form
-	// "providers/{provider_id}/notes/{note_id}"
+	// The name of the note in the form of
+	// "providers/{provider_id}/notes/{NOTE_ID}"
 	Name string `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
 }
 
@@ -659,7 +753,7 @@ type CreateNoteRequest struct {
 	// Should be of the form "providers/{provider_id}".
 	// @Deprecated
 	Name string `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
-	// This field contains the projectId for example:
+	// This field contains the project Id for example:
 	// "project/{project_id}
 	Parent string `protobuf:"bytes,4,opt,name=parent" json:"parent,omitempty"`
 	// The ID to use for this note.
@@ -708,6 +802,8 @@ type UpdateNoteRequest struct {
 	Name string `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
 	// The updated note.
 	Note *Note `protobuf:"bytes,2,opt,name=note" json:"note,omitempty"`
+	// The fields to update.
+	UpdateMask *google_protobuf2.FieldMask `protobuf:"bytes,3,opt,name=update_mask,json=updateMask" json:"update_mask,omitempty"`
 }
 
 func (m *UpdateNoteRequest) Reset()                    { *m = UpdateNoteRequest{} }
@@ -725,6 +821,13 @@ func (m *UpdateNoteRequest) GetName() string {
 func (m *UpdateNoteRequest) GetNote() *Note {
 	if m != nil {
 		return m.Note
+	}
+	return nil
+}
+
+func (m *UpdateNoteRequest) GetUpdateMask() *google_protobuf2.FieldMask {
+	if m != nil {
+		return m.UpdateMask
 	}
 	return nil
 }
@@ -777,23 +880,16 @@ func (m *ListNoteOccurrencesRequest) GetPageToken() string {
 
 // Response including listed occurrences for a note.
 type ListNoteOccurrencesResponse struct {
-	// Token to receive the next page of notes.
-	NextPageToken string `protobuf:"bytes,1,opt,name=nextPageToken" json:"nextPageToken,omitempty"`
 	// The occurrences attached to the specified note.
-	Occurrences []*Occurrence `protobuf:"bytes,2,rep,name=occurrences" json:"occurrences,omitempty"`
+	Occurrences []*Occurrence `protobuf:"bytes,1,rep,name=occurrences" json:"occurrences,omitempty"`
+	// Token to receive the next page of notes.
+	NextPageToken string `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken" json:"next_page_token,omitempty"`
 }
 
 func (m *ListNoteOccurrencesResponse) Reset()                    { *m = ListNoteOccurrencesResponse{} }
 func (m *ListNoteOccurrencesResponse) String() string            { return proto.CompactTextString(m) }
 func (*ListNoteOccurrencesResponse) ProtoMessage()               {}
 func (*ListNoteOccurrencesResponse) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{12} }
-
-func (m *ListNoteOccurrencesResponse) GetNextPageToken() string {
-	if m != nil {
-		return m.NextPageToken
-	}
-	return ""
-}
 
 func (m *ListNoteOccurrencesResponse) GetOccurrences() []*Occurrence {
 	if m != nil {
@@ -802,26 +898,26 @@ func (m *ListNoteOccurrencesResponse) GetOccurrences() []*Occurrence {
 	return nil
 }
 
+func (m *ListNoteOccurrencesResponse) GetNextPageToken() string {
+	if m != nil {
+		return m.NextPageToken
+	}
+	return ""
+}
+
 // Response including listed notes.
 type ListNotesResponse struct {
-	// The next pagination token in the List response. It should be used as
-	// page_token for the following request. An empty value means no more result.
-	NextPageToken string `protobuf:"bytes,1,opt,name=nextPageToken" json:"nextPageToken,omitempty"`
 	// The occurrences requested
-	Notes []*Note `protobuf:"bytes,2,rep,name=notes" json:"notes,omitempty"`
+	Notes []*Note `protobuf:"bytes,1,rep,name=notes" json:"notes,omitempty"`
+	// The next pagination token in the list response. It should be used as
+	// page_token for the following request. An empty value means no more result.
+	NextPageToken string `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken" json:"next_page_token,omitempty"`
 }
 
 func (m *ListNotesResponse) Reset()                    { *m = ListNotesResponse{} }
 func (m *ListNotesResponse) String() string            { return proto.CompactTextString(m) }
 func (*ListNotesResponse) ProtoMessage()               {}
 func (*ListNotesResponse) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{13} }
-
-func (m *ListNotesResponse) GetNextPageToken() string {
-	if m != nil {
-		return m.NextPageToken
-	}
-	return ""
-}
 
 func (m *ListNotesResponse) GetNotes() []*Note {
 	if m != nil {
@@ -830,13 +926,21 @@ func (m *ListNotesResponse) GetNotes() []*Note {
 	return nil
 }
 
-// Response including listed occurrences.
+func (m *ListNotesResponse) GetNextPageToken() string {
+	if m != nil {
+		return m.NextPageToken
+	}
+	return ""
+}
+
+// Response including listed active occurrences.
 type ListOccurrencesResponse struct {
-	// The next pagination token in the List response. It should be used as
-	// page_token for the following request. An empty value means no more results.
-	NextPageToken string `protobuf:"bytes,1,opt,name=nextPageToken" json:"nextPageToken,omitempty"`
 	// The occurrences requested.
-	Occurrences []*Occurrence `protobuf:"bytes,2,rep,name=occurrences" json:"occurrences,omitempty"`
+	Occurrences []*Occurrence `protobuf:"bytes,1,rep,name=occurrences" json:"occurrences,omitempty"`
+	// The next pagination token in the list response. It should be used as
+	// `page_token` for the following request. An empty value means no more
+	// results.
+	NextPageToken string `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken" json:"next_page_token,omitempty"`
 }
 
 func (m *ListOccurrencesResponse) Reset()                    { *m = ListOccurrencesResponse{} }
@@ -844,18 +948,18 @@ func (m *ListOccurrencesResponse) String() string            { return proto.Comp
 func (*ListOccurrencesResponse) ProtoMessage()               {}
 func (*ListOccurrencesResponse) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{14} }
 
-func (m *ListOccurrencesResponse) GetNextPageToken() string {
-	if m != nil {
-		return m.NextPageToken
-	}
-	return ""
-}
-
 func (m *ListOccurrencesResponse) GetOccurrences() []*Occurrence {
 	if m != nil {
 		return m.Occurrences
 	}
 	return nil
+}
+
+func (m *ListOccurrencesResponse) GetNextPageToken() string {
+	if m != nil {
+		return m.NextPageToken
+	}
+	return ""
 }
 
 // Response including listed operations.
@@ -950,12 +1054,13 @@ func (m *CreateOperationRequest) GetOperation() *google_longrunning.Operation {
 	return nil
 }
 
-// OperationMetadata can be used to provide additional information inside a google.longrunning.operation
+// Metadata for all operations used and required for all operations
+// that created by Container Analysis Providers
 type OperationMetadata struct {
 	// Output only. The time this operation was created.
-	CreateTime *google_protobuf2.Timestamp `protobuf:"bytes,1,opt,name=create_time,json=createTime" json:"create_time,omitempty"`
+	CreateTime *google_protobuf3.Timestamp `protobuf:"bytes,1,opt,name=create_time,json=createTime" json:"create_time,omitempty"`
 	// Output only. The time that this operation was marked completed or failed.
-	EndTime *google_protobuf2.Timestamp `protobuf:"bytes,2,opt,name=end_time,json=endTime" json:"end_time,omitempty"`
+	EndTime *google_protobuf3.Timestamp `protobuf:"bytes,2,opt,name=end_time,json=endTime" json:"end_time,omitempty"`
 }
 
 func (m *OperationMetadata) Reset()                    { *m = OperationMetadata{} }
@@ -963,14 +1068,14 @@ func (m *OperationMetadata) String() string            { return proto.CompactTex
 func (*OperationMetadata) ProtoMessage()               {}
 func (*OperationMetadata) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{18} }
 
-func (m *OperationMetadata) GetCreateTime() *google_protobuf2.Timestamp {
+func (m *OperationMetadata) GetCreateTime() *google_protobuf3.Timestamp {
 	if m != nil {
 		return m.CreateTime
 	}
 	return nil
 }
 
-func (m *OperationMetadata) GetEndTime() *google_protobuf2.Timestamp {
+func (m *OperationMetadata) GetEndTime() *google_protobuf3.Timestamp {
 	if m != nil {
 		return m.EndTime
 	}
@@ -979,24 +1084,40 @@ func (m *OperationMetadata) GetEndTime() *google_protobuf2.Timestamp {
 
 // Artifact describes a build product.
 type Artifact struct {
+	// Name of the artifact. This may be the path to a binary or jar file, or in
+	// the case of a container build, the name used to push the container image to
+	// Google Container Registry, as presented to `docker push`.
+	//
+	// This field is deprecated in favor of the plural `names` field; it continues
+	// to exist here to allow existing BuildProvenance serialized to json in
+	// google.devtools.containeranalysis.v1alpha1.BuildDetails.provenance_bytes to
+	// deserialize back into proto.
+	Name string `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
 	// Hash or checksum value of a binary, or Docker Registry 2.0 digest of a
 	// container.
-	Checksum string `protobuf:"bytes,1,opt,name=checksum" json:"checksum,omitempty"`
+	Checksum string `protobuf:"bytes,2,opt,name=checksum" json:"checksum,omitempty"`
 	// Artifact ID, if any; for container images, this will be a URL by digest
 	// like gcr.io/projectID/imagename@sha256:123456
-	Id string `protobuf:"bytes,2,opt,name=id" json:"id,omitempty"`
+	Id string `protobuf:"bytes,3,opt,name=id" json:"id,omitempty"`
 	// Related artifact names. This may be the path to a binary or jar file, or in
 	// the case of a container build, the name used to push the container image to
 	// Google Container Registry, as presented to `docker push`. Note that a
 	// single Artifact ID can have multiple names, for example if two tags are
 	// applied to one image.
-	Names []string `protobuf:"bytes,3,rep,name=names" json:"names,omitempty"`
+	Names []string `protobuf:"bytes,4,rep,name=names" json:"names,omitempty"`
 }
 
 func (m *Artifact) Reset()                    { *m = Artifact{} }
 func (m *Artifact) String() string            { return proto.CompactTextString(m) }
 func (*Artifact) ProtoMessage()               {}
 func (*Artifact) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{19} }
+
+func (m *Artifact) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
 
 func (m *Artifact) GetChecksum() string {
 	if m != nil {
@@ -1023,10 +1144,9 @@ func (m *Artifact) GetNames() []string {
 // example, an organization might have one AttestationAuthority for "QA" and one
 // for "build".  This Note is intended to act strictly as a grouping mechanism
 // for the attached Occurrences (Attestations).  This grouping mechanism also
-// provides a security boundary, since IAM ACLs gate the ability for a principle
-// to attach an Occurrence to a given Note.  It also provides a single point of
-// lookup to find all attached Attestation Occurrences, even if they don't all
-// live in the same project.
+// provides a security boundary and provides a single point of lookup to find
+// all attached Attestation Occurrences, even if they don't all live in the same
+// project.
 type AttestationAuthority struct {
 	Hint *AttestationAuthority_AttestationAuthorityHint `protobuf:"bytes,1,opt,name=hint" json:"hint,omitempty"`
 }
@@ -1163,16 +1283,17 @@ func _AttestationAuthority_Attestation_OneofSizer(msg proto.Message) (n int) {
 	return n
 }
 
-// Message encapsulating build provenance details
+// Message encapsulating build provenance details.
 type BuildDetails struct {
 	// The actual provenance
 	Provenance *BuildProvenance `protobuf:"bytes,1,opt,name=provenance" json:"provenance,omitempty"`
-	// Serialized json representation of the provenance, used in generating the
-	// BuildSignature in the corresponding Result. After verifying the signature,
-	// provenance_bytes can be unmarshalled and compared to the provenance to
-	// confirm that it is unchanged. A base64-encoded string representation of the
-	// provenance bytes is used for the signature in order to interoperate with
-	// openssl which expects this format for signature verification.
+	// Serialized JSON representation of the provenance, used in generating the
+	// `BuildSignature` in the corresponding Result. After verifying the
+	// signature, `provenance_bytes` can be unmarshalled and compared to the
+	// provenance to confirm that it is unchanged. A base64-encoded string
+	// representation of the provenance bytes is used for the signature in order
+	// to interoperate with openssl which expects this format for signature
+	// verification.
 	//
 	// The serialized form is captured both to avoid ambiguity in how the
 	// provenance is marshalled to json as well to prevent incompatibilities with
@@ -1202,43 +1323,118 @@ func (m *BuildDetails) GetProvenanceBytes() string {
 // Provenance of a build. Contains all information needed to verify the full
 // details about the build from source to completion.
 type BuildProvenance struct {
-	// Special options applied to this build. This is a catch-all field where
-	// build providers can enter any desired additional details.
-	BuildOptions map[string]string `protobuf:"bytes,1,rep,name=build_options,json=buildOptions" json:"build_options,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	// Version string of the builder at the time this build was executed.
-	BuilderVersion string `protobuf:"bytes,2,opt,name=builder_version,json=builderVersion" json:"builder_version,omitempty"`
-	// Output of the build.
-	BuiltArtifacts []*Artifact `protobuf:"bytes,3,rep,name=built_artifacts,json=builtArtifacts" json:"built_artifacts,omitempty"`
+	// Unique identifier of the build.
+	Id string `protobuf:"bytes,1,opt,name=id" json:"id,omitempty"`
+	// ID of the project.
+	ProjectId string `protobuf:"bytes,2,opt,name=project_id,json=projectId" json:"project_id,omitempty"`
 	// Commands requested by the build.
-	Commands []*Command `protobuf:"bytes,4,rep,name=commands" json:"commands,omitempty"`
+	Commands []*Command `protobuf:"bytes,5,rep,name=commands" json:"commands,omitempty"`
+	// Output of the build.
+	BuiltArtifacts []*Artifact `protobuf:"bytes,6,rep,name=built_artifacts,json=builtArtifacts" json:"built_artifacts,omitempty"`
 	// Time at which the build was created.
-	CreateTime string `protobuf:"bytes,5,opt,name=create_time,json=createTime" json:"create_time,omitempty"`
+	CreateTime *google_protobuf3.Timestamp `protobuf:"bytes,7,opt,name=create_time,json=createTime" json:"create_time,omitempty"`
+	// Time at which execution of the build was started.
+	StartTime *google_protobuf3.Timestamp `protobuf:"bytes,8,opt,name=start_time,json=startTime" json:"start_time,omitempty"`
+	// Time at which execution of the build was finished.
+	FinishTime *google_protobuf3.Timestamp `protobuf:"bytes,9,opt,name=finish_time,json=finishTime" json:"finish_time,omitempty"`
 	// E-mail address of the user who initiated this build. Note that this was the
 	// user's e-mail address at the time the build was initiated; this address may
 	// not represent the same end-user for all time.
-	Creator string `protobuf:"bytes,6,opt,name=creator" json:"creator,omitempty"`
-	// Time at which execution of the build was finished.
-	FinishTime string `protobuf:"bytes,7,opt,name=finish_time,json=finishTime" json:"finish_time,omitempty"`
-	// Unique identifier of the build.
-	Id string `protobuf:"bytes,8,opt,name=id" json:"id,omitempty"`
+	Creator string `protobuf:"bytes,11,opt,name=creator" json:"creator,omitempty"`
 	// Google Cloud Storage bucket where logs were written.
-	LogsBucket string `protobuf:"bytes,9,opt,name=logs_bucket,json=logsBucket" json:"logs_bucket,omitempty"`
-	// ID of the project.
-	ProjectId string `protobuf:"bytes,10,opt,name=project_id,json=projectId" json:"project_id,omitempty"`
-	// Numerical ID of the project.
-	ProjectNum string `protobuf:"bytes,11,opt,name=project_num,json=projectNum" json:"project_num,omitempty"`
+	LogsBucket string `protobuf:"bytes,13,opt,name=logs_bucket,json=logsBucket" json:"logs_bucket,omitempty"`
 	// Details of the Source input to the build.
-	SourceProvenance *Source `protobuf:"bytes,12,opt,name=source_provenance,json=sourceProvenance" json:"source_provenance,omitempty"`
-	// Time at which execution of the build was started.
-	StartTime string `protobuf:"bytes,13,opt,name=start_time,json=startTime" json:"start_time,omitempty"`
+	SourceProvenance *Source `protobuf:"bytes,14,opt,name=source_provenance,json=sourceProvenance" json:"source_provenance,omitempty"`
 	// Trigger identifier if the build was triggered automatically; empty if not.
-	TriggerId string `protobuf:"bytes,14,opt,name=trigger_id,json=triggerId" json:"trigger_id,omitempty"`
+	TriggerId string `protobuf:"bytes,15,opt,name=trigger_id,json=triggerId" json:"trigger_id,omitempty"`
+	// Special options applied to this build. This is a catch-all field where
+	// build providers can enter any desired additional details.
+	BuildOptions map[string]string `protobuf:"bytes,16,rep,name=build_options,json=buildOptions" json:"build_options,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	// Version string of the builder at the time this build was executed.
+	BuilderVersion string `protobuf:"bytes,17,opt,name=builder_version,json=builderVersion" json:"builder_version,omitempty"`
 }
 
 func (m *BuildProvenance) Reset()                    { *m = BuildProvenance{} }
 func (m *BuildProvenance) String() string            { return proto.CompactTextString(m) }
 func (*BuildProvenance) ProtoMessage()               {}
 func (*BuildProvenance) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{22} }
+
+func (m *BuildProvenance) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
+
+func (m *BuildProvenance) GetProjectId() string {
+	if m != nil {
+		return m.ProjectId
+	}
+	return ""
+}
+
+func (m *BuildProvenance) GetCommands() []*Command {
+	if m != nil {
+		return m.Commands
+	}
+	return nil
+}
+
+func (m *BuildProvenance) GetBuiltArtifacts() []*Artifact {
+	if m != nil {
+		return m.BuiltArtifacts
+	}
+	return nil
+}
+
+func (m *BuildProvenance) GetCreateTime() *google_protobuf3.Timestamp {
+	if m != nil {
+		return m.CreateTime
+	}
+	return nil
+}
+
+func (m *BuildProvenance) GetStartTime() *google_protobuf3.Timestamp {
+	if m != nil {
+		return m.StartTime
+	}
+	return nil
+}
+
+func (m *BuildProvenance) GetFinishTime() *google_protobuf3.Timestamp {
+	if m != nil {
+		return m.FinishTime
+	}
+	return nil
+}
+
+func (m *BuildProvenance) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+func (m *BuildProvenance) GetLogsBucket() string {
+	if m != nil {
+		return m.LogsBucket
+	}
+	return ""
+}
+
+func (m *BuildProvenance) GetSourceProvenance() *Source {
+	if m != nil {
+		return m.SourceProvenance
+	}
+	return nil
+}
+
+func (m *BuildProvenance) GetTriggerId() string {
+	if m != nil {
+		return m.TriggerId
+	}
+	return ""
+}
 
 func (m *BuildProvenance) GetBuildOptions() map[string]string {
 	if m != nil {
@@ -1254,134 +1450,38 @@ func (m *BuildProvenance) GetBuilderVersion() string {
 	return ""
 }
 
-func (m *BuildProvenance) GetBuiltArtifacts() []*Artifact {
-	if m != nil {
-		return m.BuiltArtifacts
-	}
-	return nil
-}
-
-func (m *BuildProvenance) GetCommands() []*Command {
-	if m != nil {
-		return m.Commands
-	}
-	return nil
-}
-
-func (m *BuildProvenance) GetCreateTime() string {
-	if m != nil {
-		return m.CreateTime
-	}
-	return ""
-}
-
-func (m *BuildProvenance) GetCreator() string {
-	if m != nil {
-		return m.Creator
-	}
-	return ""
-}
-
-func (m *BuildProvenance) GetFinishTime() string {
-	if m != nil {
-		return m.FinishTime
-	}
-	return ""
-}
-
-func (m *BuildProvenance) GetId() string {
-	if m != nil {
-		return m.Id
-	}
-	return ""
-}
-
-func (m *BuildProvenance) GetLogsBucket() string {
-	if m != nil {
-		return m.LogsBucket
-	}
-	return ""
-}
-
-func (m *BuildProvenance) GetProjectId() string {
-	if m != nil {
-		return m.ProjectId
-	}
-	return ""
-}
-
-func (m *BuildProvenance) GetProjectNum() string {
-	if m != nil {
-		return m.ProjectNum
-	}
-	return ""
-}
-
-func (m *BuildProvenance) GetSourceProvenance() *Source {
-	if m != nil {
-		return m.SourceProvenance
-	}
-	return nil
-}
-
-func (m *BuildProvenance) GetStartTime() string {
-	if m != nil {
-		return m.StartTime
-	}
-	return ""
-}
-
-func (m *BuildProvenance) GetTriggerId() string {
-	if m != nil {
-		return m.TriggerId
-	}
-	return ""
-}
-
-// Message encapsulating signature of the verified build
+// Message encapsulating the signature of the verified build.
 type BuildSignature struct {
-	// An ID for the key used to sign.  This could be either an ID for the key
-	// stored in `public_key` (e.g., the ID or fingerprint for a PGP key, or the
-	// CN for a cert), or a reference to an external key (e.g., a reference to a
-	// key in Cloud KMS).
-	KeyId   string                 `protobuf:"bytes,1,opt,name=key_id,json=keyId" json:"key_id,omitempty"`
-	KeyType BuildSignature_KeyType `protobuf:"varint,2,opt,name=key_type,json=keyType,enum=grafeas.v1alpha1.api.BuildSignature_KeyType" json:"key_type,omitempty"`
-	// Public key of the builder which can be used to verify that related
-	// Findings are valid and unchanged.  If `key_type` is empty this defaults
+	// Public key of the builder which can be used to verify that the related
+	// findings are valid and unchanged. If `key_type` is empty, this defaults
 	// to PEM encoded public keys.
 	//
 	// This field may be empty if `key_id` references an external key.
 	//
-	// For Cloud Container Builder based signatures this is a PEM encoded public
+	// For Cloud Container Builder based signatures, this is a PEM encoded public
 	// key. To verify the Cloud Container Builder signature, place the contents of
 	// this field into a file (public.pem). The signature field is base64-decoded
 	// into its binary representation in signature.bin, and the provenance bytes
-	// from BuildDetails are base64-decoded into a binary representation in
+	// from `BuildDetails` are base64-decoded into a binary representation in
 	// signed.bin. OpenSSL can then verify the signature:
 	// `openssl sha256 -verify public.pem -signature signature.bin signed.bin`
-	PublicKey string `protobuf:"bytes,3,opt,name=public_key,json=publicKey" json:"public_key,omitempty"`
-	// Signature of the related BuildProvenance, encoded in a base64 string.
-	Signature string `protobuf:"bytes,4,opt,name=signature" json:"signature,omitempty"`
+	PublicKey string `protobuf:"bytes,1,opt,name=public_key,json=publicKey" json:"public_key,omitempty"`
+	// Signature of the related `BuildProvenance`, encoded in a base64 string.
+	Signature string `protobuf:"bytes,2,opt,name=signature" json:"signature,omitempty"`
+	// An Id for the key used to sign. This could be either an Id for the key
+	// stored in `public_key` (such as the Id or fingerprint for a PGP key, or the
+	// CN for a cert), or a reference to an external key (such as a reference to a
+	// key in Cloud Key Management Service).
+	KeyId string `protobuf:"bytes,3,opt,name=key_id,json=keyId" json:"key_id,omitempty"`
+	// The type of the key, either stored in `public_key` or referenced in
+	// `key_id`
+	KeyType BuildSignature_KeyType `protobuf:"varint,4,opt,name=key_type,json=keyType,enum=grafeas.v1alpha1.api.BuildSignature_KeyType" json:"key_type,omitempty"`
 }
 
 func (m *BuildSignature) Reset()                    { *m = BuildSignature{} }
 func (m *BuildSignature) String() string            { return proto.CompactTextString(m) }
 func (*BuildSignature) ProtoMessage()               {}
 func (*BuildSignature) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{23} }
-
-func (m *BuildSignature) GetKeyId() string {
-	if m != nil {
-		return m.KeyId
-	}
-	return ""
-}
-
-func (m *BuildSignature) GetKeyType() BuildSignature_KeyType {
-	if m != nil {
-		return m.KeyType
-	}
-	return BuildSignature_UNSET
-}
 
 func (m *BuildSignature) GetPublicKey() string {
 	if m != nil {
@@ -1397,13 +1497,27 @@ func (m *BuildSignature) GetSignature() string {
 	return ""
 }
 
+func (m *BuildSignature) GetKeyId() string {
+	if m != nil {
+		return m.KeyId
+	}
+	return ""
+}
+
+func (m *BuildSignature) GetKeyType() BuildSignature_KeyType {
+	if m != nil {
+		return m.KeyType
+	}
+	return BuildSignature_KEY_TYPE_UNSPECIFIED
+}
+
 // Note holding the version of the provider's builder and the signature of
 // the provenance message in linked BuildDetails.
 type BuildType struct {
 	// Version of the builder which produced this Note.
 	BuilderVersion string `protobuf:"bytes,1,opt,name=builder_version,json=builderVersion" json:"builder_version,omitempty"`
 	// Signature of the build in Occurrences pointing to the Note containing this
-	// BuilderDetails.
+	// `BuilderDetails`.
 	Signature *BuildSignature `protobuf:"bytes,2,opt,name=signature" json:"signature,omitempty"`
 }
 
@@ -1428,19 +1542,19 @@ func (m *BuildType) GetSignature() *BuildSignature {
 
 // Command describes a step performed as part of the build pipeline.
 type Command struct {
-	// Command-line arguments used when executing this Command.
-	Args []string `protobuf:"bytes,1,rep,name=args" json:"args,omitempty"`
-	// Working directory (relative to project source root) used when running
-	// this Command.
-	Dir string `protobuf:"bytes,2,opt,name=dir" json:"dir,omitempty"`
-	// Environment variables set before running this Command.
-	Env []string `protobuf:"bytes,3,rep,name=env" json:"env,omitempty"`
-	// Optional unique identifier for this Command, used in wait_for to reference
-	// this Command as a dependency.
-	Id string `protobuf:"bytes,4,opt,name=id" json:"id,omitempty"`
 	// Name of the command, as presented on the command line, or if the command is
 	// packaged as a Docker container, as presented to `docker pull`.
-	Name string `protobuf:"bytes,5,opt,name=name" json:"name,omitempty"`
+	Name string `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
+	// Environment variables set before running this Command.
+	Env []string `protobuf:"bytes,2,rep,name=env" json:"env,omitempty"`
+	// Command-line arguments used when executing this Command.
+	Args []string `protobuf:"bytes,3,rep,name=args" json:"args,omitempty"`
+	// Working directory (relative to project source root) used when running
+	// this Command.
+	Dir string `protobuf:"bytes,4,opt,name=dir" json:"dir,omitempty"`
+	// Optional unique identifier for this Command, used in wait_for to reference
+	// this Command as a dependency.
+	Id string `protobuf:"bytes,5,opt,name=id" json:"id,omitempty"`
 	// The ID(s) of the Command(s) that this Command depends on.
 	WaitFor []string `protobuf:"bytes,6,rep,name=wait_for,json=waitFor" json:"wait_for,omitempty"`
 }
@@ -1449,6 +1563,20 @@ func (m *Command) Reset()                    { *m = Command{} }
 func (m *Command) String() string            { return proto.CompactTextString(m) }
 func (*Command) ProtoMessage()               {}
 func (*Command) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{25} }
+
+func (m *Command) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *Command) GetEnv() []string {
+	if m != nil {
+		return m.Env
+	}
+	return nil
+}
 
 func (m *Command) GetArgs() []string {
 	if m != nil {
@@ -1464,23 +1592,9 @@ func (m *Command) GetDir() string {
 	return ""
 }
 
-func (m *Command) GetEnv() []string {
-	if m != nil {
-		return m.Env
-	}
-	return nil
-}
-
 func (m *Command) GetId() string {
 	if m != nil {
 		return m.Id
-	}
-	return ""
-}
-
-func (m *Command) GetName() string {
-	if m != nil {
-		return m.Name
 	}
 	return ""
 }
@@ -1512,22 +1626,55 @@ func (m *Deployable) GetResourceUri() []string {
 
 // The period during which some deployable was active in a runtime.
 type Deployable_Deployment struct {
-	// Address of the runtime element hosting this deployment.
-	Address string `protobuf:"bytes,1,opt,name=address" json:"address,omitempty"`
-	// Configuration used to create this deployment.
-	Config map[string]string `protobuf:"bytes,2,rep,name=config" json:"config,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	// Beginning of the lifetime of this deployment.
-	DeployTime string `protobuf:"bytes,3,opt,name=deploy_time,json=deployTime" json:"deploy_time,omitempty"`
-	// End of the lifetime of this deployment.
-	UndeployTime string `protobuf:"bytes,4,opt,name=undeploy_time,json=undeployTime" json:"undeploy_time,omitempty"`
 	// Identity of the user that triggered this deployment.
-	UserEmail string `protobuf:"bytes,5,opt,name=user_email,json=userEmail" json:"user_email,omitempty"`
+	UserEmail string `protobuf:"bytes,1,opt,name=user_email,json=userEmail" json:"user_email,omitempty"`
+	// Beginning of the lifetime of this deployment.
+	DeployTime *google_protobuf3.Timestamp `protobuf:"bytes,2,opt,name=deploy_time,json=deployTime" json:"deploy_time,omitempty"`
+	// End of the lifetime of this deployment.
+	UndeployTime *google_protobuf3.Timestamp `protobuf:"bytes,3,opt,name=undeploy_time,json=undeployTime" json:"undeploy_time,omitempty"`
+	// Configuration used to create this deployment.
+	Config string `protobuf:"bytes,8,opt,name=config" json:"config,omitempty"`
+	// Address of the runtime element hosting this deployment.
+	Address string `protobuf:"bytes,5,opt,name=address" json:"address,omitempty"`
+	// Output only. Resource URI for the artifact being deployed taken from the
+	// deployable field with the same name.
+	ResourceUri []string `protobuf:"bytes,6,rep,name=resource_uri,json=resourceUri" json:"resource_uri,omitempty"`
+	// Platform hosting this deployment.
+	Platform Deployable_Deployment_Platform `protobuf:"varint,7,opt,name=platform,enum=grafeas.v1alpha1.api.Deployable_Deployment_Platform" json:"platform,omitempty"`
 }
 
 func (m *Deployable_Deployment) Reset()                    { *m = Deployable_Deployment{} }
 func (m *Deployable_Deployment) String() string            { return proto.CompactTextString(m) }
 func (*Deployable_Deployment) ProtoMessage()               {}
 func (*Deployable_Deployment) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{26, 0} }
+
+func (m *Deployable_Deployment) GetUserEmail() string {
+	if m != nil {
+		return m.UserEmail
+	}
+	return ""
+}
+
+func (m *Deployable_Deployment) GetDeployTime() *google_protobuf3.Timestamp {
+	if m != nil {
+		return m.DeployTime
+	}
+	return nil
+}
+
+func (m *Deployable_Deployment) GetUndeployTime() *google_protobuf3.Timestamp {
+	if m != nil {
+		return m.UndeployTime
+	}
+	return nil
+}
+
+func (m *Deployable_Deployment) GetConfig() string {
+	if m != nil {
+		return m.Config
+	}
+	return ""
+}
 
 func (m *Deployable_Deployment) GetAddress() string {
 	if m != nil {
@@ -1536,32 +1683,18 @@ func (m *Deployable_Deployment) GetAddress() string {
 	return ""
 }
 
-func (m *Deployable_Deployment) GetConfig() map[string]string {
+func (m *Deployable_Deployment) GetResourceUri() []string {
 	if m != nil {
-		return m.Config
+		return m.ResourceUri
 	}
 	return nil
 }
 
-func (m *Deployable_Deployment) GetDeployTime() string {
+func (m *Deployable_Deployment) GetPlatform() Deployable_Deployment_Platform {
 	if m != nil {
-		return m.DeployTime
+		return m.Platform
 	}
-	return ""
-}
-
-func (m *Deployable_Deployment) GetUndeployTime() string {
-	if m != nil {
-		return m.UndeployTime
-	}
-	return ""
-}
-
-func (m *Deployable_Deployment) GetUserEmail() string {
-	if m != nil {
-		return m.UserEmail
-	}
-	return ""
+	return Deployable_Deployment_PLATFORM_UNSPECIFIED
 }
 
 // DockerImage holds types defining base image notes
@@ -1574,17 +1707,25 @@ func (m *DockerImage) String() string            { return proto.CompactTextStrin
 func (*DockerImage) ProtoMessage()               {}
 func (*DockerImage) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{27} }
 
-// Instructions from dockerfile
+// Layer holds metadata specific to a layer of a Docker image.
 type DockerImage_Layer struct {
+	// The recovered Dockerfile directive used to construct this layer.
+	Directive DockerImage_Layer_Directive `protobuf:"varint,1,opt,name=directive,enum=grafeas.v1alpha1.api.DockerImage_Layer_Directive" json:"directive,omitempty"`
 	// The recovered arguments to the Dockerfile directive.
-	Arguments string                      `protobuf:"bytes,1,opt,name=arguments" json:"arguments,omitempty"`
-	Directive DockerImage_Layer_Directive `protobuf:"varint,2,opt,name=directive,enum=grafeas.v1alpha1.api.DockerImage_Layer_Directive" json:"directive,omitempty"`
+	Arguments string `protobuf:"bytes,2,opt,name=arguments" json:"arguments,omitempty"`
 }
 
 func (m *DockerImage_Layer) Reset()                    { *m = DockerImage_Layer{} }
 func (m *DockerImage_Layer) String() string            { return proto.CompactTextString(m) }
 func (*DockerImage_Layer) ProtoMessage()               {}
 func (*DockerImage_Layer) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{27, 0} }
+
+func (m *DockerImage_Layer) GetDirective() DockerImage_Layer_Directive {
+	if m != nil {
+		return m.Directive
+	}
+	return DockerImage_Layer_DIRECTIVE_UNSPECIFIED
+}
 
 func (m *DockerImage_Layer) GetArguments() string {
 	if m != nil {
@@ -1593,26 +1734,19 @@ func (m *DockerImage_Layer) GetArguments() string {
 	return ""
 }
 
-func (m *DockerImage_Layer) GetDirective() DockerImage_Layer_Directive {
-	if m != nil {
-		return m.Directive
-	}
-	return DockerImage_Layer_UNKNOWN_DIRECTIVE
-}
-
 // A set of properties that uniquely identify a given Docker image.
 type DockerImage_Fingerprint struct {
-	// The layer-id of the final layer in the Docker image’s v1
+	// The layer-id of the final layer in the Docker image's v1
 	// representation.
 	// This field can be used as a filter in list requests.
 	V1Name string `protobuf:"bytes,1,opt,name=v1_name,json=v1Name" json:"v1_name,omitempty"`
 	// The ordered list of v2 blobs that represent a given image.
 	V2Blob []string `protobuf:"bytes,2,rep,name=v2_blob,json=v2Blob" json:"v2_blob,omitempty"`
-	// The name of the image’s v2 blobs computed via:
-	//   [bottom] := v2_blobbottom := sha256(v2_blob[N] + “ ” + v2_name[N+1])
+	// Output only. The name of the image's v2 blobs computed via:
+	//   [bottom] := v2_blob[bottom]
+	//   [N] := sha256(v2_blob[N] + " " + v2_name[N+1])
 	// Only the name of the final blob is kept.
 	// This field can be used as a filter in list requests.
-	// @OutputOnly
 	V2Name string `protobuf:"bytes,3,opt,name=v2_name,json=v2Name" json:"v2_name,omitempty"`
 }
 
@@ -1648,24 +1782,17 @@ func (m *DockerImage_Fingerprint) GetV2Name() string {
 //   FROM <Basis.resource_url>
 // Or an equivalent reference, e.g. a tag of the resource_url.
 type DockerImage_Basis struct {
-	// The fingerprint of the base image
-	Fingerprint *DockerImage_Fingerprint `protobuf:"bytes,1,opt,name=fingerprint" json:"fingerprint,omitempty"`
 	// The resource_url for the resource representing the basis of
 	// associated occurrence images.
-	ResourceUrl string `protobuf:"bytes,2,opt,name=resource_url,json=resourceUrl" json:"resource_url,omitempty"`
+	ResourceUrl string `protobuf:"bytes,1,opt,name=resource_url,json=resourceUrl" json:"resource_url,omitempty"`
+	// The fingerprint of the base image
+	Fingerprint *DockerImage_Fingerprint `protobuf:"bytes,2,opt,name=fingerprint" json:"fingerprint,omitempty"`
 }
 
 func (m *DockerImage_Basis) Reset()                    { *m = DockerImage_Basis{} }
 func (m *DockerImage_Basis) String() string            { return proto.CompactTextString(m) }
 func (*DockerImage_Basis) ProtoMessage()               {}
 func (*DockerImage_Basis) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{27, 2} }
-
-func (m *DockerImage_Basis) GetFingerprint() *DockerImage_Fingerprint {
-	if m != nil {
-		return m.Fingerprint
-	}
-	return nil
-}
 
 func (m *DockerImage_Basis) GetResourceUrl() string {
 	if m != nil {
@@ -1674,24 +1801,30 @@ func (m *DockerImage_Basis) GetResourceUrl() string {
 	return ""
 }
 
+func (m *DockerImage_Basis) GetFingerprint() *DockerImage_Fingerprint {
+	if m != nil {
+		return m.Fingerprint
+	}
+	return nil
+}
+
 // Derived describes the derived image portion (Occurrence) of the
 // DockerImage relationship.  This image would be produced from a Dockerfile
 // with FROM <DockerImage.Basis in attached Note>.
 type DockerImage_Derived struct {
-	// This contains the base image url for the derived image Occurrence
-	// @OutputOnly
-	BaseResourceUrl string `protobuf:"bytes,1,opt,name=base_resource_url,json=baseResourceUrl" json:"base_resource_url,omitempty"`
-	// The number of layers by which this image differs from
-	// the associated image basis.
-	// @OutputOnly
-	Distance uint32 `protobuf:"varint,2,opt,name=distance" json:"distance,omitempty"`
 	// The fingerprint of the derived image
-	Fingerprint *DockerImage_Fingerprint `protobuf:"bytes,3,opt,name=fingerprint" json:"fingerprint,omitempty"`
+	Fingerprint *DockerImage_Fingerprint `protobuf:"bytes,1,opt,name=fingerprint" json:"fingerprint,omitempty"`
+	// Output only. The number of layers by which this image differs from
+	// the associated image basis.
+	Distance uint32 `protobuf:"varint,2,opt,name=distance" json:"distance,omitempty"`
 	// This contains layer-specific metadata, if populated it
-	// has length “distance” and is ordered with [distance] being the
+	// has length "distance" and is ordered with [distance] being the
 	// layer immediately following the base image and [1]
 	// being the final layer.
-	LayerInfo []*DockerImage_Layer `protobuf:"bytes,4,rep,name=layer_info,json=layerInfo" json:"layer_info,omitempty"`
+	LayerInfo []*DockerImage_Layer `protobuf:"bytes,3,rep,name=layer_info,json=layerInfo" json:"layer_info,omitempty"`
+	// Output only.This contains the base image url for the derived image
+	// Occurrence
+	BaseResourceUrl string `protobuf:"bytes,4,opt,name=base_resource_url,json=baseResourceUrl" json:"base_resource_url,omitempty"`
 }
 
 func (m *DockerImage_Derived) Reset()                    { *m = DockerImage_Derived{} }
@@ -1699,11 +1832,11 @@ func (m *DockerImage_Derived) String() string            { return proto.CompactT
 func (*DockerImage_Derived) ProtoMessage()               {}
 func (*DockerImage_Derived) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{27, 3} }
 
-func (m *DockerImage_Derived) GetBaseResourceUrl() string {
+func (m *DockerImage_Derived) GetFingerprint() *DockerImage_Fingerprint {
 	if m != nil {
-		return m.BaseResourceUrl
+		return m.Fingerprint
 	}
-	return ""
+	return nil
 }
 
 func (m *DockerImage_Derived) GetDistance() uint32 {
@@ -1713,13 +1846,6 @@ func (m *DockerImage_Derived) GetDistance() uint32 {
 	return 0
 }
 
-func (m *DockerImage_Derived) GetFingerprint() *DockerImage_Fingerprint {
-	if m != nil {
-		return m.Fingerprint
-	}
-	return nil
-}
-
 func (m *DockerImage_Derived) GetLayerInfo() []*DockerImage_Layer {
 	if m != nil {
 		return m.LayerInfo
@@ -1727,9 +1853,18 @@ func (m *DockerImage_Derived) GetLayerInfo() []*DockerImage_Layer {
 	return nil
 }
 
-// Note that indicates a type of analysis and exists in a provider project to
-// indicate the status of an analysis on a resource. Absence of an occurrence
-// linked to this note for a resource indicates that analysis hasn't started.
+func (m *DockerImage_Derived) GetBaseResourceUrl() string {
+	if m != nil {
+		return m.BaseResourceUrl
+	}
+	return ""
+}
+
+// A note that indicates a type of analysis a provider would perform. This note
+// exists in a provider's project. A `Discovery` occurrence is created in a
+// consumer's project at the start of analysis. The occurrence's operation will
+// indicate the status of the analysis. Absence of an occurrence linked to this
+// note for a resource indicates that analysis hasn't started.
 type Discovery struct {
 	// The kind of analysis that is handled by this discovery.
 	AnalysisKind Note_Kind `protobuf:"varint,1,opt,name=analysis_kind,json=analysisKind,enum=grafeas.v1alpha1.api.Note_Kind" json:"analysis_kind,omitempty"`
@@ -1747,9 +1882,9 @@ func (m *Discovery) GetAnalysisKind() Note_Kind {
 	return Note_KIND_UNSPECIFIED
 }
 
+// Provides information about the scan status of a discovered resource.
 type Discovery_Discovered struct {
-	// An operation that indicates the status of the current scan.
-	// @OutputOnly
+	// Output only. An operation that indicates the status of the current scan.
 	Operation *google_longrunning.Operation `protobuf:"bytes,1,opt,name=operation" json:"operation,omitempty"`
 }
 
@@ -1786,9 +1921,10 @@ func (m *FileHashes) GetFileHash() []*Hash {
 
 // Container message for hash values.
 type Hash struct {
-	Type Hash_Type `protobuf:"varint,1,opt,name=type,enum=grafeas.v1alpha1.api.Hash_Type" json:"type,omitempty"`
+	// The type of hash that was performed.
+	Type Hash_HashType `protobuf:"varint,1,opt,name=type,enum=grafeas.v1alpha1.api.Hash_HashType" json:"type,omitempty"`
 	// The hash value.
-	Value string `protobuf:"bytes,2,opt,name=value" json:"value,omitempty"`
+	Value []byte `protobuf:"bytes,2,opt,name=value,proto3" json:"value,omitempty"`
 }
 
 func (m *Hash) Reset()                    { *m = Hash{} }
@@ -1796,29 +1932,28 @@ func (m *Hash) String() string            { return proto.CompactTextString(m) }
 func (*Hash) ProtoMessage()               {}
 func (*Hash) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{30} }
 
-func (m *Hash) GetType() Hash_Type {
+func (m *Hash) GetType() Hash_HashType {
 	if m != nil {
 		return m.Type
 	}
 	return Hash_NONE
 }
 
-func (m *Hash) GetValue() string {
+func (m *Hash) GetValue() []byte {
 	if m != nil {
 		return m.Value
 	}
-	return ""
+	return nil
 }
 
-// Note provides a detailed description of a note using information
-// from the provider of the note.
+// Provides a detailed description of a `Note`.
 type Note struct {
 	// The name of the note in the form
-	// "providers/{provider_id}/notes/{note_id}"
+	// "providers/{provider_id}/notes/{NOTE_ID}"
 	Name string `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
-	// A one sentence description of this note
+	// A one sentence description of this `Note`.
 	ShortDescription string `protobuf:"bytes,3,opt,name=short_description,json=shortDescription" json:"short_description,omitempty"`
-	// A detailed description of this note
+	// A detailed description of this `Note`.
 	LongDescription string `protobuf:"bytes,4,opt,name=long_description,json=longDescription" json:"long_description,omitempty"`
 	// Output only. This explicitly denotes which kind of note is specified. This
 	// field can be used as a filter in list requests.
@@ -1832,20 +1967,17 @@ type Note struct {
 	//	*Note_Package
 	//	*Note_Deployable
 	//	*Note_Discovery
-	//	*Note_AttestationAuthority
 	NoteType isNote_NoteType `protobuf_oneof:"note_type"`
-	// Urls associated with this note
+	// URLs associated with this note
 	RelatedUrl []*Note_RelatedUrl `protobuf:"bytes,7,rep,name=related_url,json=relatedUrl" json:"related_url,omitempty"`
-	// Time of expiration for this note, null if note currently does not expire.
-	ExpirationTime *google_protobuf2.Timestamp `protobuf:"bytes,10,opt,name=expiration_time,json=expirationTime" json:"expiration_time,omitempty"`
+	// Time of expiration for this note, null if note does not expire.
+	ExpirationTime *google_protobuf3.Timestamp `protobuf:"bytes,10,opt,name=expiration_time,json=expirationTime" json:"expiration_time,omitempty"`
 	// Output only. The time this note was created. This field can be used as a
 	// filter in list requests.
-	CreateTime *google_protobuf2.Timestamp `protobuf:"bytes,11,opt,name=create_time,json=createTime" json:"create_time,omitempty"`
+	CreateTime *google_protobuf3.Timestamp `protobuf:"bytes,11,opt,name=create_time,json=createTime" json:"create_time,omitempty"`
 	// Output only. The time this note was last updated. This field can be used as
 	// a filter in list requests.
-	UpdateTime *google_protobuf2.Timestamp `protobuf:"bytes,12,opt,name=update_time,json=updateTime" json:"update_time,omitempty"`
-	// The name of the operation that created this note.
-	OperationName string `protobuf:"bytes,15,opt,name=operation_name,json=operationName" json:"operation_name,omitempty"`
+	UpdateTime *google_protobuf3.Timestamp `protobuf:"bytes,12,opt,name=update_time,json=updateTime" json:"update_time,omitempty"`
 }
 
 func (m *Note) Reset()                    { *m = Note{} }
@@ -1875,17 +2007,13 @@ type Note_Deployable struct {
 type Note_Discovery struct {
 	Discovery *Discovery `protobuf:"bytes,18,opt,name=discovery,oneof"`
 }
-type Note_AttestationAuthority struct {
-	AttestationAuthority *AttestationAuthority `protobuf:"bytes,19,opt,name=attestation_authority,json=attestationAuthority,oneof"`
-}
 
-func (*Note_VulnerabilityType) isNote_NoteType()    {}
-func (*Note_BuildType) isNote_NoteType()            {}
-func (*Note_BaseImage) isNote_NoteType()            {}
-func (*Note_Package) isNote_NoteType()              {}
-func (*Note_Deployable) isNote_NoteType()           {}
-func (*Note_Discovery) isNote_NoteType()            {}
-func (*Note_AttestationAuthority) isNote_NoteType() {}
+func (*Note_VulnerabilityType) isNote_NoteType() {}
+func (*Note_BuildType) isNote_NoteType()         {}
+func (*Note_BaseImage) isNote_NoteType()         {}
+func (*Note_Package) isNote_NoteType()           {}
+func (*Note_Deployable) isNote_NoteType()        {}
+func (*Note_Discovery) isNote_NoteType()         {}
 
 func (m *Note) GetNoteType() isNote_NoteType {
 	if m != nil {
@@ -1964,13 +2092,6 @@ func (m *Note) GetDiscovery() *Discovery {
 	return nil
 }
 
-func (m *Note) GetAttestationAuthority() *AttestationAuthority {
-	if x, ok := m.GetNoteType().(*Note_AttestationAuthority); ok {
-		return x.AttestationAuthority
-	}
-	return nil
-}
-
 func (m *Note) GetRelatedUrl() []*Note_RelatedUrl {
 	if m != nil {
 		return m.RelatedUrl
@@ -1978,32 +2099,25 @@ func (m *Note) GetRelatedUrl() []*Note_RelatedUrl {
 	return nil
 }
 
-func (m *Note) GetExpirationTime() *google_protobuf2.Timestamp {
+func (m *Note) GetExpirationTime() *google_protobuf3.Timestamp {
 	if m != nil {
 		return m.ExpirationTime
 	}
 	return nil
 }
 
-func (m *Note) GetCreateTime() *google_protobuf2.Timestamp {
+func (m *Note) GetCreateTime() *google_protobuf3.Timestamp {
 	if m != nil {
 		return m.CreateTime
 	}
 	return nil
 }
 
-func (m *Note) GetUpdateTime() *google_protobuf2.Timestamp {
+func (m *Note) GetUpdateTime() *google_protobuf3.Timestamp {
 	if m != nil {
 		return m.UpdateTime
 	}
 	return nil
-}
-
-func (m *Note) GetOperationName() string {
-	if m != nil {
-		return m.OperationName
-	}
-	return ""
 }
 
 // XXX_OneofFuncs is for the internal use of the proto package.
@@ -2015,7 +2129,6 @@ func (*Note) XXX_OneofFuncs() (func(msg proto.Message, b *proto.Buffer) error, f
 		(*Note_Package)(nil),
 		(*Note_Deployable)(nil),
 		(*Note_Discovery)(nil),
-		(*Note_AttestationAuthority)(nil),
 	}
 }
 
@@ -2051,11 +2164,6 @@ func _Note_OneofMarshaler(msg proto.Message, b *proto.Buffer) error {
 	case *Note_Discovery:
 		b.EncodeVarint(18<<3 | proto.WireBytes)
 		if err := b.EncodeMessage(x.Discovery); err != nil {
-			return err
-		}
-	case *Note_AttestationAuthority:
-		b.EncodeVarint(19<<3 | proto.WireBytes)
-		if err := b.EncodeMessage(x.AttestationAuthority); err != nil {
 			return err
 		}
 	case nil:
@@ -2116,14 +2224,6 @@ func _Note_OneofUnmarshaler(msg proto.Message, tag, wire int, b *proto.Buffer) (
 		err := b.DecodeMessage(msg)
 		m.NoteType = &Note_Discovery{msg}
 		return true, err
-	case 19: // note_type.attestation_authority
-		if wire != proto.WireBytes {
-			return true, proto.ErrInternalBadWireType
-		}
-		msg := new(AttestationAuthority)
-		err := b.DecodeMessage(msg)
-		m.NoteType = &Note_AttestationAuthority{msg}
-		return true, err
 	default:
 		return false, nil
 	}
@@ -2163,11 +2263,6 @@ func _Note_OneofSizer(msg proto.Message) (n int) {
 		n += proto.SizeVarint(18<<3 | proto.WireBytes)
 		n += proto.SizeVarint(uint64(s))
 		n += s
-	case *Note_AttestationAuthority:
-		s := proto.Size(x.AttestationAuthority)
-		n += proto.SizeVarint(19<<3 | proto.WireBytes)
-		n += proto.SizeVarint(uint64(s))
-		n += s
 	case nil:
 	default:
 		panic(fmt.Sprintf("proto: unexpected type %T in oneof", x))
@@ -2175,11 +2270,11 @@ func _Note_OneofSizer(msg proto.Message) (n int) {
 	return n
 }
 
-// Metadata for any related url information
+// Metadata for any related URL information
 type Note_RelatedUrl struct {
-	// Specific url to associate with the note
+	// Specific URL to associate with the note
 	Url string `protobuf:"bytes,1,opt,name=url" json:"url,omitempty"`
-	// Label to describe usage of the url
+	// Label to describe usage of the URL
 	Label string `protobuf:"bytes,2,opt,name=label" json:"label,omitempty"`
 }
 
@@ -2202,23 +2297,23 @@ func (m *Note_RelatedUrl) GetLabel() string {
 	return ""
 }
 
-// Occurrence includes information about analysis occurrences for an image.
+// `Occurrence` includes information about analysis occurrences for an image.
 type Occurrence struct {
-	// Output only. The name of the occurrence in the form
-	// "projects/{project_id}/occurrences/{occurrence_id}"
+	// Output only. The name of the `Occurrence` in the form
+	// "projects/{project_id}/occurrences/{OCCURRENCE_ID}"
 	Name string `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
-	// The unique url of the image or container for which the occurrence applies.
-	// Example: https://gcr.io/project/image@sha256:foo
-	// This field can be used as a filter in list requests.
+	// The unique URL of the image or the container for which the `Occurrence`
+	// applies. For example, https://gcr.io/project/image@sha256:foo This field
+	// can be used as a filter in list requests.
 	ResourceUrl string `protobuf:"bytes,2,opt,name=resource_url,json=resourceUrl" json:"resource_url,omitempty"`
 	// An analysis note associated with this image, in the form
-	// "providers/{provider_id}/notes/{note_id}"
+	// "providers/{provider_id}/notes/{NOTE_ID}"
 	// This field can be used as a filter in list requests.
 	NoteName string `protobuf:"bytes,3,opt,name=note_name,json=noteName" json:"note_name,omitempty"`
-	// Output only. This explicitly denotes which of the occurrence details is
+	// Output only. This explicitly denotes which of the `Occurrence` details are
 	// specified. This field can be used as a filter in list requests.
 	Kind Note_Kind `protobuf:"varint,6,opt,name=kind,enum=grafeas.v1alpha1.api.Note_Kind" json:"kind,omitempty"`
-	// Describes the details of the vulnerability note found in this resource.
+	// Describes the details of the vulnerability `Note` found in this resource.
 	//
 	// Types that are valid to be assigned to Details:
 	//	*Occurrence_VulnerabilityDetails
@@ -2227,16 +2322,13 @@ type Occurrence struct {
 	//	*Occurrence_Installation
 	//	*Occurrence_Deployment
 	//	*Occurrence_Discovered
-	//	*Occurrence_Attestation
 	Details isOccurrence_Details `protobuf_oneof:"details"`
-	// A description of actions that can be taken to remedy the note
+	// A description of actions that can be taken to remedy the `Note`
 	Remediation string `protobuf:"bytes,5,opt,name=remediation" json:"remediation,omitempty"`
-	// Output only. The time this occurrence was created.
-	CreateTime *google_protobuf2.Timestamp `protobuf:"bytes,9,opt,name=create_time,json=createTime" json:"create_time,omitempty"`
-	// Output only. The time this occurrence was last updated.
-	UpdateTime *google_protobuf2.Timestamp `protobuf:"bytes,10,opt,name=update_time,json=updateTime" json:"update_time,omitempty"`
-	// The name of the operation that created this note.
-	OperationName string `protobuf:"bytes,13,opt,name=operation_name,json=operationName" json:"operation_name,omitempty"`
+	// Output only. The time this `Occurrence` was created.
+	CreateTime *google_protobuf3.Timestamp `protobuf:"bytes,9,opt,name=create_time,json=createTime" json:"create_time,omitempty"`
+	// Output only. The time this `Occurrence` was last updated.
+	UpdateTime *google_protobuf3.Timestamp `protobuf:"bytes,10,opt,name=update_time,json=updateTime" json:"update_time,omitempty"`
 }
 
 func (m *Occurrence) Reset()                    { *m = Occurrence{} }
@@ -2266,9 +2358,6 @@ type Occurrence_Deployment struct {
 type Occurrence_Discovered struct {
 	Discovered *Discovery_Discovered `protobuf:"bytes,15,opt,name=discovered,oneof"`
 }
-type Occurrence_Attestation struct {
-	Attestation *AttestationAuthority_Attestation `protobuf:"bytes,16,opt,name=attestation,oneof"`
-}
 
 func (*Occurrence_VulnerabilityDetails) isOccurrence_Details() {}
 func (*Occurrence_BuildDetails) isOccurrence_Details()         {}
@@ -2276,7 +2365,6 @@ func (*Occurrence_DerivedImage) isOccurrence_Details()         {}
 func (*Occurrence_Installation) isOccurrence_Details()         {}
 func (*Occurrence_Deployment) isOccurrence_Details()           {}
 func (*Occurrence_Discovered) isOccurrence_Details()           {}
-func (*Occurrence_Attestation) isOccurrence_Details()          {}
 
 func (m *Occurrence) GetDetails() isOccurrence_Details {
 	if m != nil {
@@ -2355,13 +2443,6 @@ func (m *Occurrence) GetDiscovered() *Discovery_Discovered {
 	return nil
 }
 
-func (m *Occurrence) GetAttestation() *AttestationAuthority_Attestation {
-	if x, ok := m.GetDetails().(*Occurrence_Attestation); ok {
-		return x.Attestation
-	}
-	return nil
-}
-
 func (m *Occurrence) GetRemediation() string {
 	if m != nil {
 		return m.Remediation
@@ -2369,25 +2450,18 @@ func (m *Occurrence) GetRemediation() string {
 	return ""
 }
 
-func (m *Occurrence) GetCreateTime() *google_protobuf2.Timestamp {
+func (m *Occurrence) GetCreateTime() *google_protobuf3.Timestamp {
 	if m != nil {
 		return m.CreateTime
 	}
 	return nil
 }
 
-func (m *Occurrence) GetUpdateTime() *google_protobuf2.Timestamp {
+func (m *Occurrence) GetUpdateTime() *google_protobuf3.Timestamp {
 	if m != nil {
 		return m.UpdateTime
 	}
 	return nil
-}
-
-func (m *Occurrence) GetOperationName() string {
-	if m != nil {
-		return m.OperationName
-	}
-	return ""
 }
 
 // XXX_OneofFuncs is for the internal use of the proto package.
@@ -2399,7 +2473,6 @@ func (*Occurrence) XXX_OneofFuncs() (func(msg proto.Message, b *proto.Buffer) er
 		(*Occurrence_Installation)(nil),
 		(*Occurrence_Deployment)(nil),
 		(*Occurrence_Discovered)(nil),
-		(*Occurrence_Attestation)(nil),
 	}
 }
 
@@ -2435,11 +2508,6 @@ func _Occurrence_OneofMarshaler(msg proto.Message, b *proto.Buffer) error {
 	case *Occurrence_Discovered:
 		b.EncodeVarint(15<<3 | proto.WireBytes)
 		if err := b.EncodeMessage(x.Discovered); err != nil {
-			return err
-		}
-	case *Occurrence_Attestation:
-		b.EncodeVarint(16<<3 | proto.WireBytes)
-		if err := b.EncodeMessage(x.Attestation); err != nil {
 			return err
 		}
 	case nil:
@@ -2500,14 +2568,6 @@ func _Occurrence_OneofUnmarshaler(msg proto.Message, tag, wire int, b *proto.Buf
 		err := b.DecodeMessage(msg)
 		m.Details = &Occurrence_Discovered{msg}
 		return true, err
-	case 16: // details.attestation
-		if wire != proto.WireBytes {
-			return true, proto.ErrInternalBadWireType
-		}
-		msg := new(AttestationAuthority_Attestation)
-		err := b.DecodeMessage(msg)
-		m.Details = &Occurrence_Attestation{msg}
-		return true, err
 	default:
 		return false, nil
 	}
@@ -2547,11 +2607,6 @@ func _Occurrence_OneofSizer(msg proto.Message) (n int) {
 		n += proto.SizeVarint(15<<3 | proto.WireBytes)
 		n += proto.SizeVarint(uint64(s))
 		n += s
-	case *Occurrence_Attestation:
-		s := proto.Size(x.Attestation)
-		n += proto.SizeVarint(16<<3 | proto.WireBytes)
-		n += proto.SizeVarint(uint64(s))
-		n += s
 	case nil:
 	default:
 		panic(fmt.Sprintf("proto: unexpected type %T in oneof", x))
@@ -2568,64 +2623,30 @@ func (m *PackageManager) String() string            { return proto.CompactTextSt
 func (*PackageManager) ProtoMessage()               {}
 func (*PackageManager) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{33} }
 
-// This represents a particular package that is distributed over
-// various channels.
-// e.g. glibc (aka libc6) is distributed by many, at various versions.
-type PackageManager_Package struct {
-	// The various channels by which a package is distributed.
-	Distribution []*PackageManager_Distribution `protobuf:"bytes,1,rep,name=distribution" json:"distribution,omitempty"`
-	// The name of the package.
-	Name string `protobuf:"bytes,2,opt,name=name" json:"name,omitempty"`
-}
-
-func (m *PackageManager_Package) Reset()                    { *m = PackageManager_Package{} }
-func (m *PackageManager_Package) String() string            { return proto.CompactTextString(m) }
-func (*PackageManager_Package) ProtoMessage()               {}
-func (*PackageManager_Package) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{33, 0} }
-
-func (m *PackageManager_Package) GetDistribution() []*PackageManager_Distribution {
-	if m != nil {
-		return m.Distribution
-	}
-	return nil
-}
-
-func (m *PackageManager_Package) GetName() string {
-	if m != nil {
-		return m.Name
-	}
-	return ""
-}
-
 // This represents a particular channel of distribution for a given package.
 // e.g. Debian's jessie-backports dpkg mirror
 type PackageManager_Distribution struct {
-	Architecture PackageManager_Distribution_Architecture `protobuf:"varint,1,opt,name=architecture,enum=grafeas.v1alpha1.api.PackageManager_Distribution_Architecture" json:"architecture,omitempty"`
 	// The cpe_uri in [cpe format](https://cpe.mitre.org/specification/)
 	// denoting the package manager version distributing a package.
-	CpeUri string `protobuf:"bytes,2,opt,name=cpe_uri,json=cpeUri" json:"cpe_uri,omitempty"`
-	// The distribution channel-specific description of this package.
-	Description string `protobuf:"bytes,3,opt,name=description" json:"description,omitempty"`
+	CpeUri string `protobuf:"bytes,1,opt,name=cpe_uri,json=cpeUri" json:"cpe_uri,omitempty"`
+	// The CPU architecture for which packages in this distribution
+	// channel were built
+	Architecture PackageManager_Architecture `protobuf:"varint,2,opt,name=architecture,enum=grafeas.v1alpha1.api.PackageManager_Architecture" json:"architecture,omitempty"`
 	// The latest available version of this package in
 	// this distribution channel.
-	LatestVersion *PackageManager_Version `protobuf:"bytes,4,opt,name=latest_version,json=latestVersion" json:"latest_version,omitempty"`
+	LatestVersion *VulnerabilityType_Version `protobuf:"bytes,3,opt,name=latest_version,json=latestVersion" json:"latest_version,omitempty"`
 	// A freeform string denoting the maintainer of this package.
-	Maintainer string `protobuf:"bytes,5,opt,name=maintainer" json:"maintainer,omitempty"`
+	Maintainer string `protobuf:"bytes,4,opt,name=maintainer" json:"maintainer,omitempty"`
 	// The distribution channel-specific homepage for this package.
 	Url string `protobuf:"bytes,6,opt,name=url" json:"url,omitempty"`
+	// The distribution channel-specific description of this package.
+	Description string `protobuf:"bytes,7,opt,name=description" json:"description,omitempty"`
 }
 
 func (m *PackageManager_Distribution) Reset()                    { *m = PackageManager_Distribution{} }
 func (m *PackageManager_Distribution) String() string            { return proto.CompactTextString(m) }
 func (*PackageManager_Distribution) ProtoMessage()               {}
-func (*PackageManager_Distribution) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{33, 1} }
-
-func (m *PackageManager_Distribution) GetArchitecture() PackageManager_Distribution_Architecture {
-	if m != nil {
-		return m.Architecture
-	}
-	return PackageManager_Distribution_UNKNOWN
-}
+func (*PackageManager_Distribution) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{33, 0} }
 
 func (m *PackageManager_Distribution) GetCpeUri() string {
 	if m != nil {
@@ -2634,14 +2655,14 @@ func (m *PackageManager_Distribution) GetCpeUri() string {
 	return ""
 }
 
-func (m *PackageManager_Distribution) GetDescription() string {
+func (m *PackageManager_Distribution) GetArchitecture() PackageManager_Architecture {
 	if m != nil {
-		return m.Description
+		return m.Architecture
 	}
-	return ""
+	return PackageManager_ARCHITECTURE_UNSPECIFIED
 }
 
-func (m *PackageManager_Distribution) GetLatestVersion() *PackageManager_Version {
+func (m *PackageManager_Distribution) GetLatestVersion() *VulnerabilityType_Version {
 	if m != nil {
 		return m.LatestVersion
 	}
@@ -2662,54 +2683,11 @@ func (m *PackageManager_Distribution) GetUrl() string {
 	return ""
 }
 
-// Version contains structured information about the version of the package.
-// For a discussion of this in Debian/Ubuntu:
-// http://serverfault.com/questions/604541/debian-packages-version-convention
-// For a discussion of this in Redhat/Fedora/Centos:
-// http://blog.jasonantman.com/2014/07/how-yum-and-rpm-compare-versions/
-type PackageManager_Version struct {
-	// Used to correct mistakes in the version numbering scheme.
-	Epoch int32 `protobuf:"varint,1,opt,name=epoch" json:"epoch,omitempty"`
-	// The main part of the version name.
-	Name string `protobuf:"bytes,2,opt,name=name" json:"name,omitempty"`
-	// The iteration of the package build from the above version.
-	Revision string `protobuf:"bytes,3,opt,name=revision" json:"revision,omitempty"`
-	// Distinguish between sentinel MIN/MAX versions and normal versions.
-	// If kind is not NORMAL, then the other fields are ignored.
-	Kind PackageManager_Version_VersionKind `protobuf:"varint,5,opt,name=kind,enum=grafeas.v1alpha1.api.PackageManager_Version_VersionKind" json:"kind,omitempty"`
-}
-
-func (m *PackageManager_Version) Reset()                    { *m = PackageManager_Version{} }
-func (m *PackageManager_Version) String() string            { return proto.CompactTextString(m) }
-func (*PackageManager_Version) ProtoMessage()               {}
-func (*PackageManager_Version) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{33, 2} }
-
-func (m *PackageManager_Version) GetEpoch() int32 {
+func (m *PackageManager_Distribution) GetDescription() string {
 	if m != nil {
-		return m.Epoch
-	}
-	return 0
-}
-
-func (m *PackageManager_Version) GetName() string {
-	if m != nil {
-		return m.Name
+		return m.Description
 	}
 	return ""
-}
-
-func (m *PackageManager_Version) GetRevision() string {
-	if m != nil {
-		return m.Revision
-	}
-	return ""
-}
-
-func (m *PackageManager_Version) GetKind() PackageManager_Version_VersionKind {
-	if m != nil {
-		return m.Kind
-	}
-	return PackageManager_Version_NORMAL
 }
 
 // An occurrence of a particular package installation found within a
@@ -2719,27 +2697,20 @@ type PackageManager_Location struct {
 	// The cpe_uri in [cpe format](https://cpe.mitre.org/specification/)
 	// denoting the package manager version distributing a package.
 	CpeUri string `protobuf:"bytes,1,opt,name=cpe_uri,json=cpeUri" json:"cpe_uri,omitempty"`
-	// The path from which we gathered that this package/version is installed.
-	Path string `protobuf:"bytes,2,opt,name=path" json:"path,omitempty"`
 	// The version installed at this location.
-	Version *VulnerabilityType_Version `protobuf:"bytes,3,opt,name=version" json:"version,omitempty"`
+	Version *VulnerabilityType_Version `protobuf:"bytes,2,opt,name=version" json:"version,omitempty"`
+	// The path from which we gathered that this package/version is installed.
+	Path string `protobuf:"bytes,3,opt,name=path" json:"path,omitempty"`
 }
 
 func (m *PackageManager_Location) Reset()                    { *m = PackageManager_Location{} }
 func (m *PackageManager_Location) String() string            { return proto.CompactTextString(m) }
 func (*PackageManager_Location) ProtoMessage()               {}
-func (*PackageManager_Location) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{33, 3} }
+func (*PackageManager_Location) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{33, 1} }
 
 func (m *PackageManager_Location) GetCpeUri() string {
 	if m != nil {
 		return m.CpeUri
-	}
-	return ""
-}
-
-func (m *PackageManager_Location) GetPath() string {
-	if m != nil {
-		return m.Path
 	}
 	return ""
 }
@@ -2751,11 +2722,46 @@ func (m *PackageManager_Location) GetVersion() *VulnerabilityType_Version {
 	return nil
 }
 
+func (m *PackageManager_Location) GetPath() string {
+	if m != nil {
+		return m.Path
+	}
+	return ""
+}
+
+// This represents a particular package that is distributed over
+// various channels.
+// e.g. glibc (aka libc6) is distributed by many, at various versions.
+type PackageManager_Package struct {
+	// The name of the package.
+	Name string `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
+	// The various channels by which a package is distributed.
+	Distribution []*PackageManager_Distribution `protobuf:"bytes,10,rep,name=distribution" json:"distribution,omitempty"`
+}
+
+func (m *PackageManager_Package) Reset()                    { *m = PackageManager_Package{} }
+func (m *PackageManager_Package) String() string            { return proto.CompactTextString(m) }
+func (*PackageManager_Package) ProtoMessage()               {}
+func (*PackageManager_Package) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{33, 2} }
+
+func (m *PackageManager_Package) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *PackageManager_Package) GetDistribution() []*PackageManager_Distribution {
+	if m != nil {
+		return m.Distribution
+	}
+	return nil
+}
+
 // This represents how a particular software package may be installed on
 // a system.
 type PackageManager_Installation struct {
-	// The name of the installed package.
-	// @OutputOnly
+	// Output only. The name of the installed package.
 	Name string `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
 	// All of the places within the filesystem versions of this package
 	// have been found.
@@ -2765,7 +2771,7 @@ type PackageManager_Installation struct {
 func (m *PackageManager_Installation) Reset()                    { *m = PackageManager_Installation{} }
 func (m *PackageManager_Installation) String() string            { return proto.CompactTextString(m) }
 func (*PackageManager_Installation) ProtoMessage()               {}
-func (*PackageManager_Installation) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{33, 4} }
+func (*PackageManager_Installation) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{33, 3} }
 
 func (m *PackageManager_Installation) GetName() string {
 	if m != nil {
@@ -2919,13 +2925,6 @@ type Source struct {
 	// If provided, the input binary artifacts for the build came from this
 	// location.
 	ArtifactStorageSource *StorageSource `protobuf:"bytes,4,opt,name=artifact_storage_source,json=artifactStorageSource" json:"artifact_storage_source,omitempty"`
-	// If provided, the source code used for the build came from this location.
-	SourceContext *google_devtools_source_v1.ExtendedSourceContext `protobuf:"bytes,5,opt,name=source_context,json=sourceContext" json:"source_context,omitempty"`
-	// If provided, some of the source code used for the build may be found in
-	// these locations, in the case where the source repository had multiple
-	// remotes or submodules. This list will not include the context specified in
-	// the source_context field.
-	AdditionalSourceContexts []*google_devtools_source_v1.ExtendedSourceContext `protobuf:"bytes,6,rep,name=additional_source_contexts,json=additionalSourceContexts" json:"additional_source_contexts,omitempty"`
 	// Hash(es) of the build source, which can be used to verify that the original
 	// source integrity was maintained in the build.
 	//
@@ -2935,6 +2934,13 @@ type Source struct {
 	// If the build source came in a single package such as a gzipped tarfile
 	// (.tar.gz), the FileHash will be for the single path to that file.
 	FileHashes map[string]*FileHashes `protobuf:"bytes,3,rep,name=file_hashes,json=fileHashes" json:"file_hashes,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	// If provided, the source code used for the build came from this location.
+	Context *SourceContext `protobuf:"bytes,7,opt,name=context" json:"context,omitempty"`
+	// If provided, some of the source code used for the build may be found in
+	// these locations, in the case where the source repository had multiple
+	// remotes or submodules. This list will not include the context specified in
+	// the context field.
+	AdditionalContexts []*SourceContext `protobuf:"bytes,8,rep,name=additional_contexts,json=additionalContexts" json:"additional_contexts,omitempty"`
 }
 
 func (m *Source) Reset()                    { *m = Source{} }
@@ -2984,23 +2990,23 @@ func (m *Source) GetArtifactStorageSource() *StorageSource {
 	return nil
 }
 
-func (m *Source) GetSourceContext() *google_devtools_source_v1.ExtendedSourceContext {
-	if m != nil {
-		return m.SourceContext
-	}
-	return nil
-}
-
-func (m *Source) GetAdditionalSourceContexts() []*google_devtools_source_v1.ExtendedSourceContext {
-	if m != nil {
-		return m.AdditionalSourceContexts
-	}
-	return nil
-}
-
 func (m *Source) GetFileHashes() map[string]*FileHashes {
 	if m != nil {
 		return m.FileHashes
+	}
+	return nil
+}
+
+func (m *Source) GetContext() *SourceContext {
+	if m != nil {
+		return m.Context
+	}
+	return nil
+}
+
+func (m *Source) GetAdditionalContexts() []*SourceContext {
+	if m != nil {
+		return m.AdditionalContexts
 	}
 	return nil
 }
@@ -3249,10 +3255,10 @@ type StorageSource struct {
 	// Requirements]
 	// (https://cloud.google.com/storage/docs/bucket-naming#requirements)).
 	Bucket string `protobuf:"bytes,1,opt,name=bucket" json:"bucket,omitempty"`
-	// Google Cloud Storage generation for the object.
-	Generation string `protobuf:"bytes,2,opt,name=generation" json:"generation,omitempty"`
 	// Google Cloud Storage object containing source.
-	Object string `protobuf:"bytes,3,opt,name=object" json:"object,omitempty"`
+	Object string `protobuf:"bytes,2,opt,name=object" json:"object,omitempty"`
+	// Google Cloud Storage generation for the object.
+	Generation int64 `protobuf:"varint,3,opt,name=generation" json:"generation,omitempty"`
 }
 
 func (m *StorageSource) Reset()                    { *m = StorageSource{} }
@@ -3267,18 +3273,18 @@ func (m *StorageSource) GetBucket() string {
 	return ""
 }
 
-func (m *StorageSource) GetGeneration() string {
-	if m != nil {
-		return m.Generation
-	}
-	return ""
-}
-
 func (m *StorageSource) GetObject() string {
 	if m != nil {
 		return m.Object
 	}
 	return ""
+}
+
+func (m *StorageSource) GetGeneration() int64 {
+	if m != nil {
+		return m.Generation
+	}
+	return 0
 }
 
 // VulnerabilityType provides metadata about a security vulnerability.
@@ -3369,7 +3375,7 @@ func (m *VulnerabilityType_Version) GetKind() VulnerabilityType_Version_VersionK
 	return VulnerabilityType_Version_NORMAL
 }
 
-// Identifies all occurences of this vulnerability in the package for a
+// Identifies all occurrences of this vulnerability in the package for a
 // specific distro/location
 // For example: glibc in cpe:/o:debian:debian_linux:8 for versions 2.1 - 2.2
 type VulnerabilityType_Detail struct {
@@ -3464,12 +3470,11 @@ type VulnerabilityType_VulnerabilityDetails struct {
 	// The type of package; whether native or non native(ruby gems,
 	// node.js packages etc)
 	Type string `protobuf:"bytes,3,opt,name=type" json:"type,omitempty"`
-	// The note provider assigned Severity of the vulnerability.
-	// @OutputOnly
+	// Output only. The note provider assigned Severity of the vulnerability.
 	Severity VulnerabilityType_Severity `protobuf:"varint,4,opt,name=severity,enum=grafeas.v1alpha1.api.VulnerabilityType_Severity" json:"severity,omitempty"`
-	// The CVSS score of this vulnerability. CVSS score is on a scale of 0-10
-	// where 0 indicates low severity and 10 indicates high severity.
-	// @OutputOnly
+	// Output only. The CVSS score of this vulnerability. CVSS score is on a
+	// scale of 0-10 where 0 indicates low severity and 10 indicates high
+	// severity.
 	CvssScore float32 `protobuf:"fixed32,5,opt,name=cvss_score,json=cvssScore" json:"cvss_score,omitempty"`
 	// The set of affected locations and their fixes (if available) within
 	// the associated resource.
@@ -3595,6 +3600,648 @@ func (m *VulnerabilityType_VulnerabilityLocation) GetVersion() *VulnerabilityTyp
 	return nil
 }
 
+// A SourceContext is a reference to a tree of files. A SourceContext together
+// with a path point to a unique revision of a single file or directory.
+type SourceContext struct {
+	// A SourceContext can refer any one of the following types of repositories.
+	//
+	// Types that are valid to be assigned to Context:
+	//	*SourceContext_CloudRepo
+	//	*SourceContext_Gerrit
+	//	*SourceContext_Git
+	Context isSourceContext_Context `protobuf_oneof:"context"`
+	// Labels with user defined metadata.
+	Labels map[string]string `protobuf:"bytes,4,rep,name=labels" json:"labels,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+}
+
+func (m *SourceContext) Reset()                    { *m = SourceContext{} }
+func (m *SourceContext) String() string            { return proto.CompactTextString(m) }
+func (*SourceContext) ProtoMessage()               {}
+func (*SourceContext) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{39} }
+
+type isSourceContext_Context interface {
+	isSourceContext_Context()
+}
+
+type SourceContext_CloudRepo struct {
+	CloudRepo *CloudRepoSourceContext `protobuf:"bytes,1,opt,name=cloud_repo,json=cloudRepo,oneof"`
+}
+type SourceContext_Gerrit struct {
+	Gerrit *GerritSourceContext `protobuf:"bytes,2,opt,name=gerrit,oneof"`
+}
+type SourceContext_Git struct {
+	Git *GitSourceContext `protobuf:"bytes,3,opt,name=git,oneof"`
+}
+
+func (*SourceContext_CloudRepo) isSourceContext_Context() {}
+func (*SourceContext_Gerrit) isSourceContext_Context()    {}
+func (*SourceContext_Git) isSourceContext_Context()       {}
+
+func (m *SourceContext) GetContext() isSourceContext_Context {
+	if m != nil {
+		return m.Context
+	}
+	return nil
+}
+
+func (m *SourceContext) GetCloudRepo() *CloudRepoSourceContext {
+	if x, ok := m.GetContext().(*SourceContext_CloudRepo); ok {
+		return x.CloudRepo
+	}
+	return nil
+}
+
+func (m *SourceContext) GetGerrit() *GerritSourceContext {
+	if x, ok := m.GetContext().(*SourceContext_Gerrit); ok {
+		return x.Gerrit
+	}
+	return nil
+}
+
+func (m *SourceContext) GetGit() *GitSourceContext {
+	if x, ok := m.GetContext().(*SourceContext_Git); ok {
+		return x.Git
+	}
+	return nil
+}
+
+func (m *SourceContext) GetLabels() map[string]string {
+	if m != nil {
+		return m.Labels
+	}
+	return nil
+}
+
+// XXX_OneofFuncs is for the internal use of the proto package.
+func (*SourceContext) XXX_OneofFuncs() (func(msg proto.Message, b *proto.Buffer) error, func(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error), func(msg proto.Message) (n int), []interface{}) {
+	return _SourceContext_OneofMarshaler, _SourceContext_OneofUnmarshaler, _SourceContext_OneofSizer, []interface{}{
+		(*SourceContext_CloudRepo)(nil),
+		(*SourceContext_Gerrit)(nil),
+		(*SourceContext_Git)(nil),
+	}
+}
+
+func _SourceContext_OneofMarshaler(msg proto.Message, b *proto.Buffer) error {
+	m := msg.(*SourceContext)
+	// context
+	switch x := m.Context.(type) {
+	case *SourceContext_CloudRepo:
+		b.EncodeVarint(1<<3 | proto.WireBytes)
+		if err := b.EncodeMessage(x.CloudRepo); err != nil {
+			return err
+		}
+	case *SourceContext_Gerrit:
+		b.EncodeVarint(2<<3 | proto.WireBytes)
+		if err := b.EncodeMessage(x.Gerrit); err != nil {
+			return err
+		}
+	case *SourceContext_Git:
+		b.EncodeVarint(3<<3 | proto.WireBytes)
+		if err := b.EncodeMessage(x.Git); err != nil {
+			return err
+		}
+	case nil:
+	default:
+		return fmt.Errorf("SourceContext.Context has unexpected type %T", x)
+	}
+	return nil
+}
+
+func _SourceContext_OneofUnmarshaler(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error) {
+	m := msg.(*SourceContext)
+	switch tag {
+	case 1: // context.cloud_repo
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		msg := new(CloudRepoSourceContext)
+		err := b.DecodeMessage(msg)
+		m.Context = &SourceContext_CloudRepo{msg}
+		return true, err
+	case 2: // context.gerrit
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		msg := new(GerritSourceContext)
+		err := b.DecodeMessage(msg)
+		m.Context = &SourceContext_Gerrit{msg}
+		return true, err
+	case 3: // context.git
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		msg := new(GitSourceContext)
+		err := b.DecodeMessage(msg)
+		m.Context = &SourceContext_Git{msg}
+		return true, err
+	default:
+		return false, nil
+	}
+}
+
+func _SourceContext_OneofSizer(msg proto.Message) (n int) {
+	m := msg.(*SourceContext)
+	// context
+	switch x := m.Context.(type) {
+	case *SourceContext_CloudRepo:
+		s := proto.Size(x.CloudRepo)
+		n += proto.SizeVarint(1<<3 | proto.WireBytes)
+		n += proto.SizeVarint(uint64(s))
+		n += s
+	case *SourceContext_Gerrit:
+		s := proto.Size(x.Gerrit)
+		n += proto.SizeVarint(2<<3 | proto.WireBytes)
+		n += proto.SizeVarint(uint64(s))
+		n += s
+	case *SourceContext_Git:
+		s := proto.Size(x.Git)
+		n += proto.SizeVarint(3<<3 | proto.WireBytes)
+		n += proto.SizeVarint(uint64(s))
+		n += s
+	case nil:
+	default:
+		panic(fmt.Sprintf("proto: unexpected type %T in oneof", x))
+	}
+	return n
+}
+
+// An alias to a repo revision.
+type AliasContext struct {
+	// The alias kind.
+	Kind AliasContext_Kind `protobuf:"varint,1,opt,name=kind,enum=grafeas.v1alpha1.api.AliasContext_Kind" json:"kind,omitempty"`
+	// The alias name.
+	Name string `protobuf:"bytes,2,opt,name=name" json:"name,omitempty"`
+}
+
+func (m *AliasContext) Reset()                    { *m = AliasContext{} }
+func (m *AliasContext) String() string            { return proto.CompactTextString(m) }
+func (*AliasContext) ProtoMessage()               {}
+func (*AliasContext) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{40} }
+
+func (m *AliasContext) GetKind() AliasContext_Kind {
+	if m != nil {
+		return m.Kind
+	}
+	return AliasContext_KIND_UNSPECIFIED
+}
+
+func (m *AliasContext) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+// A CloudRepoSourceContext denotes a particular revision in a Google Cloud
+// Source Repo.
+type CloudRepoSourceContext struct {
+	// The ID of the repo.
+	RepoId *RepoId `protobuf:"bytes,1,opt,name=repo_id,json=repoId" json:"repo_id,omitempty"`
+	// A revision in a Cloud Repo can be identified by either its revision ID or
+	// its alias.
+	//
+	// Types that are valid to be assigned to Revision:
+	//	*CloudRepoSourceContext_RevisionId
+	//	*CloudRepoSourceContext_AliasContext
+	Revision isCloudRepoSourceContext_Revision `protobuf_oneof:"revision"`
+}
+
+func (m *CloudRepoSourceContext) Reset()                    { *m = CloudRepoSourceContext{} }
+func (m *CloudRepoSourceContext) String() string            { return proto.CompactTextString(m) }
+func (*CloudRepoSourceContext) ProtoMessage()               {}
+func (*CloudRepoSourceContext) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{41} }
+
+type isCloudRepoSourceContext_Revision interface {
+	isCloudRepoSourceContext_Revision()
+}
+
+type CloudRepoSourceContext_RevisionId struct {
+	RevisionId string `protobuf:"bytes,2,opt,name=revision_id,json=revisionId,oneof"`
+}
+type CloudRepoSourceContext_AliasContext struct {
+	AliasContext *AliasContext `protobuf:"bytes,3,opt,name=alias_context,json=aliasContext,oneof"`
+}
+
+func (*CloudRepoSourceContext_RevisionId) isCloudRepoSourceContext_Revision()   {}
+func (*CloudRepoSourceContext_AliasContext) isCloudRepoSourceContext_Revision() {}
+
+func (m *CloudRepoSourceContext) GetRevision() isCloudRepoSourceContext_Revision {
+	if m != nil {
+		return m.Revision
+	}
+	return nil
+}
+
+func (m *CloudRepoSourceContext) GetRepoId() *RepoId {
+	if m != nil {
+		return m.RepoId
+	}
+	return nil
+}
+
+func (m *CloudRepoSourceContext) GetRevisionId() string {
+	if x, ok := m.GetRevision().(*CloudRepoSourceContext_RevisionId); ok {
+		return x.RevisionId
+	}
+	return ""
+}
+
+func (m *CloudRepoSourceContext) GetAliasContext() *AliasContext {
+	if x, ok := m.GetRevision().(*CloudRepoSourceContext_AliasContext); ok {
+		return x.AliasContext
+	}
+	return nil
+}
+
+// XXX_OneofFuncs is for the internal use of the proto package.
+func (*CloudRepoSourceContext) XXX_OneofFuncs() (func(msg proto.Message, b *proto.Buffer) error, func(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error), func(msg proto.Message) (n int), []interface{}) {
+	return _CloudRepoSourceContext_OneofMarshaler, _CloudRepoSourceContext_OneofUnmarshaler, _CloudRepoSourceContext_OneofSizer, []interface{}{
+		(*CloudRepoSourceContext_RevisionId)(nil),
+		(*CloudRepoSourceContext_AliasContext)(nil),
+	}
+}
+
+func _CloudRepoSourceContext_OneofMarshaler(msg proto.Message, b *proto.Buffer) error {
+	m := msg.(*CloudRepoSourceContext)
+	// revision
+	switch x := m.Revision.(type) {
+	case *CloudRepoSourceContext_RevisionId:
+		b.EncodeVarint(2<<3 | proto.WireBytes)
+		b.EncodeStringBytes(x.RevisionId)
+	case *CloudRepoSourceContext_AliasContext:
+		b.EncodeVarint(3<<3 | proto.WireBytes)
+		if err := b.EncodeMessage(x.AliasContext); err != nil {
+			return err
+		}
+	case nil:
+	default:
+		return fmt.Errorf("CloudRepoSourceContext.Revision has unexpected type %T", x)
+	}
+	return nil
+}
+
+func _CloudRepoSourceContext_OneofUnmarshaler(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error) {
+	m := msg.(*CloudRepoSourceContext)
+	switch tag {
+	case 2: // revision.revision_id
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		x, err := b.DecodeStringBytes()
+		m.Revision = &CloudRepoSourceContext_RevisionId{x}
+		return true, err
+	case 3: // revision.alias_context
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		msg := new(AliasContext)
+		err := b.DecodeMessage(msg)
+		m.Revision = &CloudRepoSourceContext_AliasContext{msg}
+		return true, err
+	default:
+		return false, nil
+	}
+}
+
+func _CloudRepoSourceContext_OneofSizer(msg proto.Message) (n int) {
+	m := msg.(*CloudRepoSourceContext)
+	// revision
+	switch x := m.Revision.(type) {
+	case *CloudRepoSourceContext_RevisionId:
+		n += proto.SizeVarint(2<<3 | proto.WireBytes)
+		n += proto.SizeVarint(uint64(len(x.RevisionId)))
+		n += len(x.RevisionId)
+	case *CloudRepoSourceContext_AliasContext:
+		s := proto.Size(x.AliasContext)
+		n += proto.SizeVarint(3<<3 | proto.WireBytes)
+		n += proto.SizeVarint(uint64(s))
+		n += s
+	case nil:
+	default:
+		panic(fmt.Sprintf("proto: unexpected type %T in oneof", x))
+	}
+	return n
+}
+
+// A SourceContext referring to a Gerrit project.
+type GerritSourceContext struct {
+	// The URI of a running Gerrit instance.
+	HostUri string `protobuf:"bytes,1,opt,name=host_uri,json=hostUri" json:"host_uri,omitempty"`
+	// The full project name within the host. Projects may be nested, so
+	// "project/subproject" is a valid project name. The "repo name" is
+	// the hostURI/project.
+	GerritProject string `protobuf:"bytes,2,opt,name=gerrit_project,json=gerritProject" json:"gerrit_project,omitempty"`
+	// A revision in a Gerrit project can be identified by either its revision ID
+	// or its alias.
+	//
+	// Types that are valid to be assigned to Revision:
+	//	*GerritSourceContext_RevisionId
+	//	*GerritSourceContext_AliasContext
+	Revision isGerritSourceContext_Revision `protobuf_oneof:"revision"`
+}
+
+func (m *GerritSourceContext) Reset()                    { *m = GerritSourceContext{} }
+func (m *GerritSourceContext) String() string            { return proto.CompactTextString(m) }
+func (*GerritSourceContext) ProtoMessage()               {}
+func (*GerritSourceContext) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{42} }
+
+type isGerritSourceContext_Revision interface {
+	isGerritSourceContext_Revision()
+}
+
+type GerritSourceContext_RevisionId struct {
+	RevisionId string `protobuf:"bytes,3,opt,name=revision_id,json=revisionId,oneof"`
+}
+type GerritSourceContext_AliasContext struct {
+	AliasContext *AliasContext `protobuf:"bytes,4,opt,name=alias_context,json=aliasContext,oneof"`
+}
+
+func (*GerritSourceContext_RevisionId) isGerritSourceContext_Revision()   {}
+func (*GerritSourceContext_AliasContext) isGerritSourceContext_Revision() {}
+
+func (m *GerritSourceContext) GetRevision() isGerritSourceContext_Revision {
+	if m != nil {
+		return m.Revision
+	}
+	return nil
+}
+
+func (m *GerritSourceContext) GetHostUri() string {
+	if m != nil {
+		return m.HostUri
+	}
+	return ""
+}
+
+func (m *GerritSourceContext) GetGerritProject() string {
+	if m != nil {
+		return m.GerritProject
+	}
+	return ""
+}
+
+func (m *GerritSourceContext) GetRevisionId() string {
+	if x, ok := m.GetRevision().(*GerritSourceContext_RevisionId); ok {
+		return x.RevisionId
+	}
+	return ""
+}
+
+func (m *GerritSourceContext) GetAliasContext() *AliasContext {
+	if x, ok := m.GetRevision().(*GerritSourceContext_AliasContext); ok {
+		return x.AliasContext
+	}
+	return nil
+}
+
+// XXX_OneofFuncs is for the internal use of the proto package.
+func (*GerritSourceContext) XXX_OneofFuncs() (func(msg proto.Message, b *proto.Buffer) error, func(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error), func(msg proto.Message) (n int), []interface{}) {
+	return _GerritSourceContext_OneofMarshaler, _GerritSourceContext_OneofUnmarshaler, _GerritSourceContext_OneofSizer, []interface{}{
+		(*GerritSourceContext_RevisionId)(nil),
+		(*GerritSourceContext_AliasContext)(nil),
+	}
+}
+
+func _GerritSourceContext_OneofMarshaler(msg proto.Message, b *proto.Buffer) error {
+	m := msg.(*GerritSourceContext)
+	// revision
+	switch x := m.Revision.(type) {
+	case *GerritSourceContext_RevisionId:
+		b.EncodeVarint(3<<3 | proto.WireBytes)
+		b.EncodeStringBytes(x.RevisionId)
+	case *GerritSourceContext_AliasContext:
+		b.EncodeVarint(4<<3 | proto.WireBytes)
+		if err := b.EncodeMessage(x.AliasContext); err != nil {
+			return err
+		}
+	case nil:
+	default:
+		return fmt.Errorf("GerritSourceContext.Revision has unexpected type %T", x)
+	}
+	return nil
+}
+
+func _GerritSourceContext_OneofUnmarshaler(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error) {
+	m := msg.(*GerritSourceContext)
+	switch tag {
+	case 3: // revision.revision_id
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		x, err := b.DecodeStringBytes()
+		m.Revision = &GerritSourceContext_RevisionId{x}
+		return true, err
+	case 4: // revision.alias_context
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		msg := new(AliasContext)
+		err := b.DecodeMessage(msg)
+		m.Revision = &GerritSourceContext_AliasContext{msg}
+		return true, err
+	default:
+		return false, nil
+	}
+}
+
+func _GerritSourceContext_OneofSizer(msg proto.Message) (n int) {
+	m := msg.(*GerritSourceContext)
+	// revision
+	switch x := m.Revision.(type) {
+	case *GerritSourceContext_RevisionId:
+		n += proto.SizeVarint(3<<3 | proto.WireBytes)
+		n += proto.SizeVarint(uint64(len(x.RevisionId)))
+		n += len(x.RevisionId)
+	case *GerritSourceContext_AliasContext:
+		s := proto.Size(x.AliasContext)
+		n += proto.SizeVarint(4<<3 | proto.WireBytes)
+		n += proto.SizeVarint(uint64(s))
+		n += s
+	case nil:
+	default:
+		panic(fmt.Sprintf("proto: unexpected type %T in oneof", x))
+	}
+	return n
+}
+
+// A GitSourceContext denotes a particular revision in a third party Git
+// repository (e.g., GitHub).
+type GitSourceContext struct {
+	// Git repository URL.
+	Url string `protobuf:"bytes,1,opt,name=url" json:"url,omitempty"`
+	// Required.
+	// Git commit hash.
+	RevisionId string `protobuf:"bytes,2,opt,name=revision_id,json=revisionId" json:"revision_id,omitempty"`
+}
+
+func (m *GitSourceContext) Reset()                    { *m = GitSourceContext{} }
+func (m *GitSourceContext) String() string            { return proto.CompactTextString(m) }
+func (*GitSourceContext) ProtoMessage()               {}
+func (*GitSourceContext) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{43} }
+
+func (m *GitSourceContext) GetUrl() string {
+	if m != nil {
+		return m.Url
+	}
+	return ""
+}
+
+func (m *GitSourceContext) GetRevisionId() string {
+	if m != nil {
+		return m.RevisionId
+	}
+	return ""
+}
+
+// A unique identifier for a Cloud Repo.
+type RepoId struct {
+	// A cloud repo can be identified by either its project ID and repository name
+	// combination, or its globally unique identifier.
+	//
+	// Types that are valid to be assigned to Id:
+	//	*RepoId_ProjectRepoId
+	//	*RepoId_Uid
+	Id isRepoId_Id `protobuf_oneof:"id"`
+}
+
+func (m *RepoId) Reset()                    { *m = RepoId{} }
+func (m *RepoId) String() string            { return proto.CompactTextString(m) }
+func (*RepoId) ProtoMessage()               {}
+func (*RepoId) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{44} }
+
+type isRepoId_Id interface {
+	isRepoId_Id()
+}
+
+type RepoId_ProjectRepoId struct {
+	ProjectRepoId *ProjectRepoId `protobuf:"bytes,1,opt,name=project_repo_id,json=projectRepoId,oneof"`
+}
+type RepoId_Uid struct {
+	Uid string `protobuf:"bytes,2,opt,name=uid,oneof"`
+}
+
+func (*RepoId_ProjectRepoId) isRepoId_Id() {}
+func (*RepoId_Uid) isRepoId_Id()           {}
+
+func (m *RepoId) GetId() isRepoId_Id {
+	if m != nil {
+		return m.Id
+	}
+	return nil
+}
+
+func (m *RepoId) GetProjectRepoId() *ProjectRepoId {
+	if x, ok := m.GetId().(*RepoId_ProjectRepoId); ok {
+		return x.ProjectRepoId
+	}
+	return nil
+}
+
+func (m *RepoId) GetUid() string {
+	if x, ok := m.GetId().(*RepoId_Uid); ok {
+		return x.Uid
+	}
+	return ""
+}
+
+// XXX_OneofFuncs is for the internal use of the proto package.
+func (*RepoId) XXX_OneofFuncs() (func(msg proto.Message, b *proto.Buffer) error, func(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error), func(msg proto.Message) (n int), []interface{}) {
+	return _RepoId_OneofMarshaler, _RepoId_OneofUnmarshaler, _RepoId_OneofSizer, []interface{}{
+		(*RepoId_ProjectRepoId)(nil),
+		(*RepoId_Uid)(nil),
+	}
+}
+
+func _RepoId_OneofMarshaler(msg proto.Message, b *proto.Buffer) error {
+	m := msg.(*RepoId)
+	// id
+	switch x := m.Id.(type) {
+	case *RepoId_ProjectRepoId:
+		b.EncodeVarint(1<<3 | proto.WireBytes)
+		if err := b.EncodeMessage(x.ProjectRepoId); err != nil {
+			return err
+		}
+	case *RepoId_Uid:
+		b.EncodeVarint(2<<3 | proto.WireBytes)
+		b.EncodeStringBytes(x.Uid)
+	case nil:
+	default:
+		return fmt.Errorf("RepoId.Id has unexpected type %T", x)
+	}
+	return nil
+}
+
+func _RepoId_OneofUnmarshaler(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error) {
+	m := msg.(*RepoId)
+	switch tag {
+	case 1: // id.project_repo_id
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		msg := new(ProjectRepoId)
+		err := b.DecodeMessage(msg)
+		m.Id = &RepoId_ProjectRepoId{msg}
+		return true, err
+	case 2: // id.uid
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		x, err := b.DecodeStringBytes()
+		m.Id = &RepoId_Uid{x}
+		return true, err
+	default:
+		return false, nil
+	}
+}
+
+func _RepoId_OneofSizer(msg proto.Message) (n int) {
+	m := msg.(*RepoId)
+	// id
+	switch x := m.Id.(type) {
+	case *RepoId_ProjectRepoId:
+		s := proto.Size(x.ProjectRepoId)
+		n += proto.SizeVarint(1<<3 | proto.WireBytes)
+		n += proto.SizeVarint(uint64(s))
+		n += s
+	case *RepoId_Uid:
+		n += proto.SizeVarint(2<<3 | proto.WireBytes)
+		n += proto.SizeVarint(uint64(len(x.Uid)))
+		n += len(x.Uid)
+	case nil:
+	default:
+		panic(fmt.Sprintf("proto: unexpected type %T in oneof", x))
+	}
+	return n
+}
+
+// Selects a repo using a Google Cloud Platform project ID (e.g.,
+// winged-cargo-31) and a repo name within that project.
+type ProjectRepoId struct {
+	// The ID of the project.
+	ProjectId string `protobuf:"bytes,1,opt,name=project_id,json=projectId" json:"project_id,omitempty"`
+	// The name of the repo. Leave empty for the default repo.
+	RepoName string `protobuf:"bytes,2,opt,name=repo_name,json=repoName" json:"repo_name,omitempty"`
+}
+
+func (m *ProjectRepoId) Reset()                    { *m = ProjectRepoId{} }
+func (m *ProjectRepoId) String() string            { return proto.CompactTextString(m) }
+func (*ProjectRepoId) ProtoMessage()               {}
+func (*ProjectRepoId) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{45} }
+
+func (m *ProjectRepoId) GetProjectId() string {
+	if m != nil {
+		return m.ProjectId
+	}
+	return ""
+}
+
+func (m *ProjectRepoId) GetRepoName() string {
+	if m != nil {
+		return m.RepoName
+	}
+	return ""
+}
+
 func init() {
 	proto.RegisterType((*GetOccurrenceRequest)(nil), "grafeas.v1alpha1.api.GetOccurrenceRequest")
 	proto.RegisterType((*ListOccurrencesRequest)(nil), "grafeas.v1alpha1.api.ListOccurrencesRequest")
@@ -3639,10 +4286,9 @@ func init() {
 	proto.RegisterType((*Note_RelatedUrl)(nil), "grafeas.v1alpha1.api.Note.RelatedUrl")
 	proto.RegisterType((*Occurrence)(nil), "grafeas.v1alpha1.api.Occurrence")
 	proto.RegisterType((*PackageManager)(nil), "grafeas.v1alpha1.api.PackageManager")
-	proto.RegisterType((*PackageManager_Package)(nil), "grafeas.v1alpha1.api.PackageManager.Package")
 	proto.RegisterType((*PackageManager_Distribution)(nil), "grafeas.v1alpha1.api.PackageManager.Distribution")
-	proto.RegisterType((*PackageManager_Version)(nil), "grafeas.v1alpha1.api.PackageManager.Version")
 	proto.RegisterType((*PackageManager_Location)(nil), "grafeas.v1alpha1.api.PackageManager.Location")
+	proto.RegisterType((*PackageManager_Package)(nil), "grafeas.v1alpha1.api.PackageManager.Package")
 	proto.RegisterType((*PackageManager_Installation)(nil), "grafeas.v1alpha1.api.PackageManager.Installation")
 	proto.RegisterType((*PgpSignedAttestation)(nil), "grafeas.v1alpha1.api.PgpSignedAttestation")
 	proto.RegisterType((*Source)(nil), "grafeas.v1alpha1.api.Source")
@@ -3654,279 +4300,301 @@ func init() {
 	proto.RegisterType((*VulnerabilityType_VulnerabilityDetails)(nil), "grafeas.v1alpha1.api.VulnerabilityType.VulnerabilityDetails")
 	proto.RegisterType((*VulnerabilityType_PackageIssue)(nil), "grafeas.v1alpha1.api.VulnerabilityType.PackageIssue")
 	proto.RegisterType((*VulnerabilityType_VulnerabilityLocation)(nil), "grafeas.v1alpha1.api.VulnerabilityType.VulnerabilityLocation")
+	proto.RegisterType((*SourceContext)(nil), "grafeas.v1alpha1.api.SourceContext")
+	proto.RegisterType((*AliasContext)(nil), "grafeas.v1alpha1.api.AliasContext")
+	proto.RegisterType((*CloudRepoSourceContext)(nil), "grafeas.v1alpha1.api.CloudRepoSourceContext")
+	proto.RegisterType((*GerritSourceContext)(nil), "grafeas.v1alpha1.api.GerritSourceContext")
+	proto.RegisterType((*GitSourceContext)(nil), "grafeas.v1alpha1.api.GitSourceContext")
+	proto.RegisterType((*RepoId)(nil), "grafeas.v1alpha1.api.RepoId")
+	proto.RegisterType((*ProjectRepoId)(nil), "grafeas.v1alpha1.api.ProjectRepoId")
 	proto.RegisterEnum("grafeas.v1alpha1.api.BuildSignature_KeyType", BuildSignature_KeyType_name, BuildSignature_KeyType_value)
+	proto.RegisterEnum("grafeas.v1alpha1.api.Deployable_Deployment_Platform", Deployable_Deployment_Platform_name, Deployable_Deployment_Platform_value)
 	proto.RegisterEnum("grafeas.v1alpha1.api.DockerImage_Layer_Directive", DockerImage_Layer_Directive_name, DockerImage_Layer_Directive_value)
-	proto.RegisterEnum("grafeas.v1alpha1.api.Hash_Type", Hash_Type_name, Hash_Type_value)
+	proto.RegisterEnum("grafeas.v1alpha1.api.Hash_HashType", Hash_HashType_name, Hash_HashType_value)
 	proto.RegisterEnum("grafeas.v1alpha1.api.Note_Kind", Note_Kind_name, Note_Kind_value)
-	proto.RegisterEnum("grafeas.v1alpha1.api.PackageManager_Distribution_Architecture", PackageManager_Distribution_Architecture_name, PackageManager_Distribution_Architecture_value)
-	proto.RegisterEnum("grafeas.v1alpha1.api.PackageManager_Version_VersionKind", PackageManager_Version_VersionKind_name, PackageManager_Version_VersionKind_value)
+	proto.RegisterEnum("grafeas.v1alpha1.api.PackageManager_Architecture", PackageManager_Architecture_name, PackageManager_Architecture_value)
 	proto.RegisterEnum("grafeas.v1alpha1.api.PgpSignedAttestation_ContentType", PgpSignedAttestation_ContentType_name, PgpSignedAttestation_ContentType_value)
 	proto.RegisterEnum("grafeas.v1alpha1.api.VulnerabilityType_Severity", VulnerabilityType_Severity_name, VulnerabilityType_Severity_value)
 	proto.RegisterEnum("grafeas.v1alpha1.api.VulnerabilityType_Version_VersionKind", VulnerabilityType_Version_VersionKind_name, VulnerabilityType_Version_VersionKind_value)
+	proto.RegisterEnum("grafeas.v1alpha1.api.AliasContext_Kind", AliasContext_Kind_name, AliasContext_Kind_value)
 }
 
 func init() { proto.RegisterFile("v1alpha1/proto/grafeas.proto", fileDescriptor0) }
 
 var fileDescriptor0 = []byte{
-	// 4149 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x3a, 0x4d, 0x73, 0x23, 0x49,
-	0x56, 0x2e, 0x59, 0xb6, 0xa4, 0x27, 0xd9, 0x2e, 0x67, 0xbb, 0xbb, 0xb5, 0xea, 0x9e, 0xed, 0xde,
-	0xea, 0x69, 0xba, 0xa7, 0x67, 0x5b, 0x1e, 0xbb, 0x67, 0x7a, 0xbe, 0x18, 0x76, 0xf5, 0xd5, 0x56,
-	0xad, 0xf5, 0x15, 0x25, 0xb9, 0x3f, 0x16, 0x82, 0x8a, 0x92, 0x2a, 0x2d, 0xd7, 0x5a, 0xaa, 0x12,
-	0x55, 0x25, 0x61, 0xcf, 0xc6, 0x10, 0xc4, 0xee, 0x10, 0x0b, 0x11, 0x1c, 0x36, 0xd8, 0x20, 0xe0,
-	0xc0, 0x05, 0x0e, 0x1c, 0xb8, 0x6e, 0xec, 0x81, 0xe0, 0x07, 0x10, 0x1c, 0x81, 0xe0, 0xc8, 0x09,
-	0x88, 0x20, 0x80, 0x13, 0x7f, 0x00, 0x22, 0x3f, 0xea, 0x43, 0x72, 0x49, 0x96, 0xbb, 0x7b, 0xf7,
-	0xa4, 0xca, 0x97, 0xef, 0xbd, 0x7c, 0x99, 0xf9, 0xbe, 0xf2, 0xe9, 0xc1, 0xed, 0xc9, 0x9e, 0x36,
-	0x18, 0x9d, 0x68, 0x7b, 0xbb, 0x23, 0xdb, 0x72, 0xad, 0xdd, 0xbe, 0xad, 0x1d, 0x63, 0xcd, 0xc9,
-	0xd3, 0x11, 0xda, 0xf1, 0x86, 0x1e, 0x56, 0x5e, 0x1b, 0x19, 0xb9, 0x5b, 0x7d, 0xcb, 0xea, 0x0f,
-	0x30, 0xa3, 0xe8, 0x8e, 0x8f, 0x77, 0xf1, 0x70, 0xe4, 0x9e, 0x33, 0x92, 0xdc, 0x6d, 0x3e, 0xa9,
-	0x8d, 0x8c, 0x5d, 0xcd, 0x34, 0x2d, 0x57, 0x73, 0x0d, 0xcb, 0xe4, 0x0c, 0x73, 0x77, 0x66, 0x49,
-	0x5d, 0x63, 0x88, 0x1d, 0x57, 0x1b, 0x8e, 0x38, 0xc2, 0x3d, 0x8e, 0x30, 0xb0, 0xcc, 0xbe, 0x3d,
-	0x36, 0x4d, 0xc3, 0xec, 0xef, 0x5a, 0x23, 0x6c, 0x4f, 0x71, 0xc9, 0x73, 0x24, 0x1d, 0x4f, 0x5c,
-	0xcb, 0x1a, 0x38, 0xbb, 0x8e, 0x35, 0xb6, 0x7b, 0x78, 0x77, 0xb2, 0xc7, 0xbf, 0xd4, 0x9e, 0x65,
-	0xba, 0xf8, 0xcc, 0x65, 0xf8, 0xd2, 0x23, 0xd8, 0x39, 0xc0, 0x6e, 0xb3, 0xd7, 0x1b, 0xdb, 0x36,
-	0x36, 0x7b, 0x58, 0xc1, 0xbf, 0x33, 0xc6, 0x8e, 0x8b, 0x10, 0xc4, 0x4d, 0x6d, 0x88, 0xb3, 0xc2,
-	0x5d, 0xe1, 0x61, 0x4a, 0xa1, 0xdf, 0xd2, 0xd7, 0x02, 0xdc, 0xa8, 0x19, 0x4e, 0x08, 0xdb, 0xf1,
-	0xd0, 0x6f, 0xc0, 0xfa, 0x48, 0xb3, 0xb1, 0xe9, 0x66, 0xd7, 0x28, 0x01, 0x1f, 0x11, 0xf8, 0xb1,
-	0x31, 0x70, 0xb1, 0x9d, 0x8d, 0x31, 0x38, 0x1b, 0xa1, 0x5b, 0x90, 0x1a, 0x69, 0x7d, 0xac, 0x3a,
-	0xc6, 0x97, 0x38, 0xbb, 0x7a, 0x57, 0x78, 0xb8, 0xa6, 0x24, 0x09, 0xa0, 0x6d, 0x7c, 0x89, 0xd1,
-	0x3b, 0x00, 0x74, 0xd2, 0xb5, 0x4e, 0xb1, 0x99, 0x8d, 0x53, 0x42, 0x8a, 0xde, 0x21, 0x00, 0xe9,
-	0x31, 0xdc, 0x2c, 0xe3, 0x01, 0x76, 0xf1, 0x72, 0x52, 0x3b, 0x70, 0xb3, 0x64, 0x63, 0x2d, 0x0a,
-	0x3d, 0x90, 0x7a, 0x75, 0x4a, 0xea, 0xef, 0x02, 0x58, 0x3e, 0x32, 0x95, 0x3c, 0xbd, 0x7f, 0x37,
-	0x1f, 0x75, 0xe1, 0xf9, 0x10, 0xd3, 0x10, 0x8d, 0x64, 0xc1, 0xcd, 0xa3, 0x91, 0xae, 0x2d, 0x29,
-	0xe3, 0x5b, 0x58, 0xf0, 0x5d, 0xd8, 0x3c, 0xc0, 0x6e, 0xc3, 0x72, 0x17, 0x9e, 0x45, 0x1e, 0xb2,
-	0x53, 0xb7, 0x7d, 0x19, 0xfe, 0x9f, 0x08, 0x20, 0x92, 0x1b, 0x27, 0x78, 0xce, 0xa2, 0x0d, 0xfc,
-	0x2a, 0xef, 0xff, 0x01, 0x6c, 0xb3, 0xfb, 0xbf, 0x4c, 0xfa, 0x3f, 0x14, 0x60, 0x9b, 0x5d, 0xfd,
-	0x25, 0x98, 0x21, 0xf1, 0xe3, 0x53, 0xe2, 0xdf, 0x84, 0x84, 0x69, 0xb9, 0x58, 0x35, 0x74, 0x4f,
-	0x7e, 0x32, 0x94, 0x75, 0x94, 0x87, 0x38, 0xf9, 0xa2, 0xa2, 0xa7, 0xf7, 0x73, 0xd1, 0x57, 0x45,
-	0x57, 0xa5, 0x78, 0xd2, 0x0b, 0xd8, 0x66, 0xfa, 0x70, 0x99, 0x24, 0x1e, 0xe3, 0xd8, 0x92, 0x8c,
-	0xbf, 0x16, 0x20, 0xe7, 0xdd, 0x50, 0x84, 0x5d, 0xce, 0xd9, 0xec, 0x5b, 0xbf, 0x93, 0x9f, 0x08,
-	0x70, 0x2b, 0x52, 0x0c, 0x67, 0x64, 0x99, 0x0e, 0x46, 0xef, 0xc2, 0x86, 0x89, 0xcf, 0xdc, 0x96,
-	0x47, 0xc0, 0x05, 0x9a, 0x06, 0xa2, 0x22, 0xa4, 0x03, 0x95, 0x76, 0xb2, 0xb1, 0xbb, 0xab, 0x4b,
-	0xd9, 0x41, 0x98, 0x48, 0x3a, 0x85, 0xed, 0x90, 0xc6, 0x5e, 0x69, 0xf9, 0x0f, 0x60, 0x8d, 0x9c,
-	0xa9, 0xb7, 0xf0, 0xa2, 0xc3, 0x67, 0x88, 0xd2, 0x8f, 0x05, 0xb8, 0x79, 0xc1, 0x23, 0xfe, 0xca,
-	0xb7, 0xfc, 0x15, 0x77, 0xcb, 0x7e, 0x2c, 0xb8, 0xa2, 0x0c, 0x5f, 0x00, 0x04, 0x71, 0x84, 0x8b,
-	0xf0, 0x0e, 0x0f, 0x24, 0xf9, 0x50, 0xb4, 0xc9, 0xfb, 0x2b, 0x28, 0x21, 0x02, 0xc9, 0x80, 0x1b,
-	0xdc, 0xd7, 0xf9, 0xd3, 0x0b, 0xb4, 0xef, 0x73, 0x48, 0xf9, 0xb4, 0xdc, 0x7c, 0x2e, 0x59, 0x2b,
-	0xc0, 0x97, 0x7e, 0x2a, 0xc0, 0x0d, 0xee, 0xcc, 0x67, 0xd7, 0x0a, 0x4c, 0x58, 0x98, 0x32, 0xe1,
-	0x6f, 0x41, 0xc6, 0xa7, 0x0f, 0xec, 0x38, 0xed, 0xc3, 0x64, 0xfd, 0xcd, 0x44, 0xfa, 0x89, 0x00,
-	0xdb, 0xfe, 0x44, 0x1d, 0xbb, 0x9a, 0xae, 0xb9, 0x1a, 0xfa, 0x1c, 0xd2, 0x3d, 0x2a, 0xa7, 0x4a,
-	0xa2, 0x38, 0x15, 0x89, 0x2a, 0x14, 0x63, 0xea, 0x85, 0xf8, 0x7c, 0xc7, 0x0b, 0xf1, 0x0a, 0x30,
-	0x74, 0x02, 0x40, 0x1f, 0x41, 0x12, 0x9b, 0x3a, 0xa3, 0x8c, 0x5d, 0x4a, 0x99, 0xc0, 0xa6, 0x4e,
-	0x46, 0x52, 0x0d, 0x92, 0x05, 0xdb, 0x35, 0x8e, 0xb5, 0x9e, 0x8b, 0x72, 0x90, 0xec, 0x9d, 0xe0,
-	0xde, 0xa9, 0x33, 0x1e, 0xf2, 0xf3, 0xf0, 0xc7, 0x68, 0x13, 0x62, 0xfe, 0x39, 0xc4, 0x0c, 0x1d,
-	0xed, 0xc0, 0x1a, 0xb9, 0x19, 0x27, 0xbb, 0x7a, 0x77, 0xf5, 0x61, 0x4a, 0x61, 0x03, 0xe9, 0xef,
-	0x62, 0xb0, 0x53, 0x70, 0x5d, 0xb2, 0x08, 0xd9, 0x59, 0x61, 0xec, 0x9e, 0x58, 0xb6, 0xe1, 0x9e,
-	0xa3, 0x17, 0x10, 0x3f, 0x31, 0xf8, 0x31, 0xa7, 0xf7, 0x4b, 0xd1, 0xaa, 0x1a, 0x45, 0x19, 0x09,
-	0xac, 0x1a, 0xa6, 0xab, 0x50, 0x86, 0xb9, 0xef, 0x41, 0x76, 0x1e, 0x06, 0xca, 0xc3, 0xb5, 0x93,
-	0xf1, 0x50, 0x33, 0x55, 0x1b, 0x6b, 0xba, 0xd6, 0x1d, 0x60, 0x35, 0xa4, 0x58, 0xdb, 0x74, 0x4a,
-	0xe1, 0x33, 0x0d, 0x6d, 0x88, 0x73, 0xbf, 0x07, 0xe9, 0x10, 0x2f, 0xd4, 0x85, 0x1b, 0xa3, 0xfe,
-	0x48, 0x75, 0x8c, 0xbe, 0x89, 0x75, 0x55, 0x0b, 0x66, 0xf8, 0x2e, 0x1e, 0x45, 0xef, 0xa2, 0xd5,
-	0x1f, 0xb5, 0x29, 0x49, 0x88, 0x57, 0x75, 0x45, 0xd9, 0x19, 0x45, 0xc0, 0x8b, 0x69, 0x48, 0x11,
-	0xfe, 0x9a, 0x3b, 0xb6, 0xb1, 0xf4, 0xfb, 0x02, 0x64, 0x8a, 0x63, 0x63, 0xa0, 0x97, 0xb1, 0xab,
-	0x19, 0x03, 0x07, 0x55, 0x00, 0x46, 0xb6, 0x35, 0xc1, 0xa6, 0x46, 0x22, 0x3c, 0x5b, 0xf5, 0x7e,
-	0xf4, 0xaa, 0x94, 0xae, 0xe5, 0x23, 0x2b, 0x21, 0x42, 0xf4, 0x1e, 0x88, 0xc1, 0x48, 0xed, 0x9e,
-	0x33, 0x6f, 0x45, 0x0e, 0x61, 0x2b, 0x80, 0x17, 0x09, 0x58, 0xfa, 0xf9, 0x1a, 0x6c, 0xcd, 0xb0,
-	0x42, 0xbf, 0x05, 0x1b, 0x5d, 0x02, 0x52, 0xad, 0x11, 0x33, 0x76, 0x81, 0x1a, 0xfb, 0xc7, 0x4b,
-	0x09, 0xc2, 0xc6, 0x4d, 0x46, 0x59, 0x31, 0x5d, 0xfb, 0x5c, 0xc9, 0x74, 0x43, 0x20, 0xf4, 0x00,
-	0xb6, 0xe8, 0x18, 0xdb, 0xea, 0x04, 0xdb, 0x0e, 0x39, 0x5e, 0x26, 0xdb, 0x26, 0x07, 0x3f, 0x67,
-	0x50, 0x74, 0xc0, 0x10, 0x5d, 0x55, 0xe3, 0xfa, 0xca, 0x74, 0x2f, 0xbd, 0xff, 0xcd, 0x39, 0xda,
-	0xc4, 0xd1, 0x18, 0x23, 0xd7, 0x1b, 0x3a, 0xe8, 0x53, 0x48, 0xf6, 0xac, 0xe1, 0x50, 0x33, 0x75,
-	0x27, 0x1b, 0xf7, 0xfc, 0x56, 0x14, 0x87, 0x12, 0xc3, 0x52, 0x7c, 0x74, 0x74, 0x67, 0xda, 0x42,
-	0x59, 0xda, 0x12, 0xb6, 0xc2, 0x2c, 0x24, 0xe8, 0xc8, 0xb2, 0xb3, 0xeb, 0x74, 0xd2, 0x1b, 0x12,
-	0xd2, 0x63, 0xc3, 0x34, 0x9c, 0x13, 0x46, 0x9a, 0x60, 0xa4, 0x0c, 0x44, 0x49, 0x99, 0x85, 0x25,
-	0x7d, 0x0b, 0xbb, 0x03, 0xe9, 0x81, 0xd5, 0x77, 0xd4, 0xee, 0xb8, 0x77, 0x8a, 0xdd, 0x6c, 0x8a,
-	0x11, 0x10, 0x50, 0x91, 0x42, 0x68, 0x74, 0xb5, 0xad, 0x1f, 0xe0, 0x9e, 0x4b, 0x5c, 0x14, 0xf0,
-	0xe8, 0xca, 0x20, 0x32, 0xa5, 0xf7, 0xa6, 0xcd, 0xf1, 0x30, 0x9b, 0x66, 0xf4, 0x1c, 0xd4, 0x18,
-	0x0f, 0x91, 0x0c, 0xdb, 0x3c, 0xbb, 0x0f, 0x29, 0x59, 0x86, 0x2a, 0xd9, 0xed, 0xe8, 0x03, 0x69,
-	0x53, 0x74, 0x45, 0x64, 0x64, 0x21, 0x15, 0x79, 0x07, 0xc0, 0x71, 0x35, 0xdb, 0x65, 0x7b, 0xdb,
-	0x60, 0xa2, 0x50, 0x08, 0xdd, 0xda, 0x3b, 0x00, 0xae, 0x6d, 0xf4, 0xfb, 0xd8, 0x26, 0x92, 0x6e,
-	0xb2, 0x69, 0x0e, 0x91, 0xf5, 0xdc, 0x77, 0x60, 0xfb, 0x82, 0x96, 0x20, 0x11, 0x56, 0x4f, 0xf1,
-	0x39, 0x37, 0x56, 0xf2, 0x49, 0x5c, 0xce, 0x44, 0x1b, 0x8c, 0x31, 0xd7, 0x0f, 0x36, 0xf8, 0x2c,
-	0xf6, 0x89, 0x20, 0xfd, 0xa7, 0x00, 0x9b, 0x94, 0x43, 0xdb, 0xb3, 0x25, 0x74, 0x1d, 0xd6, 0x4f,
-	0xf1, 0x39, 0x59, 0x8e, 0x71, 0x58, 0x3b, 0xc5, 0xe7, 0xb2, 0x8e, 0x0e, 0x20, 0x49, 0xc0, 0xee,
-	0xf9, 0x88, 0xb1, 0xd9, 0xdc, 0xff, 0xf6, 0x02, 0x35, 0xf6, 0xd9, 0xe5, 0x0f, 0xf1, 0x79, 0xe7,
-	0x7c, 0x84, 0x95, 0xc4, 0x29, 0xfb, 0xa0, 0x87, 0x3f, 0xee, 0x0e, 0x8c, 0x9e, 0x4a, 0xa4, 0x5c,
-	0xe5, 0x87, 0x4f, 0x21, 0x87, 0xf8, 0x1c, 0xdd, 0x0e, 0xd9, 0xb5, 0x97, 0xf8, 0x04, 0x86, 0xfe,
-	0x29, 0x24, 0x38, 0x43, 0x94, 0x82, 0xb5, 0xa3, 0x46, 0xbb, 0xd2, 0x11, 0x57, 0xd0, 0x75, 0xd8,
-	0x6e, 0x1d, 0xb4, 0xd4, 0x42, 0xbb, 0x24, 0xcb, 0x6a, 0x41, 0xa9, 0x37, 0x95, 0x4a, 0x59, 0x14,
-	0x50, 0x06, 0x92, 0xad, 0x43, 0xf9, 0xa5, 0xda, 0xaa, 0xd4, 0xc5, 0x98, 0x74, 0x06, 0x29, 0x2a,
-	0x1a, 0x25, 0x8e, 0xb0, 0x1d, 0x21, 0xd2, 0x76, 0x8a, 0x61, 0x71, 0x58, 0x74, 0x78, 0x77, 0x99,
-	0x7d, 0x2b, 0xd3, 0xde, 0x29, 0xc1, 0x2d, 0x82, 0xc4, 0x68, 0xcd, 0xee, 0x33, 0x4f, 0x90, 0x52,
-	0xe8, 0x37, 0xb9, 0x30, 0xdd, 0xf0, 0xd2, 0x43, 0xf2, 0x49, 0x20, 0xd8, 0x9c, 0xf0, 0x08, 0x41,
-	0x3e, 0xb9, 0x8e, 0xc7, 0x7d, 0x1d, 0xf7, 0x62, 0xfd, 0x5a, 0x28, 0xd6, 0x7f, 0x03, 0x92, 0xbf,
-	0xab, 0x19, 0xae, 0x7a, 0x4c, 0x6d, 0x88, 0x90, 0x26, 0xc8, 0xf8, 0x99, 0x65, 0x4b, 0xff, 0x10,
-	0x03, 0x28, 0xe3, 0xd1, 0xc0, 0x3a, 0x27, 0x3e, 0x9b, 0x44, 0x69, 0x1b, 0x73, 0x15, 0x1e, 0xdb,
-	0x06, 0x97, 0x26, 0xed, 0xc1, 0x8e, 0x6c, 0x23, 0xf7, 0x67, 0x3e, 0xc5, 0x90, 0xc4, 0xf5, 0x2c,
-	0x24, 0x34, 0x5d, 0xb7, 0xb1, 0xe3, 0xf0, 0x83, 0xf2, 0x86, 0xa8, 0x09, 0xeb, 0x3d, 0xcb, 0x3c,
-	0x36, 0xfa, 0x3c, 0x95, 0x99, 0xe3, 0xdd, 0x82, 0xd5, 0xf3, 0x01, 0xdb, 0x7c, 0x89, 0x52, 0x32,
-	0xef, 0xc6, 0xd9, 0x10, 0xf3, 0xd3, 0x29, 0x06, 0xb3, 0x09, 0xa6, 0x21, 0xc0, 0x40, 0xd4, 0x28,
-	0xee, 0xc1, 0xc6, 0xd8, 0x0c, 0xa3, 0xb0, 0x63, 0xc9, 0x78, 0x40, 0xcf, 0x72, 0xc6, 0x0e, 0xb6,
-	0x55, 0x3c, 0xd4, 0x8c, 0x01, 0x3f, 0xa6, 0x14, 0x81, 0x54, 0x08, 0x20, 0xf7, 0x29, 0xa4, 0x43,
-	0x6b, 0x5f, 0xc9, 0x66, 0xfe, 0x76, 0x1d, 0xd2, 0x65, 0xab, 0x77, 0x8a, 0x6d, 0x79, 0xa8, 0xf5,
-	0x71, 0xee, 0x3f, 0x62, 0xb0, 0x56, 0xd3, 0xce, 0xb1, 0x4d, 0x74, 0x57, 0xb3, 0xfb, 0x63, 0xb2,
-	0x33, 0xef, 0x98, 0x02, 0x00, 0x6a, 0x42, 0x4a, 0x37, 0x6c, 0xdc, 0x73, 0x8d, 0x89, 0x67, 0x42,
-	0x7b, 0x73, 0xce, 0x2a, 0xe0, 0x9e, 0xa7, 0x9c, 0xf3, 0x65, 0x8f, 0x50, 0x09, 0x78, 0x48, 0xff,
-	0x23, 0x40, 0xca, 0x9f, 0x20, 0x46, 0x70, 0xd4, 0x38, 0x6c, 0x34, 0x5f, 0x34, 0xd4, 0xb2, 0xac,
-	0x54, 0x4a, 0x1d, 0xf9, 0x79, 0x45, 0x5c, 0x41, 0x9b, 0x00, 0xf5, 0x82, 0xdc, 0xe8, 0x14, 0xe4,
-	0x46, 0x45, 0x11, 0x05, 0x94, 0x80, 0x55, 0xe5, 0xa8, 0x21, 0xc6, 0xc8, 0x47, 0xa9, 0x5e, 0x16,
-	0x57, 0x89, 0x21, 0xd5, 0x0a, 0xc5, 0x4a, 0x4d, 0x8c, 0x23, 0x80, 0xf5, 0xca, 0xcb, 0x56, 0xb3,
-	0x5d, 0x11, 0xd7, 0xc8, 0x7c, 0xa5, 0xf1, 0x5c, 0x5c, 0x27, 0x1f, 0x85, 0x72, 0x59, 0x4c, 0xa0,
-	0x24, 0xc4, 0x4b, 0xcd, 0xd6, 0x2b, 0x31, 0x49, 0x98, 0x56, 0x1a, 0x1d, 0xe5, 0x55, 0xab, 0x29,
-	0x37, 0x3a, 0x62, 0x8a, 0xd0, 0x3d, 0x6f, 0xd6, 0x8e, 0xea, 0x15, 0x11, 0x08, 0xd6, 0x51, 0xbb,
-	0xa2, 0x88, 0x69, 0x94, 0x86, 0xc4, 0x8b, 0xa6, 0x72, 0x58, 0x96, 0x15, 0x31, 0x43, 0xb9, 0x28,
-	0x07, 0xe2, 0x06, 0x81, 0x36, 0x1b, 0xc5, 0x23, 0xb9, 0x56, 0x16, 0x37, 0x09, 0xa3, 0x76, 0xa7,
-	0xd9, 0x6a, 0xcb, 0x07, 0x8d, 0x42, 0x4d, 0xdc, 0x42, 0x5b, 0x90, 0xae, 0x56, 0x0a, 0xb5, 0x4e,
-	0xb5, 0x54, 0xad, 0x94, 0x0e, 0x45, 0x91, 0x08, 0xd7, 0xae, 0x56, 0x6a, 0x35, 0x71, 0x3b, 0xf7,
-	0x12, 0xd2, 0xcf, 0x0c, 0xb3, 0x8f, 0xed, 0x91, 0x6d, 0xb0, 0xc7, 0xe2, 0x64, 0x2f, 0x9c, 0x97,
-	0xac, 0x4f, 0xf6, 0x48, 0x32, 0x42, 0x27, 0xf6, 0xd5, 0xee, 0xc0, 0xea, 0x52, 0x8d, 0x24, 0x13,
-	0xfb, 0xc5, 0x81, 0xd5, 0xe5, 0x13, 0x94, 0x82, 0x17, 0x20, 0x26, 0xfb, 0x34, 0x7d, 0xf9, 0x21,
-	0xac, 0x15, 0x35, 0xc7, 0x20, 0x57, 0x44, 0x42, 0x8d, 0xb7, 0x04, 0xcf, 0x1b, 0x1e, 0x5f, 0x7e,
-	0x49, 0x21, 0xb9, 0x94, 0x30, 0x87, 0x19, 0x43, 0x1b, 0x78, 0xe9, 0x70, 0x60, 0x68, 0x83, 0xdc,
-	0x7f, 0x09, 0x90, 0x28, 0x63, 0xdb, 0x98, 0x60, 0x1d, 0x3d, 0x82, 0xed, 0xae, 0xe6, 0x60, 0x75,
-	0x8a, 0x86, 0xed, 0x6e, 0x8b, 0x4c, 0x28, 0x01, 0x1d, 0xc9, 0x39, 0x75, 0xc3, 0x71, 0x35, 0xaf,
-	0x84, 0xb1, 0xa1, 0xf8, 0xe3, 0xd9, 0x7d, 0xac, 0xbe, 0xf1, 0x3e, 0x9e, 0x01, 0x0c, 0x88, 0x22,
-	0xaa, 0x86, 0x79, 0x6c, 0xf1, 0xd8, 0xff, 0x60, 0x49, 0xe5, 0x55, 0x52, 0x94, 0x54, 0x36, 0x8f,
-	0x2d, 0xe9, 0x2f, 0xa8, 0xca, 0x3a, 0x3d, 0x6b, 0x82, 0xed, 0x73, 0x54, 0x86, 0x0d, 0xcd, 0xd4,
-	0x06, 0xe7, 0x8e, 0xe1, 0xa8, 0xa7, 0x86, 0xc9, 0x22, 0xce, 0xe6, 0xfe, 0x9d, 0xf9, 0x2f, 0xc1,
-	0xfc, 0xa1, 0x61, 0xea, 0x4a, 0xc6, 0xa3, 0x22, 0xa3, 0x9c, 0x0c, 0xe0, 0xb1, 0xc4, 0x33, 0xaf,
-	0x0b, 0xe1, 0x8a, 0xaf, 0x8b, 0x0a, 0xc0, 0x33, 0x63, 0x80, 0xab, 0x9a, 0x73, 0x82, 0x1d, 0xf4,
-	0x31, 0xa4, 0x8e, 0x8d, 0x01, 0x56, 0x4f, 0x34, 0xe7, 0x84, 0xa7, 0x6e, 0x73, 0x1e, 0xa9, 0x84,
-	0x40, 0x49, 0x1e, 0x73, 0x52, 0xe9, 0x0c, 0xe2, 0xe4, 0x17, 0x3d, 0x81, 0x38, 0x8d, 0x97, 0x0b,
-	0xb7, 0x45, 0x30, 0xf3, 0x34, 0x44, 0x52, 0xe4, 0x68, 0xc7, 0x23, 0xdd, 0x87, 0x38, 0x0d, 0x5c,
-	0x49, 0x88, 0x37, 0x9a, 0x0d, 0x62, 0xd8, 0x00, 0xeb, 0xed, 0x6a, 0x61, 0xff, 0xa3, 0xa7, 0xcc,
-	0xa8, 0xeb, 0xe5, 0x8f, 0xc4, 0x98, 0xf4, 0xaf, 0x29, 0x88, 0x93, 0x73, 0x8a, 0x7c, 0x0b, 0xbe,
-	0x0f, 0xdb, 0xce, 0x89, 0x65, 0xbb, 0xaa, 0x8e, 0x9d, 0x9e, 0x6d, 0x8c, 0xfc, 0x07, 0x58, 0x4a,
-	0x11, 0xe9, 0x44, 0x39, 0x80, 0x93, 0xd4, 0x97, 0x1c, 0xd7, 0x14, 0x2e, 0xf3, 0xb3, 0x5b, 0x04,
-	0x1e, 0x46, 0x7d, 0x02, 0x71, 0x7a, 0x7b, 0xa9, 0xe5, 0x6e, 0x8f, 0x22, 0xa3, 0x97, 0x80, 0x26,
-	0xe3, 0x81, 0x89, 0x6d, 0xad, 0x6b, 0x0c, 0x0c, 0x97, 0x67, 0x16, 0xeb, 0xf4, 0xc2, 0xe6, 0x68,
-	0xd6, 0xf3, 0x30, 0x3e, 0x39, 0x8d, 0xea, 0x8a, 0xb2, 0x3d, 0x99, 0x05, 0xa2, 0xef, 0x02, 0xb0,
-	0xac, 0x9b, 0x72, 0x4c, 0x52, 0x8e, 0x77, 0x16, 0xc4, 0x6c, 0xce, 0x29, 0xd5, 0xf5, 0xb3, 0x83,
-	0x2a, 0x00, 0x35, 0x43, 0x83, 0x28, 0x31, 0x4d, 0xca, 0x96, 0xd2, 0x76, 0xea, 0x43, 0x28, 0x27,
-	0xcd, 0xc1, 0x14, 0x84, 0xaa, 0x90, 0x18, 0x69, 0xbd, 0x53, 0xc2, 0x66, 0x93, 0xb2, 0x99, 0x93,
-	0x34, 0xb5, 0x18, 0x52, 0x5d, 0x33, 0xb5, 0x3e, 0xb6, 0xbd, 0x61, 0x75, 0x45, 0xf1, 0xc8, 0x51,
-	0x11, 0x78, 0x08, 0x24, 0x21, 0x34, 0xbb, 0xbd, 0xa8, 0x66, 0x19, 0x84, 0xda, 0xea, 0x8a, 0x12,
-	0xa2, 0x42, 0xdf, 0x21, 0x11, 0x88, 0x1b, 0x5f, 0x16, 0x2d, 0x3a, 0x18, 0xdf, 0x46, 0xc9, 0x76,
-	0x7c, 0x1a, 0xa4, 0xc1, 0xf5, 0xd0, 0x6b, 0x4e, 0xd5, 0xbc, 0x47, 0x63, 0xf6, 0xda, 0xa2, 0x77,
-	0x5d, 0xe4, 0x33, 0x73, 0x45, 0xd9, 0xd1, 0xa2, 0xde, 0xbb, 0xcf, 0x20, 0x6d, 0xe3, 0x81, 0xe6,
-	0x62, 0x9d, 0x3a, 0xbf, 0x04, 0x35, 0xbb, 0xfb, 0x0b, 0x74, 0x4a, 0x61, 0xd8, 0x47, 0xf6, 0x40,
-	0x01, 0xdb, 0xff, 0x46, 0x25, 0xd8, 0xc2, 0x67, 0x23, 0x83, 0x57, 0x22, 0x68, 0x9a, 0x00, 0x97,
-	0x3e, 0xee, 0x37, 0x03, 0x12, 0x9a, 0x44, 0xcc, 0xd4, 0x15, 0xd2, 0x57, 0xaa, 0x2b, 0x7c, 0x0e,
-	0xe9, 0x31, 0x2d, 0xd4, 0x30, 0xe2, 0xcc, 0xe5, 0xc4, 0x0c, 0x9d, 0x12, 0xdf, 0x87, 0xcd, 0xa0,
-	0x8e, 0x42, 0x2d, 0x79, 0x8b, 0xd5, 0x92, 0x7c, 0x28, 0x8d, 0x5c, 0x1f, 0x02, 0x04, 0xfb, 0x27,
-	0x59, 0x4c, 0x10, 0x30, 0xc8, 0x27, 0x71, 0x26, 0x03, 0xad, 0x8b, 0xbd, 0xc0, 0xc3, 0x06, 0xd2,
-	0xdf, 0x08, 0x10, 0x27, 0xa6, 0x88, 0x76, 0x40, 0x3c, 0x94, 0x1b, 0x65, 0xf5, 0xa8, 0xd1, 0x6e,
-	0x55, 0x4a, 0xf2, 0x33, 0xb9, 0x52, 0x16, 0x57, 0xd0, 0x37, 0xe0, 0x7a, 0xab, 0x50, 0x3a, 0x2c,
-	0x1c, 0x54, 0xd4, 0xe7, 0x47, 0xb5, 0x46, 0x45, 0x29, 0x14, 0xe5, 0x9a, 0xdc, 0x79, 0x25, 0x0a,
-	0x68, 0x1b, 0x36, 0x68, 0xe8, 0x56, 0xcb, 0x95, 0x4e, 0x41, 0xae, 0xb5, 0xc5, 0x18, 0x09, 0xd9,
-	0x72, 0x9d, 0xe0, 0x16, 0x0b, 0x6d, 0xb9, 0x2d, 0xae, 0xa2, 0x6b, 0xb0, 0xe5, 0x91, 0xd7, 0x0b,
-	0x8d, 0xc2, 0x41, 0x45, 0x11, 0xe3, 0x24, 0xd0, 0x97, 0x2b, 0xad, 0x5a, 0xf3, 0x55, 0xa1, 0x58,
-	0x23, 0xd9, 0xc5, 0x06, 0xa4, 0xca, 0x72, 0xbb, 0xd4, 0x7c, 0x5e, 0x51, 0x5e, 0x89, 0xeb, 0x64,
-	0xc9, 0x42, 0xa7, 0x53, 0x69, 0x77, 0x0a, 0x1d, 0xb9, 0xd9, 0x50, 0x0b, 0x47, 0x9d, 0x6a, 0x53,
-	0x21, 0x4b, 0x26, 0xc8, 0x43, 0x9f, 0x16, 0x85, 0x89, 0x35, 0x4b, 0x7f, 0x9f, 0x00, 0x08, 0xea,
-	0x72, 0x91, 0x5e, 0xee, 0xf2, 0x90, 0x8b, 0x6e, 0x71, 0x96, 0xa1, 0x54, 0x20, 0x49, 0x00, 0x34,
-	0x7d, 0xf0, 0xbc, 0xd9, 0xfa, 0x55, 0xbc, 0x99, 0x03, 0xd7, 0xa7, 0xbd, 0x99, 0xce, 0x0a, 0x11,
-	0xdc, 0xfd, 0xfc, 0xfa, 0x92, 0x0e, 0x6d, 0x1a, 0xc2, 0x8b, 0x19, 0xc4, 0x54, 0x26, 0x11, 0x70,
-	0x24, 0x7b, 0xe5, 0x05, 0x6f, 0xb1, 0x04, 0x5d, 0x4c, 0x5a, 0xe0, 0xeb, 0x02, 0x96, 0xac, 0x96,
-	0xe0, 0xb1, 0x6a, 0xc1, 0x86, 0xce, 0x72, 0x10, 0xee, 0xf4, 0x98, 0xaa, 0xbf, 0x77, 0xb9, 0xd3,
-	0xe3, 0xa9, 0x0b, 0xe1, 0xc8, 0x39, 0x30, 0xcf, 0xf7, 0x02, 0x32, 0x86, 0xe9, 0xb8, 0xda, 0x60,
-	0xc0, 0x42, 0x31, 0x53, 0xff, 0xbd, 0xa5, 0xdc, 0x9f, 0x1c, 0x22, 0x24, 0x8c, 0xc3, 0x8c, 0x50,
-	0xdd, 0x73, 0x84, 0x24, 0xab, 0xe6, 0x5e, 0xf5, 0xfd, 0x2b, 0xbc, 0x39, 0x02, 0x9f, 0x48, 0x1f,
-	0x36, 0x35, 0x00, 0xdd, 0xcf, 0x1e, 0xa8, 0x91, 0xcd, 0xf5, 0x63, 0xbe, 0x53, 0xcc, 0x07, 0xf9,
-	0x06, 0xe5, 0x16, 0x64, 0x1f, 0xdf, 0x87, 0x74, 0xb8, 0xdc, 0x25, 0x52, 0x76, 0x4f, 0x5f, 0xaf,
-	0x68, 0x57, 0x5d, 0x51, 0xc2, 0xcc, 0xd0, 0x5d, 0xe2, 0x19, 0x87, 0x58, 0x37, 0x18, 0xef, 0x35,
-	0x4f, 0xaf, 0x7d, 0xd0, 0xac, 0xbb, 0x4a, 0xbd, 0x89, 0xbb, 0x82, 0x37, 0x74, 0x57, 0x1b, 0x11,
-	0xee, 0xaa, 0x98, 0x82, 0x04, 0xd7, 0x55, 0xe9, 0x17, 0x09, 0xd8, 0x9c, 0xbe, 0xf6, 0x9c, 0x0b,
-	0x09, 0x0e, 0x41, 0x47, 0x90, 0x21, 0xc9, 0xac, 0x6d, 0x74, 0xc7, 0x3c, 0x91, 0x5b, 0x5d, 0x5a,
-	0x7b, 0xca, 0x21, 0x42, 0x65, 0x8a, 0x8d, 0xef, 0x2f, 0x62, 0x81, 0xbf, 0xc8, 0xfd, 0x5b, 0x0c,
-	0x32, 0x61, 0x12, 0xd4, 0x85, 0x8c, 0x66, 0xf7, 0x4e, 0x0c, 0x17, 0xf7, 0xe8, 0xab, 0x9f, 0x65,
-	0x6f, 0xbf, 0x71, 0xe5, 0xb5, 0xf3, 0x85, 0x10, 0x17, 0x65, 0x8a, 0x27, 0x79, 0x8a, 0xf4, 0x46,
-	0xec, 0xed, 0xcd, 0xff, 0x15, 0xea, 0x8d, 0xc8, 0xb3, 0x9b, 0x5c, 0xf2, 0xc5, 0xec, 0x2c, 0x0c,
-	0x42, 0x6d, 0xd8, 0x24, 0x0e, 0xdf, 0x71, 0xfd, 0xca, 0x45, 0xfc, 0x0a, 0x99, 0x05, 0xaf, 0x6b,
-	0x28, 0x1b, 0x8c, 0x87, 0x57, 0xe6, 0xf8, 0x26, 0xc0, 0x50, 0x33, 0x4c, 0x57, 0x33, 0x4c, 0x6c,
-	0x7b, 0xd5, 0xb9, 0x00, 0xe2, 0x45, 0x96, 0x75, 0x3f, 0xb2, 0x48, 0x8f, 0x21, 0x13, 0xde, 0x1f,
-	0x79, 0xd6, 0xf1, 0xe7, 0xa7, 0xb8, 0x42, 0xf2, 0xd1, 0x97, 0x9f, 0xf0, 0xc4, 0xf4, 0xe5, 0xd3,
-	0x0f, 0xc5, 0x58, 0xee, 0x9f, 0x04, 0x48, 0x78, 0x8b, 0xed, 0xc0, 0x1a, 0x1e, 0x59, 0xbd, 0x13,
-	0x7a, 0xb2, 0x6b, 0x0a, 0x1b, 0x44, 0xdd, 0x0d, 0x79, 0xe3, 0xd8, 0x78, 0x62, 0x38, 0xc1, 0x51,
-	0xf8, 0x63, 0x54, 0xe3, 0x7e, 0x7a, 0x8d, 0x5e, 0xcf, 0x27, 0x57, 0xd9, 0xbd, 0xf7, 0x1b, 0x38,
-	0x70, 0xe9, 0x09, 0xa4, 0x43, 0x40, 0x92, 0x5c, 0x37, 0x9a, 0x4a, 0xbd, 0x50, 0x13, 0x57, 0xc8,
-	0xce, 0xea, 0x72, 0x43, 0xae, 0x1f, 0xd5, 0x45, 0x81, 0x0e, 0x0a, 0x2f, 0xe9, 0x20, 0x96, 0xfb,
-	0x91, 0x00, 0xc9, 0x9a, 0xd5, 0x63, 0xc6, 0x17, 0xba, 0x52, 0x61, 0xea, 0x4a, 0x11, 0xc4, 0x47,
-	0x9a, 0x7b, 0xe2, 0x6d, 0x8c, 0x7c, 0x23, 0x19, 0x12, 0xde, 0xed, 0xb1, 0xc7, 0xd9, 0xee, 0xd2,
-	0x11, 0x82, 0x5f, 0xa0, 0x47, 0x9f, 0x1b, 0x42, 0x26, 0xec, 0x2f, 0x23, 0x63, 0xa2, 0x0c, 0xc9,
-	0x01, 0x97, 0x93, 0x57, 0x69, 0x1e, 0x2f, 0x75, 0x5e, 0xde, 0xe6, 0x14, 0x9f, 0x5c, 0xfa, 0x3f,
-	0x01, 0x76, 0xa2, 0x0a, 0xf5, 0xd3, 0x85, 0x3b, 0x61, 0xa6, 0x70, 0x87, 0x5e, 0x41, 0x86, 0x76,
-	0x42, 0x98, 0x2e, 0x4b, 0xcb, 0x57, 0xe9, 0xad, 0x3d, 0x5d, 0xfe, 0x8f, 0x80, 0x7c, 0x89, 0x91,
-	0xd3, 0x97, 0x52, 0xba, 0x17, 0x0c, 0x88, 0xee, 0x8e, 0xfa, 0x23, 0x95, 0x17, 0x2d, 0xe9, 0x29,
-	0x57, 0x57, 0x94, 0xe4, 0xa8, 0x3f, 0x3a, 0xc4, 0xe7, 0xb2, 0x2e, 0x95, 0x69, 0xa9, 0xc7, 0x47,
-	0xbf, 0x0d, 0xd9, 0x52, 0xb3, 0xd1, 0xa9, 0x34, 0x3a, 0x6a, 0xe7, 0x55, 0xab, 0x32, 0x93, 0xfb,
-	0xdc, 0x84, 0x6b, 0x6d, 0xb9, 0xde, 0xaa, 0x55, 0xd4, 0xb6, 0x7c, 0xd0, 0x90, 0x1b, 0x07, 0xea,
-	0xf7, 0xda, 0xcd, 0x86, 0x28, 0x14, 0x93, 0x5e, 0x59, 0x54, 0xfa, 0xf1, 0x1a, 0xac, 0xb3, 0x7a,
-	0x2e, 0x6a, 0xc1, 0xa6, 0xe3, 0x5a, 0x36, 0xfd, 0x1b, 0x97, 0x42, 0xf8, 0x8b, 0xf3, 0xde, 0x9c,
-	0x2a, 0x30, 0xc3, 0x65, 0xc4, 0xc5, 0x58, 0x56, 0xa8, 0xae, 0x28, 0x1b, 0x4e, 0x18, 0x88, 0x0e,
-	0x88, 0x93, 0x1f, 0x59, 0x1e, 0xbb, 0x85, 0xbd, 0x09, 0x0a, 0x1e, 0x59, 0x53, 0xbc, 0xc0, 0xf6,
-	0x21, 0xe8, 0x37, 0xe1, 0xa6, 0x57, 0xee, 0x57, 0x67, 0x64, 0x8c, 0x2f, 0x2d, 0xa3, 0x72, 0xdd,
-	0xe3, 0x31, 0x05, 0x46, 0x2f, 0x60, 0x73, 0xba, 0xbd, 0x85, 0x5a, 0x61, 0x7a, 0xff, 0x03, 0x2f,
-	0x5c, 0x78, 0xfd, 0x30, 0x79, 0x86, 0x96, 0x9f, 0xec, 0xe5, 0x2b, 0x67, 0x2e, 0x36, 0x75, 0xac,
-	0x33, 0x16, 0x25, 0x46, 0xa7, 0x6c, 0x38, 0xe1, 0x21, 0x32, 0x21, 0xa7, 0xe9, 0xba, 0x41, 0x2e,
-	0x5c, 0x1b, 0xa8, 0xd3, 0x6b, 0x38, 0xb4, 0xa8, 0xf9, 0x3a, 0x8b, 0x64, 0x03, 0x9e, 0x53, 0x13,
-	0x0e, 0xaa, 0x43, 0xda, 0x7f, 0xe2, 0x63, 0xef, 0x6f, 0x91, 0x6f, 0x2f, 0xaa, 0xe1, 0xe7, 0x83,
-	0x02, 0x01, 0x2b, 0x5b, 0xc2, 0xb1, 0x0f, 0xc8, 0xa9, 0xb0, 0x35, 0x33, 0x1d, 0x51, 0x59, 0x7c,
-	0x1a, 0x7e, 0xe0, 0xcf, 0xbd, 0xdc, 0x80, 0x4f, 0xa8, 0xf6, 0x48, 0xb4, 0x90, 0x6d, 0x56, 0xfa,
-	0x85, 0x40, 0x52, 0x7f, 0xff, 0xba, 0xa7, 0xff, 0xd2, 0x10, 0x66, 0xff, 0xd2, 0xb8, 0x05, 0x29,
-	0xaa, 0x56, 0x21, 0x0f, 0x9b, 0x24, 0x80, 0x06, 0xcb, 0x98, 0xd3, 0x5d, 0x5b, 0x33, 0x7b, 0x27,
-	0xa1, 0x84, 0x98, 0x68, 0x13, 0x03, 0x52, 0x94, 0x5b, 0x90, 0x74, 0xb5, 0x3e, 0x9b, 0x8f, 0xf3,
-	0xf9, 0x84, 0xab, 0xf5, 0xe9, 0xe4, 0x1d, 0x80, 0x9e, 0x35, 0x1c, 0x1a, 0xae, 0xea, 0x9c, 0x68,
-	0x2c, 0x78, 0x90, 0x67, 0x23, 0x83, 0xb5, 0x4f, 0xb4, 0x22, 0x04, 0x6e, 0x5c, 0x52, 0x61, 0x63,
-	0x5a, 0x97, 0x6e, 0xc0, 0x3a, 0xff, 0xa3, 0x86, 0xbb, 0x4d, 0x36, 0x22, 0x66, 0xdd, 0xc7, 0xa6,
-	0x57, 0xc9, 0x61, 0x32, 0x87, 0x20, 0x84, 0xce, 0xea, 0x92, 0xed, 0x79, 0xc5, 0x3c, 0x36, 0x92,
-	0xfe, 0x3b, 0x03, 0xdb, 0x17, 0xdc, 0x26, 0x39, 0x9f, 0xde, 0xc4, 0x71, 0x54, 0xa7, 0x67, 0xf1,
-	0x42, 0x7e, 0x4c, 0x49, 0x11, 0x48, 0x9b, 0x00, 0x50, 0x0d, 0x92, 0x0e, 0x9e, 0x60, 0xfa, 0x96,
-	0x65, 0xae, 0xe9, 0x83, 0x65, 0x1d, 0x72, 0x9b, 0xd3, 0x29, 0x3e, 0x07, 0xf2, 0xea, 0xf7, 0x52,
-	0x72, 0x56, 0x2a, 0xcb, 0x2f, 0xcb, 0x8c, 0xe5, 0xe3, 0x8a, 0x47, 0x9e, 0xfb, 0x97, 0xb7, 0x1e,
-	0x36, 0x9b, 0x53, 0x61, 0xf3, 0xf3, 0x2b, 0x86, 0x9d, 0xb7, 0x15, 0x39, 0xff, 0x71, 0x15, 0xd6,
-	0xd9, 0x5e, 0xe7, 0xc7, 0xcd, 0x6c, 0x50, 0x3b, 0x61, 0xff, 0xed, 0xf9, 0xb5, 0x10, 0x0d, 0x76,
-	0x86, 0x86, 0xa9, 0x6a, 0xc7, 0xc7, 0xb8, 0xe7, 0x62, 0xdd, 0x4f, 0x84, 0xd6, 0x5f, 0x2f, 0x94,
-	0xa2, 0xa1, 0x61, 0x16, 0x38, 0x2f, 0xef, 0xb0, 0xc9, 0x12, 0xda, 0xd9, 0xc5, 0x25, 0x12, 0xaf,
-	0xbb, 0x84, 0x76, 0x36, 0xbb, 0xc4, 0x3d, 0xd8, 0xf0, 0x34, 0x26, 0x64, 0x58, 0x4a, 0xc6, 0x03,
-	0x52, 0xdb, 0x9a, 0xc9, 0x07, 0x53, 0x17, 0xf3, 0x41, 0x1d, 0x36, 0x8f, 0x8d, 0x33, 0xac, 0xab,
-	0x7e, 0x84, 0x67, 0xbe, 0xf8, 0x8b, 0xd7, 0x7a, 0x73, 0xfa, 0x11, 0x7f, 0x83, 0x32, 0xf5, 0xb3,
-	0x9b, 0x6f, 0x41, 0x86, 0x9f, 0x3e, 0x8b, 0xdf, 0xec, 0x4f, 0xd3, 0x34, 0x87, 0x11, 0x3e, 0xb9,
-	0xff, 0x15, 0x60, 0x27, 0xea, 0xfd, 0x4a, 0x54, 0xd4, 0x8f, 0xf9, 0x29, 0x5e, 0xe5, 0x0c, 0x1b,
-	0x5c, 0xfc, 0x8d, 0x0d, 0x6e, 0xda, 0xba, 0xd7, 0x66, 0xad, 0xfb, 0x15, 0x6c, 0x78, 0xc2, 0x1b,
-	0x8e, 0x33, 0xc6, 0x3c, 0x90, 0x7c, 0xb8, 0xec, 0x8a, 0x3c, 0x2b, 0x92, 0x09, 0xad, 0xe2, 0x9d,
-	0x03, 0x1d, 0xe5, 0xfe, 0x20, 0x06, 0x99, 0xf0, 0x34, 0xfa, 0x01, 0x6c, 0xfb, 0x4a, 0xe3, 0xdf,
-	0x88, 0xf0, 0x36, 0x6e, 0x44, 0xf4, 0xf8, 0xfa, 0x97, 0x72, 0xf1, 0xea, 0x63, 0xbf, 0x84, 0xab,
-	0xbf, 0xa0, 0xa7, 0xab, 0x17, 0xf5, 0x34, 0xf7, 0xa7, 0x02, 0x5c, 0x8f, 0xe4, 0xb6, 0x94, 0x7d,
-	0xc7, 0xa6, 0xed, 0x3b, 0x94, 0x1d, 0xc7, 0xdf, 0x2c, 0x3b, 0x96, 0x7e, 0x1b, 0x92, 0x9e, 0xbe,
-	0xa0, 0x2c, 0xec, 0xb4, 0x2b, 0xcf, 0x2b, 0x8a, 0xdc, 0x79, 0x35, 0x93, 0xf5, 0x79, 0x8e, 0xaa,
-	0x50, 0x63, 0x6f, 0x96, 0x5a, 0xf3, 0x85, 0x18, 0x23, 0xae, 0xac, 0x5e, 0x29, 0xcb, 0x47, 0x75,
-	0x71, 0x15, 0x25, 0x21, 0x5e, 0x95, 0x0f, 0xaa, 0x62, 0x1c, 0x65, 0x20, 0x59, 0x52, 0xe4, 0x8e,
-	0x5c, 0x2a, 0xd4, 0xc4, 0xb5, 0xfd, 0xbf, 0x16, 0x21, 0x71, 0xc0, 0x64, 0x43, 0x3f, 0x15, 0x60,
-	0x63, 0xaa, 0xdf, 0x13, 0xcd, 0x29, 0x24, 0x44, 0xb5, 0x00, 0xe7, 0x2e, 0xed, 0x42, 0x93, 0xf6,
-	0x7e, 0xf4, 0xcf, 0xff, 0xfe, 0xb3, 0xd8, 0xfb, 0xe8, 0xbd, 0x5d, 0xbf, 0x55, 0xfa, 0x87, 0xe4,
-	0x42, 0xbe, 0xe0, 0x71, 0xde, 0xd9, 0x7d, 0xb4, 0x1b, 0x6a, 0x54, 0xdb, 0x7d, 0xf4, 0x15, 0xfa,
-	0x4b, 0x01, 0xb6, 0x66, 0x3a, 0xe6, 0xd0, 0x9c, 0xf4, 0x26, 0xba, 0xd5, 0x38, 0xf7, 0x78, 0x49,
-	0x6c, 0xd6, 0x02, 0x17, 0x29, 0x23, 0x6b, 0x0d, 0x0b, 0x49, 0xf9, 0x55, 0x58, 0x4c, 0xf4, 0xc7,
-	0x02, 0x88, 0xb3, 0x1d, 0xc6, 0x68, 0xde, 0x9f, 0x55, 0xd1, 0x9d, 0xc8, 0xb9, 0x1b, 0x17, 0xea,
-	0x14, 0x95, 0xe1, 0xc8, 0x3d, 0xf7, 0xc4, 0x79, 0x74, 0x85, 0x23, 0xfb, 0x2b, 0x01, 0xc4, 0xd9,
-	0x0e, 0xe6, 0x79, 0xe2, 0xcc, 0xe9, 0x74, 0x5e, 0xe2, 0x2e, 0xbf, 0xa0, 0x82, 0x7d, 0x2c, 0x2d,
-	0x7f, 0x4e, 0x9f, 0x85, 0xfa, 0x8f, 0xa9, 0x90, 0xb3, 0x1d, 0xcf, 0xf3, 0x84, 0x9c, 0xd3, 0x19,
-	0xbd, 0xbc, 0x90, 0xfb, 0xcb, 0x9f, 0xde, 0x94, 0x90, 0x7f, 0x2e, 0xc0, 0xf6, 0x85, 0xfe, 0x67,
-	0x94, 0x5f, 0xc2, 0x26, 0x42, 0x6d, 0xbb, 0xb9, 0x05, 0x7d, 0xa1, 0xd2, 0xc7, 0x54, 0xc0, 0x3d,
-	0xb4, 0xbb, 0xb4, 0x80, 0xbb, 0xb4, 0x93, 0x14, 0x9d, 0x41, 0x82, 0xf7, 0x6f, 0xa3, 0x77, 0xe7,
-	0xca, 0xb3, 0xac, 0x14, 0xef, 0x53, 0x29, 0xee, 0xa3, 0x7b, 0x0b, 0xa4, 0xa0, 0xcb, 0x12, 0xf5,
-	0xfa, 0x23, 0x01, 0x52, 0x7e, 0xc7, 0x2c, 0xfa, 0xb5, 0xf9, 0xd6, 0x15, 0x6e, 0x02, 0xcf, 0x3d,
-	0xb8, 0x14, 0x8f, 0xdb, 0x5f, 0x94, 0x2c, 0x11, 0x7a, 0xc5, 0x4e, 0xe1, 0x4b, 0x80, 0xa0, 0xb5,
-	0x1b, 0x3d, 0x58, 0x64, 0x72, 0xe1, 0xb3, 0x98, 0x67, 0x6c, 0x7c, 0xed, 0x47, 0x4b, 0x9d, 0xc3,
-	0xd7, 0x02, 0x40, 0xd0, 0x2d, 0x3e, 0x6f, 0xf1, 0x0b, 0xfd, 0xe4, 0x0b, 0x2f, 0x82, 0x5b, 0xbb,
-	0xb4, 0xcc, 0xe6, 0x3f, 0xa3, 0x0d, 0xdd, 0x54, 0x8c, 0xa0, 0x55, 0x7c, 0x9e, 0x18, 0x17, 0x9a,
-	0xc9, 0x97, 0x11, 0x63, 0x7f, 0x99, 0x73, 0xe0, 0x62, 0xfc, 0x5c, 0x80, 0x6b, 0x11, 0x0d, 0xdd,
-	0xe8, 0x83, 0xc5, 0xf7, 0x1e, 0xe1, 0xaf, 0xf7, 0xae, 0x40, 0xc1, 0x75, 0x66, 0x19, 0x2b, 0xf2,
-	0xe4, 0x9d, 0xf2, 0xdc, 0x3f, 0x13, 0x60, 0x6b, 0xa6, 0x3f, 0x78, 0x5e, 0x74, 0x89, 0x6e, 0x23,
-	0xce, 0x2d, 0xfe, 0x6b, 0x5e, 0x7a, 0x42, 0x25, 0x7b, 0x2c, 0x3d, 0xbc, 0xc4, 0x4b, 0xfa, 0xdd,
-	0xd1, 0x9f, 0x09, 0x8f, 0xa8, 0x54, 0x33, 0x1d, 0xd2, 0xf3, 0xa4, 0x8a, 0x6e, 0xa4, 0x5e, 0x52,
-	0xaa, 0xfd, 0x87, 0x8b, 0xbc, 0x8e, 0x2f, 0x12, 0xb9, 0x64, 0xe1, 0x51, 0x31, 0xf5, 0xfd, 0x04,
-	0x17, 0xa1, 0xbb, 0x4e, 0xed, 0xe6, 0xc9, 0xff, 0x07, 0x00, 0x00, 0xff, 0xff, 0xaa, 0xf0, 0xe3,
-	0x66, 0xf2, 0x34, 0x00, 0x00,
+	// 4378 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x3b, 0x5d, 0x8f, 0x23, 0x57,
+	0x56, 0x5d, 0xfe, 0xf6, 0xb1, 0xdd, 0x5d, 0x7d, 0xa7, 0x67, 0xc6, 0xf1, 0x24, 0x3b, 0xb3, 0x95,
+	0x64, 0x93, 0x4c, 0x36, 0xee, 0x4c, 0xe7, 0x6b, 0x93, 0x30, 0x64, 0xdd, 0x76, 0x4d, 0xbb, 0xb6,
+	0xfd, 0xa5, 0xb2, 0x7b, 0x32, 0x03, 0x88, 0xa2, 0xda, 0x75, 0xdb, 0x5d, 0xdb, 0x76, 0x95, 0xb7,
+	0xaa, 0xdc, 0x3b, 0x9d, 0x55, 0x10, 0x5a, 0xed, 0x6a, 0x59, 0x09, 0x89, 0x15, 0xb0, 0xd2, 0x3e,
+	0xf0, 0x00, 0x3c, 0x22, 0xde, 0x10, 0x12, 0x12, 0xe2, 0x0d, 0x69, 0xc5, 0xe3, 0x0a, 0xf1, 0x0f,
+	0x10, 0x08, 0x90, 0x10, 0xe2, 0x05, 0x89, 0x17, 0xd0, 0xfd, 0xa8, 0x0f, 0xbb, 0x6d, 0x77, 0x75,
+	0x26, 0x08, 0x5e, 0xba, 0xeb, 0x9e, 0x3a, 0xe7, 0xdc, 0x73, 0xcf, 0x3d, 0x9f, 0xb7, 0x7c, 0xe1,
+	0xc5, 0xf3, 0x07, 0xfa, 0x78, 0x7a, 0xaa, 0x3f, 0xd8, 0x9d, 0x3a, 0xb6, 0x67, 0xef, 0x8e, 0x1c,
+	0xfd, 0x04, 0xeb, 0x6e, 0x95, 0x8e, 0xd0, 0x8e, 0x3f, 0xf4, 0xb1, 0xaa, 0xfa, 0xd4, 0xac, 0xdc,
+	0x19, 0xd9, 0xf6, 0x68, 0x8c, 0x19, 0xc5, 0xf1, 0xec, 0x64, 0x17, 0x4f, 0xa6, 0xde, 0x05, 0x23,
+	0xa9, 0xbc, 0xc8, 0x5f, 0xea, 0x53, 0x73, 0x57, 0xb7, 0x2c, 0xdb, 0xd3, 0x3d, 0xd3, 0xb6, 0x38,
+	0xc3, 0xca, 0xbd, 0x45, 0xd2, 0x13, 0x13, 0x8f, 0x0d, 0x6d, 0xa2, 0xbb, 0x67, 0x1c, 0xe3, 0xee,
+	0x22, 0x86, 0x67, 0x4e, 0xb0, 0xeb, 0xe9, 0x93, 0x29, 0x47, 0x78, 0x99, 0x23, 0x8c, 0x6d, 0x6b,
+	0xe4, 0xcc, 0x2c, 0xcb, 0xb4, 0x46, 0xbb, 0xf6, 0x14, 0x3b, 0xd1, 0x79, 0xa4, 0xfb, 0xb0, 0x73,
+	0x80, 0xbd, 0xee, 0x70, 0x38, 0x73, 0x1c, 0x6c, 0x0d, 0xb1, 0x8a, 0xbf, 0x33, 0xc3, 0xae, 0x87,
+	0x10, 0xa4, 0x2c, 0x7d, 0x82, 0xcb, 0xc2, 0x3d, 0xe1, 0xf5, 0xbc, 0x4a, 0x9f, 0xa5, 0x9f, 0x09,
+	0x70, 0xab, 0x65, 0xba, 0x11, 0x6c, 0x77, 0x0d, 0x3a, 0xba, 0x05, 0x99, 0xa9, 0xee, 0x60, 0xcb,
+	0x2b, 0xa7, 0x29, 0x94, 0x8f, 0x08, 0xfc, 0xc4, 0x1c, 0x7b, 0xd8, 0x29, 0x27, 0x18, 0x9c, 0x8d,
+	0xd0, 0x1d, 0xc8, 0x4f, 0xf5, 0x11, 0xd6, 0x5c, 0xf3, 0x33, 0x5c, 0x4e, 0xde, 0x13, 0x5e, 0x4f,
+	0xab, 0x39, 0x02, 0xe8, 0x9b, 0x9f, 0x61, 0xf4, 0x12, 0x00, 0x7d, 0xe9, 0xd9, 0x67, 0xd8, 0x2a,
+	0xa7, 0x28, 0x21, 0x45, 0x1f, 0x10, 0x80, 0xf4, 0x16, 0xdc, 0x6e, 0xe0, 0x31, 0xf6, 0x70, 0xbc,
+	0x95, 0xfc, 0x48, 0x80, 0xdb, 0x75, 0x07, 0xeb, 0x31, 0xf1, 0x23, 0x4b, 0x49, 0xce, 0x2d, 0xe5,
+	0x9b, 0x00, 0x76, 0xc0, 0x80, 0x2e, 0xa7, 0xb0, 0x77, 0xaf, 0xba, 0xcc, 0x16, 0xaa, 0x91, 0x89,
+	0x22, 0x34, 0xd2, 0x9f, 0x09, 0x70, 0xfb, 0x68, 0x6a, 0xc4, 0x96, 0xe4, 0xb9, 0x67, 0x44, 0x1f,
+	0x43, 0x61, 0x46, 0x27, 0xa4, 0xc6, 0x44, 0x17, 0x54, 0xd8, 0xab, 0x54, 0x99, 0xb1, 0x54, 0x7d,
+	0x6b, 0xaa, 0x3e, 0x22, 0xf6, 0xd6, 0xd6, 0xdd, 0x33, 0x15, 0x18, 0x3a, 0x79, 0x96, 0x5e, 0x81,
+	0xcd, 0x03, 0xec, 0x75, 0x6c, 0x6f, 0xad, 0x7a, 0xab, 0x50, 0x9e, 0x33, 0xaa, 0xab, 0xf0, 0x7f,
+	0x4f, 0x00, 0x91, 0x18, 0x16, 0xc1, 0xfb, 0x7f, 0x63, 0x52, 0xaf, 0xc1, 0x36, 0x33, 0xa9, 0xab,
+	0xa4, 0xff, 0x6d, 0x01, 0xb6, 0x99, 0x31, 0x5d, 0x81, 0x19, 0x11, 0x3f, 0x35, 0x27, 0xfe, 0x6d,
+	0xc8, 0x5a, 0xb6, 0x87, 0x35, 0xd3, 0xf0, 0xe5, 0x27, 0x43, 0xc5, 0x40, 0x55, 0x48, 0x91, 0xa7,
+	0x70, 0x93, 0x96, 0xed, 0x33, 0x9d, 0x95, 0xe2, 0x49, 0x7f, 0x20, 0xc0, 0x36, 0xb3, 0xa6, 0xab,
+	0x44, 0xf1, 0x39, 0x27, 0xe2, 0x71, 0x7e, 0x3e, 0xab, 0xf9, 0x81, 0x00, 0x15, 0x7f, 0x7f, 0xe3,
+	0x07, 0x8f, 0x2f, 0x7d, 0x47, 0x7f, 0x2c, 0xc0, 0x9d, 0xa5, 0x62, 0xb8, 0x53, 0xdb, 0x72, 0x31,
+	0xda, 0x87, 0x42, 0xe8, 0x27, 0x6e, 0x59, 0xb8, 0x97, 0x8c, 0xe5, 0x5c, 0x51, 0x22, 0xf4, 0x35,
+	0xd8, 0xb2, 0xf0, 0x33, 0x4f, 0x8b, 0xc8, 0xc1, 0x16, 0x50, 0x22, 0xe0, 0x5e, 0x20, 0xcb, 0x04,
+	0xb6, 0x23, 0x16, 0xcf, 0x05, 0x78, 0x1b, 0xd2, 0x44, 0xd9, 0xfe, 0xd4, 0xeb, 0x76, 0x85, 0x21,
+	0xc6, 0x9e, 0xee, 0x87, 0x02, 0xdc, 0xbe, 0x14, 0xba, 0xff, 0x0f, 0x96, 0xfd, 0x39, 0xcf, 0x20,
+	0x41, 0x1a, 0x0a, 0xa4, 0x78, 0x05, 0xe6, 0x51, 0xb9, 0x35, 0xcc, 0x03, 0xd1, 0x43, 0x80, 0x30,
+	0x85, 0x95, 0x13, 0x54, 0xd4, 0x97, 0x7c, 0x2b, 0x8c, 0x24, 0xba, 0x6a, 0x30, 0x83, 0x1a, 0x21,
+	0x90, 0x4c, 0xb8, 0xc5, 0x83, 0x6d, 0xf0, 0x7a, 0x8d, 0x0d, 0x7e, 0x0c, 0xf9, 0x80, 0x96, 0x5b,
+	0xfc, 0x15, 0x73, 0x85, 0xf8, 0xd2, 0x4f, 0x04, 0xb8, 0xc5, 0x53, 0xcc, 0xe2, 0x5c, 0x61, 0x18,
+	0x10, 0xe6, 0xc2, 0xc0, 0x57, 0xa1, 0x18, 0xd0, 0x87, 0xb1, 0xa0, 0x10, 0xc0, 0x14, 0xe3, 0xf9,
+	0x44, 0xfa, 0x91, 0x00, 0xdb, 0xc1, 0x8b, 0x36, 0xf6, 0x74, 0x43, 0xf7, 0x74, 0xe2, 0xd9, 0x43,
+	0x2a, 0xa7, 0x46, 0x0a, 0x08, 0x2a, 0xd2, 0x32, 0xcf, 0x1e, 0xf8, 0xd5, 0x85, 0x0a, 0x0c, 0x9d,
+	0x00, 0xd0, 0x7b, 0x90, 0xc3, 0x96, 0xc1, 0x28, 0x13, 0x57, 0x52, 0x66, 0xb1, 0x65, 0x90, 0x91,
+	0xf4, 0x1b, 0x90, 0xab, 0x39, 0x9e, 0x79, 0xa2, 0x0f, 0x97, 0x6b, 0xbe, 0x02, 0xb9, 0xe1, 0x29,
+	0x1e, 0x9e, 0xb9, 0xb3, 0x09, 0xd7, 0x42, 0x30, 0x46, 0x9b, 0x90, 0x30, 0x0d, 0x9e, 0x87, 0x13,
+	0xa6, 0x81, 0x76, 0x20, 0x4d, 0x68, 0xdc, 0x72, 0xea, 0x5e, 0xf2, 0xf5, 0xbc, 0xca, 0x06, 0xd2,
+	0x5f, 0x25, 0x60, 0xa7, 0xe6, 0x79, 0x64, 0x62, 0xb2, 0xda, 0xda, 0xcc, 0x3b, 0xb5, 0x1d, 0xd3,
+	0xbb, 0x40, 0x9f, 0x42, 0xea, 0xd4, 0xe4, 0xaa, 0x2f, 0xec, 0xd5, 0x97, 0x9b, 0xf9, 0x32, 0xca,
+	0xa5, 0xc0, 0xa6, 0x69, 0x79, 0x2a, 0x65, 0x58, 0xf9, 0x16, 0x94, 0x57, 0x61, 0xa0, 0x2a, 0xdc,
+	0x38, 0x9d, 0x4d, 0x74, 0x4b, 0x73, 0xb0, 0x6e, 0xe8, 0xc7, 0x63, 0xac, 0x45, 0x96, 0xbc, 0x4d,
+	0x5f, 0xa9, 0xfc, 0x4d, 0x47, 0x9f, 0xe0, 0xca, 0x6f, 0x42, 0x21, 0xc2, 0x0b, 0x1d, 0xc3, 0xad,
+	0xe9, 0x68, 0xaa, 0xb9, 0xe6, 0xc8, 0xc2, 0x86, 0xa6, 0x87, 0x6f, 0xf8, 0x2a, 0xee, 0x2f, 0x5f,
+	0x45, 0x6f, 0x34, 0xed, 0x53, 0x92, 0x08, 0xaf, 0xe6, 0x86, 0xba, 0x33, 0x5d, 0x02, 0xdf, 0x2f,
+	0x40, 0x9e, 0xf0, 0xd7, 0xbd, 0x99, 0x83, 0xa5, 0xdf, 0x12, 0xa0, 0xb8, 0x3f, 0x33, 0xc7, 0x46,
+	0x03, 0x7b, 0xba, 0x39, 0x76, 0x91, 0x0c, 0x30, 0x75, 0xec, 0x73, 0x6c, 0xe9, 0xa4, 0xec, 0x60,
+	0xb3, 0xbe, 0xba, 0x7c, 0x56, 0x4a, 0xd7, 0x0b, 0x90, 0xd5, 0x08, 0x21, 0x7a, 0x03, 0xc4, 0x70,
+	0xa4, 0x1d, 0x5f, 0x90, 0x58, 0xc7, 0xf6, 0x77, 0x2b, 0x84, 0xef, 0x13, 0xb0, 0xf4, 0x8f, 0x69,
+	0xd8, 0x5a, 0x60, 0xc5, 0xb7, 0x5e, 0x08, 0xb6, 0xfe, 0x25, 0x2a, 0xd5, 0xb7, 0xf1, 0xd0, 0x0b,
+	0xdd, 0x25, 0xcf, 0x21, 0x8a, 0x81, 0x3e, 0x84, 0xdc, 0xd0, 0x9e, 0x4c, 0x74, 0xcb, 0x70, 0xcb,
+	0x69, 0x3f, 0x54, 0x2c, 0x13, 0xb9, 0xce, 0xb0, 0xd4, 0x00, 0x1d, 0x1d, 0xc0, 0xd6, 0xf1, 0xcc,
+	0x1c, 0x7b, 0x9a, 0xce, 0xcd, 0xd4, 0x2d, 0x67, 0x28, 0x87, 0xaf, 0xac, 0x30, 0x18, 0x8e, 0xa6,
+	0x6e, 0x52, 0x32, 0x7f, 0xe8, 0x2e, 0x7a, 0x57, 0xf6, 0x5a, 0xde, 0xf5, 0x21, 0x80, 0xeb, 0xe9,
+	0x8e, 0xc7, 0x68, 0x73, 0x57, 0xd2, 0xe6, 0x29, 0x36, 0x25, 0xfd, 0x18, 0x0a, 0x27, 0xa6, 0x65,
+	0xba, 0xa7, 0x8c, 0x36, 0x7f, 0xf5, 0xbc, 0x0c, 0x9d, 0x12, 0x97, 0x21, 0x4b, 0xa5, 0xb0, 0x9d,
+	0x72, 0x81, 0x2a, 0xd5, 0x1f, 0xa2, 0xbb, 0x50, 0x18, 0xdb, 0x23, 0x57, 0x3b, 0x9e, 0x0d, 0xcf,
+	0xb0, 0x57, 0x2e, 0xd1, 0xb7, 0x40, 0x40, 0xfb, 0x14, 0x82, 0x14, 0xd8, 0x76, 0xed, 0x99, 0x33,
+	0xc4, 0x5a, 0xc4, 0x5e, 0x36, 0xe9, 0xec, 0x2f, 0x2e, 0x57, 0x5d, 0x9f, 0xa2, 0xab, 0x22, 0x23,
+	0x8b, 0xec, 0xf6, 0x4b, 0x00, 0x9e, 0x63, 0x8e, 0x46, 0xd8, 0x21, 0xbb, 0xbb, 0xc5, 0x76, 0x97,
+	0x43, 0x14, 0x03, 0xfd, 0x1a, 0x94, 0x88, 0xae, 0x0d, 0xcd, 0x9e, 0xb2, 0x6c, 0x20, 0xd2, 0x0d,
+	0xfa, 0x20, 0x96, 0x55, 0xb2, 0x71, 0x97, 0x51, 0xca, 0x96, 0xe7, 0x5c, 0xa8, 0xc5, 0xe3, 0x08,
+	0x08, 0xbd, 0xc6, 0x0c, 0xc0, 0xc0, 0x8e, 0x76, 0x8e, 0x1d, 0x97, 0xf8, 0xda, 0x36, 0x95, 0x60,
+	0x93, 0x83, 0x1f, 0x33, 0x68, 0xe5, 0x13, 0xd8, 0xbe, 0xc4, 0x0b, 0x89, 0x90, 0x3c, 0xc3, 0x17,
+	0xdc, 0x52, 0xc9, 0x23, 0x89, 0x52, 0xe7, 0xfa, 0x78, 0x86, 0xb9, 0x95, 0xb2, 0xc1, 0x47, 0x89,
+	0x6f, 0x08, 0xd2, 0x7f, 0x0a, 0xb0, 0x49, 0x39, 0xf4, 0x7d, 0xf7, 0xa3, 0x76, 0x3d, 0x3b, 0x1e,
+	0x9b, 0x43, 0x2d, 0xe4, 0x92, 0x67, 0x90, 0x43, 0x7c, 0x81, 0x5e, 0x8c, 0xb8, 0xaa, 0x6f, 0xf5,
+	0x01, 0x00, 0xdd, 0x84, 0xcc, 0x19, 0xbe, 0xd0, 0x82, 0x18, 0x99, 0x3e, 0xc3, 0x17, 0x8a, 0x81,
+	0x0e, 0x20, 0x47, 0xc0, 0xde, 0xc5, 0x14, 0xd3, 0xca, 0x68, 0x73, 0xef, 0xeb, 0x6b, 0x34, 0x15,
+	0xc8, 0x52, 0x3d, 0xc4, 0x17, 0x83, 0x8b, 0x29, 0x56, 0xb3, 0x67, 0xec, 0x41, 0x6a, 0x42, 0x96,
+	0xc3, 0x50, 0x19, 0x76, 0x0e, 0xe5, 0xa7, 0xda, 0xe0, 0x69, 0x4f, 0xd6, 0x8e, 0x3a, 0xfd, 0x9e,
+	0x5c, 0x57, 0x1e, 0x29, 0x72, 0x43, 0xdc, 0x40, 0x37, 0x61, 0xbb, 0x77, 0xd0, 0xd3, 0x6a, 0xfd,
+	0xba, 0xa2, 0x68, 0x35, 0xb5, 0xdd, 0x55, 0xe5, 0x86, 0x28, 0xa0, 0x22, 0xe4, 0x7a, 0x87, 0xca,
+	0x13, 0xad, 0x27, 0xb7, 0xc5, 0x84, 0xf4, 0x0c, 0xf2, 0x74, 0x32, 0xca, 0x6b, 0x89, 0xc2, 0x85,
+	0x65, 0x0a, 0x47, 0xfb, 0x8b, 0xab, 0x2f, 0xec, 0xbd, 0x12, 0x67, 0x25, 0xea, 0x7c, 0x7c, 0xcb,
+	0x72, 0xa7, 0x5f, 0x9a, 0x7f, 0x44, 0x48, 0x62, 0xeb, 0x9c, 0xd6, 0x17, 0x79, 0x95, 0x3c, 0x12,
+	0x2c, 0xdd, 0x19, 0xb9, 0xe5, 0x24, 0x05, 0xd1, 0x67, 0x82, 0x65, 0x98, 0x0e, 0xaf, 0x33, 0xc9,
+	0x23, 0x0f, 0x50, 0xe9, 0x20, 0x40, 0xbd, 0x00, 0xb9, 0xef, 0xea, 0xa6, 0xa7, 0x9d, 0xd8, 0x0e,
+	0x8d, 0x1f, 0x79, 0x35, 0x4b, 0xc6, 0x8f, 0x6c, 0x47, 0xfa, 0x79, 0x12, 0xa0, 0x81, 0xa7, 0x63,
+	0xfb, 0x82, 0x44, 0x7d, 0x92, 0xfb, 0x1d, 0xcc, 0x3d, 0x67, 0xe6, 0x98, 0xb4, 0x0a, 0xcb, 0xab,
+	0x05, 0x1f, 0x76, 0xe4, 0x98, 0x95, 0x9f, 0x06, 0x14, 0x13, 0x52, 0x2d, 0xbc, 0x04, 0x30, 0x73,
+	0xb1, 0xa3, 0xe1, 0x89, 0x6e, 0x8e, 0x7d, 0x23, 0x21, 0x10, 0x99, 0x00, 0x48, 0x00, 0x30, 0x28,
+	0x72, 0xdc, 0xe4, 0x0c, 0x0c, 0x9d, 0x06, 0x80, 0x4f, 0xa0, 0x34, 0xb3, 0xa2, 0xe4, 0xc9, 0x2b,
+	0xc9, 0x8b, 0x3e, 0x01, 0x65, 0x70, 0x0b, 0x32, 0x43, 0xdb, 0x3a, 0x31, 0x47, 0x34, 0x6a, 0xe5,
+	0x55, 0x3e, 0x22, 0x91, 0x45, 0x37, 0x0c, 0x07, 0xbb, 0x2e, 0xd7, 0x92, 0x3f, 0xbc, 0xa4, 0x80,
+	0xcc, 0x25, 0x05, 0xa0, 0x1e, 0xe4, 0xa6, 0x63, 0xdd, 0x3b, 0xb1, 0x9d, 0x09, 0x0d, 0xa4, 0x9b,
+	0x7b, 0xef, 0x2e, 0xdf, 0xf8, 0x50, 0xaf, 0xd5, 0x50, 0x61, 0xd5, 0x1e, 0xa7, 0x55, 0x03, 0x2e,
+	0x52, 0x1d, 0x72, 0x3e, 0x94, 0x18, 0x73, 0xaf, 0x55, 0x1b, 0x3c, 0xea, 0xaa, 0xed, 0x05, 0x63,
+	0xce, 0x42, 0xf2, 0xe0, 0x50, 0x16, 0x05, 0x94, 0x83, 0xd4, 0xa3, 0x96, 0xfc, 0x44, 0x4c, 0x20,
+	0x80, 0x4c, 0xfd, 0xa8, 0x3f, 0xe8, 0xb6, 0xc5, 0xa4, 0xf4, 0xd7, 0x19, 0x28, 0x34, 0xec, 0xe1,
+	0x19, 0x76, 0x94, 0x89, 0x3e, 0xc2, 0x95, 0x7f, 0x4e, 0x40, 0xba, 0xa5, 0x5f, 0x60, 0x07, 0x75,
+	0x21, 0x6f, 0x98, 0x0e, 0x1e, 0x7a, 0xe6, 0x39, 0xb3, 0xaf, 0xcd, 0xbd, 0x07, 0x2b, 0x24, 0x0e,
+	0xe9, 0xab, 0x94, 0xb6, 0xda, 0xf0, 0x09, 0xd5, 0x90, 0x07, 0xf1, 0x7c, 0xdd, 0x19, 0xcd, 0xc8,
+	0x72, 0xfc, 0xc4, 0x19, 0x02, 0xa4, 0x7f, 0x17, 0x20, 0x1f, 0x90, 0xa1, 0x17, 0xe0, 0x66, 0x43,
+	0x51, 0xe5, 0xfa, 0x40, 0x79, 0xbc, 0xe8, 0x9d, 0x9b, 0x00, 0xed, 0x9a, 0xd2, 0x19, 0xd4, 0x94,
+	0x8e, 0xac, 0x8a, 0x02, 0x59, 0xa0, 0x7a, 0xd4, 0x11, 0x13, 0xe4, 0xa1, 0xde, 0x6e, 0x88, 0x49,
+	0x94, 0x87, 0x74, 0xab, 0xb6, 0x2f, 0xb7, 0xc4, 0x14, 0x59, 0xaa, 0xfc, 0xa4, 0xd7, 0xed, 0xcb,
+	0x62, 0x9a, 0xbc, 0x97, 0x3b, 0x8f, 0xc5, 0x0c, 0x79, 0xa8, 0x35, 0x1a, 0x62, 0x96, 0xa8, 0xa4,
+	0xde, 0xed, 0x3d, 0x15, 0x73, 0x84, 0xa9, 0xdc, 0x19, 0xa8, 0x4f, 0x7b, 0x5d, 0xa5, 0x33, 0x10,
+	0xf3, 0x84, 0xee, 0x71, 0xb7, 0x75, 0xd4, 0x96, 0x45, 0x20, 0x58, 0x47, 0x7d, 0x59, 0x15, 0x0b,
+	0xa8, 0x00, 0xd9, 0x4f, 0xbb, 0xea, 0x61, 0x43, 0x51, 0xc5, 0x22, 0xe5, 0xa2, 0x1e, 0x88, 0x25,
+	0x02, 0xed, 0x76, 0xf6, 0x8f, 0x94, 0x56, 0x43, 0xdc, 0x24, 0x8c, 0xfa, 0x83, 0x6e, 0xaf, 0xaf,
+	0x1c, 0x74, 0x6a, 0x2d, 0x71, 0x0b, 0x6d, 0x41, 0xa1, 0x29, 0xd7, 0x5a, 0x83, 0x66, 0xbd, 0x29,
+	0xd7, 0x0f, 0x45, 0x91, 0x08, 0xd7, 0x6f, 0xca, 0xad, 0x96, 0xb8, 0x5d, 0x79, 0x02, 0x85, 0x47,
+	0xa6, 0x35, 0xc2, 0xce, 0xd4, 0x31, 0x59, 0x23, 0x7d, 0xfe, 0x20, 0x5a, 0x5b, 0x65, 0xce, 0x1f,
+	0x90, 0x82, 0x8a, 0xbe, 0xd8, 0xd3, 0x8e, 0xc7, 0xf6, 0x31, 0x77, 0xea, 0xcc, 0xf9, 0xde, 0xfe,
+	0xd8, 0x3e, 0xe6, 0x2f, 0x28, 0x05, 0x3f, 0xda, 0x39, 0xdf, 0xa3, 0x25, 0xd8, 0xf7, 0x20, 0xbd,
+	0xaf, 0xbb, 0xe6, 0xa2, 0x61, 0xfa, 0x9e, 0x16, 0x31, 0xcc, 0x31, 0xea, 0xd2, 0x64, 0xeb, 0x4b,
+	0xc1, 0x7d, 0xed, 0xad, 0xab, 0x77, 0x3a, 0x22, 0xba, 0x1a, 0xe5, 0x50, 0xf9, 0x17, 0x01, 0xb2,
+	0x0d, 0xec, 0x98, 0xe7, 0xd8, 0x58, 0x64, 0x2e, 0x3c, 0x2f, 0x73, 0x52, 0x5c, 0x1b, 0xa6, 0xeb,
+	0xe9, 0xfe, 0x01, 0x52, 0x49, 0x0d, 0xc6, 0xe8, 0x11, 0xc0, 0x98, 0x98, 0x9f, 0x66, 0x5a, 0x27,
+	0x36, 0x0d, 0x76, 0x85, 0xbd, 0xd7, 0x62, 0x9a, 0xac, 0x9a, 0xa7, 0xa4, 0x8a, 0x75, 0x62, 0xa3,
+	0xfb, 0xb0, 0x7d, 0xac, 0xbb, 0x58, 0x9b, 0xd3, 0x1c, 0x0b, 0x94, 0x5b, 0xe4, 0x85, 0x1a, 0x6a,
+	0x4f, 0xfa, 0x43, 0x6a, 0xb6, 0xee, 0xd0, 0x3e, 0xc7, 0xce, 0x05, 0x6a, 0x40, 0x49, 0xb7, 0xf4,
+	0xf1, 0x85, 0x6b, 0xba, 0xda, 0x99, 0x69, 0x19, 0xdc, 0x6f, 0xee, 0xae, 0xee, 0x85, 0xab, 0x87,
+	0xa6, 0x65, 0xa8, 0x45, 0x9f, 0x8a, 0x8c, 0x2a, 0x0a, 0x80, 0xcf, 0x12, 0x2f, 0x74, 0x4d, 0xc2,
+	0x35, 0xbb, 0x26, 0x19, 0xe0, 0x91, 0x39, 0xc6, 0x4d, 0xdd, 0x3d, 0xc5, 0x2e, 0xfa, 0x00, 0xf2,
+	0x27, 0xe6, 0x18, 0x6b, 0xa7, 0xba, 0x7b, 0xba, 0xbe, 0x4d, 0x27, 0x04, 0x6a, 0xee, 0x84, 0x93,
+	0x4a, 0xdf, 0x85, 0x14, 0xf9, 0x8f, 0x3e, 0x80, 0x14, 0xcd, 0xc1, 0x6c, 0x59, 0x2f, 0xaf, 0xa6,
+	0xa5, 0x7f, 0x68, 0xea, 0xa5, 0x04, 0xf3, 0x15, 0x44, 0x91, 0x57, 0x10, 0xd2, 0x3d, 0xc8, 0xf9,
+	0x78, 0xc4, 0xcb, 0x3a, 0xdd, 0x8e, 0x2c, 0x6e, 0x10, 0xdf, 0xeb, 0x37, 0x6b, 0x7b, 0xef, 0xbd,
+	0x2f, 0x0a, 0xd2, 0x5f, 0x12, 0xb0, 0xed, 0xe1, 0xa5, 0x89, 0xee, 0x4d, 0xd8, 0x76, 0x4f, 0x6d,
+	0xc7, 0xd3, 0x0c, 0xec, 0x0e, 0x1d, 0x73, 0x1a, 0xf4, 0x95, 0x79, 0x55, 0xa4, 0x2f, 0x1a, 0x21,
+	0x9c, 0x54, 0xef, 0x44, 0x5b, 0x73, 0xb8, 0x7c, 0x4f, 0x09, 0x3c, 0x8a, 0xfa, 0x0e, 0xa4, 0xe8,
+	0xe6, 0xe5, 0xe3, 0x6d, 0x1e, 0x45, 0x46, 0x4f, 0x00, 0x9d, 0xcf, 0xc6, 0x16, 0x76, 0xf4, 0x63,
+	0x73, 0x6c, 0x7a, 0xbc, 0x58, 0xc9, 0xd0, 0xfd, 0x5a, 0x61, 0x84, 0x8f, 0xa3, 0xf8, 0x44, 0x09,
+	0xcd, 0x0d, 0x75, 0xfb, 0x7c, 0x11, 0x88, 0xbe, 0x09, 0xc0, 0x6a, 0x45, 0xca, 0x91, 0x15, 0xd2,
+	0x77, 0xd7, 0x14, 0x0d, 0x9c, 0x53, 0xfe, 0x38, 0x28, 0x4f, 0x9a, 0x00, 0xd4, 0xa0, 0x4d, 0x62,
+	0xef, 0xb4, 0xee, 0x8d, 0xe5, 0x18, 0x34, 0x84, 0x50, 0x4e, 0xba, 0x8b, 0x29, 0x08, 0x35, 0x21,
+	0x3b, 0xd5, 0x87, 0x67, 0x84, 0x0d, 0xab, 0x8b, 0x57, 0xd4, 0x61, 0x3d, 0x86, 0xd4, 0xd6, 0x2d,
+	0x7d, 0x84, 0x1d, 0x7f, 0xd8, 0xdc, 0x50, 0x7d, 0x72, 0xb4, 0x0f, 0x3c, 0x67, 0x93, 0x4c, 0x47,
+	0xcb, 0xd3, 0x95, 0xe7, 0x36, 0x61, 0x46, 0x6c, 0x6e, 0xa8, 0x11, 0x2a, 0xf4, 0x09, 0x49, 0x51,
+	0xdc, 0xf7, 0xca, 0x68, 0x9d, 0x62, 0x02, 0x17, 0x25, 0xcb, 0x09, 0x68, 0xd0, 0x23, 0x28, 0x38,
+	0x78, 0xac, 0x7b, 0xd8, 0xa0, 0x3e, 0x9e, 0xa5, 0x2e, 0xf1, 0xea, 0x9a, 0x0d, 0x57, 0x19, 0xf6,
+	0x91, 0x33, 0x56, 0xc1, 0x09, 0x9e, 0x51, 0x1d, 0xb6, 0xf0, 0xb3, 0xa9, 0xc9, 0x4f, 0x3f, 0x68,
+	0xd1, 0x01, 0x57, 0x16, 0x1d, 0x9b, 0x21, 0x89, 0xdf, 0xf5, 0x44, 0xbb, 0xad, 0xc2, 0xb5, 0xba,
+	0xad, 0xf0, 0x88, 0x93, 0x12, 0x17, 0xaf, 0x26, 0x66, 0xe8, 0x04, 0x50, 0x79, 0x17, 0x20, 0x5c,
+	0x18, 0xa9, 0x0c, 0xc3, 0x54, 0x41, 0x1e, 0x89, 0xf7, 0x8e, 0xf5, 0x63, 0x3c, 0xf6, 0xeb, 0x7f,
+	0x3a, 0x90, 0x7e, 0x57, 0x80, 0x14, 0x71, 0x00, 0xb4, 0x03, 0xe2, 0xa1, 0xd2, 0x69, 0x2c, 0xe4,
+	0xe9, 0x17, 0xe0, 0x66, 0xaf, 0x56, 0x3f, 0xac, 0x1d, 0xc8, 0xda, 0xe3, 0xa3, 0x56, 0x47, 0x56,
+	0x6b, 0xfb, 0x4a, 0x4b, 0x19, 0x3c, 0x15, 0x13, 0x68, 0x1b, 0x4a, 0x34, 0x5f, 0x6a, 0x0d, 0x79,
+	0x50, 0x53, 0x5a, 0x7d, 0x31, 0x49, 0xf2, 0xa4, 0xd2, 0x26, 0xb8, 0xfb, 0xb5, 0xbe, 0xd2, 0x17,
+	0x53, 0xe8, 0x06, 0x6c, 0xf9, 0xe4, 0xed, 0x5a, 0xa7, 0x76, 0x20, 0xab, 0x62, 0x9a, 0x64, 0xd7,
+	0x86, 0xdc, 0x6b, 0x75, 0x9f, 0xd6, 0xf6, 0x5b, 0xb2, 0x98, 0x41, 0x25, 0xc8, 0x37, 0x94, 0x7e,
+	0xbd, 0xfb, 0x58, 0x56, 0x9f, 0x8a, 0xd9, 0xfd, 0x02, 0xe4, 0xe9, 0x51, 0x34, 0x71, 0x14, 0xe9,
+	0x6f, 0x32, 0x00, 0xe1, 0x89, 0xdf, 0xd2, 0x00, 0xb2, 0x98, 0x1d, 0x13, 0x97, 0xb3, 0xe3, 0x1d,
+	0xce, 0x32, 0x92, 0x64, 0x73, 0x04, 0x40, 0x13, 0xb3, 0x1f, 0x28, 0x32, 0xd7, 0x09, 0x14, 0x2e,
+	0xdc, 0x9c, 0x0f, 0x14, 0x06, 0x3b, 0xa6, 0xe0, 0x9e, 0xfd, 0x4b, 0x31, 0x63, 0xc5, 0x3c, 0x84,
+	0x1f, 0x75, 0x34, 0x37, 0xd4, 0x9d, 0xf3, 0x25, 0x70, 0xa4, 0xf8, 0xfd, 0xa6, 0x3f, 0x19, 0xeb,
+	0xe5, 0xa5, 0x35, 0x61, 0x24, 0x64, 0xc9, 0x9a, 0x4b, 0x9f, 0x55, 0x0f, 0x4a, 0x06, 0xcb, 0xee,
+	0x3c, 0x9e, 0x30, 0x43, 0x7d, 0xe3, 0xea, 0x78, 0xc2, 0x8b, 0x02, 0xc2, 0x91, 0x73, 0x60, 0x41,
+	0xe5, 0x53, 0x28, 0x9a, 0x96, 0xeb, 0xe9, 0xe3, 0x31, 0x4b, 0x72, 0xcc, 0x78, 0x1f, 0xc4, 0x8a,
+	0x2c, 0x4a, 0x84, 0x90, 0x30, 0x8e, 0x32, 0x42, 0x6d, 0x3f, 0xc6, 0x90, 0x12, 0x93, 0x07, 0xac,
+	0x37, 0xaf, 0x51, 0x75, 0x87, 0xe1, 0x86, 0x36, 0x2d, 0x2d, 0x00, 0x23, 0xc8, 0xcb, 0xb4, 0xa7,
+	0x5f, 0x79, 0x7a, 0x15, 0xc4, 0x9b, 0x6a, 0x98, 0xc9, 0x29, 0xb7, 0x30, 0xaf, 0xdf, 0x23, 0xb1,
+	0x67, 0x82, 0x0d, 0x93, 0x2d, 0x3a, 0xed, 0xdb, 0x5e, 0x00, 0x5a, 0x0c, 0x08, 0xf9, 0xe7, 0x09,
+	0x08, 0x70, 0x9d, 0x80, 0xb0, 0x9f, 0x87, 0x2c, 0x37, 0x14, 0xe9, 0x9f, 0xd2, 0xb0, 0x39, 0xaf,
+	0xf3, 0xca, 0x9f, 0x26, 0xa0, 0xd8, 0x30, 0x5d, 0xcf, 0x31, 0x8f, 0x67, 0x54, 0xd0, 0xdb, 0x90,
+	0x1d, 0x4e, 0xfd, 0xd6, 0x8f, 0x75, 0x4c, 0x53, 0xda, 0xf4, 0x1c, 0x41, 0x51, 0x77, 0x86, 0xa7,
+	0xa6, 0x87, 0x87, 0x41, 0xc7, 0xbb, 0x19, 0x73, 0x67, 0x6b, 0x11, 0x42, 0x75, 0x8e, 0x0d, 0x7a,
+	0x0c, 0x9b, 0x24, 0x5a, 0xb9, 0x5e, 0xd0, 0x6d, 0xb3, 0x16, 0x6f, 0x37, 0xb6, 0xef, 0x30, 0x32,
+	0xb5, 0xc4, 0xd8, 0xf8, 0xdd, 0xf9, 0x57, 0x00, 0x26, 0xba, 0x69, 0x79, 0xba, 0x69, 0x61, 0xbf,
+	0x35, 0x8e, 0x40, 0xfc, 0xc8, 0x98, 0x09, 0x23, 0xe3, 0x3d, 0xd2, 0xa8, 0x86, 0x05, 0x45, 0x96,
+	0x6d, 0x62, 0x04, 0x54, 0xf9, 0xbe, 0x00, 0xb9, 0x96, 0x3d, 0xd4, 0xd7, 0x2b, 0x4a, 0x81, 0xac,
+	0xbf, 0x94, 0xc4, 0x17, 0x5b, 0x8a, 0x4f, 0x4f, 0x02, 0xdd, 0x54, 0xf7, 0x4e, 0x79, 0xb0, 0xa2,
+	0xcf, 0x15, 0x0f, 0xb2, 0x5c, 0xbb, 0x4b, 0xe3, 0xe0, 0x11, 0x14, 0x8d, 0xc8, 0x7e, 0x96, 0x81,
+	0xe6, 0xc1, 0x78, 0xdb, 0x14, 0x35, 0x04, 0x75, 0x8e, 0x4d, 0x65, 0x02, 0xc5, 0xa8, 0x7b, 0x2e,
+	0x9d, 0x5a, 0x81, 0xdc, 0x98, 0x6b, 0x87, 0x7f, 0x11, 0x79, 0x2b, 0xd6, 0xb4, 0xbe, 0x4a, 0xd5,
+	0x80, 0x5c, 0xfa, 0x65, 0x28, 0x46, 0x6d, 0x06, 0xbd, 0x08, 0xe5, 0x9a, 0x5a, 0x6f, 0x2a, 0x03,
+	0xb9, 0x3e, 0x38, 0x52, 0xe5, 0xcb, 0x7d, 0xf1, 0x93, 0x6f, 0xbc, 0xcf, 0xfa, 0xc7, 0x27, 0xef,
+	0xbf, 0x2b, 0x26, 0xa4, 0xff, 0x16, 0x60, 0x67, 0xd9, 0xa9, 0xf3, 0xfc, 0x91, 0x95, 0xb0, 0x78,
+	0x64, 0xf5, 0x14, 0x8a, 0x43, 0xdb, 0xf2, 0xb0, 0xe5, 0xb1, 0x02, 0x2d, 0x49, 0x6d, 0xfc, 0xfd,
+	0xf8, 0xa7, 0xda, 0xd5, 0x3a, 0x23, 0xa7, 0xe5, 0x72, 0x61, 0x18, 0x0e, 0x88, 0x3d, 0x4e, 0x47,
+	0x53, 0x8d, 0x9f, 0x88, 0xd1, 0xec, 0xd4, 0xdc, 0x50, 0x73, 0xd3, 0xd1, 0xf4, 0x10, 0x5f, 0x28,
+	0x86, 0xd4, 0x80, 0x42, 0x84, 0x96, 0x2c, 0xb8, 0xde, 0xed, 0x0c, 0xe4, 0xce, 0x60, 0xd9, 0xa9,
+	0xd6, 0x6d, 0xb8, 0xd1, 0x57, 0xda, 0xbd, 0x96, 0xac, 0x91, 0xe6, 0x54, 0xe9, 0x1c, 0x68, 0xdf,
+	0xea, 0x77, 0x3b, 0xa2, 0xb0, 0x9f, 0xf3, 0xcf, 0xdc, 0xa4, 0x9f, 0xa7, 0x20, 0xc3, 0x4e, 0x34,
+	0x51, 0x0b, 0x36, 0x5d, 0xcf, 0x76, 0xe8, 0xd7, 0x4a, 0x0a, 0xe1, 0xad, 0xc7, 0x8a, 0x9a, 0xbf,
+	0xcf, 0x70, 0x19, 0x71, 0x73, 0x43, 0x2d, 0xb9, 0x51, 0x00, 0xaa, 0x93, 0x58, 0x37, 0xb5, 0x7d,
+	0x56, 0x6b, 0xbf, 0xfc, 0xab, 0x78, 0x6a, 0x07, 0x7c, 0xc0, 0x09, 0x46, 0xe8, 0x57, 0xe1, 0xb6,
+	0x7f, 0xa0, 0xad, 0x2d, 0xc8, 0x96, 0x8a, 0x2d, 0x9b, 0x7a, 0xd3, 0xe7, 0x31, 0x07, 0x46, 0x6d,
+	0xd2, 0xa8, 0xf2, 0xd6, 0x08, 0xbb, 0xbc, 0x79, 0xfc, 0xfa, 0xba, 0x43, 0xdf, 0x6a, 0xd8, 0x58,
+	0xb1, 0x33, 0x58, 0x38, 0x09, 0x3b, 0xad, 0x87, 0x90, 0xa5, 0x1b, 0xf9, 0xcc, 0xe3, 0x99, 0xf6,
+	0xe5, 0x75, 0xac, 0xea, 0x0c, 0x55, 0xf5, 0x69, 0xd0, 0x00, 0x6e, 0xe8, 0x86, 0x61, 0x12, 0xeb,
+	0xd0, 0xc7, 0x1a, 0x87, 0x92, 0x0a, 0x21, 0x19, 0x97, 0x15, 0x0a, 0xe9, 0x39, 0xc8, 0xad, 0x68,
+	0xb0, 0xb5, 0x20, 0xf3, 0x92, 0xb3, 0xde, 0xf7, 0xa3, 0x9d, 0xda, 0xca, 0x4d, 0x0a, 0xf9, 0x44,
+	0x4e, 0x83, 0x89, 0x25, 0xb1, 0x0d, 0x91, 0xfe, 0x42, 0x20, 0x25, 0x65, 0xb0, 0x75, 0xf3, 0xdf,
+	0x3a, 0x84, 0xc5, 0x6f, 0x1d, 0x77, 0x20, 0x4f, 0xcd, 0x83, 0x46, 0x07, 0xfe, 0xc9, 0x8c, 0x00,
+	0x3a, 0xac, 0x48, 0x2b, 0x1c, 0x3b, 0xba, 0x35, 0x3c, 0x8d, 0xd4, 0x60, 0xc4, 0x32, 0x18, 0x90,
+	0xa2, 0xdc, 0x81, 0x9c, 0xa7, 0x8f, 0xd8, 0xfb, 0x14, 0x7f, 0x9f, 0xf5, 0xf4, 0x11, 0x7d, 0x79,
+	0x17, 0x60, 0x68, 0x4f, 0x26, 0xa6, 0xa7, 0xb9, 0xa7, 0x3a, 0x4b, 0xb3, 0xa4, 0x09, 0x60, 0xb0,
+	0xfe, 0xa9, 0xbe, 0x0f, 0x90, 0x73, 0xf0, 0xb9, 0x49, 0x82, 0xa7, 0xa4, 0x41, 0x69, 0xde, 0x2e,
+	0x6e, 0x41, 0x86, 0x7f, 0x2e, 0xe0, 0x01, 0x9b, 0x8d, 0x08, 0xdc, 0x3e, 0x26, 0xe2, 0xfb, 0x9f,
+	0xf8, 0xd9, 0x88, 0xb8, 0xec, 0x08, 0x5b, 0xd1, 0x8f, 0x9c, 0x49, 0x35, 0x02, 0x91, 0xfe, 0xb5,
+	0x08, 0xdb, 0x97, 0x82, 0x38, 0xd1, 0xcf, 0xf0, 0xdc, 0x75, 0x35, 0x77, 0x68, 0xf3, 0x2c, 0x99,
+	0x50, 0xf3, 0x04, 0xd2, 0x27, 0x00, 0xd4, 0x82, 0x9c, 0x8b, 0xcf, 0xb1, 0x63, 0x7a, 0x17, 0x3c,
+	0xbc, 0xbc, 0x1d, 0x37, 0x3d, 0xf4, 0x39, 0x9d, 0x1a, 0x70, 0x20, 0x3d, 0x9c, 0x5f, 0x05, 0xa6,
+	0xa8, 0x41, 0x55, 0xe3, 0x32, 0x63, 0x25, 0xa0, 0xea, 0x93, 0x57, 0xfe, 0x5e, 0x80, 0xac, 0x9f,
+	0x3b, 0x77, 0x20, 0x8d, 0xa7, 0xf6, 0xf0, 0x94, 0xea, 0x29, 0xad, 0xb2, 0x41, 0x10, 0xf2, 0x13,
+	0xf3, 0xdf, 0x47, 0x7d, 0x7d, 0xfb, 0x15, 0xb5, 0x3f, 0x46, 0x5d, 0x5e, 0x51, 0xa7, 0xe9, 0x2a,
+	0x3f, 0xbe, 0x66, 0x12, 0xf4, 0xff, 0x87, 0xd5, 0xb6, 0xf4, 0x0e, 0x14, 0x22, 0x40, 0x04, 0x90,
+	0xe9, 0x74, 0xd5, 0x76, 0xad, 0x25, 0x6e, 0xa0, 0x02, 0x64, 0xdb, 0x4a, 0x47, 0x69, 0x1f, 0xb5,
+	0x45, 0x81, 0x0e, 0x6a, 0x4f, 0xe8, 0x20, 0x51, 0xf9, 0x45, 0x12, 0x32, 0x6c, 0xad, 0xab, 0x33,
+	0x76, 0x39, 0xec, 0x84, 0xd9, 0x29, 0x71, 0xd0, 0xd9, 0xea, 0xb0, 0x33, 0x31, 0x2d, 0x4d, 0x3f,
+	0x39, 0xc1, 0x43, 0xd2, 0x59, 0xfa, 0x89, 0x3d, 0xf3, 0xc5, 0x12, 0x3b, 0x9a, 0x98, 0x56, 0x8d,
+	0xf3, 0xf2, 0x95, 0x4d, 0xa6, 0xd0, 0x9f, 0x5d, 0x9e, 0x22, 0xfb, 0x45, 0xa7, 0xd0, 0x9f, 0x2d,
+	0x4e, 0xf1, 0x32, 0x94, 0x7c, 0x8b, 0x89, 0x38, 0x96, 0x5a, 0xf4, 0x81, 0xd4, 0xb7, 0x16, 0xca,
+	0x9f, 0xfc, 0xa5, 0xf2, 0x07, 0x19, 0xb0, 0x79, 0x62, 0x3e, 0xc3, 0x86, 0x16, 0x64, 0xf9, 0x34,
+	0x95, 0xf1, 0xe1, 0x17, 0x6a, 0x73, 0x82, 0xac, 0x5f, 0xa2, 0x4c, 0x83, 0xba, 0xea, 0xab, 0x50,
+	0xe4, 0xda, 0x67, 0x39, 0x18, 0x98, 0x20, 0x1c, 0x46, 0xf8, 0x54, 0xfe, 0x43, 0x80, 0x9d, 0x65,
+	0x2d, 0x13, 0x31, 0xd1, 0x20, 0x6f, 0xe7, 0xf9, 0x71, 0x55, 0xd4, 0xe1, 0x52, 0xcf, 0xed, 0x70,
+	0xf3, 0xde, 0x9d, 0x5e, 0xf4, 0xee, 0xa7, 0x50, 0xf2, 0x85, 0x37, 0x5d, 0x77, 0x86, 0xf9, 0xc7,
+	0xda, 0x77, 0xe3, 0xce, 0xc8, 0x2b, 0x23, 0x85, 0xd0, 0xaa, 0xbe, 0x1e, 0xe8, 0xa8, 0xf2, 0xc3,
+	0x04, 0x14, 0xa3, 0xaf, 0xd1, 0xb7, 0x61, 0x3b, 0x30, 0x9a, 0x60, 0x47, 0x84, 0x2f, 0x63, 0x47,
+	0x44, 0x9f, 0x6f, 0xb0, 0x29, 0x97, 0xb7, 0x3e, 0xf1, 0xbf, 0xb0, 0xf5, 0x97, 0xec, 0x34, 0x79,
+	0xd9, 0x4e, 0x2b, 0x3f, 0x15, 0xe0, 0xe6, 0x52, 0x6e, 0xb1, 0xfc, 0x3b, 0x31, 0xef, 0xdf, 0x91,
+	0x5a, 0x3d, 0xf5, 0x7c, 0xb5, 0xba, 0xf4, 0xeb, 0x90, 0xf3, 0xed, 0x05, 0x95, 0x61, 0xa7, 0x2f,
+	0x3f, 0x96, 0x55, 0x65, 0xf0, 0x74, 0xa1, 0x72, 0xf3, 0x03, 0x55, 0xad, 0xc5, 0xca, 0xd5, 0x56,
+	0xf7, 0x53, 0xf6, 0x15, 0xa7, 0x2d, 0x37, 0x94, 0xa3, 0xb6, 0x98, 0x44, 0x39, 0x48, 0x35, 0x95,
+	0x83, 0xa6, 0x98, 0x42, 0x45, 0xc8, 0xd5, 0x55, 0x65, 0xa0, 0xd4, 0x6b, 0x2d, 0x31, 0x2d, 0xfd,
+	0x5b, 0x02, 0x4a, 0x73, 0x75, 0x01, 0x69, 0x89, 0x87, 0x63, 0x7b, 0x66, 0x68, 0x24, 0xbf, 0xf2,
+	0x9d, 0x5f, 0x51, 0xe6, 0xd4, 0x09, 0x5e, 0x98, 0xc4, 0x39, 0x07, 0x9a, 0x3b, 0xfd, 0x37, 0xa8,
+	0x0e, 0x99, 0x11, 0x76, 0x1c, 0xd3, 0xff, 0x6e, 0xb0, 0xe2, 0x14, 0xe0, 0x80, 0xe2, 0x2c, 0xf2,
+	0xe1, 0xa4, 0xe8, 0x23, 0x48, 0x8e, 0x4c, 0x8f, 0xf7, 0x70, 0x5f, 0x5b, 0xc1, 0xe1, 0x32, 0x39,
+	0x21, 0x42, 0x07, 0x90, 0xa1, 0xa7, 0x51, 0x7e, 0x2e, 0xdb, 0x8d, 0x51, 0x1c, 0x55, 0x5b, 0x94,
+	0x82, 0x55, 0x6d, 0x9c, 0xbc, 0xf2, 0x21, 0x14, 0x22, 0xe0, 0xeb, 0x7c, 0x04, 0x27, 0xdd, 0x32,
+	0x2f, 0xd1, 0xa4, 0x3f, 0x12, 0xa0, 0x58, 0x1b, 0x9b, 0xba, 0xeb, 0xeb, 0xfb, 0x63, 0x9e, 0xd0,
+	0xd8, 0x89, 0xf9, 0x8a, 0x43, 0xd7, 0x28, 0x45, 0xf4, 0xa8, 0x68, 0x49, 0xf6, 0x94, 0x3e, 0x59,
+	0x7b, 0xe8, 0x96, 0x87, 0xf4, 0x23, 0xe5, 0x09, 0xfd, 0x5c, 0x4d, 0xac, 0xa6, 0xfb, 0x98, 0x1e,
+	0x94, 0x25, 0x08, 0xbc, 0x3b, 0x68, 0xca, 0xaa, 0x98, 0x92, 0xfe, 0x56, 0x80, 0x5b, 0xcb, 0xb7,
+	0x16, 0xbd, 0x07, 0x59, 0x5a, 0x87, 0xf1, 0x1a, 0x6d, 0xe5, 0xaf, 0x1e, 0x08, 0xa5, 0x62, 0xa8,
+	0x19, 0x87, 0xfe, 0x27, 0x15, 0x9a, 0x9f, 0xc0, 0xa3, 0x7d, 0x0a, 0xf8, 0x40, 0xc5, 0x40, 0x0a,
+	0x94, 0x74, 0xb2, 0x48, 0xbf, 0x96, 0xe5, 0x9b, 0x2d, 0x5d, 0xad, 0x8f, 0xe6, 0x86, 0x5a, 0xd4,
+	0x23, 0xe3, 0xb9, 0x72, 0xed, 0x17, 0x02, 0xdc, 0x58, 0x62, 0x5b, 0xe8, 0x05, 0xc8, 0x9d, 0xda,
+	0xae, 0x17, 0x71, 0xeb, 0x2c, 0x19, 0x13, 0xbf, 0x7e, 0x15, 0x36, 0x99, 0xd9, 0x69, 0xbc, 0xfe,
+	0xf4, 0x7f, 0xeb, 0xc7, 0xa0, 0x3d, 0x06, 0x5c, 0x5c, 0x53, 0x32, 0xce, 0x9a, 0x52, 0x5f, 0xca,
+	0x9a, 0x64, 0x10, 0x17, 0x8d, 0x7d, 0xc9, 0x91, 0xec, 0xdd, 0x25, 0x3a, 0x8f, 0x4a, 0x27, 0x7d,
+	0x07, 0x32, 0x6c, 0x9b, 0x50, 0x1b, 0xb6, 0xfc, 0xe2, 0x7b, 0x7e, 0x77, 0x57, 0x34, 0x12, 0x5c,
+	0x05, 0x8c, 0x9a, 0xf4, 0x72, 0xd3, 0x28, 0x00, 0x21, 0x48, 0xce, 0x22, 0xbb, 0x4c, 0x06, 0xfb,
+	0x29, 0x48, 0x98, 0x86, 0x74, 0x08, 0xa5, 0x39, 0xda, 0xe7, 0x29, 0xfb, 0xf7, 0xfe, 0xab, 0x04,
+	0xd9, 0x03, 0x26, 0x1e, 0xfa, 0x89, 0x00, 0xa5, 0xb9, 0xdf, 0x64, 0xa3, 0xfb, 0xab, 0xe2, 0xcc,
+	0xe5, 0xdb, 0x00, 0x95, 0x2b, 0x7f, 0x0d, 0x2a, 0x3d, 0xf8, 0xfe, 0xdf, 0xfd, 0xc3, 0xef, 0x27,
+	0xde, 0x44, 0x6f, 0xec, 0x06, 0xf7, 0x24, 0xbe, 0x47, 0x84, 0x7a, 0xc8, 0x65, 0x75, 0x77, 0xef,
+	0xef, 0x46, 0x7e, 0x30, 0xba, 0x7b, 0xff, 0x73, 0xf4, 0xc7, 0x02, 0x6c, 0x2d, 0xfc, 0x26, 0x15,
+	0xad, 0x88, 0xa3, 0xcb, 0x6f, 0x1d, 0x54, 0xde, 0x8a, 0x89, 0xcd, 0x7e, 0x62, 0xba, 0x54, 0x46,
+	0xf6, 0xd3, 0xcb, 0x88, 0x94, 0x9f, 0x47, 0xc5, 0x44, 0xbf, 0x23, 0x80, 0xb8, 0x78, 0xb1, 0x00,
+	0xad, 0xfa, 0xf8, 0xba, 0xfc, 0x02, 0x42, 0xe5, 0xd6, 0xa5, 0x13, 0x43, 0x79, 0x32, 0xf5, 0x2e,
+	0x7c, 0x71, 0xee, 0x5f, 0x43, 0x65, 0x7f, 0x22, 0x80, 0xb8, 0x78, 0x6f, 0x61, 0x95, 0x38, 0x2b,
+	0xee, 0x37, 0xc4, 0xd8, 0xcb, 0x87, 0x54, 0xb0, 0x0f, 0xa4, 0xf8, 0x7a, 0xfa, 0x28, 0x7a, 0xc1,
+	0x80, 0x08, 0xb9, 0x78, 0xa5, 0x61, 0x95, 0x90, 0x2b, 0xae, 0x3e, 0xc4, 0x17, 0x72, 0x2f, 0xbe,
+	0xf6, 0xe6, 0x84, 0xfc, 0x99, 0x00, 0xdb, 0x97, 0xee, 0x28, 0xa0, 0x6a, 0x0c, 0x9f, 0x88, 0xfc,
+	0xb2, 0xbe, 0xb2, 0xe6, 0x17, 0xda, 0xd2, 0x07, 0x54, 0xc0, 0x07, 0x68, 0x37, 0xb6, 0x80, 0xbb,
+	0xec, 0x37, 0xdd, 0xcf, 0x20, 0xcb, 0xef, 0x58, 0xa0, 0x57, 0x56, 0xca, 0x13, 0x57, 0x8a, 0x37,
+	0xa9, 0x14, 0xaf, 0xa2, 0x97, 0xd7, 0x48, 0x41, 0xa7, 0x25, 0xe6, 0xf5, 0x63, 0x01, 0xf2, 0xc1,
+	0xaf, 0xd2, 0xd1, 0xd7, 0x56, 0x7b, 0x57, 0xf4, 0xa2, 0x46, 0xe5, 0xb5, 0x2b, 0xf1, 0xb8, 0xff,
+	0x2d, 0x93, 0x65, 0x89, 0x5d, 0x31, 0x2d, 0x7c, 0x06, 0x10, 0x5e, 0xbf, 0x40, 0xaf, 0xad, 0x73,
+	0xb9, 0xa8, 0x2e, 0x56, 0x39, 0x1b, 0x9f, 0xfb, 0x7e, 0x2c, 0x3d, 0xfc, 0x40, 0x00, 0x08, 0x6f,
+	0x74, 0xac, 0x9a, 0xfc, 0xd2, 0x9d, 0x8f, 0xb5, 0x1b, 0xc1, 0xbd, 0x5d, 0x8a, 0xb3, 0xf8, 0x8f,
+	0xd8, 0x9d, 0x0b, 0x22, 0x46, 0x78, 0x9b, 0x63, 0x95, 0x18, 0x97, 0xee, 0x7b, 0xc4, 0x11, 0x63,
+	0x2f, 0x8e, 0x1e, 0xb8, 0x18, 0x7f, 0x2e, 0xc0, 0x8d, 0x25, 0xd7, 0x26, 0xd0, 0xdb, 0xeb, 0xf7,
+	0x7d, 0x49, 0xbc, 0x7e, 0x70, 0x0d, 0x0a, 0x6e, 0x33, 0x71, 0xbc, 0xc8, 0x97, 0x37, 0xea, 0x4e,
+	0xfb, 0xf9, 0x5f, 0xc9, 0xf2, 0xc9, 0x8e, 0x33, 0xd4, 0x16, 0xde, 0xf9, 0x9f, 0x00, 0x00, 0x00,
+	0xff, 0xff, 0x4e, 0xf9, 0xb7, 0x97, 0xc3, 0x37, 0x00, 0x00,
 }
