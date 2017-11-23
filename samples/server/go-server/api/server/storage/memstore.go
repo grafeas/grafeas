@@ -94,7 +94,7 @@ func (m *memStore) ListOccurrences(pID, filters string) []swagger.Occurrence {
 // CreateNote adds the specified note to the mem store
 func (m *memStore) CreateNote(n *swagger.Note) *errors.AppError {
 	if _, ok := m.notesByID[n.Name]; ok {
-		return &errors.AppError{Err: fmt.Sprintf("Occurrence with name %q already exists", n.Name),
+		return &errors.AppError{Err: fmt.Sprintf("Note with name %q already exists", n.Name),
 			StatusCode: http.StatusBadRequest}
 	}
 	m.notesByID[n.Name] = *n
