@@ -1,7 +1,9 @@
 ## Grafeas Code of Conduct
 
 At Google, we recognize and celebrate the creativity and collaboration of open source contributors and the diversity of skills, experiences, cultures, and opinions they bring to the projects and communities they participate in.
+
 Every one of Google's open source projects and communities are inclusive environments, based on treating all individuals respectfully, regardless of gender identity and expression, sexual orientation, disabilities, neurodiversity, physical appearance, body size, ethnicity, nationality, race, age, religion, or other protected category.
+
 We value diverse opinions, but we value respectful behavior more.
 
 Respectful behavior includes:
@@ -22,6 +24,6 @@ Reports should be directed to wmd@google.com, the Project Steward for Grafeas.  
 We will investigate every complaint, but you may not receive a direct response.  We will use our discretion in determining when and how to follow up on reported incidents, which may range from not taking action to permanent expulsion from the project and project-sponsored spaces.  We will notify the accused of the report and provide them an opportunity to discuss it before any action is taken. In potentially harmful situations, such as ongoing harassment or threats to anyone's safety, we may take action without notice.  We will do our utmost to keep the identity of the reporter anonymous.
 
 
-This enforcement policy has been adopted from [IndieWeb Code of Conduct](https://indieweb.org/code-of-conduct)
+This enforcement policy has been adopted from [IndieWeb Code of Conduct](https://indieweb.org/code-of-conduct).
 
 
