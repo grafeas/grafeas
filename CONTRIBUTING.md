@@ -15,6 +15,13 @@ You generally only need to submit a CLA once, so if you've already submitted one
 (even if it was for a different project), you probably don't need to do it
 again.
 
+## Proposals and PRs
+
+If you would like to make a large change, please start with a proposal issue that includes:
+* What you would like to achieve
+* Why you'd like to make this change
+* A design overview
+
 ## Code reviews
 
 All submissions, including submissions by project members, require review. We
