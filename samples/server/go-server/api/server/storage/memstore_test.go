@@ -119,6 +119,22 @@ func TestDeleteOccurrence(t *testing.T) {
 	}
 }
 
+func TestDeleteProject(t *testing.T) {
+	s := NewMemStore()
+	pID := "myproject"
+	// Delete before the note exists
+	if err := s.DeleteProject(pID); err == nil {
+		t.Error("Deleting nonexistant note got success, want error")
+	}
+	if err := s.CreateProject(pID); err != nil {
+		t.Fatalf("CreateProject got %v want success", err)
+	}
+
+	if err := s.DeleteProject(pID); err != nil {
+		t.Errorf("DeleteProject got %v, want success ", err)
+	}
+}
+
 func TestUpdateOccurrence(t *testing.T) {
 	s := NewMemStore()
 	n := testutil.Note()

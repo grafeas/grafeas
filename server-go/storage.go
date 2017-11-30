@@ -33,6 +33,9 @@ type Storager interface {
 	// CreateOperation adds the specified operation
 	CreateOperation(o *opspb.Operation) error
 
+	// DeleteNote deletes the project with the given pID
+	DeleteProject(pID string) *errors.AppError
+
 	// DeleteNote deletes the note with the given pID and nID
 	DeleteNote(pID, nID string) error
 
