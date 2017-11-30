@@ -15,16 +15,18 @@
 package testutil
 
 import (
+	"log"
+
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes"
 	"github.com/golang/protobuf/ptypes/any"
+	"github.com/grafeas/grafeas/samples/server/go-server/api/server/name"
 	pb "github.com/grafeas/grafeas/v1alpha1/proto"
 	opspb "google.golang.org/genproto/googleapis/longrunning"
-	"log"
 )
 
-func Occurrence(noteName string) *pb.Occurrence {
-	return &pb.Occurrence{
+func Occurrence(noteName string) (*pb.Occurrence, string) {
+	occurrence := pb.Occurrence{
 		Name:        "projects/test-project/occurrences/134",
 		ResourceUrl: "gcr.io/foo/bar",
 		NoteName:    noteName,
@@ -57,10 +59,12 @@ func Occurrence(noteName string) *pb.Occurrence {
 			},
 		},
 	}
+	pID, _, _ := name.ParseOccurrence(occurrence.Name)
+	return &occurrence, pID
 }
 
-func Note() *pb.Note {
-	return &pb.Note{
+func Note() (*pb.Note, string) {
+	note := pb.Note{
 		Name:             "projects/vulnerability-scanner-a/notes/CVE-1999-0710",
 		ShortDescription: "CVE-2014-9911",
 		LongDescription:  "NIST vectors: AV:N/AC:L/Au:N/C:P/I:P",
@@ -163,18 +167,22 @@ func Note() *pb.Note {
 			},
 		},
 	}
+	pID, _, _ := name.ParseNote(note.Name)
+	return &note, pID
 }
 
-func Operation() *opspb.Operation {
+func Operation() (*opspb.Operation, string) {
 	md := &pb.OperationMetadata{CreateTime: ptypes.TimestampNow()}
 	bytes, err := proto.Marshal(md)
 	if err != nil {
 		log.Printf("Error parsing bytes: %v", err)
-		return nil
+		return nil, ""
 	}
-	return &opspb.Operation{
+	operation := opspb.Operation{
 		Name:     "projects/vulnerability-scanner-a/operations/foo",
 		Metadata: &any.Any{Value: bytes},
 		Done:     false,
 	}
+	pID, _, _ := name.ParseOperation(operation.Name)
+	return &operation, pID
 }

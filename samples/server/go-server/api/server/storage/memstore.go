@@ -72,6 +72,11 @@ func (m *memStore) ListProjects() []string {
 
 // CreateOccurrence adds the specified occurrence to the mem store
 func (m *memStore) CreateOccurrence(o *pb.Occurrence) error {
+	if pID, _, err := name.ParseOccurrence(o.Name); err != nil {
+		return status.Error(codes.InvalidArgument, fmt.Sprintf("Invalid occurrence name %q", o.Name))
+	} else if _, ok := m.projects[pID]; !ok {
+		return status.Error(codes.InvalidArgument, fmt.Sprintf("Project with name %q does not exist", o.Name))
+	}
 	if _, ok := m.occurrencesByID[o.Name]; ok {
 		return status.Error(codes.InvalidArgument, fmt.Sprintf("Occurrence with name %q already exists", o.Name))
 	}
@@ -121,6 +126,11 @@ func (m *memStore) ListOccurrences(pID, filters string) []*pb.Occurrence {
 
 // CreateNote adds the specified note to the mem store
 func (m *memStore) CreateNote(n *pb.Note) error {
+	if pID, _, err := name.ParseNote(n.Name); err != nil {
+		return status.Error(codes.InvalidArgument, fmt.Sprintf("Invalid note name %q", n.Name))
+	} else if _, ok := m.projects[pID]; !ok {
+		return status.Error(codes.InvalidArgument, fmt.Sprintf("Project with name %q does not exist", n.Name))
+	}
 	if _, ok := m.notesByID[n.Name]; ok {
 		return status.Error(codes.InvalidArgument, fmt.Sprintf("Note with name %q already exists", n.Name))
 	}
@@ -209,6 +219,11 @@ func (m *memStore) GetOperation(pID, opID string) (*opspb.Operation, error) {
 
 // CreateOperation adds the specified operation to the mem store
 func (m *memStore) CreateOperation(o *opspb.Operation) error {
+	if pID, _, err := name.ParseOperation(o.Name); err != nil {
+		return status.Error(codes.InvalidArgument, fmt.Sprintf("Invalid operation name %q", o.Name))
+	} else if _, ok := m.projects[pID]; !ok {
+		return status.Error(codes.InvalidArgument, fmt.Sprintf("Project with name %q does not exist", o.Name))
+	}
 	if _, ok := m.opsByID[o.Name]; ok {
 		return status.Error(codes.InvalidArgument, fmt.Sprintf("Operation with name %q already exists", o.Name))
 	}
