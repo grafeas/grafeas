@@ -16,6 +16,7 @@ package storage
 
 import (
 	"fmt"
+	"sort"
 	"strings"
 
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/name"
@@ -50,13 +51,23 @@ func (m *memStore) CreateProject(pID string) error {
 }
 
 // DeleteProject deletes the project with the given pID from the mem store
-func (m *memStore) DeleteProject(pID string) *errors.AppError {
+func (m *memStore) DeleteProject(pID string) error {
 	if _, ok := m.projects[pID]; !ok {
-		return &errors.AppError{Err: fmt.Sprintf("Project with name %q does not Exist", pID),
-			StatusCode: http.StatusBadRequest}
+		return status.Error(codes.InvalidArgument, fmt.Sprintf("Project with name %q does not Exist", pID))
 	}
 	delete(m.projects, pID)
 	return nil
+}
+
+func (m *memStore) ListProjects() []string {
+	pIDs := make([]string, len(m.projects))
+	i := 0
+	for k := range m.projects {
+		pIDs[i] = k
+		i++
+	}
+	sort.Strings(pIDs)
+	return pIDs
 }
 
 // CreateOccurrence adds the specified occurrence to the mem store

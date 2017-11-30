@@ -17,7 +17,10 @@ package storage
 import (
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/name"
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/testing"
+
+	"fmt"
 	"reflect"
+	"sort"
 	"strings"
 	"testing"
 
@@ -364,6 +367,28 @@ func TestUpdateOperation(t *testing.T) {
 		t.Fatalf("GetOperation got %v, want success", err)
 	} else if !reflect.DeepEqual(got, o2) {
 		t.Errorf("GetOperation got %v, want %v", got, o2)
+	}
+}
+
+func TestListProjects(t *testing.T) {
+	s := NewMemStore()
+	pIDs := []string{}
+	for i := 0; i < 20; i++ {
+		pID := fmt.Sprint("Project", i)
+		if err := s.CreateProject(pID); err != nil {
+			t.Fatalf("CreateProject got %v want success", err)
+		}
+		pIDs = append(pIDs, pID)
+	}
+	gotPIDs := s.ListProjects()
+	if len(gotPIDs) != 20 {
+		t.Errorf("ListProjects got %v operations, want 20", len(gotPIDs))
+	}
+	// Sort to handle that pIDs are not guaranteed to be listed in insertion order
+	sort.Strings(pIDs)
+	sort.Strings(gotPIDs)
+	if !reflect.DeepEqual(gotPIDs, pIDs) {
+		t.Errorf("ListProjects got %v want %v", gotPIDs, pIDs)
 	}
 }
 
