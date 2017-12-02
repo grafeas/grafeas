@@ -24,7 +24,6 @@ import (
 
 	"errors"
 	"fmt"
-	"github.com/grafeas/grafeas/samples/server/go-server/api"
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/name"
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/storage"
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/testing"
@@ -32,7 +31,6 @@ import (
 )
 
 func TestCreateNote(t *testing.T) {
-	h := Handler{v1alpha1.Grafeas{S: storage.NewMemStore()}}
 	n := testutil.Note()
 	if err := createNote(n, h); err != nil {
 		t.Errorf("%v", err)
@@ -573,7 +571,7 @@ func TestListNoteOccurrences(t *testing.T) {
 		t.Fatalf("Could not create httprequest %v", err)
 	}
 	w = httptest.NewRecorder()
-	h.ListNoteOccurrences(w, r)
+	v1alpha1.ListNoteOccurrences(w, r)
 	if w.Code != 200 {
 		t.Fatalf("ListNoteOccurrences got %v, want 200", w.Code)
 	}

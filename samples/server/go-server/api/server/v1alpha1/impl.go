@@ -20,10 +20,11 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/grafeas/grafeas/samples/server/go-server/api"
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/name"
 	server "github.com/grafeas/grafeas/server-go"
 	"github.com/grafeas/grafeas/server-go/errors"
+	pb "github.com/grafeas/grafeas/v1alpha1/proto"
+	opspb "google.golang.org/genproto/googleapis/longrunning"
 )
 
 // Grafeas is an implementation of the Grafeas API, which should be called by handler methods for verification of logic
@@ -33,17 +34,17 @@ type Grafeas struct {
 }
 
 // CreateNote validates that a note is valid and then creates a note in the backing datastore.
-func (g *Grafeas) CreateNote(n *swagger.Note) *errors.AppError {
+func (g *Grafeas) CreateNote(n *pb.CreateNoteRequest) (*pb.Note, error) {
 	if n.Name == "" {
 		log.Printf("Invalid note name: %v", n.Name)
-		return &errors.AppError{Err: "Invalid note name", StatusCode: http.StatusBadRequest}
+		return nil, errors.AppError{Err: "Invalid note name", StatusCode: http.StatusBadRequest}
 	}
 	// TODO: Validate that operation exists if it is specified when get methods are implmented
-	return g.S.CreateNote(n)
+	return g.S.CreateNote(n), nil
 }
 
 // CreateOccurrence validates that a note is valid and then creates an occurrence in the backing datastore.
-func (g *Grafeas) CreateOccurrence(o *swagger.Occurrence) *errors.AppError {
+func (g *Grafeas) CreateOccurrence(o *pb.Occurrence) *errors.AppError {
 	if o.Name == "" {
 		log.Printf("Invalid occurrence name: %v", o.Name)
 		return &errors.AppError{Err: "Invalid occurrence name", StatusCode: http.StatusBadRequest}
@@ -65,7 +66,7 @@ func (g *Grafeas) CreateOccurrence(o *swagger.Occurrence) *errors.AppError {
 }
 
 // CreateOperation validates that a note is valid and then creates an operation note in the backing datastore.
-func (g *Grafeas) CreateOperation(o *swagger.Operation) *errors.AppError {
+func (g *Grafeas) CreateOperation(o *opspb.Operation) *errors.AppError {
 	if o.Name == "" {
 		log.Printf("Invalid occurrence name: %v", o.Name)
 		return &errors.AppError{Err: "Invalid occurrence name", StatusCode: http.StatusBadRequest}
