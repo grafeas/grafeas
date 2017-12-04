@@ -72,6 +72,9 @@ func (h *Handler) CreateNote(w http.ResponseWriter, r *http.Request) {
 	n := swagger.Note{}
 	json.Unmarshal(body, &n)
 	genName := name.FormatNote(pID, nID)
+	if n.Name == "" {
+		n.Name = genName
+	}
 	if genName != n.Name {
 		log.Printf("Mismatching names in n.Name field and request parameters.")
 		http.Error(w, fmt.Sprintf("note.Name %v must specify match with request"+
