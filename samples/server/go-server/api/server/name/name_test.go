@@ -81,6 +81,19 @@ func TestNameRoundtrips(t *testing.T) {
 				opn, p1, p2, test.part1, test.part2)
 		}
 	}
+
+	// Test one-part names
+	for _, test := range tests {
+		fn := FormatProject(test.part1)
+		if p1, err := ParseProject(fn); err != nil {
+			t.Errorf("ParseProject %v; want %v, got error %v",
+				fn, test.part1, err)
+		} else if p1 != test.part1 {
+			t.Errorf("ParseProject %v; want %v, got %v",
+				fn, test.part1, p1)
+		}
+
+	}
 }
 
 func TestParseNoteValidation(t *testing.T) {
@@ -99,7 +112,7 @@ func TestParseNoteValidation(t *testing.T) {
 	}
 
 	for _, test := range badNoteNames {
-		if p1, p2, err := ParseNote(test); err.Err == "" {
+		if p1, p2, err := ParseNote(test); err == nil {
 			t.Errorf("ParseNote %v; wanted error, got (%v, %v)",
 				test, p1, p2)
 		}
@@ -176,8 +189,8 @@ func TestParseOperations(t *testing.T) {
 
 func TestOccurrenceErrorMessage(t *testing.T) {
 	want := "projects/{project_id}/occurrences/{entity_id}"
-	if _, _, err := ParseOccurrence("providers/foo/notes/bar"); !strings.Contains(err.Err, "projects/{project_id}/occurrences/{entity_id}") {
-		t.Fatalf("bad error msg, got %q want it to contain %q", err.Err, want)
+	if _, _, err := ParseOccurrence("providers/foo/notes/bar"); !strings.Contains(err.Error(), "projects/{project_id}/occurrences/{entity_id}") {
+		t.Fatalf("bad error msg, got %q want it to contain %q", err, want)
 	}
 }
 
@@ -198,23 +211,45 @@ func TestParseResourceKindAndProjectPath(t *testing.T) {
 		"providers/foo/projects/bar/operations/" + strings.Repeat("a", 101),
 	}
 	for _, test := range badResourcePaths {
-		if t1, r, err := ParseResourceKindAndProjectFromPath(test); err == nil {
-			t.Errorf("ParseResourceKindAndProjectFromPath %v; got (%v, %v), wanted error",
+		if t1, r, err := ParseResourceKindAndProject(test); err == nil {
+			t.Errorf("ParseResourceKindAndProject %v; got (%v, %v), wanted error",
 				test, t1, r)
 		}
 	}
 
 	goodResourcePaths := []string{
-		"v1alpha1/projects/foo/occurrences",
-		"v1alpha1/projects/foo/operations",
-		"v1alpha1/projects/foo/notes",
+		"projects/foo/occurrences",
+		"projects/foo/operations",
+		"projects/foo/notes",
 	}
 	for _, test := range goodResourcePaths {
-		if t1, r, err := ParseResourceKindAndProjectFromPath(test); err != nil {
-			t.Errorf("ParseResourceKindAndProjectFromPath %v; got (%v, %v, %v), wanted success",
+		if t1, r, err := ParseResourceKindAndProject(test); err != nil {
+			t.Errorf("ParseResourceKindAndProject %v; got (%v, %v, %v), wanted success",
 				test, t1, r, err)
 		} else if r != "foo" {
-			t.Errorf("ParseResourceKindAndProjectFromPath %v; got %v, wanted foo", test, t1)
+			t.Errorf("ParseResourceKindAndProject %v; got %v, wanted foo", test, t1)
+		}
+	}
+}
+
+func TestParseProjectValidation(t *testing.T) {
+	badProjectNames := []string{
+		// Bad keyword
+		"providers/foo/",
+		// Trailing slash
+		"projects/foo/",
+		// Last part non-empty
+		"projects/foo/baz",
+		// Too many parts
+		"projects/foo/baz/asdf",
+		// Empty part
+		"projects//",
+	}
+
+	for _, test := range badProjectNames {
+		if p1, err := ParseProject(test); err == nil {
+			t.Errorf("ParseProject %v; wanted error, got %v",
+				test, p1)
 		}
 	}
 }

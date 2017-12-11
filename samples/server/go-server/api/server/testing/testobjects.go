@@ -15,8 +15,12 @@
 package testutil
 
 import (
+	"github.com/golang/protobuf/proto"
+	"github.com/golang/protobuf/ptypes"
+	"github.com/golang/protobuf/ptypes/any"
 	pb "github.com/grafeas/grafeas/v1alpha1/proto"
 	opspb "google.golang.org/genproto/googleapis/longrunning"
+	"log"
 )
 
 func Occurrence(noteName string) *pb.Occurrence {
@@ -24,10 +28,10 @@ func Occurrence(noteName string) *pb.Occurrence {
 		Name:        "projects/test-project/occurrences/134",
 		ResourceUrl: "gcr.io/foo/bar",
 		NoteName:    noteName,
-		Kind:        "PACKAGE_VULNERABILITY",
+		Kind:        pb.Note_PACKAGE_VULNERABILITY,
 		Details: &pb.Occurrence_VulnerabilityDetails{
 			VulnerabilityDetails: &pb.VulnerabilityType_VulnerabilityDetails{
-				Severity:  "HIGH",
+				Severity:  pb.VulnerabilityType_HIGH,
 				CvssScore: 7.5,
 				PackageIssue: []*pb.VulnerabilityType_PackageIssue{
 					&pb.VulnerabilityType_PackageIssue{
@@ -60,11 +64,11 @@ func Note() *pb.Note {
 		Name:             "projects/vulnerability-scanner-a/notes/CVE-1999-0710",
 		ShortDescription: "CVE-2014-9911",
 		LongDescription:  "NIST vectors: AV:N/AC:L/Au:N/C:P/I:P",
-		Kind:             "PACKAGE_VULNERABILITY",
+		Kind:             pb.Note_PACKAGE_VULNERABILITY,
 		NoteType: &pb.Note_VulnerabilityType{
 			&pb.VulnerabilityType{
 				CvssScore: 7.5,
-				Severity:  "HIGH",
+				Severity:  pb.VulnerabilityType_HIGH,
 				Details: []*pb.VulnerabilityType_Detail{
 					&pb.VulnerabilityType_Detail{
 						CpeUri:  "cpe:/o:debian:debian_linux:7",
@@ -73,7 +77,7 @@ func Note() *pb.Note {
 							"common/uresbund.cpp in International Components for Unicode (ICU) before 54.1 for C/C++ allows " +
 							"remote attackers to cause a denial of service or possibly have unspecified other impact via a crafted uloc_getDisplayName call.",
 						MinAffectedVersion: &pb.VulnerabilityType_Version{
-							Kind: "MINIMUM",
+							Kind: pb.VulnerabilityType_Version_MINIMUM,
 						},
 						SeverityName: "HIGH",
 
@@ -93,7 +97,7 @@ func Note() *pb.Note {
 							"common/uresbund.cpp in International Components for Unicode (ICU) before 54.1 for C/C++ allows " +
 							"remote attackers to cause a denial of service or possibly have unspecified other impact via a crafted uloc_getDisplayName call.",
 						MinAffectedVersion: &pb.VulnerabilityType_Version{
-							Kind: "MINIMUM",
+							Kind: pb.VulnerabilityType_Version_MINIMUM,
 						},
 						SeverityName: "HIGH",
 
@@ -113,7 +117,7 @@ func Note() *pb.Note {
 							"common/uresbund.cpp in International Components for Unicode (ICU) before 54.1 for C/C++ allows " +
 							"remote attackers to cause a denial of service or possibly have unspecified other impact via a crafted uloc_getDisplayName call.",
 						MinAffectedVersion: &pb.VulnerabilityType_Version{
-							Kind: "MINIMUM",
+							Kind: pb.VulnerabilityType_Version_MINIMUM,
 						},
 						SeverityName: "HIGH",
 
@@ -133,7 +137,7 @@ func Note() *pb.Note {
 							"common/uresbund.cpp in International Components for Unicode (ICU) before 54.1 for C/C++ allows " +
 							"remote attackers to cause a denial of service or possibly have unspecified other impact via a crafted uloc_getDisplayName call.",
 						MinAffectedVersion: &pb.VulnerabilityType_Version{
-							Kind: "MINIMUM",
+							Kind: pb.VulnerabilityType_Version_MINIMUM,
 						},
 						SeverityName: "MEDIUM",
 
@@ -141,7 +145,7 @@ func Note() *pb.Note {
 							CpeUri:  "cpe:/o:canonical:ubuntu_linux:14.04",
 							Package: "andriod",
 							Version: &pb.VulnerabilityType_Version{
-								Kind: "MAXIMUM",
+								Kind: pb.VulnerabilityType_Version_MAXIMUM,
 							},
 						},
 					},
@@ -162,9 +166,15 @@ func Note() *pb.Note {
 }
 
 func Operation() *opspb.Operation {
+	md := &pb.OperationMetadata{CreateTime: ptypes.TimestampNow()}
+	bytes, err := proto.Marshal(md)
+	if err != nil {
+		log.Printf("Error parsing bytes: %v", err)
+		return nil
+	}
 	return &opspb.Operation{
 		Name:     "projects/vulnerability-scanner-a/operations/foo",
-		Metadata: map[string]string{"StartTime": "0916162344"},
+		Metadata: &any.Any{Value: bytes},
 		Done:     false,
 	}
 }

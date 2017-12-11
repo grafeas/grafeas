@@ -16,15 +16,33 @@ package main
 
 import (
 	"log"
-	"net/http"
 
-	"github.com/grafeas/grafeas/samples/server/go-server/api/server"
+	"flag"
+	"fmt"
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/storage"
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/v1alpha1"
+	pb "github.com/grafeas/grafeas/v1alpha1/proto"
+	opspb "google.golang.org/genproto/googleapis/longrunning"
+	"google.golang.org/grpc"
+	"net"
+)
+
+var (
+	port = flag.Int("port", 10000, "The server port")
 )
 
 func main() {
-	log.Printf("Server started on port 8080")
-	storage.NewMemStore()
+	flag.Parse()
+	log.Printf("Server started on port %v", *port)
 
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", *port))
+
+	if err != nil {
+		log.Fatalf("failed to listen: %v", err)
+	}
+	grpcServer := grpc.NewServer()
+	g := v1alpha1.Grafeas{S: storage.NewMemStore()}
+	pb.RegisterGrafeasServer(grpcServer, &g)
+	opspb.RegisterOperationsServer(grpcServer, &g)
+	grpcServer.Serve(lis)
 }
