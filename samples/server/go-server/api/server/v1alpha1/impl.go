@@ -19,9 +19,9 @@ import (
 	"fmt"
 	"log"
 
-	"context"
 	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/name"
+	"golang.org/x/net/context"
 	server "github.com/grafeas/grafeas/server-go"
 	pb "github.com/grafeas/grafeas/v1alpha1/proto"
 	opspb "google.golang.org/genproto/googleapis/longrunning"
