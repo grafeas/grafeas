@@ -1,60 +1,74 @@
+// Copyright 2017 The Grafeas Authors. All rights reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package server
 
 import (
-	"github.com/grafeas/grafeas/samples/server/go-server/api"
-	"github.com/grafeas/grafeas/server-go/errors"
+	pb "github.com/grafeas/grafeas/v1alpha1/proto"
+	opspb "google.golang.org/genproto/googleapis/longrunning"
 )
 
 // Storager is the interface that a Grafeas storage implementation would provide
 type Storager interface {
 	// CreateNote adds the specified note
-	CreateNote(n *swagger.Note) *errors.AppError
+	CreateNote(n *pb.Note) error
 
 	// CreateOccurrence adds the specified occurrence
-	CreateOccurrence(o *swagger.Occurrence) *errors.AppError
+	CreateOccurrence(o *pb.Occurrence) error
 
 	// CreateOperation adds the specified operation
-	CreateOperation(o *swagger.Operation) *errors.AppError
+	CreateOperation(o *opspb.Operation) error
 
 	// DeleteNote deletes the note with the given pID and nID
-	DeleteNote(pID, nID string) *errors.AppError
+	DeleteNote(pID, nID string) error
 
 	// DeleteOccurrence deletes the occurrence with the given pID and oID
-	DeleteOccurrence(pID, oID string) *errors.AppError
+	DeleteOccurrence(pID, oID string) error
 
 	// DeleteOperation deletes the operation with the given pID and oID
-	DeleteOperation(pID, opID string) *errors.AppError
+	DeleteOperation(pID, opID string) error
 
 	// GetNote returns the note with project (pID) and note ID (nID)
-	GetNote(pID, nID string) (*swagger.Note, *errors.AppError)
+	GetNote(pID, nID string) (*pb.Note, error)
 
 	// GetNoteByOccurrence returns the note attached to occurrence with pID and oID
-	GetNoteByOccurrence(pID, oID string) (*swagger.Note, *errors.AppError)
+	GetNoteByOccurrence(pID, oID string) (*pb.Note, error)
 
 	// GetOccurrence returns the occurrence with pID and oID
-	GetOccurrence(pID, oID string) (*swagger.Occurrence, *errors.AppError)
+	GetOccurrence(pID, oID string) (*pb.Occurrence, error)
 
 	// GetOperation returns the operation with pID and oID
-	GetOperation(pID, opID string) (*swagger.Operation, *errors.AppError)
+	GetOperation(pID, opID string) (*opspb.Operation, error)
 
 	// ListNoteOccurrences returns the occcurrences on the particular note (nID) for this project (pID)
-	ListNoteOccurrences(pID, nID, filters string) ([]swagger.Occurrence, *errors.AppError)
+	ListNoteOccurrences(pID, nID, filters string) ([]*pb.Occurrence, error)
 
 	// ListNoteOccurrences returns the occcurrences on the particular note (nID) for this project (pID)
-	ListNotes(pID, filters string) []swagger.Note
+	ListNotes(pID, filters string) []*pb.Note
 
 	// ListOccurrences returns the occurrences for this project ID (pID)
-	ListOccurrences(pID, filters string) []swagger.Occurrence
+	ListOccurrences(pID, filters string) []*pb.Occurrence
 
 	// ListOperations returns the operations for this project (pID)
-	ListOperations(pID, filters string) []swagger.Operation
+	ListOperations(pID, filters string) []*opspb.Operation
 
 	// UpdateNote updates the existing note with the given pID and nID
-	UpdateNote(pID, nID string, n *swagger.Note) *errors.AppError
+	UpdateNote(pID, nID string, n *pb.Note) error
 
 	// UpdateOccurrence updates the existing occurrence with the given projectID and occurrenceID
-	UpdateOccurrence(pID, oID string, o *swagger.Occurrence) *errors.AppError
+	UpdateOccurrence(pID, oID string, o *pb.Occurrence) error
 
 	// UpdateOperation updates the existing operation with the given pID and nID
-	UpdateOperation(pID, opID string, op *swagger.Operation) *errors.AppError
+	UpdateOperation(pID, opID string, op *opspb.Operation) error
 }

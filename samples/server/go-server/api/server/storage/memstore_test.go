@@ -15,44 +15,47 @@
 package storage
 
 import (
-	"github.com/grafeas/grafeas/samples/server/go-server/api"
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/name"
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/testing"
-	"net/http"
 	"reflect"
 	"strings"
 	"testing"
+
+	pb "github.com/grafeas/grafeas/v1alpha1/proto"
+	opspb "google.golang.org/genproto/googleapis/longrunning"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 func TestCreateNote(t *testing.T) {
 	s := NewMemStore()
 	n := testutil.Note()
-	if err := s.CreateNote(&n); err != nil {
+	if err := s.CreateNote(n); err != nil {
 		t.Errorf("CreateNote got %v want success", err)
 	}
 	// Try to insert the same note twice, expect failure.
-	if err := s.CreateNote(&n); err == nil {
+	if err := s.CreateNote(n); err == nil {
 		t.Errorf("CreateNote got success, want Error")
-	} else if err.StatusCode != http.StatusBadRequest {
-		t.Errorf("CreateNote got code %v want %v", err.StatusCode, http.StatusBadRequest)
+	} else if s, _ := status.FromError(err); s.Code() != codes.InvalidArgument {
+		t.Errorf("CreateNote got code %v want %v", s.Code(), codes.InvalidArgument)
 	}
 }
 
 func TestCreateOccurrence(t *testing.T) {
 	s := NewMemStore()
 	n := testutil.Note()
-	if err := s.CreateNote(&n); err != nil {
+	if err := s.CreateNote(n); err != nil {
 		t.Fatalf("CreateNote got %v want success", err)
 	}
 	o := testutil.Occurrence(n.Name)
-	if err := s.CreateOccurrence(&o); err != nil {
+	if err := s.CreateOccurrence(o); err != nil {
 		t.Errorf("CreateOccurrence got %v want success", err)
 	}
 	// Try to insert the same occurrence twice, expect failure.
-	if err := s.CreateOccurrence(&o); err == nil {
+	if err := s.CreateOccurrence(o); err == nil {
 		t.Errorf("CreateOccurrence got success, want Error")
-	} else if err.StatusCode != http.StatusBadRequest {
-		t.Errorf("CreateOccurrence got code %v want %v", err.StatusCode, http.StatusBadRequest)
+	} else if s, _ := status.FromError(err); s.Code() != codes.InvalidArgument {
+		t.Errorf("CreateOccurrence got code %v want %v", s.Code(), codes.InvalidArgument)
 	}
 	pID, oID, err := name.ParseOccurrence(o.Name)
 	if err != nil {
@@ -60,7 +63,7 @@ func TestCreateOccurrence(t *testing.T) {
 	}
 	if got, err := s.GetOccurrence(pID, oID); err != nil {
 		t.Fatalf("GetOccurrence got %v, want success", err)
-	} else if reflect.DeepEqual(got, o) {
+	} else if !reflect.DeepEqual(got, o) {
 		t.Errorf("GetOccurrence got %v, want %v", got, o)
 	}
 }
@@ -68,21 +71,21 @@ func TestCreateOccurrence(t *testing.T) {
 func TestCreateOperation(t *testing.T) {
 	s := NewMemStore()
 	op := testutil.Operation()
-	if err := s.CreateOperation(&op); err != nil {
+	if err := s.CreateOperation(op); err != nil {
 		t.Errorf("CreateOperation got %v want success", err)
 	}
 	// Try to insert the same note twice, expect failure.
-	if err := s.CreateOperation(&op); err == nil {
+	if err := s.CreateOperation(op); err == nil {
 		t.Errorf("CreateOperation got success, want Error")
-	} else if err.StatusCode != http.StatusBadRequest {
-		t.Errorf("CreateOperation got code %v want %v", err.StatusCode, http.StatusBadRequest)
+	} else if s, _ := status.FromError(err); s.Code() != codes.InvalidArgument {
+		t.Errorf("CreateOperation got code %v want %v", s.Code(), codes.InvalidArgument)
 	}
 }
 
 func TestDeleteOccurrence(t *testing.T) {
 	s := NewMemStore()
 	n := testutil.Note()
-	if err := s.CreateNote(&n); err != nil {
+	if err := s.CreateNote(n); err != nil {
 		t.Fatalf("CreateNote got %v want success", err)
 	}
 	o := testutil.Occurrence(n.Name)
@@ -94,7 +97,7 @@ func TestDeleteOccurrence(t *testing.T) {
 	if err := s.DeleteOccurrence(pID, oID); err == nil {
 		t.Error("Deleting nonexistant occurrence got success, want error")
 	}
-	if err := s.CreateOccurrence(&o); err != nil {
+	if err := s.CreateOccurrence(o); err != nil {
 		t.Fatalf("CreateOccurrence got %v want success", err)
 	}
 	if err := s.DeleteOccurrence(pID, oID); err != nil {
@@ -105,7 +108,7 @@ func TestDeleteOccurrence(t *testing.T) {
 func TestUpdateOccurrence(t *testing.T) {
 	s := NewMemStore()
 	n := testutil.Note()
-	if err := s.CreateNote(&n); err != nil {
+	if err := s.CreateNote(n); err != nil {
 		t.Fatalf("CreateNote got %v want success", err)
 	}
 	o := testutil.Occurrence(n.Name)
@@ -113,27 +116,27 @@ func TestUpdateOccurrence(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Error parsing projectID and occurrenceID %v", err)
 	}
-	if err := s.UpdateOccurrence(pID, oID, &o); err == nil {
+	if err := s.UpdateOccurrence(pID, oID, o); err == nil {
 		t.Fatal("UpdateOccurrence got success want error")
 	}
-	if err := s.CreateOccurrence(&o); err != nil {
+	if err := s.CreateOccurrence(o); err != nil {
 		t.Fatalf("CreateOccurrence got %v want success", err)
 	}
 	if got, err := s.GetOccurrence(pID, oID); err != nil {
 		t.Fatalf("GetOccurrence got %v, want success", err)
-	} else if reflect.DeepEqual(got, o) {
+	} else if !reflect.DeepEqual(got, o) {
 		t.Errorf("GetOccurrence got %v, want %v", got, o)
 	}
 
 	o2 := o
-	o2.VulnerabilityDetails.CvssScore = 1.0
-	if err := s.UpdateOccurrence(pID, oID, &o2); err != nil {
+	o2.GetVulnerabilityDetails().CvssScore = 1.0
+	if err := s.UpdateOccurrence(pID, oID, o2); err != nil {
 		t.Fatalf("UpdateOccurrence got %v want success", err)
 	}
 
 	if got, err := s.GetOccurrence(pID, oID); err != nil {
 		t.Fatalf("GetOccurrence got %v, want success", err)
-	} else if reflect.DeepEqual(got, o2) {
+	} else if !reflect.DeepEqual(got, o2) {
 		t.Errorf("GetOccurrence got %v, want %v", got, o2)
 	}
 }
@@ -149,7 +152,7 @@ func TestDeleteNote(t *testing.T) {
 	if err := s.DeleteNote(pID, oID); err == nil {
 		t.Error("Deleting nonexistant note got success, want error")
 	}
-	if err := s.CreateNote(&n); err != nil {
+	if err := s.CreateNote(n); err != nil {
 		t.Fatalf("CreateNote got %v want success", err)
 	}
 
@@ -166,27 +169,27 @@ func TestUpdateNote(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Error parsing projectID and noteID %v", err)
 	}
-	if err := s.UpdateNote(pID, nID, &n); err == nil {
+	if err := s.UpdateNote(pID, nID, n); err == nil {
 		t.Fatal("UpdateNote got success want error")
 	}
-	if err := s.CreateNote(&n); err != nil {
+	if err := s.CreateNote(n); err != nil {
 		t.Fatalf("CreateNote got %v want success", err)
 	}
 	if got, err := s.GetNote(pID, nID); err != nil {
 		t.Fatalf("GetNote got %v, want success", err)
-	} else if reflect.DeepEqual(got, n) {
+	} else if !reflect.DeepEqual(got, n) {
 		t.Errorf("GetNote got %v, want %v", got, n)
 	}
 
 	n2 := n
-	n2.VulnerabilityType.CvssScore = 1.0
-	if err := s.UpdateNote(pID, nID, &n2); err != nil {
+	n2.GetVulnerabilityType().CvssScore = 1.0
+	if err := s.UpdateNote(pID, nID, n2); err != nil {
 		t.Fatalf("UpdateNote got %v want success", err)
 	}
 
 	if got, err := s.GetNote(pID, nID); err != nil {
 		t.Fatalf("GetNote got %v, want success", err)
-	} else if reflect.DeepEqual(got, n2) {
+	} else if !reflect.DeepEqual(got, n2) {
 		t.Errorf("GetNote got %v, want %v", got, n2)
 	}
 }
@@ -194,7 +197,7 @@ func TestUpdateNote(t *testing.T) {
 func TestGetOccurrence(t *testing.T) {
 	s := NewMemStore()
 	n := testutil.Note()
-	if err := s.CreateNote(&n); err != nil {
+	if err := s.CreateNote(n); err != nil {
 		t.Fatalf("CreateNote got %v want success", err)
 	}
 	o := testutil.Occurrence(n.Name)
@@ -205,12 +208,12 @@ func TestGetOccurrence(t *testing.T) {
 	if _, err := s.GetOccurrence(pID, oID); err == nil {
 		t.Fatal("GetOccurrence got success, want error")
 	}
-	if err := s.CreateOccurrence(&o); err != nil {
+	if err := s.CreateOccurrence(o); err != nil {
 		t.Errorf("CreateOccurrence got %v, want Success", err)
 	}
 	if got, err := s.GetOccurrence(pID, oID); err != nil {
 		t.Fatalf("GetOccurrence got %v, want success", err)
-	} else if reflect.DeepEqual(got, o) {
+	} else if !reflect.DeepEqual(got, o) {
 		t.Errorf("GetOccurrence got %v, want %v", got, o)
 	}
 }
@@ -226,12 +229,12 @@ func TestGetNote(t *testing.T) {
 	if _, err := s.GetNote(pID, nID); err == nil {
 		t.Fatal("GetNote got success, want error")
 	}
-	if err := s.CreateNote(&n); err != nil {
+	if err := s.CreateNote(n); err != nil {
 		t.Errorf("CreateNote got %v, want Success", err)
 	}
 	if got, err := s.GetNote(pID, nID); err != nil {
 		t.Fatalf("GetNote got %v, want success", err)
-	} else if reflect.DeepEqual(got, n) {
+	} else if !reflect.DeepEqual(got, n) {
 		t.Errorf("GetNote got %v, want %v", got, n)
 	}
 }
@@ -239,7 +242,7 @@ func TestGetNote(t *testing.T) {
 func TestGetNoteByOccurrence(t *testing.T) {
 	s := NewMemStore()
 	n := testutil.Note()
-	if err := s.CreateNote(&n); err != nil {
+	if err := s.CreateNote(n); err != nil {
 		t.Fatalf("CreateNote got %v want success", err)
 	}
 	o := testutil.Occurrence(n.Name)
@@ -250,12 +253,12 @@ func TestGetNoteByOccurrence(t *testing.T) {
 	if _, err := s.GetNoteByOccurrence(pID, oID); err == nil {
 		t.Fatal("GetNoteByOccurrence got success, want error")
 	}
-	if err := s.CreateOccurrence(&o); err != nil {
+	if err := s.CreateOccurrence(o); err != nil {
 		t.Errorf("CreateOccurrence got %v, want Success", err)
 	}
 	if got, err := s.GetNoteByOccurrence(pID, oID); err != nil {
 		t.Fatalf("GetNoteByOccurrence got %v, want success", err)
-	} else if reflect.DeepEqual(got, n) {
+	} else if !reflect.DeepEqual(got, n) {
 		t.Errorf("GetNoteByOccurrence got %v, want %v", got, n)
 	}
 }
@@ -271,12 +274,12 @@ func TestGetOperation(t *testing.T) {
 	if _, err := s.GetOperation(pID, oID); err == nil {
 		t.Fatal("GetOperation got success, want error")
 	}
-	if err := s.CreateOperation(&o); err != nil {
+	if err := s.CreateOperation(o); err != nil {
 		t.Errorf("CreateOperation got %v, want Success", err)
 	}
 	if got, err := s.GetOperation(pID, oID); err != nil {
 		t.Fatalf("GetOperation got %v, want success", err)
-	} else if reflect.DeepEqual(got, o) {
+	} else if !reflect.DeepEqual(got, o) {
 		t.Errorf("GetOperation got %v, want %v", got, o)
 	}
 }
@@ -292,7 +295,7 @@ func TestDeleteOperation(t *testing.T) {
 	if err := s.DeleteOperation(pID, oID); err == nil {
 		t.Error("Deleting nonexistant operation got success, want error")
 	}
-	if err := s.CreateOperation(&o); err != nil {
+	if err := s.CreateOperation(o); err != nil {
 		t.Fatalf("CreateOperation got %v want success", err)
 	}
 
@@ -309,34 +312,34 @@ func TestUpdateOperation(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Error parsing projectID and operationID %v", err)
 	}
-	if err := s.UpdateOperation(pID, oID, &o); err == nil {
+	if err := s.UpdateOperation(pID, oID, o); err == nil {
 		t.Fatal("UpdateOperation got success want error")
 	}
-	if err := s.CreateOperation(&o); err != nil {
+	if err := s.CreateOperation(o); err != nil {
 		t.Fatalf("CreateOperation got %v want success", err)
 	}
 	if got, err := s.GetOperation(pID, oID); err != nil {
 		t.Fatalf("GetOperation got %v, want success", err)
-	} else if reflect.DeepEqual(got, o) {
+	} else if !reflect.DeepEqual(got, o) {
 		t.Errorf("GetOperation got %v, want %v", got, o)
 	}
 
 	o2 := o
 	o2.Done = true
-	if err := s.UpdateOperation(pID, oID, &o2); err != nil {
+	if err := s.UpdateOperation(pID, oID, o2); err != nil {
 		t.Fatalf("UpdateOperation got %v want success", err)
 	}
 
 	if got, err := s.GetOperation(pID, oID); err != nil {
 		t.Fatalf("GetOperation got %v, want success", err)
-	} else if reflect.DeepEqual(got, o2) {
+	} else if !reflect.DeepEqual(got, o2) {
 		t.Errorf("GetOperation got %v, want %v", got, o2)
 	}
 }
 
 func TestListOperations(t *testing.T) {
 	s := NewMemStore()
-	ops := []swagger.Operation{}
+	ops := []opspb.Operation{}
 	findProject := "findThese"
 	dontFind := "dontFind"
 	for i := 0; i < 20; i++ {
@@ -348,10 +351,10 @@ func TestListOperations(t *testing.T) {
 			o.Name = name.FormatOperation(dontFind, string(i))
 
 		}
-		if err := s.CreateOperation(&o); err != nil {
+		if err := s.CreateOperation(o); err != nil {
 			t.Fatalf("CreateOperation got %v want success", err)
 		}
-		ops = append(ops, o)
+		ops = append(ops, *o)
 	}
 	gotOs := s.ListOperations(findProject, "")
 
@@ -368,7 +371,7 @@ func TestListOperations(t *testing.T) {
 
 func TestListNotes(t *testing.T) {
 	s := NewMemStore()
-	ns := []swagger.Note{}
+	ns := []*pb.Note{}
 	findProject := "findThese"
 	dontFind := "dontFind"
 	for i := 0; i < 20; i++ {
@@ -380,7 +383,7 @@ func TestListNotes(t *testing.T) {
 			n.Name = name.FormatNote(dontFind, string(i))
 
 		}
-		if err := s.CreateNote(&n); err != nil {
+		if err := s.CreateNote(n); err != nil {
 			t.Fatalf("CreateNote got %v want success", err)
 		}
 		ns = append(ns, n)
@@ -399,11 +402,11 @@ func TestListNotes(t *testing.T) {
 
 func TestListOccurrences(t *testing.T) {
 	s := NewMemStore()
-	os := []swagger.Occurrence{}
+	os := []*pb.Occurrence{}
 	findProject := "findThese"
 	dontFind := "dontFind"
 	n := testutil.Note()
-	if err := s.CreateNote(&n); err != nil {
+	if err := s.CreateNote(n); err != nil {
 		t.Fatalf("CreateNote got %v want success", err)
 	}
 	for i := 0; i < 20; i++ {
@@ -413,7 +416,7 @@ func TestListOccurrences(t *testing.T) {
 		} else {
 			o.Name = name.FormatOccurrence(dontFind, string(i))
 		}
-		if err := s.CreateOccurrence(&o); err != nil {
+		if err := s.CreateOccurrence(o); err != nil {
 			t.Fatalf("CreateOccurrence got %v want success", err)
 		}
 		os = append(os, o)
@@ -432,11 +435,11 @@ func TestListOccurrences(t *testing.T) {
 
 func TestListNoteOccurrences(t *testing.T) {
 	s := NewMemStore()
-	os := []swagger.Occurrence{}
+	os := []*pb.Occurrence{}
 	findProject := "findThese"
 	dontFind := "dontFind"
 	n := testutil.Note()
-	if err := s.CreateNote(&n); err != nil {
+	if err := s.CreateNote(n); err != nil {
 		t.Fatalf("CreateNote got %v want success", err)
 	}
 	for i := 0; i < 20; i++ {
@@ -446,7 +449,7 @@ func TestListNoteOccurrences(t *testing.T) {
 		} else {
 			o.Name = name.FormatOccurrence(dontFind, string(i))
 		}
-		if err := s.CreateOccurrence(&o); err != nil {
+		if err := s.CreateOccurrence(o); err != nil {
 			t.Fatalf("CreateOccurrence got %v want success", err)
 		}
 		os = append(os, o)

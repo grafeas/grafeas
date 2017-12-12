@@ -14,34 +14,43 @@
 
 package testutil
 
-import "github.com/grafeas/grafeas/samples/server/go-server/api"
+import (
+	"github.com/golang/protobuf/proto"
+	"github.com/golang/protobuf/ptypes"
+	"github.com/golang/protobuf/ptypes/any"
+	pb "github.com/grafeas/grafeas/v1alpha1/proto"
+	opspb "google.golang.org/genproto/googleapis/longrunning"
+	"log"
+)
 
-func Occurrence(noteName string) swagger.Occurrence {
-	return swagger.Occurrence{
+func Occurrence(noteName string) *pb.Occurrence {
+	return &pb.Occurrence{
 		Name:        "projects/test-project/occurrences/134",
 		ResourceUrl: "gcr.io/foo/bar",
 		NoteName:    noteName,
-		Kind:        "PACKAGE_VULNERABILITY",
-		VulnerabilityDetails: swagger.VulnerabilityDetails{
-			Severity:  "HIGH",
-			CvssScore: 7.5,
-			PackageIssue: []swagger.PackageIssue{
-				swagger.PackageIssue{
-					SeverityName: "HIGH",
-					AffectedLocation: swagger.VulnerabilityLocation{
-						CpeUri:   "cpe:/o:debian:debian_linux:8",
-						Package_: "icu",
-						Version: swagger.Version{
-							Name:     "52.1",
-							Revision: "8+deb8u3",
+		Kind:        pb.Note_PACKAGE_VULNERABILITY,
+		Details: &pb.Occurrence_VulnerabilityDetails{
+			VulnerabilityDetails: &pb.VulnerabilityType_VulnerabilityDetails{
+				Severity:  pb.VulnerabilityType_HIGH,
+				CvssScore: 7.5,
+				PackageIssue: []*pb.VulnerabilityType_PackageIssue{
+					&pb.VulnerabilityType_PackageIssue{
+						SeverityName: "HIGH",
+						AffectedLocation: &pb.VulnerabilityType_VulnerabilityLocation{
+							CpeUri:  "cpe:/o:debian:debian_linux:8",
+							Package: "icu",
+							Version: &pb.VulnerabilityType_Version{
+								Name:     "52.1",
+								Revision: "8+deb8u3",
+							},
 						},
-					},
-					FixedLocation: swagger.VulnerabilityLocation{
-						CpeUri:   "cpe:/o:debian:debian_linux:8",
-						Package_: "icu",
-						Version: swagger.Version{
-							Name:     "52.1",
-							Revision: "8+deb8u4",
+						FixedLocation: &pb.VulnerabilityType_VulnerabilityLocation{
+							CpeUri:  "cpe:/o:debian:debian_linux:8",
+							Package: "icu",
+							Version: &pb.VulnerabilityType_Version{
+								Name:     "52.1",
+								Revision: "8+deb8u4",
+							},
 						},
 					},
 				},
@@ -50,103 +59,105 @@ func Occurrence(noteName string) swagger.Occurrence {
 	}
 }
 
-func Note() swagger.Note {
-	return swagger.Note{
+func Note() *pb.Note {
+	return &pb.Note{
 		Name:             "projects/vulnerability-scanner-a/notes/CVE-1999-0710",
 		ShortDescription: "CVE-2014-9911",
 		LongDescription:  "NIST vectors: AV:N/AC:L/Au:N/C:P/I:P",
-		Kind:             "PACKAGE_VULNERABILITY",
-		VulnerabilityType: swagger.VulnerabilityType{
-			CvssScore: 7.5,
-			Severity:  "HIGH",
-			Details: []swagger.Detail{
-				swagger.Detail{
-					CpeUri:  "cpe:/o:debian:debian_linux:7",
-					Package: "icu",
-					Description: "Stack-based buffer overflow in the ures_getByKeyWithFallback function in " +
-						"common/uresbund.cpp in International Components for Unicode (ICU) before 54.1 for C/C++ allows " +
-						"remote attackers to cause a denial of service or possibly have unspecified other impact via a crafted uloc_getDisplayName call.",
-					MinAffectedVersion: swagger.Version{
-						Kind: "MINIMUM",
-					},
-					SeverityName: "HIGH",
+		Kind:             pb.Note_PACKAGE_VULNERABILITY,
+		NoteType: &pb.Note_VulnerabilityType{
+			&pb.VulnerabilityType{
+				CvssScore: 7.5,
+				Severity:  pb.VulnerabilityType_HIGH,
+				Details: []*pb.VulnerabilityType_Detail{
+					&pb.VulnerabilityType_Detail{
+						CpeUri:  "cpe:/o:debian:debian_linux:7",
+						Package: "icu",
+						Description: "Stack-based buffer overflow in the ures_getByKeyWithFallback function in " +
+							"common/uresbund.cpp in International Components for Unicode (ICU) before 54.1 for C/C++ allows " +
+							"remote attackers to cause a denial of service or possibly have unspecified other impact via a crafted uloc_getDisplayName call.",
+						MinAffectedVersion: &pb.VulnerabilityType_Version{
+							Kind: pb.VulnerabilityType_Version_MINIMUM,
+						},
+						SeverityName: "HIGH",
 
-					FixedLocation: swagger.VulnerabilityLocation{
-						CpeUri:   "cpe:/o:debian:debian_linux:7",
-						Package_: "icu",
-						Version: swagger.Version{
-							Name:     "4.8.1.1",
-							Revision: "12+deb7u6",
+						FixedLocation: &pb.VulnerabilityType_VulnerabilityLocation{
+							CpeUri:  "cpe:/o:debian:debian_linux:7",
+							Package: "icu",
+							Version: &pb.VulnerabilityType_Version{
+								Name:     "4.8.1.1",
+								Revision: "12+deb7u6",
+							},
 						},
 					},
-				},
-				swagger.Detail{
-					CpeUri:  "cpe:/o:debian:debian_linux:8",
-					Package: "icu",
-					Description: "Stack-based buffer overflow in the ures_getByKeyWithFallback function in " +
-						"common/uresbund.cpp in International Components for Unicode (ICU) before 54.1 for C/C++ allows " +
-						"remote attackers to cause a denial of service or possibly have unspecified other impact via a crafted uloc_getDisplayName call.",
-					MinAffectedVersion: swagger.Version{
-						Kind: "MINIMUM",
-					},
-					SeverityName: "HIGH",
+					&pb.VulnerabilityType_Detail{
+						CpeUri:  "cpe:/o:debian:debian_linux:8",
+						Package: "icu",
+						Description: "Stack-based buffer overflow in the ures_getByKeyWithFallback function in " +
+							"common/uresbund.cpp in International Components for Unicode (ICU) before 54.1 for C/C++ allows " +
+							"remote attackers to cause a denial of service or possibly have unspecified other impact via a crafted uloc_getDisplayName call.",
+						MinAffectedVersion: &pb.VulnerabilityType_Version{
+							Kind: pb.VulnerabilityType_Version_MINIMUM,
+						},
+						SeverityName: "HIGH",
 
-					FixedLocation: swagger.VulnerabilityLocation{
-						CpeUri:   "cpe:/o:debian:debian_linux:8",
-						Package_: "icu",
-						Version: swagger.Version{
-							Name:     "52.1",
-							Revision: "8+deb8u4",
+						FixedLocation: &pb.VulnerabilityType_VulnerabilityLocation{
+							CpeUri:  "cpe:/o:debian:debian_linux:8",
+							Package: "icu",
+							Version: &pb.VulnerabilityType_Version{
+								Name:     "52.1",
+								Revision: "8+deb8u4",
+							},
 						},
 					},
-				},
-				swagger.Detail{
-					CpeUri:  "cpe:/o:debian:debian_linux:9",
-					Package: "icu",
-					Description: "Stack-based buffer overflow in the ures_getByKeyWithFallback function in " +
-						"common/uresbund.cpp in International Components for Unicode (ICU) before 54.1 for C/C++ allows " +
-						"remote attackers to cause a denial of service or possibly have unspecified other impact via a crafted uloc_getDisplayName call.",
-					MinAffectedVersion: swagger.Version{
-						Kind: "MINIMUM",
-					},
-					SeverityName: "HIGH",
+					&pb.VulnerabilityType_Detail{
+						CpeUri:  "cpe:/o:debian:debian_linux:9",
+						Package: "icu",
+						Description: "Stack-based buffer overflow in the ures_getByKeyWithFallback function in " +
+							"common/uresbund.cpp in International Components for Unicode (ICU) before 54.1 for C/C++ allows " +
+							"remote attackers to cause a denial of service or possibly have unspecified other impact via a crafted uloc_getDisplayName call.",
+						MinAffectedVersion: &pb.VulnerabilityType_Version{
+							Kind: pb.VulnerabilityType_Version_MINIMUM,
+						},
+						SeverityName: "HIGH",
 
-					FixedLocation: swagger.VulnerabilityLocation{
-						CpeUri:   "cpe:/o:debian:debian_linux:9",
-						Package_: "icu",
-						Version: swagger.Version{
-							Name:     "55.1",
-							Revision: "3",
+						FixedLocation: &pb.VulnerabilityType_VulnerabilityLocation{
+							CpeUri:  "cpe:/o:debian:debian_linux:9",
+							Package: "icu",
+							Version: &pb.VulnerabilityType_Version{
+								Name:     "55.1",
+								Revision: "3",
+							},
 						},
 					},
-				},
-				swagger.Detail{
-					CpeUri:  "cpe:/o:canonical:ubuntu_linux:14.04",
-					Package: "andriod",
-					Description: "Stack-based buffer overflow in the ures_getByKeyWithFallback function in " +
-						"common/uresbund.cpp in International Components for Unicode (ICU) before 54.1 for C/C++ allows " +
-						"remote attackers to cause a denial of service or possibly have unspecified other impact via a crafted uloc_getDisplayName call.",
-					MinAffectedVersion: swagger.Version{
-						Kind: "MINIMUM",
-					},
-					SeverityName: "MEDIUM",
+					&pb.VulnerabilityType_Detail{
+						CpeUri:  "cpe:/o:canonical:ubuntu_linux:14.04",
+						Package: "andriod",
+						Description: "Stack-based buffer overflow in the ures_getByKeyWithFallback function in " +
+							"common/uresbund.cpp in International Components for Unicode (ICU) before 54.1 for C/C++ allows " +
+							"remote attackers to cause a denial of service or possibly have unspecified other impact via a crafted uloc_getDisplayName call.",
+						MinAffectedVersion: &pb.VulnerabilityType_Version{
+							Kind: pb.VulnerabilityType_Version_MINIMUM,
+						},
+						SeverityName: "MEDIUM",
 
-					FixedLocation: swagger.VulnerabilityLocation{
-						CpeUri:   "cpe:/o:canonical:ubuntu_linux:14.04",
-						Package_: "andriod",
-						Version: swagger.Version{
-							Kind: "MAXIMUM",
+						FixedLocation: &pb.VulnerabilityType_VulnerabilityLocation{
+							CpeUri:  "cpe:/o:canonical:ubuntu_linux:14.04",
+							Package: "andriod",
+							Version: &pb.VulnerabilityType_Version{
+								Kind: pb.VulnerabilityType_Version_MAXIMUM,
+							},
 						},
 					},
 				},
 			},
 		},
-		RelatedUrl: []swagger.RelatedUrl{
-			swagger.RelatedUrl{
+		RelatedUrl: []*pb.Note_RelatedUrl{
+			&pb.Note_RelatedUrl{
 				Url:   "https://security-tracker.debian.org/tracker/CVE-2014-9911",
 				Label: "More Info",
 			},
-			swagger.RelatedUrl{
+			&pb.Note_RelatedUrl{
 				Url:   "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2014-9911",
 				Label: "More Info",
 			},
@@ -154,10 +165,16 @@ func Note() swagger.Note {
 	}
 }
 
-func Operation() swagger.Operation {
-	return swagger.Operation{
+func Operation() *opspb.Operation {
+	md := &pb.OperationMetadata{CreateTime: ptypes.TimestampNow()}
+	bytes, err := proto.Marshal(md)
+	if err != nil {
+		log.Printf("Error parsing bytes: %v", err)
+		return nil
+	}
+	return &opspb.Operation{
 		Name:     "projects/vulnerability-scanner-a/operations/foo",
-		Metadata: map[string]string{"StartTime": "0916162344"},
+		Metadata: &any.Any{Value: bytes},
 		Done:     false,
 	}
 }
