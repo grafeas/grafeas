@@ -92,7 +92,6 @@ func (h *Handler) CreateNote(w http.ResponseWriter, r *http.Request) {
 		log.Printf("Error marshalling bytes: %v", mErr)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 	}
-	w.WriteHeader(http.StatusOK)
 	w.Write(bytes)
 }
 
@@ -134,7 +133,6 @@ func (h *Handler) CreateOccurrence(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Printf("Error marshalling bytes: %v", err)
 	}
-	w.WriteHeader(http.StatusOK)
 	w.Write(bytes)
 }
 
@@ -189,7 +187,6 @@ func (h *Handler) CreateOperation(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Write(bytes)
-	w.WriteHeader(http.StatusOK)
 }
 
 func (h *Handler) DeleteNote(w http.ResponseWriter, r *http.Request) {
@@ -300,7 +297,6 @@ func (h *Handler) GetNote(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Write(bytes)
-	w.WriteHeader(http.StatusOK)
 }
 
 func (h *Handler) GetOccurrence(w http.ResponseWriter, r *http.Request) {
@@ -324,7 +320,6 @@ func (h *Handler) GetOccurrence(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Write(bytes)
-	w.WriteHeader(http.StatusOK)
 }
 
 func (h *Handler) GetOperation(w http.ResponseWriter, r *http.Request) {
@@ -373,7 +368,6 @@ func (h *Handler) GetOccurrenceNote(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Write(bytes)
-	w.WriteHeader(http.StatusOK)
 }
 
 func (h *Handler) ListNoteOccurrences(w http.ResponseWriter, r *http.Request) {
@@ -396,7 +390,6 @@ func (h *Handler) ListNoteOccurrences(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Write(bytes)
-	w.WriteHeader(http.StatusOK)
 }
 
 func (h *Handler) ListOperations(w http.ResponseWriter, r *http.Request) {
@@ -423,7 +416,6 @@ func (h *Handler) ListOperations(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Write(bytes)
-	w.WriteHeader(http.StatusOK)
 }
 
 func (h *Handler) ListNotes(w http.ResponseWriter, r *http.Request) {
@@ -450,7 +442,6 @@ func (h *Handler) ListNotes(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Write(bytes)
-	w.WriteHeader(http.StatusOK)
 }
 
 func (h *Handler) ListOccurrences(w http.ResponseWriter, r *http.Request) {
@@ -477,7 +468,6 @@ func (h *Handler) ListOccurrences(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Write(bytes)
-	w.WriteHeader(http.StatusOK)
 }
 
 func (h *Handler) UpdateNote(w http.ResponseWriter, r *http.Request) {
@@ -508,7 +498,6 @@ func (h *Handler) UpdateNote(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Write(bytes)
-	w.WriteHeader(http.StatusOK)
 }
 
 func (h *Handler) UpdateOccurrence(w http.ResponseWriter, r *http.Request) {
@@ -539,7 +528,6 @@ func (h *Handler) UpdateOccurrence(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Write(bytes)
-	w.WriteHeader(http.StatusOK)
 }
 
 func (h *Handler) UpdateOperation(w http.ResponseWriter, r *http.Request) {
@@ -570,5 +558,4 @@ func (h *Handler) UpdateOperation(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Write(bytes)
-	w.WriteHeader(http.StatusOK)
 }
