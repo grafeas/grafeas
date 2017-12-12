@@ -418,6 +418,16 @@ func (h *Handler) ListOperations(w http.ResponseWriter, r *http.Request) {
 	w.Write(bytes)
 }
 
+func getFilter(raw string) string {
+	params := strings.Split(raw, "&")
+	for _, p := range params {
+		if strings.HasPrefix(p, "filter=") {
+			return strings.TrimPrefix(p, "filter=")
+		}
+	}
+	return ""
+}
+
 func (h *Handler) ListNotes(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	// Get project id
@@ -433,7 +443,8 @@ func (h *Handler) ListNotes(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// TODO: Support filters
-	resp, err := h.g.ListNotes(pID, "")
+	filters := getFilter(r.URL.RawQuery)
+	resp, err := h.g.ListNotes(pID, filters)
 	// Convert response to bytes
 	bytes, mErr := json.Marshal(resp)
 	if mErr != nil {
@@ -459,7 +470,8 @@ func (h *Handler) ListOccurrences(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// TODO: Support filters
-	resp, err := h.g.ListOccurrences(pID, "")
+	filters := getFilter(r.URL.RawQuery)
+	resp, err := h.g.ListOccurrences(pID, filters)
 	// Convert response to bytes
 	bytes, mErr := json.Marshal(resp)
 	if mErr != nil {

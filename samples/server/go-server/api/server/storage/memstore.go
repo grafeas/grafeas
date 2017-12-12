@@ -16,6 +16,7 @@ package storage
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"strings"
 
@@ -82,10 +83,25 @@ func (m *memStore) GetOccurrence(pID, oID string) (*swagger.Occurrence, *errors.
 }
 
 func (m *memStore) ListOccurrences(pID, filters string) []swagger.Occurrence {
+	var filterValue string
 	os := []swagger.Occurrence{}
+	if filters != "" {
+		fields := strings.Split(filters, "=")
+		if len(fields) >= 2 {
+			switch fields[0] {
+			case "resource_url":
+				filterValue = fields[1]
+			default:
+				log.Printf("Can only filter on resource_url, ignoring %s", fields[0])
+			}
+		}
+	}
+
 	for _, o := range m.occurrencesByID {
 		if strings.HasPrefix(o.Name, fmt.Sprintf("projects/%v", pID)) {
-			os = append(os, o)
+			if filterValue == "" || o.ResourceUrl == filterValue {
+				os = append(os, o)
+			}
 		}
 	}
 	return os
