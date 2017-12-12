@@ -21,9 +21,9 @@ import (
 
 	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/name"
-	"golang.org/x/net/context"
 	server "github.com/grafeas/grafeas/server-go"
 	pb "github.com/grafeas/grafeas/v1alpha1/proto"
+	"golang.org/x/net/context"
 	opspb "google.golang.org/genproto/googleapis/longrunning"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -33,6 +33,16 @@ import (
 // and storage.
 type Grafeas struct {
 	S server.Storager
+}
+
+// CreateNote validates that a note is valid and then creates a note in the backing datastore.
+func (g *Grafeas) CreateProject(ctx context.Context, req *pb.CreateProjectRequest) (*empty.Empty, error) {
+	projectId := req.ProjectId
+	if projectId == "" {
+		log.Printf("Invalid project id: %v", projectId)
+		return &empty.Empty{}, status.Error(codes.InvalidArgument, "Invalid project name")
+	}
+	return &empty.Empty{}, g.S.CreateProject(projectId)
 }
 
 // CreateNote validates that a note is valid and then creates a note in the backing datastore.
@@ -85,6 +95,11 @@ func (g *Grafeas) CreateOperation(ctx context.Context, req *pb.CreateOperationRe
 		return nil, status.Error(codes.InvalidArgument, "Invalid operation name")
 	}
 	return o, g.S.CreateOperation(o)
+}
+
+// DeleteProject deletes a project from the datastore.
+func (g *Grafeas) DeleteProject(ctx context.Context, req *pb.DeleteProjectRequest) (*empty.Empty, error) {
+	return &empty.Empty{}, g.S.DeleteProject(req.ProjectId)
 }
 
 // DeleteOccurrence deletes an occurrence from the datastore.
@@ -260,6 +275,13 @@ func (g *Grafeas) UpdateOperation(ctx context.Context, req *pb.UpdateOperationRe
 	}
 	return g.S.GetOperation(pID, oID)
 }
+
+func (g *Grafeas) ListProjects(ctx context.Context, req *pb.ListProjectsRequest) (*pb.ListProjectsResponse, error) {
+	// TODO: support filters
+	ns := g.S.ListProjects(req.Filter)
+	return &pb.ListProjectsResponse{Projects: ns}, nil
+}
+
 func (g *Grafeas) ListOperations(ctx context.Context, req *opspb.ListOperationsRequest) (*opspb.ListOperationsResponse, error) {
 	pID, err := name.ParseProject(req.Name)
 	if err != nil {

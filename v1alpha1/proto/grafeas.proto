@@ -23,7 +23,31 @@ import "google/longrunning/operations.proto";
 package grafeas.v1alpha1.api;
 option go_package = "grafeas";
 
-// Request to get a Occurrence.
+// Request to get a Project.
+message CreateProjectRequest {
+  // The id of the project
+  string project_id = 1;
+}
+
+// Request to list projects.
+message ListProjectsRequest {
+  // The filter expression.
+  string filter = 2;
+
+  // Number of projects to return in the list.
+  int32 page_size = 3;
+
+  // Token to provide to skip to a particular spot in the list.
+  string page_token = 4;
+}
+
+// Request to delete a project
+message DeleteProjectRequest {
+  // The id of the project
+  string project_id = 1;
+}
+
+// Request to get a Occurrenceg.
 message GetOccurrenceRequest {
   // The name of the occurrence of the form
   // "projects/{project_id}/occurrences/{OCCURRENCE_ID}"
@@ -150,6 +174,17 @@ message ListNoteOccurrencesRequest {
 
   // Token to provide to skip to a particular spot in the list.
   string page_token = 4;
+}
+
+// Response including listed projects
+message ListProjectsResponse {
+  // The projects requested.
+  repeated string projects = 1;
+
+  // The next pagination token in the list response. It should be used as
+  // `page_token` for the following request. An empty value means no more
+  // results.
+  string next_page_token = 2;
 }
 
 // Response including listed occurrences for a note.
@@ -1250,6 +1285,29 @@ message ProjectRepoId {
 // there would be one `Note` for the vulnerability and an `Occurrence` for
 // each package with the vulnerability referencing that `Note`.
 service Grafeas {
+  // Creates a new `Project`.
+  rpc CreateProject(CreateProjectRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post:  "/v1alpha1/projects/{project_id=*}"
+    };
+  }
+
+  // Lists `Projects`
+  rpc ListProjects(ListProjectsRequest)
+      returns (ListProjectsResponse) {
+    option (google.api.http) = {
+      get: "/v1alpha1/projects"
+    };
+  }
+
+  // Deletes the given `Project` from the system.
+  rpc DeleteProject(DeleteProjectRequest)
+      returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/v1alpha1/projects/{project_id=*}"
+    };
+  }
+
   // Returns the requested `Occurrence`.
   rpc GetOccurrence(GetOccurrenceRequest) returns (Occurrence) {
     option (google.api.http) = {

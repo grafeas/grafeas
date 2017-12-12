@@ -59,7 +59,7 @@ func (m *memStore) DeleteProject(pID string) error {
 	return nil
 }
 
-func (m *memStore) ListProjects() []string {
+func (m *memStore) ListProjects(filters string) []string {
 	pIDs := make([]string, len(m.projects))
 	i := 0
 	for k := range m.projects {

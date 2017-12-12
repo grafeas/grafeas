@@ -416,7 +416,8 @@ func TestListProjects(t *testing.T) {
 		}
 		pIDs = append(pIDs, pID)
 	}
-	gotPIDs := s.ListProjects()
+	filter := "filters_are_yet_to_be_implemented"
+	gotPIDs := s.ListProjects(filter)
 	if len(gotPIDs) != 20 {
 		t.Errorf("ListProjects got %v operations, want 20", len(gotPIDs))
 	}
