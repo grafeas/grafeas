@@ -27,6 +27,20 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+func TestCreateProject(t *testing.T) {
+	s := NewMemStore()
+	p := "myproject"
+	if err := s.CreateProject(p); err != nil {
+		t.Errorf("CreateProject got %v want success", err)
+	}
+	// Try to insert the same note twice, expect failure.
+	if err := s.CreateProject(p); err == nil {
+		t.Errorf("CreateProject got success, want Error")
+	} else if s, _ := status.FromError(err); s.Code() != codes.InvalidArgument {
+		t.Errorf("CreateProject got code %v want %v", s.Code(), codes.InvalidArgument)
+	}
+}
+
 func TestCreateNote(t *testing.T) {
 	s := NewMemStore()
 	n := testutil.Note()
