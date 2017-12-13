@@ -17,6 +17,7 @@ package v1alpha1
 import (
 	"fmt"
 	"reflect"
+	"sort"
 	"testing"
 
 	"golang.org/x/net/context"
@@ -34,6 +35,21 @@ func createProject(t *testing.T, projectId string, ctx context.Context, g Grafea
 	req := pb.CreateProjectRequest{ProjectId: projectId}
 	if _, err := g.CreateProject(ctx, &req); err != nil {
 		t.Errorf("CreateProject(empty operation): got %v, want success", err)
+	}
+}
+
+func TestCreateProject(t *testing.T) {
+	ctx := context.Background()
+	g := Grafeas{storage.NewMemStore()}
+	p := "myproject"
+	req := pb.CreateProjectRequest{ProjectId: p}
+	_, err := g.CreateProject(ctx, &req)
+	if err != nil {
+		t.Errorf("CreateProject(empty operation): got %v, want success", err)
+	}
+	_, err = g.CreateProject(ctx, &req)
+	if s, _ := status.FromError(err); s.Code() != codes.InvalidArgument {
+		t.Errorf("CreateProject(empty operation): got %v, want InvalidArgument", err)
 	}
 }
 
@@ -106,6 +122,20 @@ func TestCreateNote(t *testing.T) {
 	req = &pb.CreateNoteRequest{Parent: parent, Note: n}
 	if _, err := g.CreateNote(ctx, req); err != nil {
 		t.Errorf("CreateNote(%v) got %v, want success", n, err)
+	}
+}
+
+func TestDeleteProject(t *testing.T) {
+	ctx := context.Background()
+	g := Grafeas{storage.NewMemStore()}
+	pID := "myproject"
+	req := pb.DeleteProjectRequest{ProjectId: pID}
+	if _, err := g.DeleteProject(ctx, &req); err == nil {
+		t.Error("DeleteProject: got success, want error")
+	}
+	createProject(t, pID, ctx, g)
+	if _, err := g.DeleteProject(ctx, &req); err != nil {
+		t.Errorf("CreateProject(empty operation): got %v, want success", err)
 	}
 }
 
@@ -426,6 +456,33 @@ func TestListOccurrences(t *testing.T) {
 	}
 	if len(resp.Occurrences) != 5 {
 		t.Errorf("resp.Occurrences got %d, want 5", len(resp.Occurrences))
+	}
+}
+
+func TestListProjects(t *testing.T) {
+	ctx := context.Background()
+	g := Grafeas{storage.NewMemStore()}
+	var pIDs []string
+	for i := 0; i < 20; i++ {
+		pID := fmt.Sprintf("proj%v", i)
+		pIDs = append(pIDs, pID)
+		req := pb.CreateProjectRequest{ProjectId: pID}
+		if _, err := g.CreateProject(ctx, &req); err != nil {
+			t.Errorf("CreateProject: got %v, want success", err)
+		}
+		if _, err := g.CreateProject(ctx, &req); err == nil {
+			t.Errorf("CreateProject: got %v, want InvalidArgument", err)
+		}
+	}
+	req := pb.ListProjectsRequest{}
+	resp, err := g.ListProjects(ctx, &req)
+	if err != nil {
+		t.Errorf("ListProjects: got %v, want success", err)
+	}
+	sort.Strings(pIDs)
+	sort.Strings(resp.Projects)
+	if !reflect.DeepEqual(resp.Projects, pIDs) {
+		t.Errorf("ListProjects: got %v, want %v", resp.Projects, pIDs)
 	}
 }
 
