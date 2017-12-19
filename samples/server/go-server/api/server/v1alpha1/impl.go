@@ -21,9 +21,9 @@ import (
 
 	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/name"
-	"golang.org/x/net/context"
 	server "github.com/grafeas/grafeas/server-go"
 	pb "github.com/grafeas/grafeas/v1alpha1/proto"
+	"golang.org/x/net/context"
 	opspb "google.golang.org/genproto/googleapis/longrunning"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

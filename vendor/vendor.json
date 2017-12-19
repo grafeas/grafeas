@@ -3,16 +3,40 @@
 	"ignore": "test",
 	"package": [
 		{
+			"checksumSHA1": "HmbftipkadrLlCfzzVQ+iFHbl6g=",
+			"path": "github.com/golang/glog",
+			"revision": "23def4e6c14b4da8ac2ed8007337bc5eb5007998",
+			"revisionTime": "2016-01-25T20:49:56Z"
+		},
+		{
+			"checksumSHA1": "iVfdaLxIDjfk2KLP8dCMIbsxZZM=",
+			"path": "github.com/golang/protobuf/jsonpb",
+			"revision": "1e59b77b52bf8e4b449a57e6f79f21226d571845",
+			"revisionTime": "2017-11-13T18:07:20Z"
+		},
+		{
 			"checksumSHA1": "yqF125xVSkmfLpIVGrLlfE05IUk=",
 			"path": "github.com/golang/protobuf/proto",
-			"revision": "130e6b02ab059e7b717a096f397c5b60111cae74",
-			"revisionTime": "2017-09-20T22:06:47Z"
+			"revision": "1e59b77b52bf8e4b449a57e6f79f21226d571845",
+			"revisionTime": "2017-11-13T18:07:20Z"
 		},
 		{
 			"checksumSHA1": "XNHQiRltA7NQJV0RvUroY+cf+zg=",
 			"path": "github.com/golang/protobuf/protoc-gen-go/descriptor",
 			"revision": "130e6b02ab059e7b717a096f397c5b60111cae74",
 			"revisionTime": "2017-09-20T22:06:47Z"
+		},
+		{
+			"checksumSHA1": "dbkgZT1dlQxBBeqNb74+pdbOMbc=",
+			"path": "github.com/golang/protobuf/protoc-gen-go/generator",
+			"revision": "1e59b77b52bf8e4b449a57e6f79f21226d571845",
+			"revisionTime": "2017-11-13T18:07:20Z"
+		},
+		{
+			"checksumSHA1": "KxpGuQ5LSMaImXONLN/YM3shGcQ=",
+			"path": "github.com/golang/protobuf/protoc-gen-go/plugin",
+			"revision": "1e59b77b52bf8e4b449a57e6f79f21226d571845",
+			"revisionTime": "2017-11-13T18:07:20Z"
 		},
 		{
 			"checksumSHA1": "VfkiItDBFFkZluaAMAzJipDXNBY=",
@@ -37,6 +61,12 @@
 			"path": "github.com/golang/protobuf/ptypes/empty",
 			"revision": "130e6b02ab059e7b717a096f397c5b60111cae74",
 			"revisionTime": "2017-09-20T22:06:47Z"
+		},
+		{
+			"checksumSHA1": "Ylq6kq3KWBy6mu68oyEwenhNMdg=",
+			"path": "github.com/golang/protobuf/ptypes/struct",
+			"revision": "1e59b77b52bf8e4b449a57e6f79f21226d571845",
+			"revisionTime": "2017-11-13T18:07:20Z"
 		},
 		{
 			"checksumSHA1": "O2ItP5rmfrgxPufhjJXbFlXuyL8=",
@@ -73,6 +103,54 @@
 			"path": "github.com/gorilla/mux",
 			"revision": "24fca303ac6da784b9e8269f724ddeb0b2eea5e7",
 			"revisionTime": "2017-09-05T17:10:44Z"
+		},
+		{
+			"checksumSHA1": "MA0hhSYFctywa48Zh/fsQKa5qoY=",
+			"path": "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway",
+			"revision": "8db8c1ac6f97d8ee1b7a0d7198c39f687e19a937",
+			"revisionTime": "2017-12-08T02:50:44Z"
+		},
+		{
+			"checksumSHA1": "OvbhqGbQepWLj7Qhybh7JsIXNRc=",
+			"path": "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/descriptor",
+			"revision": "8db8c1ac6f97d8ee1b7a0d7198c39f687e19a937",
+			"revisionTime": "2017-12-08T02:50:44Z"
+		},
+		{
+			"checksumSHA1": "E6tXLdbOWn+Yd8nfDlmFts0HV7M=",
+			"path": "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/generator",
+			"revision": "8db8c1ac6f97d8ee1b7a0d7198c39f687e19a937",
+			"revisionTime": "2017-12-08T02:50:44Z"
+		},
+		{
+			"checksumSHA1": "P51oe8tMsHXFFMLPHRBJCv7Fw90=",
+			"path": "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/gengateway",
+			"revision": "8db8c1ac6f97d8ee1b7a0d7198c39f687e19a937",
+			"revisionTime": "2017-12-08T02:50:44Z"
+		},
+		{
+			"checksumSHA1": "a/iHUTg3rGBT9khFbASPBUlhFpg=",
+			"path": "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/httprule",
+			"revision": "8db8c1ac6f97d8ee1b7a0d7198c39f687e19a937",
+			"revisionTime": "2017-12-08T02:50:44Z"
+		},
+		{
+			"checksumSHA1": "c/b4KgxzvuuwE1izwwy13w5Res4=",
+			"path": "github.com/grpc-ecosystem/grpc-gateway/runtime",
+			"revision": "8db8c1ac6f97d8ee1b7a0d7198c39f687e19a937",
+			"revisionTime": "2017-12-08T02:50:44Z"
+		},
+		{
+			"checksumSHA1": "V1qChZAWS+xzlEBSyz2r8JlzmM8=",
+			"path": "github.com/grpc-ecosystem/grpc-gateway/runtime/internal",
+			"revision": "8db8c1ac6f97d8ee1b7a0d7198c39f687e19a937",
+			"revisionTime": "2017-12-08T02:50:44Z"
+		},
+		{
+			"checksumSHA1": "vqiK5r5dntV7JNZ+ZsGlD0Samos=",
+			"path": "github.com/grpc-ecosystem/grpc-gateway/utilities",
+			"revision": "8db8c1ac6f97d8ee1b7a0d7198c39f687e19a937",
+			"revisionTime": "2017-12-08T02:50:44Z"
 		},
 		{
 			"checksumSHA1": "dr5+PfIRzXeN+l1VG+s0lea9qz8=",

@@ -29,8 +29,10 @@ v1alpha1/proto/grafeas.pb.go: .install.protoc-gen-go v1alpha1/proto/grafeas.prot
 		-I ./ \
 		-I vendor/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
 		-I vendor/github.com/googleapis/googleapis \
-	    v1alpha1/proto/grafeas.proto \
-		--go_out=plugins=grpc:.
+		--go_out=plugins=grpc:. \
+	    --grpc-gateway_out=logtostderr=true:. \
+	    v1alpha1/proto/grafeas.proto
+
 
 .PHONY: grafeas_go
 grafeas_go: v1alpha1/proto/grafeas.pb.go
