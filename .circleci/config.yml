@@ -44,5 +44,6 @@ jobs:
       - run:
           name: Install go dependencies
           command: go get -u -v github.com/golang/protobuf/protoc-gen-go
+                   go get -u -v github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
       # specify any bash command here prefixed with `run: `
       - run: make build; make test
