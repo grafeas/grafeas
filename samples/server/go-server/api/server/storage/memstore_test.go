@@ -36,7 +36,7 @@ func TestCreateProject(t *testing.T) {
 	if err := s.CreateProject(p); err != nil {
 		t.Errorf("CreateProject got %v want success", err)
 	}
-	// Try to insert the same note twice, expect failure.
+	// Try to insert the same project twice, expect failure.
 	if err := s.CreateProject(p); err == nil {
 		t.Errorf("CreateProject got success, want Error")
 	} else if s, _ := status.FromError(err); s.Code() != codes.InvalidArgument {
