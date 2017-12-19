@@ -5,11 +5,14 @@ CLEAN := *~
 
 default: build
 
-install.tools: .install.protoc-gen-go
+install.tools: .install.protoc-gen-go .install.grpc-gateway
 
-CLEAN += .install.protoc-gen-go
+CLEAN += .install.protoc-gen-go .install.grpc-gateway
 .install.protoc-gen-go:
 	go get -u -v github.com/golang/protobuf/protoc-gen-go && touch $@
+
+.install.grpc-gateway:
+	go get -u -v github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway && touch $@
 
 build:  vet fmt grafeas_go
 	go build -v ./...
@@ -24,7 +27,7 @@ test:
 vet:
 	@go tool vet ${SRC}
 
-v1alpha1/proto/grafeas.pb.go: .install.protoc-gen-go v1alpha1/proto/grafeas.proto
+v1alpha1/proto/grafeas.pb.go: .install.protoc-gen-go .install.grpc-gateway v1alpha1/proto/grafeas.proto
 	protoc \
 		-I ./ \
 		-I vendor/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
