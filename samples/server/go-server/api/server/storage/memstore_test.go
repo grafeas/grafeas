@@ -105,7 +105,8 @@ func TestCreateOccurrence(t *testing.T) {
 
 func TestCreateOperation(t *testing.T) {
 	s := NewMemStore()
-	op, opPID := testutil.Operation()
+	opPID := "vulnerability-scanner-a"
+	op := testutil.Operation(opPID)
 	// Try to insert an operation without first creating its project, expect failure
 	if err := s.CreateOperation(op); err == nil {
 		t.Errorf("CreateOperation got success, want Error")
@@ -345,7 +346,8 @@ func TestGetNoteByOccurrence(t *testing.T) {
 
 func TestGetOperation(t *testing.T) {
 	s := NewMemStore()
-	o, oPID := testutil.Operation()
+	oPID := "vulnerability-scanner-a"
+	o := testutil.Operation(oPID)
 
 	pID, oID, err := name.ParseOperation(o.Name)
 	if err != nil {
@@ -367,7 +369,8 @@ func TestGetOperation(t *testing.T) {
 
 func TestDeleteOperation(t *testing.T) {
 	s := NewMemStore()
-	o, oPID := testutil.Operation()
+	oPID := "vulnerability-scanner-a"
+	o := testutil.Operation(oPID)
 	// Delete before the operation exists
 	pID, oID, err := name.ParseOperation(o.Name)
 	if err != nil {
@@ -388,7 +391,8 @@ func TestDeleteOperation(t *testing.T) {
 
 func TestUpdateOperation(t *testing.T) {
 	s := NewMemStore()
-	o, oPID := testutil.Operation()
+	oPID := "vulnerability-scanner-a"
+	o := testutil.Operation(oPID)
 
 	pID, oID, err := name.ParseOperation(o.Name)
 	if err != nil {
@@ -451,7 +455,7 @@ func TestListOperations(t *testing.T) {
 	s.CreateProject(findProject)
 	s.CreateProject(dontFind)
 	for i := 0; i < 20; i++ {
-		o, _ := testutil.Operation()
+		o := testutil.Operation("")
 		if i < 5 {
 			o.Name = name.FormatOperation(findProject, string(i))
 		} else {

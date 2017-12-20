@@ -21,7 +21,6 @@ import (
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes"
 	"github.com/golang/protobuf/ptypes/any"
-	"github.com/grafeas/grafeas/samples/server/go-server/api/server/name"
 	pb "github.com/grafeas/grafeas/v1alpha1/proto"
 	opspb "google.golang.org/genproto/googleapis/longrunning"
 )
@@ -170,18 +169,17 @@ func Note(pID string) *pb.Note {
 	}
 }
 
-func Operation() (*opspb.Operation, string) {
+func Operation(pID string) *opspb.Operation {
 	md := &pb.OperationMetadata{CreateTime: ptypes.TimestampNow()}
 	bytes, err := proto.Marshal(md)
 	if err != nil {
 		log.Printf("Error parsing bytes: %v", err)
-		return nil, ""
+		return nil
 	}
-	operation := opspb.Operation{
-		Name:     "projects/vulnerability-scanner-a/operations/foo",
+	name := fmt.Sprintf("projects/%s/operations/foo", pID)
+	return &opspb.Operation{
+		Name:     name,
 		Metadata: &any.Any{Value: bytes},
 		Done:     false,
 	}
-	pID, _, _ := name.ParseOperation(operation.Name)
-	return &operation, pID
 }

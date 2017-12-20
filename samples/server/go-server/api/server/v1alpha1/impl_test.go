@@ -63,7 +63,8 @@ func TestCreateOperation(t *testing.T) {
 	} else if s, _ := status.FromError(err); s.Code() != codes.InvalidArgument {
 		t.Errorf("CreateOperation(empty operation): got %v, want InvalidArgument", err)
 	}
-	op, pID := testutil.Operation()
+	pID := "vulnerability-scanner-a"
+	op = testutil.Operation(pID)
 	parent := name.FormatProject(pID)
 	createProject(t, pID, ctx, g)
 	req = pb.CreateOperationRequest{Parent: parent, Operation: op}
@@ -192,7 +193,8 @@ func TestDeleteOccurrence(t *testing.T) {
 func TestDeleteOperation(t *testing.T) {
 	ctx := context.Background()
 	g := Grafeas{storage.NewMemStore()}
-	o, pID := testutil.Operation()
+	pID := "vulnerability-scanner-a"
+	o := testutil.Operation(pID)
 	createProject(t, pID, ctx, g)
 	req := &opspb.DeleteOperationRequest{Name: o.Name}
 	if _, err := g.DeleteOperation(ctx, req); err == nil {
@@ -264,7 +266,8 @@ func TestGetOccurrence(t *testing.T) {
 func TestGetOperation(t *testing.T) {
 	ctx := context.Background()
 	g := Grafeas{storage.NewMemStore()}
-	o, pID := testutil.Operation()
+	pID := "vulnerability-scanner-a"
+	o := testutil.Operation(pID)
 	createProject(t, pID, ctx, g)
 	req := &opspb.GetOperationRequest{Name: o.Name}
 	if _, err := g.GetOperation(ctx, req); err == nil {
@@ -510,7 +513,8 @@ func TestListOperations(t *testing.T) {
 	dontFind := "dontFind"
 	createProject(t, dontFind, ctx, g)
 	for i := 0; i < 20; i++ {
-		o, pID := testutil.Operation()
+		pID := "vulnerability-scanner-a"
+		o := testutil.Operation(pID)
 		if i < 5 {
 			o.Name = name.FormatOperation(findProject, string(i))
 		} else {
