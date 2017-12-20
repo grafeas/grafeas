@@ -88,7 +88,8 @@ func TestCreateOccurrence(t *testing.T) {
 	} else if s, _ := status.FromError(err); s.Code() != codes.InvalidArgument {
 		t.Errorf("CreateOccurrence(empty occ): got %v, want InvalidArgument)", err)
 	}
-	o, pID := testutil.Occurrence(n.Name)
+	pID = "occurrence-project"
+	o := testutil.Occurrence(pID, n.Name)
 	parent = name.FormatProject(pID)
 	createProject(t, pID, ctx, g)
 	oReq = &pb.CreateOccurrenceRequest{Parent: parent, Occurrence: o}
@@ -169,7 +170,8 @@ func TestDeleteOccurrence(t *testing.T) {
 	if _, err := g.CreateNote(ctx, cReq); err != nil {
 		t.Fatalf("CreateNote(%v) got %v, want success", n, err)
 	}
-	o, pID := testutil.Occurrence(n.Name)
+	pID = "occurrence-project"
+	o := testutil.Occurrence(pID, n.Name)
 	createProject(t, pID, ctx, g)
 
 	parent = name.FormatProject(pID)
@@ -229,7 +231,8 @@ func TestGetOccurrence(t *testing.T) {
 	g := Grafeas{storage.NewMemStore()}
 	n, pID := testutil.Note()
 	createProject(t, pID, ctx, g)
-	o, opID := testutil.Occurrence(n.Name)
+	opID := "occurrence-project"
+	o := testutil.Occurrence(opID, n.Name)
 	createProject(t, opID, ctx, g)
 	req := &pb.GetOccurrenceRequest{Name: o.Name}
 	if _, err := g.GetOccurrence(ctx, req); err == nil {
@@ -278,7 +281,8 @@ func TestGetOccurrenceNote(t *testing.T) {
 	g := Grafeas{storage.NewMemStore()}
 	n, pID := testutil.Note()
 	createProject(t, pID, ctx, g)
-	o, opID := testutil.Occurrence(n.Name)
+	opID := "occurrence-project"
+	o := testutil.Occurrence(opID, n.Name)
 	createProject(t, opID, ctx, g)
 
 	req := &pb.GetOccurrenceNoteRequest{Name: o.Name}
@@ -364,7 +368,8 @@ func TestUpdateOccurrence(t *testing.T) {
 	if _, err := g.CreateNote(ctx, cReq); err != nil {
 		t.Fatalf("CreateNote(%v) got %v, want success", n, err)
 	}
-	o, pID := testutil.Occurrence(n.Name)
+	pID := "occurrence-project"
+	o := testutil.Occurrence(pID, n.Name)
 	createProject(t, pID, ctx, g)
 
 	req := &pb.UpdateOccurrenceRequest{Name: o.Name, Occurrence: o}
@@ -377,7 +382,7 @@ func TestUpdateOccurrence(t *testing.T) {
 		t.Fatalf("CreateOccurrence(%v) got %v, want success", n, err)
 	}
 	// update occurrence name
-	update, _ := testutil.Occurrence(n.Name)
+	update := testutil.Occurrence(pID, n.Name)
 	update.Name = "New name"
 	req = &pb.UpdateOccurrenceRequest{Name: update.Name, Occurrence: update}
 	if _, err := g.UpdateOccurrence(ctx, req); err == nil {
@@ -385,7 +390,7 @@ func TestUpdateOccurrence(t *testing.T) {
 	}
 
 	// update note name to a note that doesn't exist
-	update, _ = testutil.Occurrence("projects/p/notes/bar")
+	update = testutil.Occurrence(pID, "projects/p/notes/bar")
 	req = &pb.UpdateOccurrenceRequest{Name: o.Name, Occurrence: update}
 	if _, err := g.UpdateOccurrence(ctx, req); err == nil {
 		t.Error("UpdateOccurrence that with note name that doesn't exist" +
@@ -401,7 +406,7 @@ func TestUpdateOccurrence(t *testing.T) {
 	if _, err := g.CreateNote(ctx, cReq); err != nil {
 		t.Fatalf("CreateNote(%v) got %v, want success", n, err)
 	}
-	update, _ = testutil.Occurrence(n.Name)
+	update = testutil.Occurrence(pID, n.Name)
 	req = &pb.UpdateOccurrenceRequest{Name: o.Name, Occurrence: update}
 	if got, err := g.UpdateOccurrence(ctx, req); err != nil {
 		t.Errorf("UpdateOccurrence got %v, want success", err)
@@ -435,7 +440,8 @@ func TestListOccurrences(t *testing.T) {
 	dontFind := "dontFind"
 	createProject(t, dontFind, ctx, g)
 	for i := 0; i < 20; i++ {
-		o, pID := testutil.Occurrence(n.Name)
+		pID := "_"
+		o := testutil.Occurrence(pID, n.Name)
 		if i < 5 {
 			o.Name = name.FormatOccurrence(findProject, string(i))
 		} else {
@@ -563,7 +569,8 @@ func TestListNoteOccurrences(t *testing.T) {
 	dontFind := "dontFind"
 	createProject(t, dontFind, ctx, g)
 	for i := 0; i < 20; i++ {
-		o, pID := testutil.Occurrence(n.Name)
+		pID := "_"
+		o := testutil.Occurrence(pID, n.Name)
 		if i < 5 {
 			o.Name = name.FormatOccurrence(findProject, string(i))
 		} else {
@@ -588,7 +595,8 @@ func TestListNoteOccurrences(t *testing.T) {
 	if _, err := g.CreateNote(ctx, cReq); err != nil {
 		t.Fatalf("CreateNote got %v want success", err)
 	}
-	o, pID := testutil.Occurrence(otherN.Name)
+	pID := "occurrence-project"
+	o := testutil.Occurrence(pID, otherN.Name)
 	createProject(t, pID, ctx, g)
 	parent := name.FormatProject(pID)
 	ocReq := &pb.CreateOccurrenceRequest{Parent: parent, Occurrence: o}

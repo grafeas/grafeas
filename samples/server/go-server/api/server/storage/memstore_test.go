@@ -72,7 +72,8 @@ func TestCreateOccurrence(t *testing.T) {
 	if err := s.CreateNote(n); err != nil {
 		t.Fatalf("CreateNote got %v want success", err)
 	}
-	o, oPID := testutil.Occurrence(n.Name)
+	oPID := "occurrence-project"
+	o := testutil.Occurrence(oPID, n.Name)
 	// Try to insert an occurrence without first creating its project, expect failure
 	if err := s.CreateOccurrence(o); err == nil {
 		t.Errorf("CreateOccurrence got success, want Error")
@@ -128,7 +129,8 @@ func TestDeleteOccurrence(t *testing.T) {
 	if err := s.CreateNote(n); err != nil {
 		t.Fatalf("CreateNote got %v want success", err)
 	}
-	o, oPID := testutil.Occurrence(n.Name)
+	oPID := "occurrence-project"
+	o := testutil.Occurrence(oPID, n.Name)
 	s.CreateProject(oPID)
 	// Delete before the occurrence exists
 	pID, oID, err := name.ParseOccurrence(o.Name)
@@ -169,7 +171,8 @@ func TestUpdateOccurrence(t *testing.T) {
 	if err := s.CreateNote(n); err != nil {
 		t.Fatalf("CreateNote got %v want success", err)
 	}
-	o, oPID := testutil.Occurrence(n.Name)
+	oPID := "occurrence-project"
+	o := testutil.Occurrence(oPID, n.Name)
 	pID, oID, err := name.ParseOccurrence(o.Name)
 	if err != nil {
 		t.Fatalf("Error parsing projectID and occurrenceID %v", err)
@@ -262,7 +265,8 @@ func TestGetOccurrence(t *testing.T) {
 	if err := s.CreateNote(n); err != nil {
 		t.Fatalf("CreateNote got %v want success", err)
 	}
-	o, oPID := testutil.Occurrence(n.Name)
+	oPID := "occurrence-project"
+	o := testutil.Occurrence(oPID, n.Name)
 	pID, oID, err := name.ParseOccurrence(o.Name)
 	if err != nil {
 		t.Fatalf("Error parsing occurrence %v", err)
@@ -310,7 +314,8 @@ func TestGetNoteByOccurrence(t *testing.T) {
 	if err := s.CreateNote(n); err != nil {
 		t.Fatalf("CreateNote got %v want success", err)
 	}
-	o, oPID := testutil.Occurrence(n.Name)
+	oPID := "occurrence-project"
+	o := testutil.Occurrence(oPID, n.Name)
 	pID, oID, err := name.ParseOccurrence(o.Name)
 	if err != nil {
 		t.Fatalf("Error parsing occurrence %v", err)
@@ -505,7 +510,8 @@ func TestListOccurrences(t *testing.T) {
 		t.Fatalf("CreateNote got %v want success", err)
 	}
 	for i := 0; i < 20; i++ {
-		o, _ := testutil.Occurrence(n.Name)
+		oPID := "_"
+		o := testutil.Occurrence(oPID, n.Name)
 		if i < 5 {
 			o.Name = name.FormatOccurrence(findProject, string(i))
 		} else {
@@ -541,7 +547,8 @@ func TestListNoteOccurrences(t *testing.T) {
 		t.Fatalf("CreateNote got %v want success", err)
 	}
 	for i := 0; i < 20; i++ {
-		o, _ := testutil.Occurrence(n.Name)
+		oPID := "_"
+		o := testutil.Occurrence(oPID, n.Name)
 		if i < 5 {
 			o.Name = name.FormatOccurrence(findProject, string(i))
 		} else {

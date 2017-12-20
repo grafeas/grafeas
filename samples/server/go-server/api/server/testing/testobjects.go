@@ -15,6 +15,7 @@
 package testutil
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/golang/protobuf/proto"
@@ -25,9 +26,10 @@ import (
 	opspb "google.golang.org/genproto/googleapis/longrunning"
 )
 
-func Occurrence(noteName string) (*pb.Occurrence, string) {
-	occurrence := pb.Occurrence{
-		Name:        "projects/test-project/occurrences/134",
+func Occurrence(pID, noteName string) *pb.Occurrence {
+	name := fmt.Sprintf("projects/%s/occurrences/134", pID)
+	return &pb.Occurrence{
+		Name:        name,
 		ResourceUrl: "gcr.io/foo/bar",
 		NoteName:    noteName,
 		Kind:        pb.Note_PACKAGE_VULNERABILITY,
@@ -59,8 +61,6 @@ func Occurrence(noteName string) (*pb.Occurrence, string) {
 			},
 		},
 	}
-	pID, _, _ := name.ParseOccurrence(occurrence.Name)
-	return &occurrence, pID
 }
 
 func Note() (*pb.Note, string) {
