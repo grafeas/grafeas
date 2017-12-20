@@ -63,9 +63,10 @@ func Occurrence(pID, noteName string) *pb.Occurrence {
 	}
 }
 
-func Note() (*pb.Note, string) {
-	note := pb.Note{
-		Name:             "projects/vulnerability-scanner-a/notes/CVE-1999-0710",
+func Note(pID string) *pb.Note {
+	name := fmt.Sprintf("projects/%s/notes/CVE-1999-0710", pID)
+	return &pb.Note{
+		Name:             name,
 		ShortDescription: "CVE-2014-9911",
 		LongDescription:  "NIST vectors: AV:N/AC:L/Au:N/C:P/I:P",
 		Kind:             pb.Note_PACKAGE_VULNERABILITY,
@@ -167,8 +168,6 @@ func Note() (*pb.Note, string) {
 			},
 		},
 	}
-	pID, _, _ := name.ParseNote(note.Name)
-	return &note, pID
 }
 
 func Operation() (*opspb.Operation, string) {

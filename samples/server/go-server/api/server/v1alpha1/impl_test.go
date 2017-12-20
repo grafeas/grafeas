@@ -75,7 +75,8 @@ func TestCreateOperation(t *testing.T) {
 func TestCreateOccurrence(t *testing.T) {
 	ctx := context.Background()
 	g := Grafeas{storage.NewMemStore()}
-	n, pID := testutil.Note()
+	pID := "vulnerability-scanner-a"
+	n := testutil.Note(pID)
 	parent := name.FormatProject(pID)
 	createProject(t, pID, ctx, g)
 	req := &pb.CreateNoteRequest{Parent: parent, Note: n}
@@ -117,7 +118,8 @@ func TestCreateNote(t *testing.T) {
 	} else if s, _ := status.FromError(err); s.Code() != codes.InvalidArgument {
 		t.Errorf("CreateNote(empty note): got %v, want %v", err, codes.InvalidArgument)
 	}
-	n, pID := testutil.Note()
+	pID := "vulnerability-scanner-a"
+	n = testutil.Note(pID)
 	parent := name.FormatProject(pID)
 	createProject(t, pID, ctx, g)
 	req = &pb.CreateNoteRequest{Parent: parent, Note: n}
@@ -143,7 +145,8 @@ func TestDeleteProject(t *testing.T) {
 func TestDeleteNote(t *testing.T) {
 	ctx := context.Background()
 	g := Grafeas{storage.NewMemStore()}
-	n, pID := testutil.Note()
+	pID := "vulnerability-scanner-a"
+	n := testutil.Note(pID)
 	createProject(t, pID, ctx, g)
 	req := &pb.DeleteNoteRequest{Name: n.Name}
 	if _, err := g.DeleteNote(ctx, req); err == nil {
@@ -162,7 +165,8 @@ func TestDeleteNote(t *testing.T) {
 func TestDeleteOccurrence(t *testing.T) {
 	ctx := context.Background()
 	g := Grafeas{storage.NewMemStore()}
-	n, pID := testutil.Note()
+	pID := "vulnerability-scanner-a"
+	n := testutil.Note(pID)
 	createProject(t, pID, ctx, g)
 	parent := name.FormatProject(pID)
 	cReq := &pb.CreateNoteRequest{Parent: parent, Note: n}
@@ -207,7 +211,8 @@ func TestDeleteOperation(t *testing.T) {
 func TestGetNote(t *testing.T) {
 	ctx := context.Background()
 	g := Grafeas{storage.NewMemStore()}
-	n, pID := testutil.Note()
+	pID := "vulnerability-scanner-a"
+	n := testutil.Note(pID)
 	createProject(t, pID, ctx, g)
 	req := &pb.GetNoteRequest{Name: n.Name}
 	if _, err := g.GetNote(ctx, req); err == nil {
@@ -229,7 +234,8 @@ func TestGetOccurrence(t *testing.T) {
 	ctx := context.Background()
 
 	g := Grafeas{storage.NewMemStore()}
-	n, pID := testutil.Note()
+	pID := "vulnerability-scanner-a"
+	n := testutil.Note(pID)
 	createProject(t, pID, ctx, g)
 	opID := "occurrence-project"
 	o := testutil.Occurrence(opID, n.Name)
@@ -279,7 +285,8 @@ func TestGetOperation(t *testing.T) {
 func TestGetOccurrenceNote(t *testing.T) {
 	ctx := context.Background()
 	g := Grafeas{storage.NewMemStore()}
-	n, pID := testutil.Note()
+	pID := "vulnerability-scanner-a"
+	n := testutil.Note(pID)
 	createProject(t, pID, ctx, g)
 	opID := "occurrence-project"
 	o := testutil.Occurrence(opID, n.Name)
@@ -316,9 +323,10 @@ func TestUpdateNote(t *testing.T) {
 	// Update Note that doesn't exist
 	updateDesc := "this is a new description"
 	g := Grafeas{storage.NewMemStore()}
-	n, pID := testutil.Note()
+	pID := "vulnerability-scanner-a"
+	n := testutil.Note(pID)
 	createProject(t, pID, ctx, g)
-	update, _ := testutil.Note()
+	update := testutil.Note(pID)
 	update.LongDescription = updateDesc
 	req := &pb.UpdateNoteRequest{Name: n.Name, Note: n}
 	if _, err := g.UpdateNote(ctx, req); err != nil {
@@ -340,7 +348,7 @@ func TestUpdateNote(t *testing.T) {
 	}
 
 	// Update Note and verify that update worked.
-	update, _ = testutil.Note()
+	update = testutil.Note(pID)
 	update.LongDescription = updateDesc
 	req = &pb.UpdateNoteRequest{Name: n.Name, Note: update}
 	if got, err := g.UpdateNote(ctx, req); err != nil {
@@ -360,7 +368,8 @@ func TestUpdateOccurrence(t *testing.T) {
 	ctx := context.Background()
 	// Update occurrence that doesn't exist
 	g := Grafeas{storage.NewMemStore()}
-	n, npID := testutil.Note()
+	npID := "vulnerability-scanner-a"
+	n := testutil.Note(npID)
 	createProject(t, npID, ctx, g)
 	nParent := name.FormatProject(npID)
 	cReq := &pb.CreateNoteRequest{Parent: nParent, Note: n}
@@ -398,7 +407,7 @@ func TestUpdateOccurrence(t *testing.T) {
 	}
 
 	// update note name to a note that does exist
-	n, _ = testutil.Note()
+	n = testutil.Note(npID)
 	newName := fmt.Sprintf("%v-new", n.Name)
 	n.Name = newName
 
@@ -426,7 +435,8 @@ func TestUpdateOccurrence(t *testing.T) {
 func TestListOccurrences(t *testing.T) {
 	ctx := context.Background()
 	g := Grafeas{storage.NewMemStore()}
-	n, npID := testutil.Note()
+	npID := "vulnerability-scanner-a"
+	n := testutil.Note(npID)
 	nParent := name.FormatProject(npID)
 	cReq := &pb.CreateNoteRequest{Parent: nParent, Note: n}
 	createProject(t, npID, ctx, g)
@@ -531,7 +541,8 @@ func TestListNotes(t *testing.T) {
 	dontFind := "dontFind"
 	createProject(t, dontFind, ctx, g)
 	for i := 0; i < 20; i++ {
-		n, npID := testutil.Note()
+		npID := "vulnerability-scanner-a"
+		n := testutil.Note(npID)
 		if i < 5 {
 			n.Name = name.FormatNote(findProject, string(i))
 		} else {
@@ -557,7 +568,8 @@ func TestListNotes(t *testing.T) {
 func TestListNoteOccurrences(t *testing.T) {
 	ctx := context.Background()
 	g := Grafeas{storage.NewMemStore()}
-	n, npID := testutil.Note()
+	npID := "vulnerability-scanner-a"
+	n := testutil.Note(npID)
 	createProject(t, npID, ctx, g)
 	nParent := name.FormatProject(npID)
 	cReq := &pb.CreateNoteRequest{Parent: nParent, Note: n}
@@ -583,7 +595,7 @@ func TestListNoteOccurrences(t *testing.T) {
 		}
 	}
 	// Create an occurrence tied to another note, to make sure we don't find it.
-	otherN, _ := testutil.Note()
+	otherN := testutil.Note("")
 	otherN.Name = "projects/np/notes/not-to-find"
 	npID, _, err := name.ParseNote(otherN.Name)
 	if err != nil {
