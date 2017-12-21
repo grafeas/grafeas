@@ -341,7 +341,7 @@ type GrafeasProjects struct {
 	S server.Storager
 }
 
-// CreateNote validates that a note is valid and then creates a note in the backing datastore.
+// CreateProject validates that a project is valid and then creates a project in the backing datastore.
 func (g *GrafeasProjects) CreateProject(ctx context.Context, req *pb.CreateProjectRequest) (*empty.Empty, error) {
 	projectId := req.ProjectId
 	if projectId == "" {
@@ -351,6 +351,7 @@ func (g *GrafeasProjects) CreateProject(ctx context.Context, req *pb.CreateProje
 	return &empty.Empty{}, g.S.CreateProject(projectId)
 }
 
+// ListProjects returns the project id for all projects in the backing datastore.
 func (g *GrafeasProjects) ListProjects(ctx context.Context, req *pb.ListProjectsRequest) (*pb.ListProjectsResponse, error) {
 	// TODO: support filters
 	ns := g.S.ListProjects(req.Filter)

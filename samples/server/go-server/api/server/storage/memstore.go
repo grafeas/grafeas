@@ -59,6 +59,7 @@ func (m *memStore) DeleteProject(pID string) error {
 	return nil
 }
 
+// GetProject returns the project with the given pID from the mem store
 func (m *memStore) GetProject(pID string) (*pb.Project, error) {
 	if _, ok := m.projects[pID]; !ok {
 		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("Project with name %q does not Exist", pID))
@@ -66,6 +67,7 @@ func (m *memStore) GetProject(pID string) (*pb.Project, error) {
 	return &pb.Project{ProjectId: pID}, nil
 }
 
+// ListProjects returns the project id for all projects from the mem store
 func (m *memStore) ListProjects(filters string) []string {
 	pIDs := make([]string, len(m.projects))
 	i := 0
@@ -116,6 +118,7 @@ func (m *memStore) GetOccurrence(pID, oID string) (*pb.Occurrence, error) {
 	return o, nil
 }
 
+// ListOccurrences returns the occurrences for this project ID (pID)
 func (m *memStore) ListOccurrences(pID, filters string) []*pb.Occurrence {
 	os := []*pb.Occurrence{}
 	for _, o := range m.occurrencesByID {
@@ -179,6 +182,7 @@ func (m *memStore) GetNoteByOccurrence(pID, oID string) (*pb.Note, error) {
 	return n, nil
 }
 
+// ListNotes returns the notes for for this project (pID)
 func (m *memStore) ListNotes(pID, filters string) []*pb.Note {
 	ns := []*pb.Note{}
 	for _, n := range m.notesByID {
@@ -188,6 +192,8 @@ func (m *memStore) ListNotes(pID, filters string) []*pb.Note {
 	}
 	return ns
 }
+
+// ListNoteOccurrences returns the occcurrences on the particular note (nID) for this project (pID)
 func (m *memStore) ListNoteOccurrences(pID, nID, filters string) ([]*pb.Occurrence, error) {
 	// TODO: use filters
 	// Verify that note exists
@@ -243,6 +249,7 @@ func (m *memStore) UpdateOperation(pID, opID string, op *opspb.Operation) error 
 	return nil
 }
 
+// ListOperations returns the operations for this project (pID)
 func (m *memStore) ListOperations(pID, filters string) []*opspb.Operation {
 	ops := []*opspb.Operation{}
 	for _, op := range m.opsByID {

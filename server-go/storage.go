@@ -21,7 +21,7 @@ import (
 
 // Storager is the interface that a Grafeas storage implementation would provide
 type Storager interface {
-	// CreateProejct adds the specified project
+	// CreateProject adds the specified project
 	CreateProject(pID string) error
 
 	// CreateNote adds the specified note
@@ -66,7 +66,7 @@ type Storager interface {
 	// ListNoteOccurrences returns the occcurrences on the particular note (nID) for this project (pID)
 	ListNoteOccurrences(pID, nID, filters string) ([]*pb.Occurrence, error)
 
-	// ListNoteOccurrences returns the occcurrences on the particular note (nID) for this project (pID)
+	// ListNotes returns the notes for for this project (pID)
 	ListNotes(pID, filters string) []*pb.Note
 
 	// ListOccurrences returns the occurrences for this project ID (pID)

@@ -37,13 +37,13 @@ message GetProjectRequest {
 // Request to list projects.
 message ListProjectsRequest {
   // The filter expression.
-  string filter = 2;
+  string filter = 1;
 
   // Number of projects to return in the list.
-  int32 page_size = 3;
+  int32 page_size = 2;
 
   // Token to provide to skip to a particular spot in the list.
-  string page_token = 4;
+  string page_token = 3;
 }
 
 // Request to delete a project
@@ -1411,6 +1411,10 @@ service Grafeas {
   }
 }
 
+// [GrafeasProjects](grafeas.io) API.
+//
+// Manages Grafeas `Projects`. `Projects` contain sets of other Grafeas 
+// entities such as `Notes`, `Occurrences` and `Operations`.
 service GrafeasProjects {
   // Creates a new `Project`.
   rpc CreateProject(CreateProjectRequest) returns (google.protobuf.Empty) {
