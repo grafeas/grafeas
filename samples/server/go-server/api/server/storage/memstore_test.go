@@ -48,12 +48,6 @@ func TestCreateNote(t *testing.T) {
 	s := NewMemStore()
 	nPID := "vulnerability-scanner-a"
 	n := testutil.Note(nPID)
-	// Try to insert a note without first creating its project, expect failure
-	if err := s.CreateNote(n); err == nil {
-		t.Errorf("CreateNote got success, want Error")
-	} else if s, _ := status.FromError(err); s.Code() != codes.InvalidArgument {
-		t.Errorf("CreateNote got code %v want %v", s.Code(), codes.InvalidArgument)
-	}
 	s.CreateProject(nPID)
 	if err := s.CreateNote(n); err != nil {
 		t.Errorf("CreateNote got %v want success", err)
@@ -76,12 +70,6 @@ func TestCreateOccurrence(t *testing.T) {
 	}
 	oPID := "occurrence-project"
 	o := testutil.Occurrence(oPID, n.Name)
-	// Try to insert an occurrence without first creating its project, expect failure
-	if err := s.CreateOccurrence(o); err == nil {
-		t.Errorf("CreateOccurrence got success, want Error")
-	} else if s, _ := status.FromError(err); s.Code() != codes.InvalidArgument {
-		t.Errorf("CreateOccurrence got code %v want %v", s.Code(), codes.InvalidArgument)
-	}
 	s.CreateProject(oPID)
 	if err := s.CreateOccurrence(o); err != nil {
 		t.Errorf("CreateOccurrence got %v want success", err)
@@ -107,12 +95,6 @@ func TestCreateOperation(t *testing.T) {
 	s := NewMemStore()
 	opPID := "vulnerability-scanner-a"
 	op := testutil.Operation(opPID)
-	// Try to insert an operation without first creating its project, expect failure
-	if err := s.CreateOperation(op); err == nil {
-		t.Errorf("CreateOperation got success, want Error")
-	} else if s, _ := status.FromError(err); s.Code() != codes.InvalidArgument {
-		t.Errorf("CreateOperation got code %v want %v", s.Code(), codes.InvalidArgument)
-	}
 	s.CreateProject(opPID)
 	if err := s.CreateOperation(op); err != nil {
 		t.Errorf("CreateOperation got %v want success", err)
@@ -262,6 +244,23 @@ func TestUpdateNote(t *testing.T) {
 		t.Fatalf("GetNote got %v, want success", err)
 	} else if !reflect.DeepEqual(got, n2) {
 		t.Errorf("GetNote got %v, want %v", got, n2)
+	}
+}
+
+func TestGetProject(t *testing.T) {
+	s := NewMemStore()
+	pID := "myproject"
+	// Try to get project before it has been created, expect failure.
+	if _, err := s.GetProject(pID); err == nil {
+		t.Errorf("GetProject got success, want Error")
+	} else if s, _ := status.FromError(err); s.Code() != codes.InvalidArgument {
+		t.Errorf("GetProject got code %v want %v", s.Code(), codes.InvalidArgument)
+	}
+	s.CreateProject(pID)
+	if p, err := s.GetProject(pID); err != nil {
+		t.Fatalf("CreateNote got %v want success", err)
+	} else if p.ProjectId != pID {
+		t.Fatalf("Got %s want %s", p.ProjectId, pID)
 	}
 }
 

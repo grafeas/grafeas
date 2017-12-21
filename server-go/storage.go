@@ -45,6 +45,9 @@ type Storager interface {
 	// DeleteOperation deletes the operation with the given pID and oID
 	DeleteOperation(pID, opID string) error
 
+	// GetProject returns the project with the given pID
+	GetProject(pID string) (*pb.Project, error)
+
 	// GetNote returns the note with project (pID) and note ID (nID)
 	GetNote(pID, nID string) (*pb.Note, error)
 

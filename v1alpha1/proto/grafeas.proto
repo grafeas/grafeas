@@ -23,9 +23,14 @@ import "google/longrunning/operations.proto";
 package grafeas.v1alpha1.api;
 option go_package = "grafeas";
 
-// Request to get a Project.
+// Request to insert a new Project.
 message CreateProjectRequest {
   // The id of the project
+  string project_id = 1;
+}
+
+// Request to get a Project.
+message GetProjectRequest {
   string project_id = 1;
 }
 
@@ -243,6 +248,11 @@ message CreateOperationRequest {
   string operation_id = 2;
   // The operation to create.
   google.longrunning.Operation operation = 3;
+}
+
+// Provides detailed description of a `Project`.
+message Project {
+  string project_id = 1;
 }
 
 // Metadata for all operations used and required for all operations
@@ -1285,29 +1295,6 @@ message ProjectRepoId {
 // there would be one `Note` for the vulnerability and an `Occurrence` for
 // each package with the vulnerability referencing that `Note`.
 service Grafeas {
-  // Creates a new `Project`.
-  rpc CreateProject(CreateProjectRequest) returns (google.protobuf.Empty) {
-    option (google.api.http) = {
-      post:  "/v1alpha1/projects/{project_id=*}"
-    };
-  }
-
-  // Lists `Projects`
-  rpc ListProjects(ListProjectsRequest)
-      returns (ListProjectsResponse) {
-    option (google.api.http) = {
-      get: "/v1alpha1/projects"
-    };
-  }
-
-  // Deletes the given `Project` from the system.
-  rpc DeleteProject(DeleteProjectRequest)
-      returns (google.protobuf.Empty) {
-    option (google.api.http) = {
-      delete: "/v1alpha1/projects/{project_id=*}"
-    };
-  }
-
   // Returns the requested `Occurrence`.
   rpc GetOccurrence(GetOccurrenceRequest) returns (Occurrence) {
     option (google.api.http) = {
@@ -1420,6 +1407,38 @@ service Grafeas {
       returns (ListNoteOccurrencesResponse) {
     option (google.api.http) = {
       get: "/v1alpha1/{name=projects/*/notes/*}/occurrences"
+    };
+  }
+}
+
+service GrafeasProjects {
+  // Creates a new `Project`.
+  rpc CreateProject(CreateProjectRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post:  "/v1alpha1/projects/{project_id=*}"
+    };
+  }
+
+  // Returns the requested `Project`.
+  rpc GetProject(GetProjectRequest) returns (Project) {
+    option (google.api.http) = {
+      get: "/v1alpha1/projects/{project_id=*}"
+    };
+  }
+
+  // Lists `Projects`
+  rpc ListProjects(ListProjectsRequest)
+      returns (ListProjectsResponse) {
+    option (google.api.http) = {
+      get: "/v1alpha1/projects"
+    };
+  }
+
+  // Deletes the given `Project` from the system.
+  rpc DeleteProject(DeleteProjectRequest)
+      returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/v1alpha1/projects/{project_id=*}"
     };
   }
 }

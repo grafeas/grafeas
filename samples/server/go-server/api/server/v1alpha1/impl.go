@@ -32,17 +32,8 @@ import (
 // Grafeas is an implementation of the Grafeas API, which should be called by handler methods for verification of logic
 // and storage.
 type Grafeas struct {
-	S server.Storager
-}
-
-// CreateNote validates that a note is valid and then creates a note in the backing datastore.
-func (g *Grafeas) CreateProject(ctx context.Context, req *pb.CreateProjectRequest) (*empty.Empty, error) {
-	projectId := req.ProjectId
-	if projectId == "" {
-		log.Printf("Invalid project id: %v", projectId)
-		return &empty.Empty{}, status.Error(codes.InvalidArgument, "Invalid project name")
-	}
-	return &empty.Empty{}, g.S.CreateProject(projectId)
+	S        server.Storager
+	Projects GrafeasProjects
 }
 
 // CreateNote validates that a note is valid and then creates a note in the backing datastore.
@@ -53,9 +44,19 @@ func (g *Grafeas) CreateNote(ctx context.Context, req *pb.CreateNoteRequest) (*p
 		return nil, status.Error(codes.InvalidArgument, "Note must not be empty")
 	}
 	if n.Name == "" {
+		log.Printf("Note name must not be empty: %v", n.Name)
+		return nil, status.Error(codes.InvalidArgument, "Note name must not be empty")
+	}
+	pID, _, err := name.ParseNote(n.Name)
+	if err != nil {
 		log.Printf("Invalid note name: %v", n.Name)
 		return nil, status.Error(codes.InvalidArgument, "Invalid note name")
 	}
+	if _, err = g.Projects.GetProject(ctx, &pb.GetProjectRequest{ProjectId: pID}); err != nil {
+		log.Printf("Unable to get project %v, err: %v", pID, err)
+		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("Project %v not found", pID))
+	}
+
 	// TODO: Validate that operation exists if it is specified when get methods are implmented
 	return n, g.S.CreateNote(n)
 }
@@ -73,6 +74,11 @@ func (g *Grafeas) CreateOccurrence(ctx context.Context, req *pb.CreateOccurrence
 	}
 	if o.NoteName == "" {
 		log.Print("No note is associated with this occurrence")
+	}
+	pID, _, err := name.ParseOccurrence(o.Name)
+	if _, err = g.Projects.GetProject(ctx, &pb.GetProjectRequest{ProjectId: pID}); err != nil {
+		log.Printf("Unable to get project %v, err: %v", pID, err)
+		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("Project %v not found", pID))
 	}
 	pID, nID, err := name.ParseNote(o.NoteName)
 	if err != nil {
@@ -94,12 +100,12 @@ func (g *Grafeas) CreateOperation(ctx context.Context, req *pb.CreateOperationRe
 		log.Printf("Invalid operation name: %v", o.Name)
 		return nil, status.Error(codes.InvalidArgument, "Invalid operation name")
 	}
+	pID, _, err := name.ParseOperation(o.Name)
+	if _, err = g.Projects.GetProject(ctx, &pb.GetProjectRequest{ProjectId: pID}); err != nil {
+		log.Printf("Unable to get project %v, err: %v", pID, err)
+		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("Project %v not found", pID))
+	}
 	return o, g.S.CreateOperation(o)
-}
-
-// DeleteProject deletes a project from the datastore.
-func (g *Grafeas) DeleteProject(ctx context.Context, req *pb.DeleteProjectRequest) (*empty.Empty, error) {
-	return &empty.Empty{}, g.S.DeleteProject(req.ProjectId)
 }
 
 // DeleteOccurrence deletes an occurrence from the datastore.
@@ -276,12 +282,6 @@ func (g *Grafeas) UpdateOperation(ctx context.Context, req *pb.UpdateOperationRe
 	return g.S.GetOperation(pID, oID)
 }
 
-func (g *Grafeas) ListProjects(ctx context.Context, req *pb.ListProjectsRequest) (*pb.ListProjectsResponse, error) {
-	// TODO: support filters
-	ns := g.S.ListProjects(req.Filter)
-	return &pb.ListProjectsResponse{Projects: ns}, nil
-}
-
 func (g *Grafeas) ListOperations(ctx context.Context, req *opspb.ListOperationsRequest) (*opspb.ListOperationsResponse, error) {
 	pID, err := name.ParseProject(req.Name)
 	if err != nil {
@@ -334,4 +334,36 @@ func (g *Grafeas) ListNoteOccurrences(ctx context.Context, req *pb.ListNoteOccur
 
 func (g *Grafeas) CancelOperation(context.Context, *opspb.CancelOperationRequest) (*empty.Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "Currently Unimplemented")
+}
+
+// GrafeasProjects is an implementation of the parts of Grafeas API that manages projects.
+type GrafeasProjects struct {
+	S server.Storager
+}
+
+// CreateNote validates that a note is valid and then creates a note in the backing datastore.
+func (g *GrafeasProjects) CreateProject(ctx context.Context, req *pb.CreateProjectRequest) (*empty.Empty, error) {
+	projectId := req.ProjectId
+	if projectId == "" {
+		log.Printf("Invalid project id: %v", projectId)
+		return &empty.Empty{}, status.Error(codes.InvalidArgument, "Invalid project id")
+	}
+	return &empty.Empty{}, g.S.CreateProject(projectId)
+}
+
+func (g *GrafeasProjects) ListProjects(ctx context.Context, req *pb.ListProjectsRequest) (*pb.ListProjectsResponse, error) {
+	// TODO: support filters
+	ns := g.S.ListProjects(req.Filter)
+	return &pb.ListProjectsResponse{Projects: ns}, nil
+}
+
+// DeleteProject deletes a project from the datastore.
+func (g *GrafeasProjects) DeleteProject(ctx context.Context, req *pb.DeleteProjectRequest) (*empty.Empty, error) {
+	return &empty.Empty{}, g.S.DeleteProject(req.ProjectId)
+}
+
+// GetProject gets a project from the datastore.
+func (g *GrafeasProjects) GetProject(ctx context.Context, req *pb.GetProjectRequest) (*pb.Project, error) {
+	pID := req.ProjectId
+	return g.S.GetProject(pID)
 }
