@@ -26,9 +26,8 @@ import (
 )
 
 func Occurrence(pID, noteName string) *pb.Occurrence {
-	name := fmt.Sprintf("projects/%s/occurrences/134", pID)
 	return &pb.Occurrence{
-		Name:        name,
+		Name:        fmt.Sprintf("projects/%s/occurrences/134", pID),
 		ResourceUrl: "gcr.io/foo/bar",
 		NoteName:    noteName,
 		Kind:        pb.Note_PACKAGE_VULNERABILITY,
@@ -63,9 +62,8 @@ func Occurrence(pID, noteName string) *pb.Occurrence {
 }
 
 func Note(pID string) *pb.Note {
-	name := fmt.Sprintf("projects/%s/notes/CVE-1999-0710", pID)
 	return &pb.Note{
-		Name:             name,
+		Name:             fmt.Sprintf("projects/%s/notes/CVE-1999-0710", pID),
 		ShortDescription: "CVE-2014-9911",
 		LongDescription:  "NIST vectors: AV:N/AC:L/Au:N/C:P/I:P",
 		Kind:             pb.Note_PACKAGE_VULNERABILITY,
@@ -176,9 +174,8 @@ func Operation(pID string) *opspb.Operation {
 		log.Printf("Error parsing bytes: %v", err)
 		return nil
 	}
-	name := fmt.Sprintf("projects/%s/operations/foo", pID)
 	return &opspb.Operation{
-		Name:     name,
+		Name:     fmt.Sprintf("projects/%s/operations/foo", pID),
 		Metadata: &any.Any{Value: bytes},
 		Done:     false,
 	}
