@@ -52,7 +52,7 @@ func (g *Grafeas) CreateNote(ctx context.Context, req *pb.CreateNoteRequest) (*p
 		log.Printf("Invalid note name: %v", n.Name)
 		return nil, status.Error(codes.InvalidArgument, "Invalid note name")
 	}
-	if _, err = g.Projects.GetProject(ctx, &pb.GetProjectRequest{ProjectId: pID}); err != nil {
+	if _, err = g.Projects.GetProject(ctx, &pb.GetProjectRequest{Name: name.FormatProject(pID)}); err != nil {
 		log.Printf("Unable to get project %v, err: %v", pID, err)
 		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("Project %v not found", pID))
 	}
@@ -76,7 +76,7 @@ func (g *Grafeas) CreateOccurrence(ctx context.Context, req *pb.CreateOccurrence
 		log.Print("No note is associated with this occurrence")
 	}
 	pID, _, err := name.ParseOccurrence(o.Name)
-	if _, err = g.Projects.GetProject(ctx, &pb.GetProjectRequest{ProjectId: pID}); err != nil {
+	if _, err = g.Projects.GetProject(ctx, &pb.GetProjectRequest{Name: name.FormatProject(pID)}); err != nil {
 		log.Printf("Unable to get project %v, err: %v", pID, err)
 		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("Project %v not found", pID))
 	}
@@ -101,7 +101,7 @@ func (g *Grafeas) CreateOperation(ctx context.Context, req *pb.CreateOperationRe
 		return nil, status.Error(codes.InvalidArgument, "Invalid operation name")
 	}
 	pID, _, err := name.ParseOperation(o.Name)
-	if _, err = g.Projects.GetProject(ctx, &pb.GetProjectRequest{ProjectId: pID}); err != nil {
+	if _, err = g.Projects.GetProject(ctx, &pb.GetProjectRequest{Name: name.FormatProject(pID)}); err != nil {
 		log.Printf("Unable to get project %v, err: %v", pID, err)
 		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("Project %v not found", pID))
 	}
@@ -343,12 +343,12 @@ type GrafeasProjects struct {
 
 // CreateProject validates that a project is valid and then creates a project in the backing datastore.
 func (g *GrafeasProjects) CreateProject(ctx context.Context, req *pb.CreateProjectRequest) (*empty.Empty, error) {
-	projectId := req.ProjectId
-	if projectId == "" {
-		log.Printf("Invalid project id: %v", projectId)
-		return &empty.Empty{}, status.Error(codes.InvalidArgument, "Invalid project id")
+	pID, err := name.ParseProject(req.Name)
+	if err != nil {
+		log.Printf("Error parsing project name: %v", req.Name)
+		return nil, status.Error(codes.InvalidArgument, "Invalid Project name")
 	}
-	return &empty.Empty{}, g.S.CreateProject(projectId)
+	return &empty.Empty{}, g.S.CreateProject(pID)
 }
 
 // ListProjects returns the project id for all projects in the backing datastore.
@@ -360,11 +360,20 @@ func (g *GrafeasProjects) ListProjects(ctx context.Context, req *pb.ListProjects
 
 // DeleteProject deletes a project from the datastore.
 func (g *GrafeasProjects) DeleteProject(ctx context.Context, req *pb.DeleteProjectRequest) (*empty.Empty, error) {
-	return &empty.Empty{}, g.S.DeleteProject(req.ProjectId)
+	pID, err := name.ParseProject(req.Name)
+	if err != nil {
+		log.Printf("Error parsing project name: %v", req.Name)
+		return nil, status.Error(codes.InvalidArgument, "Invalid Project name")
+	}
+	return &empty.Empty{}, g.S.DeleteProject(pID)
 }
 
 // GetProject gets a project from the datastore.
 func (g *GrafeasProjects) GetProject(ctx context.Context, req *pb.GetProjectRequest) (*pb.Project, error) {
-	pID := req.ProjectId
+	pID, err := name.ParseProject(req.Name)
+	if err != nil {
+		log.Printf("Error parsing project name: %v", req.Name)
+		return nil, status.Error(codes.InvalidArgument, "Invalid Project name")
+	}
 	return g.S.GetProject(pID)
 }

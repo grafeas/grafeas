@@ -64,19 +64,19 @@ func (m *memStore) GetProject(pID string) (*pb.Project, error) {
 	if _, ok := m.projects[pID]; !ok {
 		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("Project with name %q does not Exist", pID))
 	}
-	return &pb.Project{ProjectId: pID}, nil
+	return &pb.Project{Name: name.FormatProject(pID)}, nil
 }
 
 // ListProjects returns the project id for all projects from the mem store
 func (m *memStore) ListProjects(filters string) []string {
-	pIDs := make([]string, len(m.projects))
+	projects := make([]string, len(m.projects))
 	i := 0
 	for k := range m.projects {
-		pIDs[i] = k
+		projects[i] = name.FormatProject(k)
 		i++
 	}
-	sort.Strings(pIDs)
-	return pIDs
+	sort.Strings(projects)
+	return projects
 }
 
 // CreateOccurrence adds the specified occurrence to the mem store

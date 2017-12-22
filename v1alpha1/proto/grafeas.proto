@@ -25,13 +25,16 @@ option go_package = "grafeas";
 
 // Request to insert a new Project.
 message CreateProjectRequest {
-  // The id of the project
-  string project_id = 1;
+  // The name of the project of the form
+  // "projects/{project_id}"
+  string name = 1;
 }
 
 // Request to get a Project.
 message GetProjectRequest {
-  string project_id = 1;
+  // The name of the project of the form
+  // "projects/{project_id}"
+  string name = 1;
 }
 
 // Request to list projects.
@@ -48,8 +51,9 @@ message ListProjectsRequest {
 
 // Request to delete a project
 message DeleteProjectRequest {
-  // The id of the project
-  string project_id = 1;
+  // The name of the project of the form
+  // "projects/{project_id}"
+  string name = 1;
 }
 
 // Request to get a Occurrenceg.
@@ -252,7 +256,9 @@ message CreateOperationRequest {
 
 // Provides detailed description of a `Project`.
 message Project {
-  string project_id = 1;
+  // The name of the project of the form
+  // "projects/{project_id}"
+  string name = 1;
 }
 
 // Metadata for all operations used and required for all operations
@@ -1419,14 +1425,14 @@ service GrafeasProjects {
   // Creates a new `Project`.
   rpc CreateProject(CreateProjectRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      post:  "/v1alpha1/projects/{project_id=*}"
+      post:  "/v1alpha1/{name=projects/*}"
     };
   }
 
   // Returns the requested `Project`.
   rpc GetProject(GetProjectRequest) returns (Project) {
     option (google.api.http) = {
-      get: "/v1alpha1/projects/{project_id=*}"
+      get: "/v1alpha1/{name=projects/*}"
     };
   }
 
@@ -1442,7 +1448,7 @@ service GrafeasProjects {
   rpc DeleteProject(DeleteProjectRequest)
       returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      delete: "/v1alpha1/projects/{project_id=*}"
+      delete: "/v1alpha1/{name=projects/*}"
     };
   }
 }

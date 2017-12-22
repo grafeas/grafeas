@@ -31,8 +31,8 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func createProject(t *testing.T, projectId string, ctx context.Context, gp GrafeasProjects) {
-	req := pb.CreateProjectRequest{ProjectId: projectId}
+func createProject(t *testing.T, pID string, ctx context.Context, gp GrafeasProjects) {
+	req := pb.CreateProjectRequest{Name: name.FormatProject(pID)}
 	if _, err := gp.CreateProject(ctx, &req); err != nil {
 		t.Errorf("CreateProject(empty operation): got %v, want success", err)
 	}
@@ -41,8 +41,8 @@ func createProject(t *testing.T, projectId string, ctx context.Context, gp Grafe
 func TestCreateProject(t *testing.T) {
 	ctx := context.Background()
 	gp := GrafeasProjects{storage.NewMemStore()}
-	p := "myproject"
-	req := pb.CreateProjectRequest{ProjectId: p}
+	pID := "myproject"
+	req := pb.CreateProjectRequest{Name: name.FormatProject(pID)}
 	_, err := gp.CreateProject(ctx, &req)
 	if err != nil {
 		t.Errorf("CreateProject(empty operation): got %v, want success", err)
@@ -154,7 +154,7 @@ func TestDeleteProject(t *testing.T) {
 	ctx := context.Background()
 	gp := GrafeasProjects{storage.NewMemStore()}
 	pID := "myproject"
-	req := pb.DeleteProjectRequest{ProjectId: pID}
+	req := pb.DeleteProjectRequest{Name: name.FormatProject(pID)}
 	if _, err := gp.DeleteProject(ctx, &req); err == nil {
 		t.Error("DeleteProject: got success, want error")
 	}
@@ -238,7 +238,7 @@ func TestGetProjects(t *testing.T) {
 	ctx := context.Background()
 	gp := GrafeasProjects{storage.NewMemStore()}
 	pID := "myproject"
-	req := pb.GetProjectRequest{ProjectId: pID}
+	req := pb.GetProjectRequest{Name: name.FormatProject(pID)}
 	if _, err := gp.GetProject(ctx, &req); err == nil {
 		t.Error("GetProject that doesn't exist got success, want err")
 	}
@@ -525,27 +525,27 @@ func TestListOccurrences(t *testing.T) {
 func TestListProjects(t *testing.T) {
 	ctx := context.Background()
 	gp := GrafeasProjects{storage.NewMemStore()}
-	var pIDs []string
+	var projects []string
 	for i := 0; i < 20; i++ {
 		pID := fmt.Sprintf("proj%v", i)
-		pIDs = append(pIDs, pID)
-		req := pb.CreateProjectRequest{ProjectId: pID}
+		req := pb.CreateProjectRequest{Name: name.FormatProject(pID)}
 		if _, err := gp.CreateProject(ctx, &req); err != nil {
 			t.Errorf("CreateProject: got %v, want success", err)
 		}
 		if _, err := gp.CreateProject(ctx, &req); err == nil {
 			t.Errorf("CreateProject: got %v, want InvalidArgument", err)
 		}
+		projects = append(projects, name.FormatProject(pID))
 	}
 	req := pb.ListProjectsRequest{}
 	resp, err := gp.ListProjects(ctx, &req)
 	if err != nil {
 		t.Errorf("ListProjects: got %v, want success", err)
 	}
-	sort.Strings(pIDs)
+	sort.Strings(projects)
 	sort.Strings(resp.Projects)
-	if !reflect.DeepEqual(resp.Projects, pIDs) {
-		t.Errorf("ListProjects: got %v, want %v", resp.Projects, pIDs)
+	if !reflect.DeepEqual(resp.Projects, projects) {
+		t.Errorf("ListProjects: got %v, want %v", resp.Projects, projects)
 	}
 }
 

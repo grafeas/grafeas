@@ -258,9 +258,9 @@ func TestGetProject(t *testing.T) {
 	}
 	s.CreateProject(pID)
 	if p, err := s.GetProject(pID); err != nil {
-		t.Fatalf("CreateNote got %v want success", err)
-	} else if p.ProjectId != pID {
-		t.Fatalf("Got %s want %s", p.ProjectId, pID)
+		t.Fatalf("GetProject got %v want success", err)
+	} else if p.Name != name.FormatProject(pID) {
+		t.Fatalf("Got %s want %s", p.Name, pID)
 	}
 }
 
@@ -431,7 +431,7 @@ func TestListProjects(t *testing.T) {
 		if err := s.CreateProject(pID); err != nil {
 			t.Fatalf("CreateProject got %v want success", err)
 		}
-		pIDs = append(pIDs, pID)
+		pIDs = append(pIDs, name.FormatProject(pID))
 	}
 	filter := "filters_are_yet_to_be_implemented"
 	gotPIDs := s.ListProjects(filter)
