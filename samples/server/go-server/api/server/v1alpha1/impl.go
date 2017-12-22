@@ -338,7 +338,7 @@ func (g *Grafeas) CancelOperation(context.Context, *opspb.CancelOperationRequest
 
 // GrafeasProjects is an implementation of the parts of Grafeas API that manages projects.
 type GrafeasProjects struct {
-	S server.Storager
+	S server.ProjectStorager
 }
 
 // CreateProject validates that a project is valid and then creates a project in the backing datastore.

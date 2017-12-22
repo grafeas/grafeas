@@ -39,7 +39,7 @@ func createProject(t *testing.T, pID string, ctx context.Context, gp GrafeasProj
 
 func TestCreateProject(t *testing.T) {
 	ctx := context.Background()
-	gp := GrafeasProjects{storage.NewMemStore()}
+	gp := GrafeasProjects{storage.NewProjectMemStore()}
 	pID := "myproject"
 	req := pb.CreateProjectRequest{Name: name.FormatProject(pID)}
 	_, err := gp.CreateProject(ctx, &req)
@@ -54,7 +54,7 @@ func TestCreateProject(t *testing.T) {
 
 func TestCreateOperation(t *testing.T) {
 	ctx := context.Background()
-	gp := GrafeasProjects{storage.NewMemStore()}
+	gp := GrafeasProjects{storage.NewProjectMemStore()}
 	g := Grafeas{storage.NewMemStore(), gp}
 	op := &opspb.Operation{}
 	req := pb.CreateOperationRequest{Parent: "projects/opp", Operation: op}
@@ -80,7 +80,7 @@ func TestCreateOperation(t *testing.T) {
 
 func TestCreateOccurrence(t *testing.T) {
 	ctx := context.Background()
-	gp := GrafeasProjects{storage.NewMemStore()}
+	gp := GrafeasProjects{storage.NewProjectMemStore()}
 	g := Grafeas{storage.NewMemStore(), gp}
 	pID := "vulnerability-scanner-a"
 	n := testutil.Note(pID)
@@ -123,7 +123,7 @@ func TestCreateOccurrence(t *testing.T) {
 
 func TestCreateNote(t *testing.T) {
 	ctx := context.Background()
-	gp := GrafeasProjects{storage.NewMemStore()}
+	gp := GrafeasProjects{storage.NewProjectMemStore()}
 	g := Grafeas{storage.NewMemStore(), gp}
 	n := &pb.Note{}
 	req := &pb.CreateNoteRequest{Parent: "projects/foo", Note: n}
@@ -151,7 +151,7 @@ func TestCreateNote(t *testing.T) {
 
 func TestDeleteProject(t *testing.T) {
 	ctx := context.Background()
-	gp := GrafeasProjects{storage.NewMemStore()}
+	gp := GrafeasProjects{storage.NewProjectMemStore()}
 	pID := "myproject"
 	req := pb.DeleteProjectRequest{Name: name.FormatProject(pID)}
 	if _, err := gp.DeleteProject(ctx, &req); err == nil {
@@ -165,7 +165,7 @@ func TestDeleteProject(t *testing.T) {
 
 func TestDeleteNote(t *testing.T) {
 	ctx := context.Background()
-	gp := GrafeasProjects{storage.NewMemStore()}
+	gp := GrafeasProjects{storage.NewProjectMemStore()}
 	g := Grafeas{storage.NewMemStore(), gp}
 	pID := "vulnerability-scanner-a"
 	n := testutil.Note(pID)
@@ -186,7 +186,7 @@ func TestDeleteNote(t *testing.T) {
 
 func TestDeleteOccurrence(t *testing.T) {
 	ctx := context.Background()
-	gp := GrafeasProjects{storage.NewMemStore()}
+	gp := GrafeasProjects{storage.NewProjectMemStore()}
 	g := Grafeas{storage.NewMemStore(), gp}
 	pID := "vulnerability-scanner-a"
 	n := testutil.Note(pID)
@@ -214,7 +214,7 @@ func TestDeleteOccurrence(t *testing.T) {
 
 func TestDeleteOperation(t *testing.T) {
 	ctx := context.Background()
-	gp := GrafeasProjects{storage.NewMemStore()}
+	gp := GrafeasProjects{storage.NewProjectMemStore()}
 	g := Grafeas{storage.NewMemStore(), gp}
 	pID := "vulnerability-scanner-a"
 	o := testutil.Operation(pID)
@@ -235,7 +235,7 @@ func TestDeleteOperation(t *testing.T) {
 
 func TestGetProjects(t *testing.T) {
 	ctx := context.Background()
-	gp := GrafeasProjects{storage.NewMemStore()}
+	gp := GrafeasProjects{storage.NewProjectMemStore()}
 	pID := "myproject"
 	req := pb.GetProjectRequest{Name: name.FormatProject(pID)}
 	if _, err := gp.GetProject(ctx, &req); err == nil {
@@ -249,7 +249,7 @@ func TestGetProjects(t *testing.T) {
 
 func TestGetNote(t *testing.T) {
 	ctx := context.Background()
-	gp := GrafeasProjects{storage.NewMemStore()}
+	gp := GrafeasProjects{storage.NewProjectMemStore()}
 	g := Grafeas{storage.NewMemStore(), gp}
 	pID := "vulnerability-scanner-a"
 	n := testutil.Note(pID)
@@ -272,7 +272,7 @@ func TestGetNote(t *testing.T) {
 
 func TestGetOccurrence(t *testing.T) {
 	ctx := context.Background()
-	gp := GrafeasProjects{storage.NewMemStore()}
+	gp := GrafeasProjects{storage.NewProjectMemStore()}
 	g := Grafeas{storage.NewMemStore(), gp}
 	pID := "vulnerability-scanner-a"
 	n := testutil.Note(pID)
@@ -303,7 +303,7 @@ func TestGetOccurrence(t *testing.T) {
 
 func TestGetOperation(t *testing.T) {
 	ctx := context.Background()
-	gp := GrafeasProjects{storage.NewMemStore()}
+	gp := GrafeasProjects{storage.NewProjectMemStore()}
 	g := Grafeas{storage.NewMemStore(), gp}
 	pID := "vulnerability-scanner-a"
 	o := testutil.Operation(pID)
@@ -326,7 +326,7 @@ func TestGetOperation(t *testing.T) {
 
 func TestGetOccurrenceNote(t *testing.T) {
 	ctx := context.Background()
-	gp := GrafeasProjects{storage.NewMemStore()}
+	gp := GrafeasProjects{storage.NewProjectMemStore()}
 	g := Grafeas{storage.NewMemStore(), gp}
 	pID := "vulnerability-scanner-a"
 	n := testutil.Note(pID)
@@ -365,7 +365,7 @@ func TestUpdateNote(t *testing.T) {
 	ctx := context.Background()
 	// Update Note that doesn't exist
 	updateDesc := "this is a new description"
-	gp := GrafeasProjects{storage.NewMemStore()}
+	gp := GrafeasProjects{storage.NewProjectMemStore()}
 	g := Grafeas{storage.NewMemStore(), gp}
 	pID := "vulnerability-scanner-a"
 	n := testutil.Note(pID)
@@ -411,7 +411,7 @@ func TestUpdateNote(t *testing.T) {
 func TestUpdateOccurrence(t *testing.T) {
 	ctx := context.Background()
 	// Update occurrence that doesn't exist
-	gp := GrafeasProjects{storage.NewMemStore()}
+	gp := GrafeasProjects{storage.NewProjectMemStore()}
 	g := Grafeas{storage.NewMemStore(), gp}
 	npID := "vulnerability-scanner-a"
 	n := testutil.Note(npID)
@@ -479,7 +479,7 @@ func TestUpdateOccurrence(t *testing.T) {
 
 func TestListOccurrences(t *testing.T) {
 	ctx := context.Background()
-	gp := GrafeasProjects{storage.NewMemStore()}
+	gp := GrafeasProjects{storage.NewProjectMemStore()}
 	g := Grafeas{storage.NewMemStore(), gp}
 	npID := "vulnerability-scanner-a"
 	n := testutil.Note(npID)
@@ -523,7 +523,7 @@ func TestListOccurrences(t *testing.T) {
 
 func TestListProjects(t *testing.T) {
 	ctx := context.Background()
-	gp := GrafeasProjects{storage.NewMemStore()}
+	gp := GrafeasProjects{storage.NewProjectMemStore()}
 	var projects []string
 	for i := 0; i < 20; i++ {
 		pID := fmt.Sprintf("proj%v", i)
@@ -545,7 +545,7 @@ func TestListProjects(t *testing.T) {
 
 func TestListOperations(t *testing.T) {
 	ctx := context.Background()
-	gp := GrafeasProjects{storage.NewMemStore()}
+	gp := GrafeasProjects{storage.NewProjectMemStore()}
 	g := Grafeas{storage.NewMemStore(), gp}
 	findProject := "findThese"
 	createProject(t, findProject, ctx, gp)
@@ -578,7 +578,7 @@ func TestListOperations(t *testing.T) {
 
 func TestListNotes(t *testing.T) {
 	ctx := context.Background()
-	gp := GrafeasProjects{storage.NewMemStore()}
+	gp := GrafeasProjects{storage.NewProjectMemStore()}
 	g := Grafeas{storage.NewMemStore(), gp}
 	findProject := "findThese"
 	createProject(t, findProject, ctx, gp)
@@ -611,7 +611,7 @@ func TestListNotes(t *testing.T) {
 
 func TestListNoteOccurrences(t *testing.T) {
 	ctx := context.Background()
-	gp := GrafeasProjects{storage.NewMemStore()}
+	gp := GrafeasProjects{storage.NewProjectMemStore()}
 	g := Grafeas{storage.NewMemStore(), gp}
 	npID := "vulnerability-scanner-a"
 	n := testutil.Note(npID)

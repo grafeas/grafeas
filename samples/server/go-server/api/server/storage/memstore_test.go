@@ -18,9 +18,7 @@ import (
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/name"
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/testing"
 
-	"fmt"
 	"reflect"
-	"sort"
 	"strings"
 	"testing"
 
@@ -30,25 +28,12 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func TestCreateProject(t *testing.T) {
-	s := NewMemStore()
-	p := "myproject"
-	if err := s.CreateProject(p); err != nil {
-		t.Errorf("CreateProject got %v want success", err)
-	}
-	// Try to insert the same project twice, expect failure.
-	if err := s.CreateProject(p); err == nil {
-		t.Errorf("CreateProject got success, want Error")
-	} else if s, _ := status.FromError(err); s.Code() != codes.InvalidArgument {
-		t.Errorf("CreateProject got code %v want %v", s.Code(), codes.InvalidArgument)
-	}
-}
-
 func TestCreateNote(t *testing.T) {
 	s := NewMemStore()
+	ps := NewProjectMemStore()
 	nPID := "vulnerability-scanner-a"
 	n := testutil.Note(nPID)
-	s.CreateProject(nPID)
+	ps.CreateProject(nPID)
 	if err := s.CreateNote(n); err != nil {
 		t.Errorf("CreateNote got %v want success", err)
 	}
@@ -62,15 +47,16 @@ func TestCreateNote(t *testing.T) {
 
 func TestCreateOccurrence(t *testing.T) {
 	s := NewMemStore()
+	ps := NewProjectMemStore()
 	nPID := "vulnerability-scanner-a"
 	n := testutil.Note(nPID)
-	s.CreateProject(nPID)
+	ps.CreateProject(nPID)
 	if err := s.CreateNote(n); err != nil {
 		t.Fatalf("CreateNote got %v want success", err)
 	}
 	oPID := "occurrence-project"
 	o := testutil.Occurrence(oPID, n.Name)
-	s.CreateProject(oPID)
+	ps.CreateProject(oPID)
 	if err := s.CreateOccurrence(o); err != nil {
 		t.Errorf("CreateOccurrence got %v want success", err)
 	}
@@ -93,9 +79,10 @@ func TestCreateOccurrence(t *testing.T) {
 
 func TestCreateOperation(t *testing.T) {
 	s := NewMemStore()
+	ps := NewProjectMemStore()
 	opPID := "vulnerability-scanner-a"
 	op := testutil.Operation(opPID)
-	s.CreateProject(opPID)
+	ps.CreateProject(opPID)
 	if err := s.CreateOperation(op); err != nil {
 		t.Errorf("CreateOperation got %v want success", err)
 	}
@@ -109,15 +96,16 @@ func TestCreateOperation(t *testing.T) {
 
 func TestDeleteOccurrence(t *testing.T) {
 	s := NewMemStore()
+	ps := NewProjectMemStore()
 	nPID := "vulnerability-scanner-a"
 	n := testutil.Note(nPID)
-	s.CreateProject(nPID)
+	ps.CreateProject(nPID)
 	if err := s.CreateNote(n); err != nil {
 		t.Fatalf("CreateNote got %v want success", err)
 	}
 	oPID := "occurrence-project"
 	o := testutil.Occurrence(oPID, n.Name)
-	s.CreateProject(oPID)
+	ps.CreateProject(oPID)
 	// Delete before the occurrence exists
 	pID, oID, err := name.ParseOccurrence(o.Name)
 	if err != nil {
@@ -134,27 +122,12 @@ func TestDeleteOccurrence(t *testing.T) {
 	}
 }
 
-func TestDeleteProject(t *testing.T) {
-	s := NewMemStore()
-	pID := "myproject"
-	// Delete before the note exists
-	if err := s.DeleteProject(pID); err == nil {
-		t.Error("Deleting nonexistant note got success, want error")
-	}
-	if err := s.CreateProject(pID); err != nil {
-		t.Fatalf("CreateProject got %v want success", err)
-	}
-
-	if err := s.DeleteProject(pID); err != nil {
-		t.Errorf("DeleteProject got %v, want success ", err)
-	}
-}
-
 func TestUpdateOccurrence(t *testing.T) {
 	s := NewMemStore()
+	ps := NewProjectMemStore()
 	nPID := "vulnerability-scanner-a"
 	n := testutil.Note(nPID)
-	s.CreateProject(nPID)
+	ps.CreateProject(nPID)
 	if err := s.CreateNote(n); err != nil {
 		t.Fatalf("CreateNote got %v want success", err)
 	}
@@ -164,7 +137,7 @@ func TestUpdateOccurrence(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Error parsing projectID and occurrenceID %v", err)
 	}
-	s.CreateProject(oPID)
+	ps.CreateProject(oPID)
 	if err := s.UpdateOccurrence(pID, oID, o); err == nil {
 		t.Fatal("UpdateOccurrence got success want error")
 	}
@@ -192,9 +165,10 @@ func TestUpdateOccurrence(t *testing.T) {
 
 func TestDeleteNote(t *testing.T) {
 	s := NewMemStore()
+	ps := NewProjectMemStore()
 	nPID := "vulnerability-scanner-a"
 	n := testutil.Note(nPID)
-	s.CreateProject(nPID)
+	ps.CreateProject(nPID)
 	// Delete before the note exists
 	pID, oID, err := name.ParseNote(n.Name)
 	if err != nil {
@@ -214,9 +188,10 @@ func TestDeleteNote(t *testing.T) {
 
 func TestUpdateNote(t *testing.T) {
 	s := NewMemStore()
+	ps := NewProjectMemStore()
 	nPID := "vulnerability-scanner-a"
 	n := testutil.Note(nPID)
-	s.CreateProject(nPID)
+	ps.CreateProject(nPID)
 
 	pID, nID, err := name.ParseNote(n.Name)
 	if err != nil {
@@ -247,28 +222,12 @@ func TestUpdateNote(t *testing.T) {
 	}
 }
 
-func TestGetProject(t *testing.T) {
-	s := NewMemStore()
-	pID := "myproject"
-	// Try to get project before it has been created, expect failure.
-	if _, err := s.GetProject(pID); err == nil {
-		t.Errorf("GetProject got success, want Error")
-	} else if s, _ := status.FromError(err); s.Code() != codes.InvalidArgument {
-		t.Errorf("GetProject got code %v want %v", s.Code(), codes.InvalidArgument)
-	}
-	s.CreateProject(pID)
-	if p, err := s.GetProject(pID); err != nil {
-		t.Fatalf("GetProject got %v want success", err)
-	} else if p.Name != name.FormatProject(pID) {
-		t.Fatalf("Got %s want %s", p.Name, pID)
-	}
-}
-
 func TestGetOccurrence(t *testing.T) {
 	s := NewMemStore()
+	ps := NewProjectMemStore()
 	nPID := "vulnerability-scanner-a"
 	n := testutil.Note(nPID)
-	s.CreateProject(nPID)
+	ps.CreateProject(nPID)
 	if err := s.CreateNote(n); err != nil {
 		t.Fatalf("CreateNote got %v want success", err)
 	}
@@ -278,7 +237,7 @@ func TestGetOccurrence(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Error parsing occurrence %v", err)
 	}
-	s.CreateProject(oPID)
+	ps.CreateProject(oPID)
 	if _, err := s.GetOccurrence(pID, oID); err == nil {
 		t.Fatal("GetOccurrence got success, want error")
 	}
@@ -294,9 +253,10 @@ func TestGetOccurrence(t *testing.T) {
 
 func TestGetNote(t *testing.T) {
 	s := NewMemStore()
+	ps := NewProjectMemStore()
 	nPID := "vulnerability-scanner-a"
 	n := testutil.Note(nPID)
-	s.CreateProject(nPID)
+	ps.CreateProject(nPID)
 
 	pID, nID, err := name.ParseNote(n.Name)
 	if err != nil {
@@ -317,9 +277,10 @@ func TestGetNote(t *testing.T) {
 
 func TestGetNoteByOccurrence(t *testing.T) {
 	s := NewMemStore()
+	ps := NewProjectMemStore()
 	nPID := "vulnerability-scanner-a"
 	n := testutil.Note(nPID)
-	s.CreateProject(nPID)
+	ps.CreateProject(nPID)
 	if err := s.CreateNote(n); err != nil {
 		t.Fatalf("CreateNote got %v want success", err)
 	}
@@ -329,7 +290,7 @@ func TestGetNoteByOccurrence(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Error parsing occurrence %v", err)
 	}
-	s.CreateProject(oPID)
+	ps.CreateProject(oPID)
 	if _, err := s.GetNoteByOccurrence(pID, oID); err == nil {
 		t.Fatal("GetNoteByOccurrence got success, want error")
 	}
@@ -345,6 +306,7 @@ func TestGetNoteByOccurrence(t *testing.T) {
 
 func TestGetOperation(t *testing.T) {
 	s := NewMemStore()
+	ps := NewProjectMemStore()
 	oPID := "vulnerability-scanner-a"
 	o := testutil.Operation(oPID)
 
@@ -352,7 +314,7 @@ func TestGetOperation(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Error parsing operation %v", err)
 	}
-	s.CreateProject(oPID)
+	ps.CreateProject(oPID)
 	if _, err := s.GetOperation(pID, oID); err == nil {
 		t.Fatal("GetOperation got success, want error")
 	}
@@ -368,6 +330,7 @@ func TestGetOperation(t *testing.T) {
 
 func TestDeleteOperation(t *testing.T) {
 	s := NewMemStore()
+	ps := NewProjectMemStore()
 	oPID := "vulnerability-scanner-a"
 	o := testutil.Operation(oPID)
 	// Delete before the operation exists
@@ -375,7 +338,7 @@ func TestDeleteOperation(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Error parsing note %v", err)
 	}
-	s.CreateProject(oPID)
+	ps.CreateProject(oPID)
 	if err := s.DeleteOperation(pID, oID); err == nil {
 		t.Error("Deleting nonexistant operation got success, want error")
 	}
@@ -390,6 +353,7 @@ func TestDeleteOperation(t *testing.T) {
 
 func TestUpdateOperation(t *testing.T) {
 	s := NewMemStore()
+	ps := NewProjectMemStore()
 	oPID := "vulnerability-scanner-a"
 	o := testutil.Operation(oPID)
 
@@ -397,7 +361,7 @@ func TestUpdateOperation(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Error parsing projectID and operationID %v", err)
 	}
-	s.CreateProject(oPID)
+	ps.CreateProject(oPID)
 	if err := s.UpdateOperation(pID, oID, o); err == nil {
 		t.Fatal("UpdateOperation got success want error")
 	}
@@ -423,40 +387,14 @@ func TestUpdateOperation(t *testing.T) {
 	}
 }
 
-func TestListProjects(t *testing.T) {
-	s := NewMemStore()
-	wantProjectNames := []string{}
-	for i := 0; i < 20; i++ {
-		pID := fmt.Sprint("Project", i)
-		if err := s.CreateProject(pID); err != nil {
-			t.Fatalf("CreateProject got %v want success", err)
-		}
-		wantProjectNames = append(wantProjectNames, name.FormatProject(pID))
-	}
-	filter := "filters_are_yet_to_be_implemented"
-	gotProjects := s.ListProjects(filter)
-	if len(gotProjects) != 20 {
-		t.Errorf("ListProjects got %v operations, want 20", len(gotProjects))
-	}
-	gotProjectNames := make([]string, len(gotProjects))
-	for i, project := range gotProjects {
-		gotProjectNames[i] = project.Name
-	}
-	// Sort to handle that wantProjectNames are not guaranteed to be listed in insertion order
-	sort.Strings(wantProjectNames)
-	sort.Strings(gotProjectNames)
-	if !reflect.DeepEqual(gotProjectNames, wantProjectNames) {
-		t.Errorf("ListProjects got %v want %v", gotProjectNames, wantProjectNames)
-	}
-}
-
 func TestListOperations(t *testing.T) {
 	s := NewMemStore()
+	ps := NewProjectMemStore()
 	ops := []opspb.Operation{}
 	findProject := "findThese"
 	dontFind := "dontFind"
-	s.CreateProject(findProject)
-	s.CreateProject(dontFind)
+	ps.CreateProject(findProject)
+	ps.CreateProject(dontFind)
 	for i := 0; i < 20; i++ {
 		o := testutil.Operation("")
 		if i < 5 {
@@ -484,11 +422,12 @@ func TestListOperations(t *testing.T) {
 
 func TestListNotes(t *testing.T) {
 	s := NewMemStore()
+	ps := NewProjectMemStore()
 	ns := []*pb.Note{}
 	findProject := "findThese"
 	dontFind := "dontFind"
-	s.CreateProject(findProject)
-	s.CreateProject(dontFind)
+	ps.CreateProject(findProject)
+	ps.CreateProject(dontFind)
 	for i := 0; i < 20; i++ {
 		n := testutil.Note("")
 		if i < 5 {
@@ -515,14 +454,15 @@ func TestListNotes(t *testing.T) {
 
 func TestListOccurrences(t *testing.T) {
 	s := NewMemStore()
+	ps := NewProjectMemStore()
 	os := []*pb.Occurrence{}
 	findProject := "findThese"
 	dontFind := "dontFind"
 	nPID := "vulnerability-scanner-a"
 	n := testutil.Note(nPID)
-	s.CreateProject(nPID)
-	s.CreateProject(findProject)
-	s.CreateProject(dontFind)
+	ps.CreateProject(nPID)
+	ps.CreateProject(findProject)
+	ps.CreateProject(dontFind)
 	if err := s.CreateNote(n); err != nil {
 		t.Fatalf("CreateNote got %v want success", err)
 	}
@@ -553,14 +493,15 @@ func TestListOccurrences(t *testing.T) {
 
 func TestListNoteOccurrences(t *testing.T) {
 	s := NewMemStore()
+	ps := NewProjectMemStore()
 	os := []*pb.Occurrence{}
 	findProject := "findThese"
 	dontFind := "dontFind"
 	nPID := "vulnerability-scanner-a"
 	n := testutil.Note(nPID)
-	s.CreateProject(nPID)
-	s.CreateProject(findProject)
-	s.CreateProject(dontFind)
+	ps.CreateProject(nPID)
+	ps.CreateProject(findProject)
+	ps.CreateProject(dontFind)
 	if err := s.CreateNote(n); err != nil {
 		t.Fatalf("CreateNote got %v want success", err)
 	}

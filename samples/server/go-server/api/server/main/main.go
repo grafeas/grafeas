@@ -42,9 +42,8 @@ func main() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 	grpcServer := grpc.NewServer()
-	s := storage.NewMemStore()
-	gp := v1alpha1.GrafeasProjects{S: s}
-	g := v1alpha1.Grafeas{S: s, Projects: gp}
+	gp := v1alpha1.GrafeasProjects{S: storage.NewProjectMemStore()}
+	g := v1alpha1.Grafeas{S: storage.NewMemStore(), Projects: gp}
 	pb.RegisterGrafeasServer(grpcServer, &g)
 	pb.RegisterGrafeasProjectsServer(grpcServer, &gp)
 	opspb.RegisterOperationsServer(grpcServer, &g)
