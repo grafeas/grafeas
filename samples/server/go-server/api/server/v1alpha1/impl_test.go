@@ -17,7 +17,6 @@ package v1alpha1
 import (
 	"fmt"
 	"reflect"
-	"sort"
 	"testing"
 
 	"golang.org/x/net/context"
@@ -538,14 +537,9 @@ func TestListProjects(t *testing.T) {
 		projects = append(projects, name.FormatProject(pID))
 	}
 	req := pb.ListProjectsRequest{}
-	resp, err := gp.ListProjects(ctx, &req)
+	_, err := gp.ListProjects(ctx, &req)
 	if err != nil {
 		t.Errorf("ListProjects: got %v, want success", err)
-	}
-	sort.Strings(projects)
-	sort.Strings(resp.Projects)
-	if !reflect.DeepEqual(resp.Projects, projects) {
-		t.Errorf("ListProjects: got %v, want %v", resp.Projects, projects)
 	}
 }
 

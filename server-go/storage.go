@@ -61,7 +61,7 @@ type Storager interface {
 	GetOperation(pID, opID string) (*opspb.Operation, error)
 
 	// ListProjects returns the project id for all projects
-	ListProjects(filters string) []string
+	ListProjects(filters string) []*pb.Project
 
 	// ListNoteOccurrences returns the occcurrences on the particular note (nID) for this project (pID)
 	ListNoteOccurrences(pID, nID, filters string) ([]*pb.Occurrence, error)

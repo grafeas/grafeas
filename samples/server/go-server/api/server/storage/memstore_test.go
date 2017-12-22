@@ -425,24 +425,28 @@ func TestUpdateOperation(t *testing.T) {
 
 func TestListProjects(t *testing.T) {
 	s := NewMemStore()
-	pIDs := []string{}
+	wantProjectNames := []string{}
 	for i := 0; i < 20; i++ {
 		pID := fmt.Sprint("Project", i)
 		if err := s.CreateProject(pID); err != nil {
 			t.Fatalf("CreateProject got %v want success", err)
 		}
-		pIDs = append(pIDs, name.FormatProject(pID))
+		wantProjectNames = append(wantProjectNames, name.FormatProject(pID))
 	}
 	filter := "filters_are_yet_to_be_implemented"
-	gotPIDs := s.ListProjects(filter)
-	if len(gotPIDs) != 20 {
-		t.Errorf("ListProjects got %v operations, want 20", len(gotPIDs))
+	gotProjects := s.ListProjects(filter)
+	if len(gotProjects) != 20 {
+		t.Errorf("ListProjects got %v operations, want 20", len(gotProjects))
 	}
-	// Sort to handle that pIDs are not guaranteed to be listed in insertion order
-	sort.Strings(pIDs)
-	sort.Strings(gotPIDs)
-	if !reflect.DeepEqual(gotPIDs, pIDs) {
-		t.Errorf("ListProjects got %v want %v", gotPIDs, pIDs)
+	gotProjectNames := make([]string, len(gotProjects))
+	for i, project := range gotProjects {
+		gotProjectNames[i] = project.Name
+	}
+	// Sort to handle that wantProjectNames are not guaranteed to be listed in insertion order
+	sort.Strings(wantProjectNames)
+	sort.Strings(gotProjectNames)
+	if !reflect.DeepEqual(gotProjectNames, wantProjectNames) {
+		t.Errorf("ListProjects got %v want %v", gotProjectNames, wantProjectNames)
 	}
 }
 

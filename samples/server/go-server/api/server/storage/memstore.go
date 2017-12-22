@@ -16,7 +16,6 @@ package storage
 
 import (
 	"fmt"
-	"sort"
 	"strings"
 
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/name"
@@ -68,14 +67,13 @@ func (m *memStore) GetProject(pID string) (*pb.Project, error) {
 }
 
 // ListProjects returns the project id for all projects from the mem store
-func (m *memStore) ListProjects(filters string) []string {
-	projects := make([]string, len(m.projects))
+func (m *memStore) ListProjects(filters string) []*pb.Project {
+	projects := make([]*pb.Project, len(m.projects))
 	i := 0
 	for k := range m.projects {
-		projects[i] = name.FormatProject(k)
+		projects[i] = &pb.Project{Name: name.FormatProject(k)}
 		i++
 	}
-	sort.Strings(projects)
 	return projects
 }
 
