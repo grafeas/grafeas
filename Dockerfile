@@ -1,5 +1,5 @@
 FROM golang:1.9
-RUN go get github.com/grafeas/grafeas/samples/server/go-server/api/server
+COPY . /go/src/github.com/grafeas/grafeas/
 WORKDIR /go/src/github.com/grafeas/grafeas/samples/server/go-server/api/server/main
 RUN CGO_ENABLED=0 go build -o grafeas-server .
 
