@@ -16,6 +16,7 @@ package storage
 
 import (
 	"fmt"
+	"sync"
 
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/name"
 	"github.com/grafeas/grafeas/server-go"
@@ -26,16 +27,19 @@ import (
 
 // projectMemStore is an in-memory storage solution for Grafeas
 type projectMemStore struct {
+	sync.RWMutex
 	projects map[string]bool
 }
 
 // NewMemStore creates a memStore with all maps initialized.
 func NewProjectMemStore() server.ProjectStorager {
-	return &projectMemStore{make(map[string]bool)}
+	return &projectMemStore{sync.RWMutex{}, make(map[string]bool)}
 }
 
 // CreateProject adds the specified project to the mem store
 func (m *projectMemStore) CreateProject(pID string) error {
+	m.Lock()
+	defer m.Unlock()
 	if _, ok := m.projects[pID]; ok {
 		return status.Error(codes.AlreadyExists, fmt.Sprintf("Project with name %q already exists", pID))
 	}
@@ -45,6 +49,8 @@ func (m *projectMemStore) CreateProject(pID string) error {
 
 // DeleteProject deletes the project with the given pID from the mem store
 func (m *projectMemStore) DeleteProject(pID string) error {
+	m.Lock()
+	defer m.Unlock()
 	if _, ok := m.projects[pID]; !ok {
 		return status.Error(codes.NotFound, fmt.Sprintf("Project with name %q does not Exist", pID))
 	}
@@ -54,6 +60,8 @@ func (m *projectMemStore) DeleteProject(pID string) error {
 
 // GetProject returns the project with the given pID from the mem store
 func (m *projectMemStore) GetProject(pID string) (*pb.Project, error) {
+	m.RLock()
+	defer m.RUnlock()
 	if _, ok := m.projects[pID]; !ok {
 		return nil, status.Error(codes.NotFound, fmt.Sprintf("Project with name %q does not Exist", pID))
 	}
@@ -62,6 +70,8 @@ func (m *projectMemStore) GetProject(pID string) (*pb.Project, error) {
 
 // ListProjects returns the project id for all projects from the mem store
 func (m *projectMemStore) ListProjects(filters string) []*pb.Project {
+	m.RLock()
+	defer m.RUnlock()
 	projects := make([]*pb.Project, len(m.projects))
 	i := 0
 	for k := range m.projects {

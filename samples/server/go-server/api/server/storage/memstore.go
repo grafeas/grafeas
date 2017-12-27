@@ -17,6 +17,7 @@ package storage
 import (
 	"fmt"
 	"strings"
+	"sync"
 
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/name"
 	"github.com/grafeas/grafeas/server-go"
@@ -28,6 +29,7 @@ import (
 
 // memStore is an in-memory storage solution for Grafeas
 type memStore struct {
+	sync.RWMutex
 	occurrencesByID map[string]*pb.Occurrence
 	notesByID       map[string]*pb.Note
 	opsByID         map[string]*opspb.Operation
@@ -35,12 +37,14 @@ type memStore struct {
 
 // NewMemStore creates a memStore with all maps initialized.
 func NewMemStore() server.Storager {
-	return &memStore{make(map[string]*pb.Occurrence), make(map[string]*pb.Note),
+	return &memStore{sync.RWMutex{}, make(map[string]*pb.Occurrence), make(map[string]*pb.Note),
 		make(map[string]*opspb.Operation)}
 }
 
 // CreateOccurrence adds the specified occurrence to the mem store
 func (m *memStore) CreateOccurrence(o *pb.Occurrence) error {
+	m.Lock()
+	defer m.Unlock()
 	if _, ok := m.occurrencesByID[o.Name]; ok {
 		return status.Error(codes.AlreadyExists, fmt.Sprintf("Occurrence with name %q already exists", o.Name))
 	}
@@ -51,6 +55,8 @@ func (m *memStore) CreateOccurrence(o *pb.Occurrence) error {
 // DeleteOccurrence deletes the occurrence with the given pID and oID from the memStore
 func (m *memStore) DeleteOccurrence(pID, oID string) error {
 	oName := name.OccurrenceName(pID, oID)
+	m.Lock()
+	defer m.Unlock()
 	if _, ok := m.occurrencesByID[oName]; !ok {
 		return status.Error(codes.NotFound, fmt.Sprintf("Occurrence with oName %q does not Exist", oName))
 	}
@@ -61,6 +67,8 @@ func (m *memStore) DeleteOccurrence(pID, oID string) error {
 // UpdateOccurrence updates the existing occurrence with the given projectID and occurrenceID
 func (m *memStore) UpdateOccurrence(pID, oID string, o *pb.Occurrence) error {
 	oName := name.OccurrenceName(pID, oID)
+	m.Lock()
+	defer m.Unlock()
 	if _, ok := m.occurrencesByID[oName]; !ok {
 		return status.Error(codes.NotFound, fmt.Sprintf("Occurrence with oName %q does not Exist", oName))
 	}
@@ -71,6 +79,8 @@ func (m *memStore) UpdateOccurrence(pID, oID string, o *pb.Occurrence) error {
 // GetOccurrence returns the occurrence with pID and oID
 func (m *memStore) GetOccurrence(pID, oID string) (*pb.Occurrence, error) {
 	oName := name.OccurrenceName(pID, oID)
+	m.RLock()
+	defer m.RUnlock()
 	o, ok := m.occurrencesByID[oName]
 	if !ok {
 		return nil, status.Error(codes.NotFound, fmt.Sprintf("Occurrence with name %q does not Exist", oName))
@@ -81,6 +91,8 @@ func (m *memStore) GetOccurrence(pID, oID string) (*pb.Occurrence, error) {
 // ListOccurrences returns the occurrences for this project ID (pID)
 func (m *memStore) ListOccurrences(pID, filters string) []*pb.Occurrence {
 	os := []*pb.Occurrence{}
+	m.RLock()
+	defer m.RUnlock()
 	for _, o := range m.occurrencesByID {
 		if strings.HasPrefix(o.Name, fmt.Sprintf("projects/%v", pID)) {
 			os = append(os, o)
@@ -91,6 +103,8 @@ func (m *memStore) ListOccurrences(pID, filters string) []*pb.Occurrence {
 
 // CreateNote adds the specified note to the mem store
 func (m *memStore) CreateNote(n *pb.Note) error {
+	m.Lock()
+	defer m.Unlock()
 	if _, ok := m.notesByID[n.Name]; ok {
 		return status.Error(codes.AlreadyExists, fmt.Sprintf("Note with name %q already exists", n.Name))
 	}
@@ -101,6 +115,8 @@ func (m *memStore) CreateNote(n *pb.Note) error {
 // DeleteNote deletes the note with the given pID and nID from the memStore
 func (m *memStore) DeleteNote(pID, nID string) error {
 	nName := name.NoteName(pID, nID)
+	m.Lock()
+	defer m.Unlock()
 	if _, ok := m.notesByID[nName]; !ok {
 		return status.Error(codes.NotFound, fmt.Sprintf("Note with name %q does not Exist", nName))
 	}
@@ -111,6 +127,8 @@ func (m *memStore) DeleteNote(pID, nID string) error {
 // UpdateNote updates the existing note with the given pID and nID
 func (m *memStore) UpdateNote(pID, nID string, n *pb.Note) error {
 	nName := name.NoteName(pID, nID)
+	m.Lock()
+	defer m.Unlock()
 	if _, ok := m.notesByID[nName]; !ok {
 		return status.Error(codes.NotFound, fmt.Sprintf("Note with name %q does not Exist", nName))
 	}
@@ -121,6 +139,8 @@ func (m *memStore) UpdateNote(pID, nID string, n *pb.Note) error {
 // GetNote returns the note with pID and nID
 func (m *memStore) GetNote(pID, nID string) (*pb.Note, error) {
 	nName := name.NoteName(pID, nID)
+	m.RLock()
+	defer m.RUnlock()
 	n, ok := m.notesByID[nName]
 	if !ok {
 		return nil, status.Error(codes.NotFound, fmt.Sprintf("Note with name %q does not Exist", nName))
@@ -131,6 +151,8 @@ func (m *memStore) GetNote(pID, nID string) (*pb.Note, error) {
 // GetNoteByOccurrence returns the note attached to occurrence with pID and oID
 func (m *memStore) GetNoteByOccurrence(pID, oID string) (*pb.Note, error) {
 	oName := name.OccurrenceName(pID, oID)
+	m.RLock()
+	defer m.RUnlock()
 	o, ok := m.occurrencesByID[oName]
 	if !ok {
 		return nil, status.Error(codes.NotFound, fmt.Sprintf("Occurrence with name %q does not Exist", oName))
@@ -145,6 +167,8 @@ func (m *memStore) GetNoteByOccurrence(pID, oID string) (*pb.Note, error) {
 // ListNotes returns the notes for for this project (pID)
 func (m *memStore) ListNotes(pID, filters string) []*pb.Note {
 	ns := []*pb.Note{}
+	m.RLock()
+	defer m.RUnlock()
 	for _, n := range m.notesByID {
 		if strings.HasPrefix(n.Name, fmt.Sprintf("projects/%v", pID)) {
 			ns = append(ns, n)
@@ -162,6 +186,8 @@ func (m *memStore) ListNoteOccurrences(pID, nID, filters string) ([]*pb.Occurren
 	}
 	nName := name.FormatNote(pID, nID)
 	os := []*pb.Occurrence{}
+	m.RLock()
+	defer m.RUnlock()
 	for _, o := range m.occurrencesByID {
 		if o.NoteName == nName {
 			os = append(os, o)
@@ -173,6 +199,8 @@ func (m *memStore) ListNoteOccurrences(pID, nID, filters string) ([]*pb.Occurren
 // GetOperation returns the operation with pID and oID
 func (m *memStore) GetOperation(pID, opID string) (*opspb.Operation, error) {
 	oName := name.OperationName(pID, opID)
+	m.RLock()
+	defer m.RUnlock()
 	o, ok := m.opsByID[oName]
 	if !ok {
 		return nil, status.Error(codes.NotFound, fmt.Sprintf("Operation with name %q does not Exist", oName))
@@ -182,6 +210,8 @@ func (m *memStore) GetOperation(pID, opID string) (*opspb.Operation, error) {
 
 // CreateOperation adds the specified operation to the mem store
 func (m *memStore) CreateOperation(o *opspb.Operation) error {
+	m.Lock()
+	defer m.Unlock()
 	if _, ok := m.opsByID[o.Name]; ok {
 		return status.Error(codes.AlreadyExists, fmt.Sprintf("Operation with name %q already exists", o.Name))
 	}
@@ -192,6 +222,8 @@ func (m *memStore) CreateOperation(o *opspb.Operation) error {
 // DeleteOperation deletes the operation with the given pID and oID from the memStore
 func (m *memStore) DeleteOperation(pID, opID string) error {
 	opName := name.OperationName(pID, opID)
+	m.Lock()
+	defer m.Unlock()
 	if _, ok := m.opsByID[opName]; !ok {
 		return status.Error(codes.NotFound, fmt.Sprintf("Operation with name %q does not Exist", opName))
 	}
@@ -202,6 +234,8 @@ func (m *memStore) DeleteOperation(pID, opID string) error {
 // UpdateOperation updates the existing operation with the given pID and nID
 func (m *memStore) UpdateOperation(pID, opID string, op *opspb.Operation) error {
 	opName := name.OperationName(pID, opID)
+	m.Lock()
+	defer m.Unlock()
 	if _, ok := m.opsByID[opName]; !ok {
 		return status.Error(codes.NotFound, fmt.Sprintf("Operation with name %q does not Exist", opName))
 	}
@@ -212,6 +246,8 @@ func (m *memStore) UpdateOperation(pID, opID string, op *opspb.Operation) error 
 // ListOperations returns the operations for this project (pID)
 func (m *memStore) ListOperations(pID, filters string) []*opspb.Operation {
 	ops := []*opspb.Operation{}
+	m.RLock()
+	defer m.RUnlock()
 	for _, op := range m.opsByID {
 		if strings.HasPrefix(op.Name, fmt.Sprintf("projects/%v", pID)) {
 			ops = append(ops, op)
