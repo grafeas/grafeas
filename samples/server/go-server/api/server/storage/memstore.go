@@ -42,7 +42,7 @@ func NewMemStore() server.Storager {
 // CreateOccurrence adds the specified occurrence to the mem store
 func (m *memStore) CreateOccurrence(o *pb.Occurrence) error {
 	if _, ok := m.occurrencesByID[o.Name]; ok {
-		return status.Error(codes.InvalidArgument, fmt.Sprintf("Occurrence with name %q already exists", o.Name))
+		return status.Error(codes.AlreadyExists, fmt.Sprintf("Occurrence with name %q already exists", o.Name))
 	}
 	m.occurrencesByID[o.Name] = o
 	return nil
@@ -52,7 +52,7 @@ func (m *memStore) CreateOccurrence(o *pb.Occurrence) error {
 func (m *memStore) DeleteOccurrence(pID, oID string) error {
 	oName := name.OccurrenceName(pID, oID)
 	if _, ok := m.occurrencesByID[oName]; !ok {
-		return status.Error(codes.InvalidArgument, fmt.Sprintf("Occurrence with oName %q does not Exist", oName))
+		return status.Error(codes.NotFound, fmt.Sprintf("Occurrence with oName %q does not Exist", oName))
 	}
 	delete(m.occurrencesByID, oName)
 	return nil
@@ -62,7 +62,7 @@ func (m *memStore) DeleteOccurrence(pID, oID string) error {
 func (m *memStore) UpdateOccurrence(pID, oID string, o *pb.Occurrence) error {
 	oName := name.OccurrenceName(pID, oID)
 	if _, ok := m.occurrencesByID[oName]; !ok {
-		return status.Error(codes.InvalidArgument, fmt.Sprintf("Occurrence with oName %q does not Exist", oName))
+		return status.Error(codes.NotFound, fmt.Sprintf("Occurrence with oName %q does not Exist", oName))
 	}
 	m.occurrencesByID[oName] = o
 	return nil
@@ -73,7 +73,7 @@ func (m *memStore) GetOccurrence(pID, oID string) (*pb.Occurrence, error) {
 	oName := name.OccurrenceName(pID, oID)
 	o, ok := m.occurrencesByID[oName]
 	if !ok {
-		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("Occurrence with name %q does not Exist", oName))
+		return nil, status.Error(codes.NotFound, fmt.Sprintf("Occurrence with name %q does not Exist", oName))
 	}
 	return o, nil
 }
@@ -92,7 +92,7 @@ func (m *memStore) ListOccurrences(pID, filters string) []*pb.Occurrence {
 // CreateNote adds the specified note to the mem store
 func (m *memStore) CreateNote(n *pb.Note) error {
 	if _, ok := m.notesByID[n.Name]; ok {
-		return status.Error(codes.InvalidArgument, fmt.Sprintf("Note with name %q already exists", n.Name))
+		return status.Error(codes.AlreadyExists, fmt.Sprintf("Note with name %q already exists", n.Name))
 	}
 	m.notesByID[n.Name] = n
 	return nil
@@ -102,7 +102,7 @@ func (m *memStore) CreateNote(n *pb.Note) error {
 func (m *memStore) DeleteNote(pID, nID string) error {
 	nName := name.NoteName(pID, nID)
 	if _, ok := m.notesByID[nName]; !ok {
-		return status.Error(codes.InvalidArgument, fmt.Sprintf("Note with name %q does not Exist", nName))
+		return status.Error(codes.NotFound, fmt.Sprintf("Note with name %q does not Exist", nName))
 	}
 	delete(m.notesByID, nName)
 	return nil
@@ -112,7 +112,7 @@ func (m *memStore) DeleteNote(pID, nID string) error {
 func (m *memStore) UpdateNote(pID, nID string, n *pb.Note) error {
 	nName := name.NoteName(pID, nID)
 	if _, ok := m.notesByID[nName]; !ok {
-		return status.Error(codes.InvalidArgument, fmt.Sprintf("Note with name %q does not Exist", nName))
+		return status.Error(codes.NotFound, fmt.Sprintf("Note with name %q does not Exist", nName))
 	}
 	m.notesByID[nName] = n
 	return nil
@@ -123,7 +123,7 @@ func (m *memStore) GetNote(pID, nID string) (*pb.Note, error) {
 	nName := name.NoteName(pID, nID)
 	n, ok := m.notesByID[nName]
 	if !ok {
-		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("Note with name %q does not Exist", nName))
+		return nil, status.Error(codes.NotFound, fmt.Sprintf("Note with name %q does not Exist", nName))
 	}
 	return n, nil
 }
@@ -133,11 +133,11 @@ func (m *memStore) GetNoteByOccurrence(pID, oID string) (*pb.Note, error) {
 	oName := name.OccurrenceName(pID, oID)
 	o, ok := m.occurrencesByID[oName]
 	if !ok {
-		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("Occurrence with name %q does not Exist", oName))
+		return nil, status.Error(codes.NotFound, fmt.Sprintf("Occurrence with name %q does not Exist", oName))
 	}
 	n, ok := m.notesByID[o.NoteName]
 	if !ok {
-		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("Note with name %q does not Exist", o.NoteName))
+		return nil, status.Error(codes.NotFound, fmt.Sprintf("Note with name %q does not Exist", o.NoteName))
 	}
 	return n, nil
 }
@@ -175,7 +175,7 @@ func (m *memStore) GetOperation(pID, opID string) (*opspb.Operation, error) {
 	oName := name.OperationName(pID, opID)
 	o, ok := m.opsByID[oName]
 	if !ok {
-		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("Operation with name %q does not Exist", oName))
+		return nil, status.Error(codes.NotFound, fmt.Sprintf("Operation with name %q does not Exist", oName))
 	}
 	return o, nil
 }
@@ -183,7 +183,7 @@ func (m *memStore) GetOperation(pID, opID string) (*opspb.Operation, error) {
 // CreateOperation adds the specified operation to the mem store
 func (m *memStore) CreateOperation(o *opspb.Operation) error {
 	if _, ok := m.opsByID[o.Name]; ok {
-		return status.Error(codes.InvalidArgument, fmt.Sprintf("Operation with name %q already exists", o.Name))
+		return status.Error(codes.AlreadyExists, fmt.Sprintf("Operation with name %q already exists", o.Name))
 	}
 	m.opsByID[o.Name] = o
 	return nil
@@ -193,7 +193,7 @@ func (m *memStore) CreateOperation(o *opspb.Operation) error {
 func (m *memStore) DeleteOperation(pID, opID string) error {
 	opName := name.OperationName(pID, opID)
 	if _, ok := m.opsByID[opName]; !ok {
-		return status.Error(codes.InvalidArgument, fmt.Sprintf("Operation with name %q does not Exist", opName))
+		return status.Error(codes.NotFound, fmt.Sprintf("Operation with name %q does not Exist", opName))
 	}
 	delete(m.occurrencesByID, opName)
 	return nil
@@ -203,7 +203,7 @@ func (m *memStore) DeleteOperation(pID, opID string) error {
 func (m *memStore) UpdateOperation(pID, opID string, op *opspb.Operation) error {
 	opName := name.OperationName(pID, opID)
 	if _, ok := m.opsByID[opName]; !ok {
-		return status.Error(codes.InvalidArgument, fmt.Sprintf("Operation with name %q does not Exist", opName))
+		return status.Error(codes.NotFound, fmt.Sprintf("Operation with name %q does not Exist", opName))
 	}
 	m.opsByID[opName] = op
 	return nil

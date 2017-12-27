@@ -37,7 +37,7 @@ func NewProjectMemStore() server.ProjectStorager {
 // CreateProject adds the specified project to the mem store
 func (m *projectMemStore) CreateProject(pID string) error {
 	if _, ok := m.projects[pID]; ok {
-		return status.Error(codes.InvalidArgument, fmt.Sprintf("Project with name %q already exists", pID))
+		return status.Error(codes.AlreadyExists, fmt.Sprintf("Project with name %q already exists", pID))
 	}
 	m.projects[pID] = true
 	return nil
@@ -46,7 +46,7 @@ func (m *projectMemStore) CreateProject(pID string) error {
 // DeleteProject deletes the project with the given pID from the mem store
 func (m *projectMemStore) DeleteProject(pID string) error {
 	if _, ok := m.projects[pID]; !ok {
-		return status.Error(codes.InvalidArgument, fmt.Sprintf("Project with name %q does not Exist", pID))
+		return status.Error(codes.NotFound, fmt.Sprintf("Project with name %q does not Exist", pID))
 	}
 	delete(m.projects, pID)
 	return nil
@@ -55,7 +55,7 @@ func (m *projectMemStore) DeleteProject(pID string) error {
 // GetProject returns the project with the given pID from the mem store
 func (m *projectMemStore) GetProject(pID string) (*pb.Project, error) {
 	if _, ok := m.projects[pID]; !ok {
-		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("Project with name %q does not Exist", pID))
+		return nil, status.Error(codes.NotFound, fmt.Sprintf("Project with name %q does not Exist", pID))
 	}
 	return &pb.Project{Name: name.FormatProject(pID)}, nil
 }

@@ -38,8 +38,8 @@ func TestCreateNote(t *testing.T) {
 	// Try to insert the same note twice, expect failure.
 	if err := s.CreateNote(n); err == nil {
 		t.Errorf("CreateNote got success, want Error")
-	} else if s, _ := status.FromError(err); s.Code() != codes.InvalidArgument {
-		t.Errorf("CreateNote got code %v want %v", s.Code(), codes.InvalidArgument)
+	} else if s, _ := status.FromError(err); s.Code() != codes.AlreadyExists {
+		t.Errorf("CreateNote got code %v want %v", s.Code(), codes.AlreadyExists)
 	}
 }
 
@@ -58,8 +58,8 @@ func TestCreateOccurrence(t *testing.T) {
 	// Try to insert the same occurrence twice, expect failure.
 	if err := s.CreateOccurrence(o); err == nil {
 		t.Errorf("CreateOccurrence got success, want Error")
-	} else if s, _ := status.FromError(err); s.Code() != codes.InvalidArgument {
-		t.Errorf("CreateOccurrence got code %v want %v", s.Code(), codes.InvalidArgument)
+	} else if s, _ := status.FromError(err); s.Code() != codes.AlreadyExists {
+		t.Errorf("CreateOccurrence got code %v want %v", s.Code(), codes.AlreadyExists)
 	}
 	pID, oID, err := name.ParseOccurrence(o.Name)
 	if err != nil {
@@ -82,8 +82,8 @@ func TestCreateOperation(t *testing.T) {
 	// Try to insert the same note twice, expect failure.
 	if err := s.CreateOperation(op); err == nil {
 		t.Errorf("CreateOperation got success, want Error")
-	} else if s, _ := status.FromError(err); s.Code() != codes.InvalidArgument {
-		t.Errorf("CreateOperation got code %v want %v", s.Code(), codes.InvalidArgument)
+	} else if s, _ := status.FromError(err); s.Code() != codes.AlreadyExists {
+		t.Errorf("CreateOperation got code %v want %v", s.Code(), codes.AlreadyExists)
 	}
 }
 

@@ -35,8 +35,8 @@ func TestCreateProject(t *testing.T) {
 	// Try to insert the same project twice, expect failure.
 	if err := ps.CreateProject(p); err == nil {
 		t.Errorf("CreateProject got success, want Error")
-	} else if s, _ := status.FromError(err); s.Code() != codes.InvalidArgument {
-		t.Errorf("CreateProject got code %v want %v", s.Code(), codes.InvalidArgument)
+	} else if s, _ := status.FromError(err); s.Code() != codes.AlreadyExists {
+		t.Errorf("CreateProject got code %v want %v", s.Code(), codes.AlreadyExists)
 	}
 }
 
@@ -62,8 +62,8 @@ func TestGetProject(t *testing.T) {
 	// Try to get project before it has been created, expect failure.
 	if _, err := ps.GetProject(pID); err == nil {
 		t.Errorf("GetProject got success, want Error")
-	} else if s, _ := status.FromError(err); s.Code() != codes.InvalidArgument {
-		t.Errorf("GetProject got code %v want %v", s.Code(), codes.InvalidArgument)
+	} else if s, _ := status.FromError(err); s.Code() != codes.NotFound {
+		t.Errorf("GetProject got code %v want %v", s.Code(), codes.NotFound)
 	}
 	ps.CreateProject(pID)
 	if p, err := ps.GetProject(pID); err != nil {

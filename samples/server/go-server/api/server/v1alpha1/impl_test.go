@@ -47,8 +47,8 @@ func TestCreateProject(t *testing.T) {
 		t.Errorf("CreateProject(empty operation): got %v, want success", err)
 	}
 	_, err = gp.CreateProject(ctx, &req)
-	if s, _ := status.FromError(err); s.Code() != codes.InvalidArgument {
-		t.Errorf("CreateProject(empty operation): got %v, want InvalidArgument", err)
+	if s, _ := status.FromError(err); s.Code() != codes.AlreadyExists {
+		t.Errorf("CreateProject(empty operation): got %v, want AlreadyExists", err)
 	}
 }
 
