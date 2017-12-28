@@ -180,14 +180,14 @@ func (m *memStore) ListNotes(pID, filters string) []*pb.Note {
 // ListNoteOccurrences returns the occcurrences on the particular note (nID) for this project (pID)
 func (m *memStore) ListNoteOccurrences(pID, nID, filters string) ([]*pb.Occurrence, error) {
 	// TODO: use filters
+	m.RLock()
+	defer m.RUnlock()
 	// Verify that note exists
 	if _, err := m.GetNote(pID, nID); err != nil {
 		return nil, err
 	}
 	nName := name.FormatNote(pID, nID)
 	os := []*pb.Occurrence{}
-	m.RLock()
-	defer m.RUnlock()
 	for _, o := range m.occurrencesByID {
 		if o.NoteName == nName {
 			os = append(os, o)
