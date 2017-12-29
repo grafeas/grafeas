@@ -69,8 +69,8 @@ func TestCreateOperation(t *testing.T) {
 	req = pb.CreateOperationRequest{Parent: parent, Operation: op}
 	if _, err := g.CreateOperation(ctx, &req); err == nil {
 		t.Error("CreateOperation: got success, want error")
-	} else if s, _ := status.FromError(err); s.Code() != codes.InvalidArgument {
-		t.Errorf("CreateOperation: got %v, want InvalidArgument)", err)
+	} else if s, _ := status.FromError(err); s.Code() != codes.NotFound {
+		t.Errorf("CreateOperation: got %v, want NotFound)", err)
 	}
 	createProject(t, pID, ctx, gp)
 	if _, err := g.CreateOperation(ctx, &req); error(err) != nil {
@@ -103,8 +103,8 @@ func TestCreateOccurrence(t *testing.T) {
 	// Try to insert an occurrence without first creating its project, expect failure
 	if _, err := g.CreateOccurrence(ctx, oReq); err == nil {
 		t.Error("CreateOccurrence: got success, want error")
-	} else if s, _ := status.FromError(err); s.Code() != codes.InvalidArgument {
-		t.Errorf("CreateOccurrence: got %v, want InvalidArgument)", err)
+	} else if s, _ := status.FromError(err); s.Code() != codes.NotFound {
+		t.Errorf("CreateOccurrence: got %v, want NotFound)", err)
 	}
 	createProject(t, pID, ctx, gp)
 	if _, err := g.CreateOccurrence(ctx, oReq); err != nil {
@@ -116,8 +116,8 @@ func TestCreateOccurrence(t *testing.T) {
 	oReq = &pb.CreateOccurrenceRequest{Parent: "projects/testproject", Occurrence: o}
 	if _, err := g.CreateOccurrence(ctx, oReq); err == nil {
 		t.Errorf("CreateOccurrence got success, want Error")
-	} else if s, _ := status.FromError(err); s.Code() != codes.InvalidArgument {
-		t.Errorf("CreateOccurrence got code %v want %v", err, codes.InvalidArgument)
+	} else if s, _ := status.FromError(err); s.Code() != codes.NotFound {
+		t.Errorf("CreateOccurrence got code %v want %v", err, codes.NotFound)
 	}
 }
 
@@ -140,8 +140,8 @@ func TestCreateNote(t *testing.T) {
 	req = &pb.CreateNoteRequest{Parent: parent, Note: n}
 	if _, err := g.CreateNote(ctx, req); err == nil {
 		t.Error("CreateNote: got success, want error")
-	} else if s, _ := status.FromError(err); s.Code() != codes.InvalidArgument {
-		t.Errorf("CreateNote: got %v, want InvalidArgument)", err)
+	} else if s, _ := status.FromError(err); s.Code() != codes.NotFound {
+		t.Errorf("CreateNote: got %v, want NotFound)", err)
 	}
 	createProject(t, pID, ctx, gp)
 	if _, err := g.CreateNote(ctx, req); err != nil {

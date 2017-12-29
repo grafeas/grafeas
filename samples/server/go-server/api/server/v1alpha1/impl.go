@@ -54,7 +54,7 @@ func (g *Grafeas) CreateNote(ctx context.Context, req *pb.CreateNoteRequest) (*p
 	}
 	if _, err = g.Projects.GetProject(ctx, &pb.GetProjectRequest{Name: name.FormatProject(pID)}); err != nil {
 		log.Printf("Unable to get project %v, err: %v", pID, err)
-		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("Project %v not found", pID))
+		return nil, status.Error(codes.NotFound, fmt.Sprintf("Project %v not found", pID))
 	}
 
 	// TODO: Validate that operation exists if it is specified when get methods are implmented
@@ -78,7 +78,7 @@ func (g *Grafeas) CreateOccurrence(ctx context.Context, req *pb.CreateOccurrence
 	pID, _, err := name.ParseOccurrence(o.Name)
 	if _, err = g.Projects.GetProject(ctx, &pb.GetProjectRequest{Name: name.FormatProject(pID)}); err != nil {
 		log.Printf("Unable to get project %v, err: %v", pID, err)
-		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("Project %v not found", pID))
+		return nil, status.Error(codes.NotFound, fmt.Sprintf("Project %v not found", pID))
 	}
 	pID, nID, err := name.ParseNote(o.NoteName)
 	if err != nil {
@@ -87,7 +87,7 @@ func (g *Grafeas) CreateOccurrence(ctx context.Context, req *pb.CreateOccurrence
 	}
 	if n, err := g.S.GetNote(pID, nID); n == nil || err != nil {
 		log.Printf("Unable to getnote %v, err: %v", n, err)
-		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("Note %v not found", o.NoteName))
+		return nil, status.Error(codes.NotFound, fmt.Sprintf("Note %v not found", o.NoteName))
 	}
 	// TODO: Validate that operation exists if it is specified
 	return o, g.S.CreateOccurrence(o)
@@ -103,7 +103,7 @@ func (g *Grafeas) CreateOperation(ctx context.Context, req *pb.CreateOperationRe
 	pID, _, err := name.ParseOperation(o.Name)
 	if _, err = g.Projects.GetProject(ctx, &pb.GetProjectRequest{Name: name.FormatProject(pID)}); err != nil {
 		log.Printf("Unable to get project %v, err: %v", pID, err)
-		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("Project %v not found", pID))
+		return nil, status.Error(codes.NotFound, fmt.Sprintf("Project %v not found", pID))
 	}
 	return o, g.S.CreateOperation(o)
 }
