@@ -33,7 +33,9 @@ type projectMemStore struct {
 
 // NewMemStore creates a memStore with all maps initialized.
 func NewProjectMemStore() server.ProjectStorager {
-	return &projectMemStore{sync.RWMutex{}, make(map[string]bool)}
+	return &projectMemStore{
+		projects: map[string]bool{},
+	}
 }
 
 // CreateProject adds the specified project to the mem store

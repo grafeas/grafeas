@@ -37,8 +37,11 @@ type memStore struct {
 
 // NewMemStore creates a memStore with all maps initialized.
 func NewMemStore() server.Storager {
-	return &memStore{sync.RWMutex{}, make(map[string]*pb.Occurrence), make(map[string]*pb.Note),
-		make(map[string]*opspb.Operation)}
+	return &memStore{
+		occurrencesByID: map[string]*pb.Occurrence{},
+		notesByID:       map[string]*pb.Note{},
+		opsByID:         map[string]*opspb.Operation{},
+	}
 }
 
 // CreateOccurrence adds the specified occurrence to the mem store
