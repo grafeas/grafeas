@@ -15,6 +15,9 @@
 package storage
 
 import (
+	"fmt"
+	"sort"
+
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/name"
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/testing"
 
@@ -27,6 +30,20 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
+
+func TestCreateProject(t *testing.T) {
+	s := NewMemStore()
+	p := "myproject"
+	if err := s.CreateProject(p); err != nil {
+		t.Errorf("CreateProject got %v want success", err)
+	}
+	// Try to insert the same project twice, expect failure.
+	if err := s.CreateProject(p); err == nil {
+		t.Errorf("CreateProject got success, want Error")
+	} else if s, _ := status.FromError(err); s.Code() != codes.AlreadyExists {
+		t.Errorf("CreateProject got code %v want %v", s.Code(), codes.AlreadyExists)
+	}
+}
 
 func TestCreateNote(t *testing.T) {
 	s := NewMemStore()
@@ -84,6 +101,21 @@ func TestCreateOperation(t *testing.T) {
 		t.Errorf("CreateOperation got success, want Error")
 	} else if s, _ := status.FromError(err); s.Code() != codes.AlreadyExists {
 		t.Errorf("CreateOperation got code %v want %v", s.Code(), codes.AlreadyExists)
+	}
+}
+func TestDeleteProject(t *testing.T) {
+	s := NewMemStore()
+	pID := "myproject"
+	// Delete before the note exists
+	if err := s.DeleteProject(pID); err == nil {
+		t.Error("Deleting nonexistant note got success, want error")
+	}
+	if err := s.CreateProject(pID); err != nil {
+		t.Fatalf("CreateProject got %v want success", err)
+	}
+
+	if err := s.DeleteProject(pID); err != nil {
+		t.Errorf("DeleteProject got %v, want success ", err)
 	}
 }
 
@@ -202,6 +234,23 @@ func TestUpdateNote(t *testing.T) {
 		t.Fatalf("GetNote got %v, want success", err)
 	} else if !reflect.DeepEqual(got, n2) {
 		t.Errorf("GetNote got %v, want %v", got, n2)
+	}
+}
+
+func TestGetProject(t *testing.T) {
+	s := NewMemStore()
+	pID := "myproject"
+	// Try to get project before it has been created, expect failure.
+	if _, err := s.GetProject(pID); err == nil {
+		t.Errorf("GetProject got success, want Error")
+	} else if s, _ := status.FromError(err); s.Code() != codes.NotFound {
+		t.Errorf("GetProject got code %v want %v", s.Code(), codes.NotFound)
+	}
+	s.CreateProject(pID)
+	if p, err := s.GetProject(pID); err != nil {
+		t.Fatalf("GetProject got %v want success", err)
+	} else if p.Name != name.FormatProject(pID) {
+		t.Fatalf("Got %s want %s", p.Name, pID)
 	}
 }
 
@@ -353,6 +402,33 @@ func TestUpdateOperation(t *testing.T) {
 		t.Fatalf("GetOperation got %v, want success", err)
 	} else if !reflect.DeepEqual(got, o2) {
 		t.Errorf("GetOperation got %v, want %v", got, o2)
+	}
+}
+
+func TestListProjects(t *testing.T) {
+	s := NewMemStore()
+	wantProjectNames := []string{}
+	for i := 0; i < 20; i++ {
+		pID := fmt.Sprint("Project", i)
+		if err := s.CreateProject(pID); err != nil {
+			t.Fatalf("CreateProject got %v want success", err)
+		}
+		wantProjectNames = append(wantProjectNames, name.FormatProject(pID))
+	}
+	filter := "filters_are_yet_to_be_implemented"
+	gotProjects := s.ListProjects(filter)
+	if len(gotProjects) != 20 {
+		t.Errorf("ListProjects got %v operations, want 20", len(gotProjects))
+	}
+	gotProjectNames := make([]string, len(gotProjects))
+	for i, project := range gotProjects {
+		gotProjectNames[i] = project.Name
+	}
+	// Sort to handle that wantProjectNames are not guaranteed to be listed in insertion order
+	sort.Strings(wantProjectNames)
+	sort.Strings(gotProjectNames)
+	if !reflect.DeepEqual(gotProjectNames, wantProjectNames) {
+		t.Errorf("ListProjects got %v want %v", gotProjectNames, wantProjectNames)
 	}
 }
 

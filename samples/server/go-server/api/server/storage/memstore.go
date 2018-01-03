@@ -33,6 +33,7 @@ type memStore struct {
 	occurrencesByID map[string]*pb.Occurrence
 	notesByID       map[string]*pb.Note
 	opsByID         map[string]*opspb.Operation
+	projects        map[string]bool
 }
 
 // NewMemStore creates a memStore with all maps initialized.
@@ -41,7 +42,53 @@ func NewMemStore() server.Storager {
 		occurrencesByID: map[string]*pb.Occurrence{},
 		notesByID:       map[string]*pb.Note{},
 		opsByID:         map[string]*opspb.Operation{},
+		projects:        map[string]bool{},
 	}
+}
+
+// CreateProject adds the specified project to the mem store
+func (m *memStore) CreateProject(pID string) error {
+	m.Lock()
+	defer m.Unlock()
+	if _, ok := m.projects[pID]; ok {
+		return status.Error(codes.AlreadyExists, fmt.Sprintf("Project with name %q already exists", pID))
+	}
+	m.projects[pID] = true
+	return nil
+}
+
+// DeleteProject deletes the project with the given pID from the mem store
+func (m *memStore) DeleteProject(pID string) error {
+	m.Lock()
+	defer m.Unlock()
+	if _, ok := m.projects[pID]; !ok {
+		return status.Error(codes.NotFound, fmt.Sprintf("Project with name %q does not Exist", pID))
+	}
+	delete(m.projects, pID)
+	return nil
+}
+
+// GetProject returns the project with the given pID from the mem store
+func (m *memStore) GetProject(pID string) (*pb.Project, error) {
+	m.RLock()
+	defer m.RUnlock()
+	if _, ok := m.projects[pID]; !ok {
+		return nil, status.Error(codes.NotFound, fmt.Sprintf("Project with name %q does not Exist", pID))
+	}
+	return &pb.Project{Name: name.FormatProject(pID)}, nil
+}
+
+// ListProjects returns the project id for all projects from the mem store
+func (m *memStore) ListProjects(filters string) []*pb.Project {
+	m.RLock()
+	defer m.RUnlock()
+	projects := make([]*pb.Project, len(m.projects))
+	i := 0
+	for k := range m.projects {
+		projects[i] = &pb.Project{Name: name.FormatProject(k)}
+		i++
+	}
+	return projects
 }
 
 // CreateOccurrence adds the specified occurrence to the mem store
