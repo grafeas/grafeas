@@ -1419,7 +1419,7 @@ service Grafeas {
 
 // [GrafeasProjects](grafeas.io) API.
 //
-// Manages Grafeas `Projects`. `Projects` contain sets of other Grafeas 
+// Manages Grafeas `Projects`. `Projects` contain sets of other Grafeas
 // entities such as `Notes`, `Occurrences` and `Operations`.
 service GrafeasProjects {
   // Creates a new `Project`.
