@@ -19,12 +19,13 @@ import (
 
 	"flag"
 	"fmt"
+	"net"
+
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/storage"
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/v1alpha1"
 	pb "github.com/grafeas/grafeas/v1alpha1/proto"
 	opspb "google.golang.org/genproto/googleapis/longrunning"
 	"google.golang.org/grpc"
-	"net"
 )
 
 var (
@@ -43,6 +44,7 @@ func main() {
 	grpcServer := grpc.NewServer()
 	g := v1alpha1.Grafeas{S: storage.NewMemStore()}
 	pb.RegisterGrafeasServer(grpcServer, &g)
+	pb.RegisterGrafeasProjectsServer(grpcServer, &g)
 	opspb.RegisterOperationsServer(grpcServer, &g)
 	grpcServer.Serve(lis)
 }

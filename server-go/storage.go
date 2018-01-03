@@ -21,6 +21,9 @@ import (
 
 // Storager is the interface that a Grafeas storage implementation would provide
 type Storager interface {
+	// CreateProject adds the specified project
+	CreateProject(pID string) error
+
 	// CreateNote adds the specified note
 	CreateNote(n *pb.Note) error
 
@@ -30,6 +33,9 @@ type Storager interface {
 	// CreateOperation adds the specified operation
 	CreateOperation(o *opspb.Operation) error
 
+	// DeleteNote deletes the project with the given pID
+	DeleteProject(pID string) error
+
 	// DeleteNote deletes the note with the given pID and nID
 	DeleteNote(pID, nID string) error
 
@@ -38,6 +44,9 @@ type Storager interface {
 
 	// DeleteOperation deletes the operation with the given pID and oID
 	DeleteOperation(pID, opID string) error
+
+	// GetProject returns the project with the given pID
+	GetProject(pID string) (*pb.Project, error)
 
 	// GetNote returns the note with project (pID) and note ID (nID)
 	GetNote(pID, nID string) (*pb.Note, error)
@@ -51,10 +60,13 @@ type Storager interface {
 	// GetOperation returns the operation with pID and oID
 	GetOperation(pID, opID string) (*opspb.Operation, error)
 
+	// ListProjects returns the project id for all projects
+	ListProjects(filters string) []*pb.Project
+
 	// ListNoteOccurrences returns the occcurrences on the particular note (nID) for this project (pID)
 	ListNoteOccurrences(pID, nID, filters string) ([]*pb.Occurrence, error)
 
-	// ListNoteOccurrences returns the occcurrences on the particular note (nID) for this project (pID)
+	// ListNotes returns the notes for for this project (pID)
 	ListNotes(pID, filters string) []*pb.Note
 
 	// ListOccurrences returns the occurrences for this project ID (pID)
