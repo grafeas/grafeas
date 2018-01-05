@@ -12,7 +12,7 @@ CLEAN += .install.protoc-gen-go .install.grpc-gateway
 	go get -u -v github.com/golang/protobuf/protoc-gen-go && touch $@
 
 .install.grpc-gateway:
-	go get -u -v github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway && touch $@
+	go get -u -v github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger && touch $@
 
 build:  vet fmt grafeas_go
 	go build -v ./...
@@ -34,6 +34,7 @@ v1alpha1/proto/grafeas.pb.go: .install.protoc-gen-go .install.grpc-gateway v1alp
 		-I vendor/github.com/googleapis/googleapis \
 		--go_out=plugins=grpc:. \
 	    --grpc-gateway_out=logtostderr=true:. \
+	    --swagger_out=logtostderr=true:. \
 	    v1alpha1/proto/grafeas.proto
 
 
