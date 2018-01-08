@@ -601,6 +601,45 @@ message Discovery {
   Note.Kind analysis_kind = 1;
 }
 
+// In-toto layout
+message Layout {
+  repeated Step steps = 1;
+  google.protobuf.Timestamp expiration_time = 2;
+  string description = 3;
+  repeated Inspect inspection_rules = 4;
+  repeated KeyDetail keys = 5;
+}
+
+// In-toto steps
+message Step {
+  string name = 1;
+  repeated string expected_input = 2;
+  repeated string expected_output = 3;
+  string expected_command = 4;
+  repeated string public_keys = 5;
+  int32 threhold = 6;
+}
+
+message Inspect {
+  string name = 1;
+  repeated string expected_input = 2;
+  repeated string expected_output = 3;
+  string run = 4;
+}
+
+message KeyDetail {
+  enum keyType {
+    UNKNOWN = 0;
+    RSA = 1;
+  }
+  keyType type = 1;
+  // TODO: Should this be an enum?
+  string scheme = 2;
+  string id = 3;
+  bytes public = 4;
+  bytes private = 5;
+}
+
 // Container message for hashes of byte content of files, used in Source
 // messages to verify integrity of source input to the build.
 message FileHashes {
@@ -660,6 +699,9 @@ message Note {
 
     // The note and occurrence track the initial discovery status of a resource.
     DISCOVERY = 7;
+
+    // The in-toto Layout definition
+    LAYOUT = 8;
   }
 
   // The name of the note in the form
@@ -695,6 +737,9 @@ message Note {
 
     // A note describing a provider/analysis type.
     Discovery discovery = 18;
+
+    // A note describing the in-toto layout.
+    Layout layout = 19;
   }
 
   // URLs associated with this note
@@ -711,6 +756,8 @@ message Note {
   // a filter in list requests.
   google.protobuf.Timestamp update_time = 12;
 }
+
+
 
 // `Occurrence` includes information about analysis occurrences for an image.
 message Occurrence {
