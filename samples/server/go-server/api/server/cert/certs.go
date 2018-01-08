@@ -1,4 +1,4 @@
-// cert is an provides insecure keys.
+// cert provides insecure keys. TODO(r2wend2): Allow cert to work with specified cert files.
 package cert
 
 import (
