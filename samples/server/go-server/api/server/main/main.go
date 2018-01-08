@@ -61,7 +61,6 @@ func main() {
 	g := v1alpha1.Grafeas{S: storage.NewMemStore()}
 	pb.RegisterGrafeasServer(grpcServer, &g)
 	opspb.RegisterOperationsServer(grpcServer, &g)
-	log.Printf("Server started on port %v", *port)
 
 	ctx := context.Background()
 
@@ -79,11 +78,9 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
+	log.Printf("Server started on port %v", *port)
 
-	if err != nil {
-		log.Fatal(err)
-		return
-	}
+	
 	pair := cert.Pair()
 	srv := &http.Server{
 		Addr:    "localhost",
