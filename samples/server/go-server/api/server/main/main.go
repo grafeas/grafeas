@@ -80,7 +80,6 @@ func main() {
 	}
 	log.Printf("Server started on port %v", *port)
 
-	
 	pair := cert.Pair()
 	srv := &http.Server{
 		Addr:    "localhost",

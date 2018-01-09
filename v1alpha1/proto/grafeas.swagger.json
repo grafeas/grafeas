@@ -512,6 +512,14 @@
       "default": "NONE",
       "description": "Specifies the hash algorithm, if any.\n\n - NONE: No hash requested.\n - SHA256: A sha256 hash."
     },
+    "KeyDetailkeyType": {
+      "type": "string",
+      "enum": [
+        "UNKNOWN",
+        "RSA"
+      ],
+      "default": "UNKNOWN"
+    },
     "LayerDirective": {
       "type": "string",
       "enum": [
@@ -943,6 +951,20 @@
       },
       "description": "Note holding the version of the provider's builder and the signature of\nthe provenance message in linked BuildDetails."
     },
+    "apiByProduct": {
+      "type": "object",
+      "properties": {
+        "stdout": {
+          "type": "string"
+        },
+        "stderr": {
+          "type": "string"
+        },
+        "return_value": {
+          "type": "string"
+        }
+      }
+    },
     "apiCloudRepoSourceContext": {
       "type": "object",
       "properties": {
@@ -1041,6 +1063,23 @@
       },
       "description": "A note that indicates a type of analysis a provider would perform. This note\nexists in a provider's project. A `Discovery` occurrence is created in a\nconsumer's project at the start of analysis. The occurrence's operation will\nindicate the status of the analysis. Absence of an occurrence linked to this\nnote for a resource indicates that analysis hasn't started."
     },
+    "apiEnvironment": {
+      "type": "object",
+      "properties": {
+        "variables": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "file_system": {
+          "type": "string"
+        },
+        "workdir": {
+          "type": "string"
+        }
+      }
+    },
     "apiFileHashes": {
       "type": "object",
       "properties": {
@@ -1104,6 +1143,135 @@
         }
       },
       "description": "Container message for hash values."
+    },
+    "apiInputOutput": {
+      "type": "object",
+      "properties": {
+        "file_path": {
+          "type": "string"
+        },
+        "hash_algorithm": {
+          "type": "string",
+          "title": "TODO: should this be an enum?"
+        },
+        "file_hash": {
+          "type": "string"
+        }
+      },
+      "title": "format for materials and products"
+    },
+    "apiInspect": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "expected_input": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/apiInputOutput"
+          }
+        },
+        "expected_output": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/apiInputOutput"
+          }
+        },
+        "run": {
+          "type": "string"
+        }
+      }
+    },
+    "apiIntotoVerification": {
+      "type": "object",
+      "properties": {
+        "layout_note": {
+          "type": "string"
+        },
+        "materials": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/apiInputOutput"
+          }
+        },
+        "products": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/apiInputOutput"
+          }
+        },
+        "byproducts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/apiByProduct"
+          }
+        },
+        "command": {
+          "type": "string"
+        },
+        "return_value": {
+          "type": "string"
+        },
+        "environment": {
+          "$ref": "#/definitions/apiEnvironment"
+        }
+      },
+      "description": "Includes information about how to verify an occurrence using in-toto\nTODO(r2wend2): This copies some information from the occurrence itself need to reconcile before merging."
+    },
+    "apiKeyDetail": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/definitions/KeyDetailkeyType"
+        },
+        "scheme": {
+          "type": "string",
+          "title": "TODO: Should this be an enum?"
+        },
+        "id": {
+          "type": "string"
+        },
+        "public": {
+          "type": "string",
+          "format": "byte"
+        },
+        "private": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "apiLayout": {
+      "type": "object",
+      "properties": {
+        "steps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/apiStep"
+          }
+        },
+        "expiration_time": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "description": {
+          "type": "string"
+        },
+        "inspection_rules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/apiInspect"
+          }
+        },
+        "keys": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/apiKeyDetail"
+          }
+        }
+      },
+      "title": "In-toto layout"
     },
     "apiListNoteOccurrencesResponse": {
       "type": "object",
@@ -1199,6 +1367,10 @@
           "$ref": "#/definitions/apiDiscovery",
           "description": "A note describing a provider/analysis type."
         },
+        "layout": {
+          "$ref": "#/definitions/apiLayout",
+          "description": "A note describing the in-toto layout."
+        },
         "related_url": {
           "type": "array",
           "items": {
@@ -1233,10 +1405,11 @@
         "IMAGE_BASIS",
         "PACKAGE_MANAGER",
         "DEPLOYABLE",
-        "DISCOVERY"
+        "DISCOVERY",
+        "LAYOUT"
       ],
       "default": "KIND_UNSPECIFIED",
-      "description": "This must be 1:1 with members of our oneofs, it can be used for filtering\nNote and Occurrence on their kind.\n\n - KIND_UNSPECIFIED: Unknown\n - PACKAGE_VULNERABILITY: The note and occurrence represent a package vulnerability.\n - BUILD_DETAILS: The note and occurrence assert build provenance.\n - IMAGE_BASIS: This represents an image basis relationship.\n - PACKAGE_MANAGER: This represents a package installed via a package manager.\n - DEPLOYABLE: The note and occurrence track deployment events.\n - DISCOVERY: The note and occurrence track the initial discovery status of a resource."
+      "description": "This must be 1:1 with members of our oneofs, it can be used for filtering\nNote and Occurrence on their kind.\n\n - KIND_UNSPECIFIED: Unknown\n - PACKAGE_VULNERABILITY: The note and occurrence represent a package vulnerability.\n - BUILD_DETAILS: The note and occurrence assert build provenance.\n - IMAGE_BASIS: This represents an image basis relationship.\n - PACKAGE_MANAGER: This represents a package installed via a package manager.\n - DEPLOYABLE: The note and occurrence track deployment events.\n - DISCOVERY: The note and occurrence track the initial discovery status of a resource.\n - LAYOUT: The in-toto Layout definition"
     },
     "apiOccurrence": {
       "type": "object",
@@ -1294,6 +1467,9 @@
           "type": "string",
           "format": "date-time",
           "description": "Output only. The time this `Occurrence` was last updated."
+        },
+        "intoto": {
+          "$ref": "#/definitions/apiIntotoVerification"
         }
       },
       "description": "`Occurrence` includes information about analysis occurrences for an image."
@@ -1430,6 +1606,40 @@
         }
       },
       "description": "A SourceContext is a reference to a tree of files. A SourceContext together\nwith a path point to a unique revision of a single file or directory."
+    },
+    "apiStep": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "expected_materials": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/apiInputOutput"
+          }
+        },
+        "expected_products": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/apiInputOutput"
+          }
+        },
+        "expected_command": {
+          "type": "string"
+        },
+        "public_keys": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "threhold": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "title": "In-toto steps"
     },
     "apiStorageSource": {
       "type": "object",

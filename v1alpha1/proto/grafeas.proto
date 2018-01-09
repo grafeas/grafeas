@@ -613,8 +613,8 @@ message Layout {
 // In-toto steps
 message Step {
   string name = 1;
-  repeated string expected_input = 2;
-  repeated string expected_output = 3;
+  repeated InputOutput expected_materials = 2;
+  repeated InputOutput expected_products = 3;
   string expected_command = 4;
   repeated string public_keys = 5;
   int32 threhold = 6;
@@ -622,9 +622,17 @@ message Step {
 
 message Inspect {
   string name = 1;
-  repeated string expected_input = 2;
-  repeated string expected_output = 3;
+  repeated InputOutput expected_input = 2;
+  repeated InputOutput expected_output = 3;
   string run = 4;
+}
+
+// format for materials and products
+message InputOutput {
+  string file_path = 1;
+  // TODO: should this be an enum?
+  string hash_algorithm = 2;
+  string file_hash = 3;
 }
 
 message KeyDetail {
@@ -809,6 +817,35 @@ message Occurrence {
 
   // Output only. The time this `Occurrence` was last updated.
   google.protobuf.Timestamp update_time = 10;
+
+  // Describes how this occurrence can be verified
+  oneof verification {
+    IntotoVerification intoto = 16;
+  }
+}
+
+// Includes information about how to verify an occurrence using in-toto
+// TODO(r2wend2): This copies some information from the occurrence itself need to reconcile before merging.
+message IntotoVerification {
+  string layout_note = 1;
+  repeated InputOutput materials = 2;
+  repeated InputOutput products = 3;
+  repeated ByProduct byproducts = 4;
+  string command = 5;
+  string return_value = 6;
+  Environment environment = 7;
+}
+
+message ByProduct {
+  string stdout = 1;
+  string stderr = 2;
+  string return_value = 3;
+}
+
+message Environment {
+  repeated string variables = 1;
+  string file_system = 2;
+  string workdir = 3;
 }
 
 // PackageManager provides metadata about available / installed packages.
