@@ -15,17 +15,19 @@
 package testutil
 
 import (
+	"fmt"
+	"log"
+
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes"
 	"github.com/golang/protobuf/ptypes/any"
 	pb "github.com/grafeas/grafeas/v1alpha1/proto"
 	opspb "google.golang.org/genproto/googleapis/longrunning"
-	"log"
 )
 
-func Occurrence(noteName string) *pb.Occurrence {
+func Occurrence(pID, noteName string) *pb.Occurrence {
 	return &pb.Occurrence{
-		Name:        "projects/test-project/occurrences/134",
+		Name:        fmt.Sprintf("projects/%s/occurrences/134", pID),
 		ResourceUrl: "gcr.io/foo/bar",
 		NoteName:    noteName,
 		Kind:        pb.Note_PACKAGE_VULNERABILITY,
@@ -59,9 +61,9 @@ func Occurrence(noteName string) *pb.Occurrence {
 	}
 }
 
-func Note() *pb.Note {
+func Note(pID string) *pb.Note {
 	return &pb.Note{
-		Name:             "projects/vulnerability-scanner-a/notes/CVE-1999-0710",
+		Name:             fmt.Sprintf("projects/%s/notes/CVE-1999-0710", pID),
 		ShortDescription: "CVE-2014-9911",
 		LongDescription:  "NIST vectors: AV:N/AC:L/Au:N/C:P/I:P",
 		Kind:             pb.Note_PACKAGE_VULNERABILITY,
@@ -165,7 +167,7 @@ func Note() *pb.Note {
 	}
 }
 
-func Operation() *opspb.Operation {
+func Operation(pID string) *opspb.Operation {
 	md := &pb.OperationMetadata{CreateTime: ptypes.TimestampNow()}
 	bytes, err := proto.Marshal(md)
 	if err != nil {
@@ -173,7 +175,7 @@ func Operation() *opspb.Operation {
 		return nil
 	}
 	return &opspb.Operation{
-		Name:     "projects/vulnerability-scanner-a/operations/foo",
+		Name:     fmt.Sprintf("projects/%s/operations/foo", pID),
 		Metadata: &any.Any{Value: bytes},
 		Done:     false,
 	}
