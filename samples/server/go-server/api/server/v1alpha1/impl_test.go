@@ -16,9 +16,10 @@ package v1alpha1
 
 import (
 	"fmt"
-	"golang.org/x/net/context"
 	"reflect"
 	"testing"
+
+	"golang.org/x/net/context"
 
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/name"
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/storage"
@@ -28,6 +29,28 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
+
+func createProject(t *testing.T, pID string, ctx context.Context, g Grafeas) {
+	req := pb.CreateProjectRequest{Name: name.FormatProject(pID)}
+	if _, err := g.CreateProject(ctx, &req); err != nil {
+		t.Errorf("CreateProject(empty operation): got %v, want success", err)
+	}
+}
+
+func TestCreateProject(t *testing.T) {
+	ctx := context.Background()
+	pID := "myproject"
+	g := Grafeas{storage.NewMemStore()}
+	req := pb.CreateProjectRequest{Name: name.FormatProject(pID)}
+	_, err := g.CreateProject(ctx, &req)
+	if err != nil {
+		t.Errorf("CreateProject(empty operation): got %v, want success", err)
+	}
+	_, err = g.CreateProject(ctx, &req)
+	if s, _ := status.FromError(err); s.Code() != codes.AlreadyExists {
+		t.Errorf("CreateProject(empty operation): got %v, want AlreadyExists", err)
+	}
+}
 
 func TestCreateOperation(t *testing.T) {
 	ctx := context.Background()
@@ -39,13 +62,16 @@ func TestCreateOperation(t *testing.T) {
 	} else if s, _ := status.FromError(err); s.Code() != codes.InvalidArgument {
 		t.Errorf("CreateOperation(empty operation): got %v, want InvalidArgument", err)
 	}
-	op = testutil.Operation()
-	pID, _, aErr := name.ParseOperation(op.Name)
-	if aErr != nil {
-		t.Errorf("Could not parse projectID from op.Name: %v", op.Name)
-	}
+	pID := "vulnerability-scanner-a"
+	op = testutil.Operation(pID)
 	parent := name.FormatProject(pID)
 	req = pb.CreateOperationRequest{Parent: parent, Operation: op}
+	if _, err := g.CreateOperation(ctx, &req); err == nil {
+		t.Error("CreateOperation: got success, want error")
+	} else if s, _ := status.FromError(err); s.Code() != codes.NotFound {
+		t.Errorf("CreateOperation: got %v, want NotFound)", err)
+	}
+	createProject(t, pID, ctx, g)
 	if _, err := g.CreateOperation(ctx, &req); error(err) != nil {
 		t.Errorf("CreateOperation(%v) got %#v, want success", op, err)
 	}
@@ -54,12 +80,10 @@ func TestCreateOperation(t *testing.T) {
 func TestCreateOccurrence(t *testing.T) {
 	ctx := context.Background()
 	g := Grafeas{storage.NewMemStore()}
-	n := testutil.Note()
-	pID, _, aErr := name.ParseNote(n.Name)
-	if aErr != nil {
-		t.Errorf("Could not parse projectID from n.Name: %v", n.Name)
-	}
+	pID := "vulnerability-scanner-a"
+	n := testutil.Note(pID)
 	parent := name.FormatProject(pID)
+	createProject(t, pID, ctx, g)
 	req := &pb.CreateNoteRequest{Parent: parent, Note: n}
 	if _, err := g.CreateNote(ctx, req); err != nil {
 		t.Fatalf("CreateNote(%v) got %v, want success", req, err)
@@ -70,13 +94,17 @@ func TestCreateOccurrence(t *testing.T) {
 	} else if s, _ := status.FromError(err); s.Code() != codes.InvalidArgument {
 		t.Errorf("CreateOccurrence(empty occ): got %v, want InvalidArgument)", err)
 	}
-	o := testutil.Occurrence(n.Name)
-	pID, _, aErr = name.ParseOccurrence(o.Name)
-	if aErr != nil {
-		t.Errorf("Could not parse projectID from o.Name: %v", o.Name)
-	}
+	pID = "occurrence-project"
+	o := testutil.Occurrence(pID, n.Name)
 	parent = name.FormatProject(pID)
 	oReq = &pb.CreateOccurrenceRequest{Parent: parent, Occurrence: o}
+	// Try to insert an occurrence without first creating its project, expect failure
+	if _, err := g.CreateOccurrence(ctx, oReq); err == nil {
+		t.Error("CreateOccurrence: got success, want error")
+	} else if s, _ := status.FromError(err); s.Code() != codes.NotFound {
+		t.Errorf("CreateOccurrence: got %v, want NotFound)", err)
+	}
+	createProject(t, pID, ctx, g)
 	if _, err := g.CreateOccurrence(ctx, oReq); err != nil {
 		t.Errorf("CreateOccurrence(%v) got %v, want success", oReq, err)
 	}
@@ -86,8 +114,8 @@ func TestCreateOccurrence(t *testing.T) {
 	oReq = &pb.CreateOccurrenceRequest{Parent: "projects/testproject", Occurrence: o}
 	if _, err := g.CreateOccurrence(ctx, oReq); err == nil {
 		t.Errorf("CreateOccurrence got success, want Error")
-	} else if s, _ := status.FromError(err); s.Code() != codes.InvalidArgument {
-		t.Errorf("CreateOccurrence got code %v want %v", err, codes.InvalidArgument)
+	} else if s, _ := status.FromError(err); s.Code() != codes.NotFound {
+		t.Errorf("CreateOccurrence got code %v want %v", err, codes.NotFound)
 	}
 }
 
@@ -96,31 +124,48 @@ func TestCreateNote(t *testing.T) {
 	g := Grafeas{storage.NewMemStore()}
 	n := &pb.Note{}
 	req := &pb.CreateNoteRequest{Parent: "projects/foo", Note: n}
+	// Try to insert an empty note, expect failure
 	if _, err := g.CreateNote(ctx, req); err == nil {
 		t.Error("CreateNote(empty note): got success, want error")
 	} else if s, _ := status.FromError(err); s.Code() != codes.InvalidArgument {
 		t.Errorf("CreateNote(empty note): got %v, want %v", err, codes.InvalidArgument)
 	}
-	n = testutil.Note()
-	pID, _, aErr := name.ParseNote(n.Name)
-	if aErr != nil {
-		t.Errorf("Could not parse projectID from n.Name: %v", n.Name)
-	}
+	// Try to insert an onccurrence without first creating its project, expect failure
+	pID := "vulnerability-scanner-a"
+	n = testutil.Note(pID)
 	parent := name.FormatProject(pID)
 	req = &pb.CreateNoteRequest{Parent: parent, Note: n}
+	if _, err := g.CreateNote(ctx, req); err == nil {
+		t.Error("CreateNote: got success, want error")
+	} else if s, _ := status.FromError(err); s.Code() != codes.NotFound {
+		t.Errorf("CreateNote: got %v, want NotFound)", err)
+	}
+	createProject(t, pID, ctx, g)
 	if _, err := g.CreateNote(ctx, req); err != nil {
 		t.Errorf("CreateNote(%v) got %v, want success", n, err)
+	}
+}
+
+func TestDeleteProject(t *testing.T) {
+	ctx := context.Background()
+	g := Grafeas{storage.NewMemStore()}
+	pID := "myproject"
+	req := pb.DeleteProjectRequest{Name: name.FormatProject(pID)}
+	if _, err := g.DeleteProject(ctx, &req); err == nil {
+		t.Error("DeleteProject: got success, want error")
+	}
+	createProject(t, pID, ctx, g)
+	if _, err := g.DeleteProject(ctx, &req); err != nil {
+		t.Errorf("CreateProject(empty operation): got %v, want success", err)
 	}
 }
 
 func TestDeleteNote(t *testing.T) {
 	ctx := context.Background()
 	g := Grafeas{storage.NewMemStore()}
-	n := testutil.Note()
-	pID, _, err := name.ParseNote(n.Name)
-	if err != nil {
-		t.Fatalf("Error parsing note name %v", err)
-	}
+	pID := "vulnerability-scanner-a"
+	n := testutil.Note(pID)
+	createProject(t, pID, ctx, g)
 	req := &pb.DeleteNoteRequest{Name: n.Name}
 	if _, err := g.DeleteNote(ctx, req); err == nil {
 		t.Error("DeleteNote that doesn't exist got success, want err")
@@ -138,20 +183,19 @@ func TestDeleteNote(t *testing.T) {
 func TestDeleteOccurrence(t *testing.T) {
 	ctx := context.Background()
 	g := Grafeas{storage.NewMemStore()}
-	n := testutil.Note()
-	pID, _, err := name.ParseNote(n.Name)
+	pID := "vulnerability-scanner-a"
+	n := testutil.Note(pID)
+	createProject(t, pID, ctx, g)
 	parent := name.FormatProject(pID)
 	cReq := &pb.CreateNoteRequest{Parent: parent, Note: n}
 	// CreateNote so we can create an occurrence
 	if _, err := g.CreateNote(ctx, cReq); err != nil {
 		t.Fatalf("CreateNote(%v) got %v, want success", n, err)
 	}
-	o := testutil.Occurrence(n.Name)
+	pID = "occurrence-project"
+	o := testutil.Occurrence(pID, n.Name)
+	createProject(t, pID, ctx, g)
 
-	pID, _, err = name.ParseOccurrence(o.Name)
-	if err != nil {
-		t.Fatalf("Error parsing occurrence name %v", err)
-	}
 	parent = name.FormatProject(pID)
 	oReq := &pb.CreateOccurrenceRequest{Parent: parent, Occurrence: o}
 	if _, err := g.CreateOccurrence(ctx, oReq); err != nil {
@@ -166,11 +210,9 @@ func TestDeleteOccurrence(t *testing.T) {
 func TestDeleteOperation(t *testing.T) {
 	ctx := context.Background()
 	g := Grafeas{storage.NewMemStore()}
-	o := testutil.Operation()
-	pID, _, err := name.ParseOperation(o.Name)
-	if err != nil {
-		t.Fatalf("Error parsing note name %v", err)
-	}
+	pID := "vulnerability-scanner-a"
+	o := testutil.Operation(pID)
+	createProject(t, pID, ctx, g)
 	req := &opspb.DeleteOperationRequest{Name: o.Name}
 	if _, err := g.DeleteOperation(ctx, req); err == nil {
 		t.Error("DeleteOperation that doesn't exist got success, want err")
@@ -185,20 +227,29 @@ func TestDeleteOperation(t *testing.T) {
 	}
 }
 
+func TestGetProjects(t *testing.T) {
+	ctx := context.Background()
+	g := Grafeas{storage.NewMemStore()}
+	pID := "myproject"
+	req := pb.GetProjectRequest{Name: name.FormatProject(pID)}
+	if _, err := g.GetProject(ctx, &req); err == nil {
+		t.Error("GetProject that doesn't exist got success, want err")
+	}
+	createProject(t, pID, ctx, g)
+	if _, err := g.GetProject(ctx, &req); err != nil {
+		t.Errorf("GetProject: got %v, want success", err)
+	}
+}
+
 func TestGetNote(t *testing.T) {
 	ctx := context.Background()
 	g := Grafeas{storage.NewMemStore()}
-	n := testutil.Note()
-	pID, _, err := name.ParseNote(n.Name)
-	if err != nil {
-		t.Fatalf("Error parsing note name %v", err)
-	}
+	pID := "vulnerability-scanner-a"
+	n := testutil.Note(pID)
+	createProject(t, pID, ctx, g)
 	req := &pb.GetNoteRequest{Name: n.Name}
 	if _, err := g.GetNote(ctx, req); err == nil {
 		t.Error("GetNote that doesn't exist got success, want err")
-	}
-	if err != nil {
-		t.Errorf("Could not parse projectID from n.Name: %v", n.Name)
 	}
 	parent := name.FormatProject(pID)
 	cReq := &pb.CreateNoteRequest{Parent: parent, Note: n}
@@ -214,16 +265,13 @@ func TestGetNote(t *testing.T) {
 
 func TestGetOccurrence(t *testing.T) {
 	ctx := context.Background()
-
 	g := Grafeas{storage.NewMemStore()}
-	n := testutil.Note()
-	pID, _, err := name.ParseNote(n.Name)
-	if err != nil {
-		t.Fatalf("Error parsing note name %v", err)
-	}
-
-	o := testutil.Occurrence(n.Name)
-
+	pID := "vulnerability-scanner-a"
+	n := testutil.Note(pID)
+	createProject(t, pID, ctx, g)
+	opID := "occurrence-project"
+	o := testutil.Occurrence(opID, n.Name)
+	createProject(t, opID, ctx, g)
 	req := &pb.GetOccurrenceRequest{Name: o.Name}
 	if _, err := g.GetOccurrence(ctx, req); err == nil {
 		t.Error("GetOccurrence that doesn't exist got success, want err")
@@ -232,10 +280,6 @@ func TestGetOccurrence(t *testing.T) {
 	cReq := &pb.CreateNoteRequest{Parent: parent, Note: n}
 	if _, err := g.CreateNote(ctx, cReq); err != nil {
 		t.Fatalf("CreateNote(%v) got %v, want success", n, err)
-	}
-	opID, _, err := name.ParseOccurrence(o.Name)
-	if err != nil {
-		t.Fatalf("Error parsing occurrence name %v", err)
 	}
 	oParent := name.FormatProject(opID)
 	ocReq := &pb.CreateOccurrenceRequest{Parent: oParent, Occurrence: o}
@@ -252,11 +296,9 @@ func TestGetOccurrence(t *testing.T) {
 func TestGetOperation(t *testing.T) {
 	ctx := context.Background()
 	g := Grafeas{storage.NewMemStore()}
-	o := testutil.Operation()
-	pID, _, err := name.ParseOperation(o.Name)
-	if err != nil {
-		t.Fatalf("Error parsing note name %v", err)
-	}
+	pID := "vulnerability-scanner-a"
+	o := testutil.Operation(pID)
+	createProject(t, pID, ctx, g)
 	req := &opspb.GetOperationRequest{Name: o.Name}
 	if _, err := g.GetOperation(ctx, req); err == nil {
 		t.Error("GetOperation that doesn't exist got success, want err")
@@ -276,9 +318,12 @@ func TestGetOperation(t *testing.T) {
 func TestGetOccurrenceNote(t *testing.T) {
 	ctx := context.Background()
 	g := Grafeas{storage.NewMemStore()}
-	n := testutil.Note()
-
-	o := testutil.Occurrence(n.Name)
+	pID := "vulnerability-scanner-a"
+	n := testutil.Note(pID)
+	createProject(t, pID, ctx, g)
+	opID := "occurrence-project"
+	o := testutil.Occurrence(opID, n.Name)
+	createProject(t, opID, ctx, g)
 
 	req := &pb.GetOccurrenceNoteRequest{Name: o.Name}
 	if _, err := g.GetOccurrenceNote(ctx, req); err == nil {
@@ -294,11 +339,7 @@ func TestGetOccurrenceNote(t *testing.T) {
 	if _, err := g.CreateNote(ctx, cReq); err != nil {
 		t.Fatalf("CreateNote(%v) got %v, want success", n, err)
 	}
-	pID, _, err = name.ParseOccurrence(o.Name)
-	if err != nil {
-		t.Fatalf("Error parsing occurrence name %v", err)
-	}
-	parent = name.FormatProject(pID)
+	parent = name.FormatProject(opID)
 	coReq := &pb.CreateOccurrenceRequest{Parent: parent, Occurrence: o}
 	if _, err := g.CreateOccurrence(ctx, coReq); err != nil {
 		t.Fatalf("CreateOccurrence(%v) got %v, want success", n, err)
@@ -315,12 +356,10 @@ func TestUpdateNote(t *testing.T) {
 	// Update Note that doesn't exist
 	updateDesc := "this is a new description"
 	g := Grafeas{storage.NewMemStore()}
-	n := testutil.Note()
-	pID, _, err := name.ParseNote(n.Name)
-	if err != nil {
-		t.Fatalf("Error parsing note name %v", err)
-	}
-	update := testutil.Note()
+	pID := "vulnerability-scanner-a"
+	n := testutil.Note(pID)
+	createProject(t, pID, ctx, g)
+	update := testutil.Note(pID)
 	update.LongDescription = updateDesc
 	req := &pb.UpdateNoteRequest{Name: n.Name, Note: n}
 	if _, err := g.UpdateNote(ctx, req); err != nil {
@@ -342,7 +381,7 @@ func TestUpdateNote(t *testing.T) {
 	}
 
 	// Update Note and verify that update worked.
-	update = testutil.Note()
+	update = testutil.Note(pID)
 	update.LongDescription = updateDesc
 	req = &pb.UpdateNoteRequest{Name: n.Name, Note: update}
 	if got, err := g.UpdateNote(ctx, req); err != nil {
@@ -362,27 +401,22 @@ func TestUpdateOccurrence(t *testing.T) {
 	ctx := context.Background()
 	// Update occurrence that doesn't exist
 	g := Grafeas{storage.NewMemStore()}
-	n := testutil.Note()
-	npID, _, err := name.ParseNote(n.Name)
-	if err != nil {
-		t.Fatalf("Error parsing note name %v", err)
-	}
+	npID := "vulnerability-scanner-a"
+	n := testutil.Note(npID)
+	createProject(t, npID, ctx, g)
 	nParent := name.FormatProject(npID)
 	cReq := &pb.CreateNoteRequest{Parent: nParent, Note: n}
 
 	if _, err := g.CreateNote(ctx, cReq); err != nil {
 		t.Fatalf("CreateNote(%v) got %v, want success", n, err)
 	}
-	o := testutil.Occurrence(n.Name)
+	pID := "occurrence-project"
+	o := testutil.Occurrence(pID, n.Name)
+	createProject(t, pID, ctx, g)
 
 	req := &pb.UpdateOccurrenceRequest{Name: o.Name, Occurrence: o}
 	if _, err := g.UpdateOccurrence(ctx, req); err == nil {
 		t.Error("UpdateOccurrence that doesn't exist got success, want err")
-	}
-	// Create an occurrence to update
-	pID, _, err := name.ParseOccurrence(o.Name)
-	if err != nil {
-		t.Fatalf("Error parsing occurrence name %v", err)
 	}
 	parent := name.FormatProject(pID)
 	ocReq := &pb.CreateOccurrenceRequest{Parent: parent, Occurrence: o}
@@ -390,7 +424,7 @@ func TestUpdateOccurrence(t *testing.T) {
 		t.Fatalf("CreateOccurrence(%v) got %v, want success", n, err)
 	}
 	// update occurrence name
-	update := testutil.Occurrence(n.Name)
+	update := testutil.Occurrence(pID, n.Name)
 	update.Name = "New name"
 	req = &pb.UpdateOccurrenceRequest{Name: update.Name, Occurrence: update}
 	if _, err := g.UpdateOccurrence(ctx, req); err == nil {
@@ -398,7 +432,7 @@ func TestUpdateOccurrence(t *testing.T) {
 	}
 
 	// update note name to a note that doesn't exist
-	update = testutil.Occurrence("projects/p/notes/bar")
+	update = testutil.Occurrence(pID, "projects/p/notes/bar")
 	req = &pb.UpdateOccurrenceRequest{Name: o.Name, Occurrence: update}
 	if _, err := g.UpdateOccurrence(ctx, req); err == nil {
 		t.Error("UpdateOccurrence that with note name that doesn't exist" +
@@ -406,7 +440,7 @@ func TestUpdateOccurrence(t *testing.T) {
 	}
 
 	// update note name to a note that does exist
-	n = testutil.Note()
+	n = testutil.Note(npID)
 	newName := fmt.Sprintf("%v-new", n.Name)
 	n.Name = newName
 
@@ -414,7 +448,7 @@ func TestUpdateOccurrence(t *testing.T) {
 	if _, err := g.CreateNote(ctx, cReq); err != nil {
 		t.Fatalf("CreateNote(%v) got %v, want success", n, err)
 	}
-	update = testutil.Occurrence(n.Name)
+	update = testutil.Occurrence(pID, n.Name)
 	req = &pb.UpdateOccurrenceRequest{Name: o.Name, Occurrence: update}
 	if got, err := g.UpdateOccurrence(ctx, req); err != nil {
 		t.Errorf("UpdateOccurrence got %v, want success", err)
@@ -434,33 +468,27 @@ func TestUpdateOccurrence(t *testing.T) {
 func TestListOccurrences(t *testing.T) {
 	ctx := context.Background()
 	g := Grafeas{storage.NewMemStore()}
-	n := testutil.Note()
-	npID, _, err := name.ParseNote(n.Name)
-	if err != nil {
-		t.Fatalf("Error parsing note name %v", err)
-	}
+	npID := "vulnerability-scanner-a"
+	n := testutil.Note(npID)
 	nParent := name.FormatProject(npID)
 	cReq := &pb.CreateNoteRequest{Parent: nParent, Note: n}
+	createProject(t, npID, ctx, g)
 
 	if _, err := g.CreateNote(ctx, cReq); err != nil {
 		t.Fatalf("CreateNote(%v) got %v, want success", n, err)
 	}
 	os := []*pb.Occurrence{}
 	findProject := "findThese"
+	createProject(t, findProject, ctx, g)
 	dontFind := "dontFind"
+	createProject(t, dontFind, ctx, g)
 	for i := 0; i < 20; i++ {
-		o := testutil.Occurrence(n.Name)
+		pID := "_"
+		o := testutil.Occurrence(pID, n.Name)
 		if i < 5 {
 			o.Name = name.FormatOccurrence(findProject, string(i))
 		} else {
 			o.Name = name.FormatOccurrence(dontFind, string(i))
-		}
-		if err != nil {
-			t.Fatalf("Error parsing occurrence name %v", err)
-		}
-		pID, _, err := name.ParseOccurrence(o.Name)
-		if err != nil {
-			t.Fatalf("Error parsing occurrence name %v", err)
 		}
 		parent := name.FormatProject(pID)
 		ocReq := &pb.CreateOccurrenceRequest{Parent: parent, Occurrence: o}
@@ -473,10 +501,32 @@ func TestListOccurrences(t *testing.T) {
 	lReq := &pb.ListOccurrencesRequest{Parent: name.FormatProject(findProject)}
 	resp, lErr := g.ListOccurrences(ctx, lReq)
 	if lErr != nil {
-		t.Fatalf("ListOccurrences got %v want success", err)
+		t.Fatalf("ListOccurrences got %v want success", lErr)
 	}
 	if len(resp.Occurrences) != 5 {
 		t.Errorf("resp.Occurrences got %d, want 5", len(resp.Occurrences))
+	}
+}
+
+func TestListProjects(t *testing.T) {
+	ctx := context.Background()
+	g := Grafeas{storage.NewMemStore()}
+	var projects []string
+	for i := 0; i < 20; i++ {
+		pID := fmt.Sprintf("proj%v", i)
+		req := pb.CreateProjectRequest{Name: name.FormatProject(pID)}
+		if _, err := g.CreateProject(ctx, &req); err != nil {
+			t.Errorf("CreateProject: got %v, want success", err)
+		}
+		if _, err := g.CreateProject(ctx, &req); err == nil {
+			t.Errorf("CreateProject: got %v, want InvalidArgument", err)
+		}
+		projects = append(projects, name.FormatProject(pID))
+	}
+	req := pb.ListProjectsRequest{}
+	_, err := g.ListProjects(ctx, &req)
+	if err != nil {
+		t.Errorf("ListProjects: got %v, want success", err)
 	}
 }
 
@@ -484,17 +534,16 @@ func TestListOperations(t *testing.T) {
 	ctx := context.Background()
 	g := Grafeas{storage.NewMemStore()}
 	findProject := "findThese"
+	createProject(t, findProject, ctx, g)
 	dontFind := "dontFind"
+	createProject(t, dontFind, ctx, g)
 	for i := 0; i < 20; i++ {
-		o := testutil.Operation()
+		pID := "vulnerability-scanner-a"
+		o := testutil.Operation(pID)
 		if i < 5 {
 			o.Name = name.FormatOperation(findProject, string(i))
 		} else {
 			o.Name = name.FormatOperation(dontFind, string(i))
-		}
-		pID, _, err := name.ParseOperation(o.Name)
-		if err != nil {
-			t.Fatalf("Error parsing note name %v", err)
 		}
 		parent := name.FormatProject(pID)
 		cReq := &pb.CreateOperationRequest{Parent: parent, Operation: o}
@@ -517,21 +566,19 @@ func TestListNotes(t *testing.T) {
 	ctx := context.Background()
 	g := Grafeas{storage.NewMemStore()}
 	findProject := "findThese"
+	createProject(t, findProject, ctx, g)
 	dontFind := "dontFind"
+	createProject(t, dontFind, ctx, g)
 	for i := 0; i < 20; i++ {
-		n := testutil.Note()
+		npID := "vulnerability-scanner-a"
+		n := testutil.Note(npID)
 		if i < 5 {
 			n.Name = name.FormatNote(findProject, string(i))
 		} else {
 			n.Name = name.FormatNote(dontFind, string(i))
 		}
-		npID, _, err := name.ParseNote(n.Name)
-		if err != nil {
-			t.Fatalf("Error parsing note name %v", err)
-		}
 		nParent := name.FormatProject(npID)
 		cReq := &pb.CreateNoteRequest{Parent: nParent, Note: n}
-
 		if _, err := g.CreateNote(ctx, cReq); err != nil {
 			t.Fatalf("CreateNote(%v) got %v, want success", n, err)
 		}
@@ -550,29 +597,25 @@ func TestListNotes(t *testing.T) {
 func TestListNoteOccurrences(t *testing.T) {
 	ctx := context.Background()
 	g := Grafeas{storage.NewMemStore()}
-	n := testutil.Note()
-	npID, _, err := name.ParseNote(n.Name)
-	if err != nil {
-		t.Fatalf("Error parsing note name %v", err)
-	}
+	npID := "vulnerability-scanner-a"
+	n := testutil.Note(npID)
+	createProject(t, npID, ctx, g)
 	nParent := name.FormatProject(npID)
 	cReq := &pb.CreateNoteRequest{Parent: nParent, Note: n}
 	if _, err := g.CreateNote(ctx, cReq); err != nil {
 		t.Fatalf("CreateNote(%v) got %v, want success", n, err)
 	}
-	findProject := "project"
-	dontFind := "otherProject"
+	findProject := "findThese"
+	createProject(t, findProject, ctx, g)
+	dontFind := "dontFind"
+	createProject(t, dontFind, ctx, g)
 	for i := 0; i < 20; i++ {
-		o := testutil.Occurrence(n.Name)
+		pID := "_"
+		o := testutil.Occurrence(pID, n.Name)
 		if i < 5 {
 			o.Name = name.FormatOccurrence(findProject, string(i))
 		} else {
 			o.Name = name.FormatOccurrence(dontFind, string(i))
-		}
-
-		pID, _, err := name.ParseOccurrence(o.Name)
-		if err != nil {
-			t.Fatalf("Error parsing occurrence name %v", err)
 		}
 		parent := name.FormatProject(pID)
 		ocReq := &pb.CreateOccurrenceRequest{Parent: parent, Occurrence: o}
@@ -581,22 +624,21 @@ func TestListNoteOccurrences(t *testing.T) {
 		}
 	}
 	// Create an occurrence tied to another note, to make sure we don't find it.
-	otherN := testutil.Note()
+	otherN := testutil.Note("")
 	otherN.Name = "projects/np/notes/not-to-find"
-	npID, _, err = name.ParseNote(otherN.Name)
+	npID, _, err := name.ParseNote(otherN.Name)
 	if err != nil {
 		t.Fatalf("Error parsing note name %v", err)
 	}
 	nParent = name.FormatProject(npID)
+	createProject(t, npID, ctx, g)
 	cReq = &pb.CreateNoteRequest{Parent: nParent, Note: otherN}
 	if _, err := g.CreateNote(ctx, cReq); err != nil {
 		t.Fatalf("CreateNote got %v want success", err)
 	}
-	o := testutil.Occurrence(otherN.Name)
-	pID, _, err := name.ParseOccurrence(o.Name)
-	if err != nil {
-		t.Fatalf("Error parsing occurrence name %v", err)
-	}
+	pID := "occurrence-project"
+	o := testutil.Occurrence(pID, otherN.Name)
+	createProject(t, pID, ctx, g)
 	parent := name.FormatProject(pID)
 	ocReq := &pb.CreateOccurrenceRequest{Parent: parent, Occurrence: o}
 	if _, err := g.CreateOccurrence(ctx, ocReq); err != nil {

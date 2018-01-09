@@ -23,7 +23,40 @@ import "google/longrunning/operations.proto";
 package grafeas.v1alpha1.api;
 option go_package = "grafeas";
 
-// Request to get a Occurrence.
+// Request to insert a new Project.
+message CreateProjectRequest {
+  // The name of the project of the form
+  // "projects/{project_id}"
+  string name = 1;
+}
+
+// Request to get a Project.
+message GetProjectRequest {
+  // The name of the project of the form
+  // "projects/{project_id}"
+  string name = 1;
+}
+
+// Request to list projects.
+message ListProjectsRequest {
+  // The filter expression.
+  string filter = 1;
+
+  // Number of projects to return in the list.
+  int32 page_size = 2;
+
+  // Token to provide to skip to a particular spot in the list.
+  string page_token = 3;
+}
+
+// Request to delete a project
+message DeleteProjectRequest {
+  // The name of the project of the form
+  // "projects/{project_id}"
+  string name = 1;
+}
+
+// Request to get a Occurrenceg.
 message GetOccurrenceRequest {
   // The name of the occurrence of the form
   // "projects/{project_id}/occurrences/{OCCURRENCE_ID}"
@@ -152,6 +185,17 @@ message ListNoteOccurrencesRequest {
   string page_token = 4;
 }
 
+// Response including listed projects
+message ListProjectsResponse {
+  // The projects requested.
+  repeated Project projects = 1;
+
+  // The next pagination token in the list response. It should be used as
+  // `page_token` for the following request. An empty value means no more
+  // results.
+  string next_page_token = 2;
+}
+
 // Response including listed occurrences for a note.
 message ListNoteOccurrencesResponse {
   // The occurrences attached to the specified note.
@@ -208,6 +252,13 @@ message CreateOperationRequest {
   string operation_id = 2;
   // The operation to create.
   google.longrunning.Operation operation = 3;
+}
+
+// Provides detailed description of a `Project`.
+message Project {
+  // The name of the project of the form
+  // "projects/{project_id}"
+  string name = 1;
 }
 
 // Metadata for all operations used and required for all operations
@@ -1362,6 +1413,42 @@ service Grafeas {
       returns (ListNoteOccurrencesResponse) {
     option (google.api.http) = {
       get: "/v1alpha1/{name=projects/*/notes/*}/occurrences"
+    };
+  }
+}
+
+// [GrafeasProjects](grafeas.io) API.
+//
+// Manages Grafeas `Projects`. `Projects` contain sets of other Grafeas
+// entities such as `Notes`, `Occurrences` and `Operations`.
+service GrafeasProjects {
+  // Creates a new `Project`.
+  rpc CreateProject(CreateProjectRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post:  "/v1alpha1/{name=projects/*}"
+    };
+  }
+
+  // Returns the requested `Project`.
+  rpc GetProject(GetProjectRequest) returns (Project) {
+    option (google.api.http) = {
+      get: "/v1alpha1/{name=projects/*}"
+    };
+  }
+
+  // Lists `Projects`
+  rpc ListProjects(ListProjectsRequest)
+      returns (ListProjectsResponse) {
+    option (google.api.http) = {
+      get: "/v1alpha1/projects"
+    };
+  }
+
+  // Deletes the given `Project` from the system.
+  rpc DeleteProject(DeleteProjectRequest)
+      returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/v1alpha1/{name=projects/*}"
     };
   }
 }

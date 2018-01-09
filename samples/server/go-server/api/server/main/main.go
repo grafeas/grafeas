@@ -60,6 +60,7 @@ func main() {
 	grpcServer := grpc.NewServer(opts...)
 	g := v1alpha1.Grafeas{S: storage.NewMemStore()}
 	pb.RegisterGrafeasServer(grpcServer, &g)
+	pb.RegisterGrafeasProjectsServer(grpcServer, &g)
 	opspb.RegisterOperationsServer(grpcServer, &g)
 
 	ctx := context.Background()
@@ -80,7 +81,6 @@ func main() {
 	}
 	log.Printf("Server started on port %v", *port)
 
-	
 	pair := cert.Pair()
 	srv := &http.Server{
 		Addr:    "localhost",
@@ -90,7 +90,6 @@ func main() {
 			NextProtos:   []string{"h2"},
 		},
 	}
-	log.Printf("Server started on port %v", *port)
 	err = srv.Serve(tls.NewListener(lis, srv.TLSConfig))
 	if err != nil {
 		log.Fatalf("Unable to serve: %v", err)
