@@ -16,7 +16,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"log"
 
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/config"
@@ -24,16 +23,14 @@ import (
 )
 
 var (
-	port       = flag.Int("port", 10000, "The server port")
 	configFile = flag.String("config", "", "Path to a config file")
 )
 
 func main() {
 	flag.Parse()
-	grafeasEndpoint := fmt.Sprintf("localhost:%d", *port)
 	config, err := config.LoadConfig(*configFile)
 	if err != nil {
 		log.Fatalf("Failed to load config file")
 	}
-	server.Run(grafeasEndpoint, config.Server)
+	server.Run(config.Server)
 }

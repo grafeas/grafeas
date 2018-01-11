@@ -33,7 +33,12 @@ type Config struct {
 // DefaultConfig is a configuration that can be used as a fallback value.
 func DefaultConfig() *Config {
 	return &Config{
-		&server.Config{},
+		&server.Config{
+			Address:  "localhost:10000",
+			CertFile: "",
+			KeyFile:  "",
+			CAFile:   "",
+		},
 	}
 }
 

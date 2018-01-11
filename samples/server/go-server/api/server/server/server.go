@@ -35,16 +35,17 @@ import (
 )
 
 type Config struct {
-	CertFile string
-	KeyFile  string
-	CAFile   string
+	Address  string `yaml:"address"`  // Endpoint address, e.g. localhost:10000
+	CertFile string `yaml:"certfile"` // A PEM eoncoded certificate file
+	KeyFile  string `yaml:"keyfile"`  // A PEM encoded private key file
+	CAFile   string `yaml:"cafile"`   // A PEM eoncoded CA's certificate file
 }
 
 // Run initializes grpc and grpc gateway api services on the same address
-func Run(Addr string, config *Config) {
-	l, err := net.Listen("tcp", Addr)
+func Run(config *Config) {
+	l, err := net.Listen("tcp", config.Address)
 	if err != nil {
-		log.Fatalln("could not listen to address", Addr)
+		log.Fatalln("could not listen to address", config.Address)
 	}
 	log.Println("starting grpc server")
 

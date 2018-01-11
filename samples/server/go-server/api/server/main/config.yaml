@@ -14,7 +14,9 @@
 
 grafeas:
   server:
+    # Endpoint address, e.g. localhost:10000
+    address: localhost:10000
     # PKI configuration (optional)
-    cafile: cert/ca.crt
-    keyfile: cert/ca.key
-    certfile: cert/ca.crt
+    cafile:
+    keyfile:
+    certfile:
