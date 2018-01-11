@@ -12,28 +12,43 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
+package config
 
 import (
-	"flag"
-	"fmt"
-	"log"
+	"io/ioutil"
 
-	"github.com/grafeas/grafeas/samples/server/go-server/api/server/config"
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/server"
+	"gopkg.in/yaml.v2"
 )
 
-var (
-	port       = flag.Int("port", 10000, "The server port")
-	configFile = flag.String("config", "", "Path to a config file")
-)
+type File struct {
+	Grafeas *Config `yaml:"grafeas"`
+}
 
-func main() {
-	flag.Parse()
-	grafeasEndpoint := fmt.Sprintf("localhost:%d", *port)
-	config, err := config.LoadConfig(*configFile)
-	if err != nil {
-		log.Fatalf("Failed to load config file")
+// Config is the global configuration for an instance of Grafeas.
+type Config struct {
+	Server *server.Config `yaml:"server"`
+}
+
+// DefaultConfig is a configuration that can be used as a fallback value.
+func DefaultConfig() *Config {
+	return &Config{
+		&server.Config{},
 	}
-	server.Run(grafeasEndpoint, config.Server)
+}
+
+func LoadConfig(fileName string) (*Config, error) {
+	if fileName == "" {
+		return DefaultConfig(), nil
+	}
+	data, err := ioutil.ReadFile(fileName)
+	if err != nil {
+		return nil, err
+	}
+	var configFile File
+	err = yaml.Unmarshal(data, &configFile)
+	if err != nil {
+		return nil, err
+	}
+	return configFile.Grafeas, nil
 }
