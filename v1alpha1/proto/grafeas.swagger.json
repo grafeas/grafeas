@@ -15,15 +15,56 @@
     "application/json"
   ],
   "paths": {
-    "/v1alpha1/{name}": {
+    "/v1alpha1/projects": {
       "get": {
-        "summary": "Returns the requested `Note`.",
-        "operationId": "GetNote",
+        "summary": "Lists `Projects`",
+        "operationId": "ListProjects",
         "responses": {
           "200": {
             "description": "",
             "schema": {
-              "$ref": "#/definitions/apiNote"
+              "$ref": "#/definitions/apiListProjectsResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "filter",
+            "description": "The filter expression.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "page_size",
+            "description": "Number of projects to return in the list.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "page_token",
+            "description": "Token to provide to skip to a particular spot in the list.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "GrafeasProjects"
+        ]
+      }
+    },
+    "/v1alpha1/{name}": {
+      "get": {
+        "summary": "Returns the requested `Project`.",
+        "operationId": "GetProject",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/apiProject"
             }
           }
         },
@@ -36,12 +77,12 @@
           }
         ],
         "tags": [
-          "Grafeas"
+          "GrafeasProjects"
         ]
       },
       "delete": {
-        "summary": "Deletes the given `Note` from the system.",
-        "operationId": "DeleteNote",
+        "summary": "Deletes the given `Project` from the system.",
+        "operationId": "DeleteProject",
         "responses": {
           "200": {
             "description": "",
@@ -59,7 +100,30 @@
           }
         ],
         "tags": [
-          "Grafeas"
+          "GrafeasProjects"
+        ]
+      },
+      "post": {
+        "summary": "Creates a new `Project`.",
+        "operationId": "CreateProject",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/protobufEmpty"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "GrafeasProjects"
         ]
       },
       "patch": {
@@ -1156,6 +1220,23 @@
       },
       "description": "Response including listed active occurrences."
     },
+    "apiListProjectsResponse": {
+      "type": "object",
+      "properties": {
+        "projects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/apiProject"
+          },
+          "description": "The projects requested."
+        },
+        "next_page_token": {
+          "type": "string",
+          "description": "The next pagination token in the list response. It should be used as\n`page_token` for the following request. An empty value means no more\nresults."
+        }
+      },
+      "title": "Response including listed projects"
+    },
     "apiNote": {
       "type": "object",
       "properties": {
@@ -1315,6 +1396,16 @@
         }
       },
       "title": "An occurrence of a particular package installation found within a\nsystem's filesystem.\ne.g. glibc was found in /var/lib/dpkg/status"
+    },
+    "apiProject": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "title": "The name of the project of the form\n\"projects/{project_id}\""
+        }
+      },
+      "description": "Provides detailed description of a `Project`."
     },
     "apiProjectRepoId": {
       "type": "object",
@@ -1518,7 +1609,7 @@
       "properties": {
         "type_url": {
           "type": "string",
-          "description": "A URL/resource name that uniquely identifies the type of the serialized\nprotocol buffer message. The last segment of the URL's path must represent\nthe fully qualified name of the type (as in\n`path/google.protobuf.Duration`). The name should be in a canonical form\n(e.g., leading \".\" is not accepted).\n\nIn practice, teams usually precompile into the binary all types that they\nexpect it to use in the context of Any. However, for URLs which use the\nscheme `http`, `https`, or no scheme, one can optionally set up a type\nserver that maps type URLs to message definitions as follows:\n\n* If no scheme is provided, `https` is assumed.\n* An HTTP GET on the URL must yield a [google.protobuf.Type][]\n  value in binary format, or produce an error.\n* Applications are allowed to cache lookup results based on the\n  URL, or have them precompiled into a binary to avoid any\n  lookup. Therefore, binary compatibility needs to be preserved\n  on changes to types. (Use versioned type names to manage\n  breaking changes.)\n\nNote: this functionality is not currently available in the official\nprotobuf release, and it is not used for type URLs beginning with\ntype.googleapis.com.\n\nSchemes other than `http`, `https` (or the empty scheme) might be\nused with implementation specific semantics."
+          "description": "A URL/resource name whose content describes the type of the\nserialized protocol buffer message.\n\nFor URLs which use the scheme `http`, `https`, or no scheme, the\nfollowing restrictions and interpretations apply:\n\n* If no scheme is provided, `https` is assumed.\n* The last segment of the URL's path must represent the fully\n  qualified name of the type (as in `path/google.protobuf.Duration`).\n  The name should be in a canonical form (e.g., leading \".\" is\n  not accepted).\n* An HTTP GET on the URL must yield a [google.protobuf.Type][]\n  value in binary format, or produce an error.\n* Applications are allowed to cache lookup results based on the\n  URL, or have them precompiled into a binary to avoid any\n  lookup. Therefore, binary compatibility needs to be preserved\n  on changes to types. (Use versioned type names to manage\n  breaking changes.)\n\nSchemes other than `http`, `https` (or the empty scheme) might be\nused with implementation specific semantics."
         },
         "value": {
           "type": "string",

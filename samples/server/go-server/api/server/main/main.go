@@ -15,83 +15,22 @@
 package main
 
 import (
-	"context"
-	"crypto/tls"
 	"flag"
-	"fmt"
 	"log"
-	"net"
-	"net/http"
-	"strings"
 
-	"github.com/grafeas/grafeas/samples/server/go-server/api/server/cert"
-	"github.com/grafeas/grafeas/samples/server/go-server/api/server/storage"
-	"github.com/grafeas/grafeas/samples/server/go-server/api/server/v1alpha1"
-	pb "github.com/grafeas/grafeas/v1alpha1/proto"
-	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-	opspb "google.golang.org/genproto/googleapis/longrunning"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
+	"github.com/grafeas/grafeas/samples/server/go-server/api/server/config"
+	"github.com/grafeas/grafeas/samples/server/go-server/api/server/server"
 )
 
 var (
-	port = flag.Int("port", 10000, "The server port")
+	configFile = flag.String("config", "", "Path to a config file")
 )
-
-// grpcHandlerFunc returns an http.Handler that delegates to grpcServer on incoming gRPC
-// connections or otherHandler otherwise. Copied from cockroachdb via philips
-func grpcHandlerFunc(grpcServer *grpc.Server, otherHandler http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// This is a partial recreation of gRPC's internal checks https://github.com/grpc/grpc-go/pull/514/files#diff-95e9a25b738459a2d3030e1e6fa2a718R61
-		if r.ProtoMajor == 2 && strings.Contains(r.Header.Get("Content-Type"), "application/grpc") {
-			grpcServer.ServeHTTP(w, r)
-		} else {
-			otherHandler.ServeHTTP(w, r)
-		}
-	})
-}
 
 func main() {
 	flag.Parse()
-	grafeasEndpoint := fmt.Sprintf("localhost:%d", *port)
-
-	opts := []grpc.ServerOption{
-		grpc.Creds(credentials.NewClientTLSFromCert(cert.Pool(), grafeasEndpoint))}
-	grpcServer := grpc.NewServer(opts...)
-	g := v1alpha1.Grafeas{S: storage.NewMemStore()}
-	pb.RegisterGrafeasServer(grpcServer, &g)
-	pb.RegisterGrafeasProjectsServer(grpcServer, &g)
-	opspb.RegisterOperationsServer(grpcServer, &g)
-
-	ctx := context.Background()
-
-	mux := runtime.NewServeMux()
-	dialOpts := []grpc.DialOption{grpc.WithTransportCredentials(credentials.NewTLS(&tls.Config{
-		ServerName: "localhost",
-		RootCAs:    cert.Pool(),
-	}))}
-	err := pb.RegisterGrafeasHandlerFromEndpoint(ctx, mux, grafeasEndpoint, dialOpts)
+	config, err := config.LoadConfig(*configFile)
 	if err != nil {
-		log.Fatalf("Failed to resigister handler: %v", err)
+		log.Fatalf("Failed to load config file")
 	}
-
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", *port))
-	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
-	}
-	log.Printf("Server started on port %v", *port)
-
-	pair := cert.Pair()
-	srv := &http.Server{
-		Addr:    "localhost",
-		Handler: grpcHandlerFunc(grpcServer, mux),
-		TLSConfig: &tls.Config{
-			Certificates: []tls.Certificate{*pair},
-			NextProtos:   []string{"h2"},
-		},
-	}
-	err = srv.Serve(tls.NewListener(lis, srv.TLSConfig))
-	if err != nil {
-		log.Fatalf("Unable to serve: %v", err)
-	}
+	server.Run(config.Server)
 }
