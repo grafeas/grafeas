@@ -21,18 +21,19 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-type File struct {
-	Grafeas *Config `yaml:"grafeas"`
+// File is the grafeas config file.
+type file struct {
+	Grafeas *config `yaml:"grafeas"`
 }
 
 // Config is the global configuration for an instance of Grafeas.
-type Config struct {
+type config struct {
 	Server *server.Config `yaml:"server"`
 }
 
 // DefaultConfig is a configuration that can be used as a fallback value.
-func DefaultConfig() *Config {
-	return &Config{
+func defaultConfig() *config {
+	return &config{
 		&server.Config{
 			Address:  "localhost:10000",
 			CertFile: "",
@@ -42,15 +43,17 @@ func DefaultConfig() *Config {
 	}
 }
 
-func LoadConfig(fileName string) (*Config, error) {
+// Creates a config from a YAML-file. If fileName is an empty
+// string a default config will be returned.
+func LoadConfig(fileName string) (*config, error) {
 	if fileName == "" {
-		return DefaultConfig(), nil
+		return defaultConfig(), nil
 	}
 	data, err := ioutil.ReadFile(fileName)
 	if err != nil {
 		return nil, err
 	}
-	var configFile File
+	var configFile file
 	err = yaml.Unmarshal(data, &configFile)
 	if err != nil {
 		return nil, err
