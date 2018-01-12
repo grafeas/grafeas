@@ -1,6 +1,10 @@
 # Grafeas: A Component Metadata API
 Grafeas defines metadata API spec for computing components (e.g., VM images, container images, jar files, scripts) that can assist with aggregations over your metadata. Grafeas uses two API concepts, a **note** and an **occurrence**. This division allows 3rd party metadata providers to create and manage metadata on behalf of many customers. Additionally, the division also allows implementation of access control settings that allow fine grain access control.
 
+## Running grafeas
+
+To run your own Grafeas instance just follow the [instructions](docs/running_greafeas.md).
+
 ## Definition of terms
 **Notes**: A note is an item or condition that can be found via an analysis or something that is used multiple times in a process. For example, a CVE could be the result of a vulnerability analysis of a Linux package. In a build process, we would store information about our builder in a note. 
 
