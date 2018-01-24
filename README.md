@@ -3,7 +3,7 @@ Grafeas defines metadata API spec for computing components (e.g., VM images, con
 
 ## Running grafeas
 
-To run your own Grafeas instance just follow the [instructions](docs/running_greafeas.md).
+To run your own Grafeas instance just follow the [instructions](docs/running_grafeas.md).
 
 ## Definition of terms
 **Notes**: A note is an item or condition that can be found via an analysis or something that is used multiple times in a process. For example, a CVE could be the result of a vulnerability analysis of a Linux package. In a build process, we would store information about our builder in a note. 
