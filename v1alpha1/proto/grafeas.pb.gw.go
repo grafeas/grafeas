@@ -482,22 +482,8 @@ func request_GrafeasProjects_CreateProject_0(ctx context.Context, marshaler runt
 	var protoReq CreateProjectRequest
 	var metadata runtime.ServerMetadata
 
-	var (
-		val string
-		ok  bool
-		err error
-		_   = err
-	)
-
-	val, ok = pathParams["name"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "name")
-	}
-
-	protoReq.Name, err = runtime.String(val)
-
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "name", err)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.Project); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
 	msg, err := client.CreateProject(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -1241,7 +1227,7 @@ func RegisterGrafeasProjectsHandlerClient(ctx context.Context, mux *runtime.Serv
 }
 
 var (
-	pattern_GrafeasProjects_CreateProject_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 2, 5, 2}, []string{"v1alpha1", "projects", "name"}, ""))
+	pattern_GrafeasProjects_CreateProject_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1alpha1", "projects"}, ""))
 
 	pattern_GrafeasProjects_GetProject_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 2, 5, 2}, []string{"v1alpha1", "projects", "name"}, ""))
 

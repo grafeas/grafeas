@@ -37,10 +37,19 @@ type Grafeas struct {
 
 // CreateProject validates that a project is valid and then creates a project in the backing datastore.
 func (g *Grafeas) CreateProject(ctx context.Context, req *pb.CreateProjectRequest) (*empty.Empty, error) {
-	pID, err := name.ParseProject(req.Name)
+	p := req.Project
+	if req == nil {
+		log.Print("Project must not be empty.")
+		return nil, status.Error(codes.InvalidArgument, "Project must not be empty")
+	}
+	if p.Name == "" {
+		log.Printf("Project name must not be empty: %v", p.Name)
+		return nil, status.Error(codes.InvalidArgument, "Project name must not be empty")
+	}
+	pID, err := name.ParseProject(p.Name)
 	if err != nil {
-		log.Printf("Error parsing project name: %v", req.Name)
-		return nil, status.Error(codes.InvalidArgument, "Invalid Project name")
+		log.Printf("Invalid project name: %v", p.Name)
+		return nil, status.Error(codes.InvalidArgument, "Invalid project name")
 	}
 	return &empty.Empty{}, g.S.CreateProject(pID)
 }

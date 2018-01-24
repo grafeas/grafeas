@@ -25,9 +25,8 @@ option go_package = "grafeas";
 
 // Request to insert a new Project.
 message CreateProjectRequest {
-  // The name of the project of the form
-  // "projects/{project_id}"
-  string name = 1;
+  // The project to be inserted
+  Project project = 1;
 }
 
 // Request to get a Project.
@@ -1425,7 +1424,8 @@ service GrafeasProjects {
   // Creates a new `Project`.
   rpc CreateProject(CreateProjectRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      post:  "/v1alpha1/{name=projects/*}"
+      post: "/v1alpha1/projects"
+      body: "project"
     };
   }
 
