@@ -28,16 +28,6 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-type PgSQLConfig struct {
-	Host     string `yaml:"host"`
-	DbName   string `yaml:"dbname"`
-	User     string `yaml:"user"`
-	Password string `yaml:"password"`
-	// Valid sslmodes: disable, allow, prefer, require, verify-ca, verify-full.
-	// See https://www.postgresql.org/docs/current/static/libpq-connect.html for details
-	SSLMode string `yaml:"sslmode"`
-}
-
 type pgSQLStore struct {
 	*sql.DB
 }
