@@ -14,6 +14,8 @@
 
 package storage
 
+import "fmt"
+
 type PgSQLConfig struct {
 	Host     string `yaml:"host"`
 	DbName   string `yaml:"dbname"`
@@ -22,4 +24,12 @@ type PgSQLConfig struct {
 	// Valid sslmodes: disable, allow, prefer, require, verify-ca, verify-full.
 	// See https://www.postgresql.org/docs/current/static/libpq-connect.html for details
 	SSLMode string `yaml:"sslmode"`
+}
+
+func createSourceString(config *PgSQLConfig) string {
+	return fmt.Sprintf("postgres://%s:%s@%s/?sslmode=%s", config.User, config.Password, config.Host, config.SSLMode)
+}
+
+func createSourceStringWithDbName(config *PgSQLConfig) string {
+	return fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=%s", config.User, config.Password, config.Host, config.DbName, config.SSLMode)
 }

@@ -80,14 +80,6 @@ func createDatabase(source, dbName string) error {
 	return nil
 }
 
-func createSourceString(config *PgSQLConfig) string {
-	return fmt.Sprintf("postgres://%s:%s@%s/?sslmode=%s", config.User, config.Password, config.Host, config.SSLMode)
-}
-
-func createSourceStringWithDbName(config *PgSQLConfig) string {
-	return fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=%s", config.User, config.Password, config.Host, config.DbName, config.SSLMode)
-}
-
 // CreateProject adds the specified project to the store
 func (pg *pgSQLStore) CreateProject(pID string) error {
 	_, err := pg.DB.Exec(insertProject, name.FormatProject(pID))
