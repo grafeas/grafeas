@@ -18,8 +18,10 @@ import (
 	"flag"
 	"log"
 
+	"github.com/grafeas/grafeas/samples/server/go-server/api/server/api"
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/config"
-	"github.com/grafeas/grafeas/samples/server/go-server/api/server/server"
+	"github.com/grafeas/grafeas/samples/server/go-server/api/server/storage"
+	server "github.com/grafeas/grafeas/server-go"
 )
 
 var (
@@ -32,5 +34,19 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to load config file")
 	}
-	server.Run(config.Server)
+	storage := createStorage(config.StorageType, config.PgSQLConfig)
+	api.Run(config.API, &storage)
+}
+
+func createStorage(storageType string, pgSQLConfig *storage.PgSQLConfig) server.Storager {
+	switch storageType {
+	case "memstore":
+		return storage.NewMemStore()
+	case "postgres":
+		return storage.NewPgSQLStore(pgSQLConfig)
+	default:
+		log.Fatalf("Storage type unsupported: %s", storageType)
+	}
+
+	return nil
 }
