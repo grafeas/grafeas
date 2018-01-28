@@ -29,16 +29,18 @@ import (
 	server "github.com/grafeas/grafeas/server-go"
 	pb "github.com/grafeas/grafeas/v1alpha1/proto"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	"github.com/rs/cors"
 	opspb "google.golang.org/genproto/googleapis/longrunning"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 )
 
 type Config struct {
-	Address  string `yaml:"address"`  // Endpoint address, e.g. localhost:8080
-	CertFile string `yaml:"certfile"` // A PEM eoncoded certificate file
-	KeyFile  string `yaml:"keyfile"`  // A PEM encoded private key file
-	CAFile   string `yaml:"cafile"`   // A PEM eoncoded CA's certificate file
+	Address            string   `yaml:"address"`              // Endpoint address, e.g. localhost:8080
+	CertFile           string   `yaml:"certfile"`             // A PEM eoncoded certificate file
+	KeyFile            string   `yaml:"keyfile"`              // A PEM encoded private key file
+	CAFile             string   `yaml:"cafile"`               // A PEM eoncoded CA's certificate file
+	CORSAllowedOrigins []string `yaml:"cors_allowed_origins"` // Permitted CORS origins.
 }
 
 // Run initializes grpc and grpc gateway api services on the same address
@@ -97,8 +99,14 @@ func Run(config *Config, storage *server.Storager) {
 		log.Println("grpc server is configured without client certificate authentication")
 	}
 
+	// Setup the CORS middleware. If `config.CORSAllowedOrigins` is empty, no CORS
+	// Origins will be allowed through.
+	cors := cors.New(cors.Options{
+		AllowedOrigins: config.CORSAllowedOrigins,
+	})
+
 	srv = &http.Server{
-		Handler:   apiHandler,
+		Handler:   cors.Handler(apiHandler),
 		TLSConfig: tlsConfig,
 	}
 

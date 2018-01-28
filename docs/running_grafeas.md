@@ -157,3 +157,13 @@ func main() {
 	}
 }
 ```
+
+## Enable CORS on the sample server.
+
+### Update config
+
+Add the following to your config file below the `api` key.
+
+    cors_allowed_origins:
+       - "https://some.example.tld"
+       - "https://*.example.net"
