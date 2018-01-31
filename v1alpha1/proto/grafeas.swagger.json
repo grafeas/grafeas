@@ -54,6 +54,31 @@
         "tags": [
           "GrafeasProjects"
         ]
+      },
+      "post": {
+        "summary": "Creates a new `Project`.",
+        "operationId": "CreateProject",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/protobufEmpty"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/apiProject"
+            }
+          }
+        ],
+        "tags": [
+          "GrafeasProjects"
+        ]
       }
     },
     "/v1alpha1/{name}": {
@@ -83,29 +108,6 @@
       "delete": {
         "summary": "Deletes the given `Project` from the system.",
         "operationId": "DeleteProject",
-        "responses": {
-          "200": {
-            "description": "",
-            "schema": {
-              "$ref": "#/definitions/protobufEmpty"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "name",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "GrafeasProjects"
-        ]
-      },
-      "post": {
-        "summary": "Creates a new `Project`.",
-        "operationId": "CreateProject",
         "responses": {
           "200": {
             "description": "",
