@@ -79,7 +79,7 @@ func (m *memStore) GetProject(pID string) (*pb.Project, error) {
 }
 
 // ListProjects returns the project id for all projects from the mem store
-func (m *memStore) ListProjects(filters string) []*pb.Project {
+func (m *memStore) ListProjects(filters string) ([]*pb.Project, error) {
 	m.RLock()
 	defer m.RUnlock()
 	projects := make([]*pb.Project, len(m.projects))
@@ -88,7 +88,7 @@ func (m *memStore) ListProjects(filters string) []*pb.Project {
 		projects[i] = &pb.Project{Name: name.FormatProject(k)}
 		i++
 	}
-	return projects
+	return projects, nil
 }
 
 // CreateOccurrence adds the specified occurrence to the mem store
@@ -139,7 +139,7 @@ func (m *memStore) GetOccurrence(pID, oID string) (*pb.Occurrence, error) {
 }
 
 // ListOccurrences returns the occurrences for this project ID (pID)
-func (m *memStore) ListOccurrences(pID, filters string) []*pb.Occurrence {
+func (m *memStore) ListOccurrences(pID, filters string) ([]*pb.Occurrence, error) {
 	os := []*pb.Occurrence{}
 	m.RLock()
 	defer m.RUnlock()
@@ -148,7 +148,7 @@ func (m *memStore) ListOccurrences(pID, filters string) []*pb.Occurrence {
 			os = append(os, o)
 		}
 	}
-	return os
+	return os, nil
 }
 
 // CreateNote adds the specified note to the mem store
@@ -215,7 +215,7 @@ func (m *memStore) GetNoteByOccurrence(pID, oID string) (*pb.Note, error) {
 }
 
 // ListNotes returns the notes for for this project (pID)
-func (m *memStore) ListNotes(pID, filters string) []*pb.Note {
+func (m *memStore) ListNotes(pID, filters string) ([]*pb.Note, error) {
 	ns := []*pb.Note{}
 	m.RLock()
 	defer m.RUnlock()
@@ -224,7 +224,7 @@ func (m *memStore) ListNotes(pID, filters string) []*pb.Note {
 			ns = append(ns, n)
 		}
 	}
-	return ns
+	return ns, nil
 }
 
 // ListNoteOccurrences returns the occcurrences on the particular note (nID) for this project (pID)
@@ -294,7 +294,7 @@ func (m *memStore) UpdateOperation(pID, opID string, op *opspb.Operation) error 
 }
 
 // ListOperations returns the operations for this project (pID)
-func (m *memStore) ListOperations(pID, filters string) []*opspb.Operation {
+func (m *memStore) ListOperations(pID, filters string) ([]*opspb.Operation, error) {
 	ops := []*opspb.Operation{}
 	m.RLock()
 	defer m.RUnlock()
@@ -303,5 +303,5 @@ func (m *memStore) ListOperations(pID, filters string) []*opspb.Operation {
 			ops = append(ops, op)
 		}
 	}
-	return ops
+	return ops, nil
 }

@@ -17,7 +17,8 @@ package config
 import (
 	"io/ioutil"
 
-	"github.com/grafeas/grafeas/samples/server/go-server/api/server/server"
+	"github.com/grafeas/grafeas/samples/server/go-server/api/server/api"
+	"github.com/grafeas/grafeas/samples/server/go-server/api/server/storage"
 	"gopkg.in/yaml.v2"
 )
 
@@ -28,18 +29,22 @@ type file struct {
 
 // Config is the global configuration for an instance of Grafeas.
 type config struct {
-	Server *server.Config `yaml:"server"`
+	API         *api.Config          `yaml:"api"`
+	StorageType string               `yaml:"storage_type"` // Supported storage types are "memstore" and "postgres"
+	PgSQLConfig *storage.PgSQLConfig `yaml:"postgres"`
 }
 
 // DefaultConfig is a configuration that can be used as a fallback value.
 func defaultConfig() *config {
 	return &config{
-		&server.Config{
-			Address:  "localhost:10000",
+		API: &api.Config{
+			Address:  "localhost:8080",
 			CertFile: "",
 			KeyFile:  "",
 			CAFile:   "",
 		},
+		StorageType: "memstore",
+		PgSQLConfig: &storage.PgSQLConfig{},
 	}
 }
 

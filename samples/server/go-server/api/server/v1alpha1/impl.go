@@ -37,10 +37,19 @@ type Grafeas struct {
 
 // CreateProject validates that a project is valid and then creates a project in the backing datastore.
 func (g *Grafeas) CreateProject(ctx context.Context, req *pb.CreateProjectRequest) (*empty.Empty, error) {
-	pID, err := name.ParseProject(req.Name)
+	p := req.Project
+	if req == nil {
+		log.Print("Project must not be empty.")
+		return nil, status.Error(codes.InvalidArgument, "Project must not be empty")
+	}
+	if p.Name == "" {
+		log.Printf("Project name must not be empty: %v", p.Name)
+		return nil, status.Error(codes.InvalidArgument, "Project name must not be empty")
+	}
+	pID, err := name.ParseProject(p.Name)
 	if err != nil {
-		log.Printf("Error parsing project name: %v", req.Name)
-		return nil, status.Error(codes.InvalidArgument, "Invalid Project name")
+		log.Printf("Invalid project name: %v", p.Name)
+		return nil, status.Error(codes.InvalidArgument, "Invalid project name")
 	}
 	return &empty.Empty{}, g.S.CreateProject(pID)
 }
@@ -314,8 +323,11 @@ func (g *Grafeas) UpdateOperation(ctx context.Context, req *pb.UpdateOperationRe
 // ListProjects returns the project id for all projects in the backing datastore.
 func (g *Grafeas) ListProjects(ctx context.Context, req *pb.ListProjectsRequest) (*pb.ListProjectsResponse, error) {
 	// TODO: support filters
-	ns := g.S.ListProjects(req.Filter)
-	return &pb.ListProjectsResponse{Projects: ns}, nil
+	ps, err := g.S.ListProjects(req.Filter)
+	if err != nil {
+		return nil, status.Error(codes.Unknown, "Failed to list projects")
+	}
+	return &pb.ListProjectsResponse{Projects: ps}, nil
 }
 
 func (g *Grafeas) ListOperations(ctx context.Context, req *opspb.ListOperationsRequest) (*opspb.ListOperationsResponse, error) {
@@ -325,7 +337,10 @@ func (g *Grafeas) ListOperations(ctx context.Context, req *opspb.ListOperationsR
 		return nil, status.Error(codes.InvalidArgument, "Invalid Project name")
 	}
 	// TODO: support filters
-	ops := g.S.ListOperations(pID, req.Filter)
+	ops, err := g.S.ListOperations(pID, req.Filter)
+	if err != nil {
+		return nil, status.Error(codes.Unknown, "Failed to list operations")
+	}
 	return &opspb.ListOperationsResponse{Operations: ops}, nil
 }
 
@@ -335,11 +350,12 @@ func (g *Grafeas) ListNotes(ctx context.Context, req *pb.ListNotesRequest) (*pb.
 		log.Printf("Error parsing name: %v", req.Parent)
 		return nil, status.Error(codes.InvalidArgument, "Invalid Project name")
 	}
-
 	// TODO: support filters
-	ns := g.S.ListNotes(pID, req.Filter)
+	ns, err := g.S.ListNotes(pID, req.Filter)
+	if err != nil {
+		return nil, status.Error(codes.Unknown, "Failed to list notes")
+	}
 	return &pb.ListNotesResponse{Notes: ns}, nil
-
 }
 
 func (g *Grafeas) ListOccurrences(ctx context.Context, req *pb.ListOccurrencesRequest) (*pb.ListOccurrencesResponse, error) {
@@ -348,9 +364,11 @@ func (g *Grafeas) ListOccurrences(ctx context.Context, req *pb.ListOccurrencesRe
 		log.Printf("Error parsing name: %v", req.Parent)
 		return nil, err
 	}
-
 	// TODO: support filters - prioritizing resource url
-	os := g.S.ListOccurrences(pID, req.Filter)
+	os, err := g.S.ListOccurrences(pID, req.Filter)
+	if err != nil {
+		return nil, status.Error(codes.Unknown, "Failed to list occurrences")
+	}
 	return &pb.ListOccurrencesResponse{Occurrences: os}, nil
 }
 

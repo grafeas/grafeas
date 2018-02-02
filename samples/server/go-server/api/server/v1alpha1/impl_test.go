@@ -31,7 +31,7 @@ import (
 )
 
 func createProject(t *testing.T, pID string, ctx context.Context, g Grafeas) {
-	req := pb.CreateProjectRequest{Name: name.FormatProject(pID)}
+	req := pb.CreateProjectRequest{&pb.Project{Name: name.FormatProject(pID)}}
 	if _, err := g.CreateProject(ctx, &req); err != nil {
 		t.Errorf("CreateProject(empty operation): got %v, want success", err)
 	}
@@ -41,7 +41,7 @@ func TestCreateProject(t *testing.T) {
 	ctx := context.Background()
 	pID := "myproject"
 	g := Grafeas{storage.NewMemStore()}
-	req := pb.CreateProjectRequest{Name: name.FormatProject(pID)}
+	req := pb.CreateProjectRequest{&pb.Project{Name: name.FormatProject(pID)}}
 	_, err := g.CreateProject(ctx, &req)
 	if err != nil {
 		t.Errorf("CreateProject(empty operation): got %v, want success", err)
@@ -514,7 +514,7 @@ func TestListProjects(t *testing.T) {
 	var projects []string
 	for i := 0; i < 20; i++ {
 		pID := fmt.Sprintf("proj%v", i)
-		req := pb.CreateProjectRequest{Name: name.FormatProject(pID)}
+		req := pb.CreateProjectRequest{&pb.Project{Name: name.FormatProject(pID)}}
 		if _, err := g.CreateProject(ctx, &req); err != nil {
 			t.Errorf("CreateProject: got %v, want success", err)
 		}

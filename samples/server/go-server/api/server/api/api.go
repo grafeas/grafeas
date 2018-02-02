@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package server
+package api
 
 import (
 	"context"
@@ -25,8 +25,8 @@ import (
 	"strings"
 
 	"github.com/cockroachdb/cmux"
-	"github.com/grafeas/grafeas/samples/server/go-server/api/server/storage"
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/v1alpha1"
+	server "github.com/grafeas/grafeas/server-go"
 	pb "github.com/grafeas/grafeas/v1alpha1/proto"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	opspb "google.golang.org/genproto/googleapis/longrunning"
@@ -35,19 +35,19 @@ import (
 )
 
 type Config struct {
-	Address  string `yaml:"address"`  // Endpoint address, e.g. localhost:10000
+	Address  string `yaml:"address"`  // Endpoint address, e.g. localhost:8080
 	CertFile string `yaml:"certfile"` // A PEM eoncoded certificate file
 	KeyFile  string `yaml:"keyfile"`  // A PEM encoded private key file
 	CAFile   string `yaml:"cafile"`   // A PEM eoncoded CA's certificate file
 }
 
 // Run initializes grpc and grpc gateway api services on the same address
-func Run(config *Config) {
+func Run(config *Config, storage *server.Storager) {
 	l, err := net.Listen("tcp", config.Address)
 	if err != nil {
 		log.Fatalln("could not listen to address", config.Address)
 	}
-	log.Println("starting grpc server")
+	log.Printf("starting grpc server on %s", config.Address)
 
 	var (
 		apiHandler  http.Handler
@@ -74,7 +74,7 @@ func Run(config *Config) {
 		apiListener = tls.NewListener(tcpMux.Match(cmux.Any()), tlsConfig)
 		go func() { handleShutdown(tcpMux.Serve()) }()
 
-		grpcServer := newGrpcServer(tlsConfig)
+		grpcServer := newGrpcServer(tlsConfig, storage)
 		gwmux := newGrpcGatewayServer(ctx, apiListener.Addr().String(), tlsConfig)
 
 		httpMux.Handle("/", gwmux)
@@ -86,7 +86,7 @@ func Run(config *Config) {
 		apiListener = tcpMux.Match(cmux.Any())
 		go func() { handleShutdown(tcpMux.Serve()) }()
 
-		grpcServer := newGrpcServer(nil)
+		grpcServer := newGrpcServer(nil, storage)
 		go func() { handleShutdown(grpcServer.Serve(grpcL)) }()
 
 		gwmux := newGrpcGatewayServer(ctx, apiListener.Addr().String(), nil)
@@ -116,7 +116,7 @@ func handleShutdown(err error) {
 	}
 }
 
-func newGrpcServer(tlsConfig *tls.Config) *grpc.Server {
+func newGrpcServer(tlsConfig *tls.Config, storage *server.Storager) *grpc.Server {
 	grpcOpts := []grpc.ServerOption{}
 
 	if tlsConfig != nil {
@@ -124,7 +124,7 @@ func newGrpcServer(tlsConfig *tls.Config) *grpc.Server {
 	}
 
 	grpcServer := grpc.NewServer(grpcOpts...)
-	g := v1alpha1.Grafeas{S: storage.NewMemStore()}
+	g := v1alpha1.Grafeas{S: *storage}
 	pb.RegisterGrafeasServer(grpcServer, &g)
 	pb.RegisterGrafeasProjectsServer(grpcServer, &g)
 	opspb.RegisterOperationsServer(grpcServer, &g)

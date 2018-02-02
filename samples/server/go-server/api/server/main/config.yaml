@@ -13,16 +13,8 @@
 # limitations under the License.
 
 grafeas:
-  # Grafeas api server config
-  api:
-    # Endpoint address
-    address: "0.0.0.0:8080"
-    # PKI configuration (optional)
-    cafile:
-    keyfile:
-    certfile:
   # Supported storage types are "memstore" and "postgres"
-  storage_type: "memstore"
+  storage_type: "postgres"
   # Postgres options
   postgres:
     # Database host
