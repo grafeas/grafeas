@@ -38,7 +38,7 @@ type config struct {
 func defaultConfig() *config {
 	return &config{
 		API: &api.Config{
-			Address:  "localhost:10000",
+			Address:  "localhost:8080",
 			CertFile: "",
 			KeyFile:  "",
 			CAFile:   "",

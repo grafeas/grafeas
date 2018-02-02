@@ -35,7 +35,7 @@ import (
 )
 
 type Config struct {
-	Address  string `yaml:"address"`  // Endpoint address, e.g. localhost:10000
+	Address  string `yaml:"address"`  // Endpoint address, e.g. localhost:8080
 	CertFile string `yaml:"certfile"` // A PEM eoncoded certificate file
 	KeyFile  string `yaml:"keyfile"`  // A PEM encoded private key file
 	CAFile   string `yaml:"cafile"`   // A PEM eoncoded CA's certificate file

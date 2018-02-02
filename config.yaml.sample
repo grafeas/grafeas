@@ -16,7 +16,7 @@ grafeas:
   # Grafeas api server config
   api:
     # Endpoint address
-    address: "0.0.0.0:10000"
+    address: "0.0.0.0:8080"
     # PKI configuration (optional)
     cafile:
     keyfile:
