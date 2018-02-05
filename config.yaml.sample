@@ -21,6 +21,9 @@ grafeas:
     cafile:
     keyfile:
     certfile:
+    # CORS configuration (optional)
+    cors_allowed_origins:
+    	# - "http://example.net"
   # Supported storage types are "memstore" and "postgres"
   storage_type: "memstore"
   # Postgres options

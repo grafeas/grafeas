@@ -171,6 +171,12 @@
 			"revisionTime": "2017-11-26T05:04:59Z"
 		},
 		{
+			"checksumSHA1": "U8v4SPQEKgQf0STg/o5DkKqAkMw=",
+			"path": "github.com/rs/cors",
+			"revision": "feef513b9575b32f84bafa580aad89b011259019",
+			"revisionTime": "2018-01-23T07:30:48Z"
+		},
+		{
 			"checksumSHA1": "dr5+PfIRzXeN+l1VG+s0lea9qz8=",
 			"path": "golang.org/x/net/context",
 			"revision": "a04bdaca5b32abe1c069418fb7088ae607de5bd0",
