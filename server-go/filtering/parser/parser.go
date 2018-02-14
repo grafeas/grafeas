@@ -21,10 +21,10 @@ import (
 
 	"github.com/antlr/antlr4/runtime/Go/antlr"
 	expr "github.com/google/cel-spec/proto/v1"
-	"github.com/grafeas/server-go/filtering/ast"
-	"github.com/grafeas/server-go/filtering/common"
-	"github.com/grafeas/server-go/filtering/operators"
-	"github.com/grafeas/server-go/filtering/parser/gen"
+	"server-go/filtering/ast"
+	"server-go/filtering/common"
+	"server-go/filtering/operators"
+	"server-go/filtering/parser/gen"
 )
 
 // Internal parser representation.
