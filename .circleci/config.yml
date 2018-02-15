@@ -22,5 +22,6 @@ jobs:
     working_directory: /go/src/github.com/grafeas/grafeas/
     steps:
       - checkout
+      - run: go get -u github.com/golang/dep/cmd/dep
       - run: make prepare
       - run: make build; make test
