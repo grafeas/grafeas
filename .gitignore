@@ -2,3 +2,4 @@
 .install.grpc-gateway
 .install.googleapis
 vendor/
+googleapis/

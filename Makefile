@@ -13,9 +13,7 @@ CLEAN += .install.protoc-gen-go .install.grpc-gateway .install.googleapis
 	cd vendor/github.com/golang/protobuf/protoc-gen-go && go install .
 
 .install.googleapis:
-	mkdir -p vendor/github.com/googleapis && \
-		cd vendor/github.com/googleapis && \
-		git clone https://github.com/googleapis/googleapis
+	git clone https://github.com/googleapis/googleapis
 	touch $@
 
 .install.grpc-gateway:
@@ -44,7 +42,7 @@ v1alpha1/proto/grafeas.pb.go: .install.protoc-gen-go .install.grpc-gateway .inst
 	protoc \
 		-I ./ \
 		-I vendor/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
-		-I vendor/github.com/googleapis/googleapis \
+		-I googleapis \
 		--go_out=plugins=grpc:. \
 	    --grpc-gateway_out=logtostderr=true:. \
 	    --swagger_out=logtostderr=true:. \
