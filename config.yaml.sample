@@ -23,7 +23,7 @@ grafeas:
     certfile:
     # CORS configuration (optional)
     cors_allowed_origins:
-    	# - "http://example.net"
+      # - "http://example.net"
   # Supported storage types are "memstore" and "postgres"
   storage_type: "memstore"
   # Postgres options
@@ -39,4 +39,3 @@ grafeas:
     # Valid sslmodes disable, allow, prefer, require, verify-ca, verify-full.
     # See https://www.postgresql.org/docs/current/static/libpq-connect.html for details
     sslmode: "require"
-

@@ -32,7 +32,7 @@ func main() {
 	flag.Parse()
 	config, err := config.LoadConfig(*configFile)
 	if err != nil {
-		log.Fatalf("Failed to load config file")
+		log.Fatalf("Failed to load config file: %s", err)
 	}
 	storage := createStorage(config.StorageType, config.PgSQLConfig)
 	api.Run(config.API, &storage)

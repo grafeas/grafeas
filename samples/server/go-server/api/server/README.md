@@ -5,7 +5,6 @@ This is a reference implementation of the [Grafeas API Spec](https://github.com/
 ## Overview
 
 This reference implementation comes with the following caveats:
-* Storage: map backed in memory server storage
 * No ACLs are used in this implementation
 * No authorization is in place #28
 * Filtering in list methods is not currently supported #29
