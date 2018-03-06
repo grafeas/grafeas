@@ -1,7 +1,5 @@
 # Filtering
 
-## Overview
-
 Filters are used with HTTP LIST operations to filter the result set. They can be
 thought of as a simplified query language which provides support for applying
 boolean expressions across the attributes of the records in the result set.
