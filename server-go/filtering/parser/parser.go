@@ -41,7 +41,12 @@ type parser struct {
 
 // Parse a filter source into an abstract CEL-based representation.
 //
-// If the parse is not successful a common.Errors value is returned as the
+// The `Parse` method expects single `Source` value whose content will be
+// parsed into a CEL representation that models the capabilities of the list
+// filtering syntax supported by Google Cloud Logging's
+// [Advanced Filters](https://cloud.google.com/logging/docs/view/advanced-filters)
+//
+// If the parse is not successful a `common.Errors` value is returned as the
 // second result.
 func Parse(source common.Source) (*expr.ParsedExpr, *common.Errors) {
 	p := parser{
@@ -339,18 +344,23 @@ func (p *parser) SyntaxError(recognizer antlr.Recognizer,
 	p.errors.ReportError(p.source, common.NewLocation(line, column), errorMsg)
 }
 
+// Ambiguities in the grammar can arise under rare circumstances, but typically
+// only add a small look-ahead burden on parsing, where some number of lex
+// tokens must be read before disambiguation can be done for the parse term.
 func (p *parser) ReportAmbiguity(recognizer antlr.Parser, dfa *antlr.DFA,
 	startIndex, stopIndex int, exact bool, ambigAlts *antlr.BitSet,
 	configs antlr.ATNConfigSet) {
 	// Intentional
 }
 
+// Indicates some added parsing overhead, but nothing problematic.
 func (p *parser) ReportAttemptingFullContext(recognizer antlr.Parser,
 	dfa *antlr.DFA, startIndex, stopIndex int,
 	conflictingAlts *antlr.BitSet, configs antlr.ATNConfigSet) {
 	// Intentional
 }
 
+// Indicates some added parsing overhead, but nothing problematic.
 func (p *parser) ReportContextSensitivity(recognizer antlr.Parser,
 	dfa *antlr.DFA, startIndex, stopIndex, prediction int,
 	configs antlr.ATNConfigSet) {

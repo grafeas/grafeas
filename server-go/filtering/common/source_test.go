@@ -76,7 +76,7 @@ func TestStringSource_CharacterOffset(t *testing.T) {
 	charStart, _ := source.CharacterOffset(NewLocation(1, 2))
 	charEnd, _ := source.CharacterOffset(NewLocation(3, 2))
 	if "d &&\n\t b.c.arg(10) &&\n\t " != string(contents[charStart:charEnd]) {
-		t.Errorf(UnexpectedValue,"d &&\n\t b.c.arg(10) &&\n\t ",
+		t.Errorf(UnexpectedValue, "d &&\n\t b.c.arg(10) &&\n\t ",
 			string(contents[charStart:charEnd]))
 	}
 	if _, found := source.CharacterOffset(NewLocation(4, 0)); found {
