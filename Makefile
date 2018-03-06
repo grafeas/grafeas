@@ -34,7 +34,7 @@ v1alpha1/proto/grafeas.pb.go: .install.protoc-gen-go .install.grpc-gateway v1alp
 		-I vendor/github.com/googleapis/googleapis \
 		--go_out=plugins=grpc:. \
 	    --grpc-gateway_out=logtostderr=true:. \
-	    --swagger_out=logtostderr=true:. \
+        --swagger_out=logtostderr=true:. \
 	    v1alpha1/proto/grafeas.proto
 
 

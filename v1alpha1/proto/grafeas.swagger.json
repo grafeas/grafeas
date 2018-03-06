@@ -423,6 +423,14 @@
     }
   },
   "definitions": {
+    "AttestationAuthorityAttestation": {
+      "type": "object",
+      "properties": {
+        "pgp_signed_attestation": {
+          "$ref": "#/definitions/apiPgpSignedAttestation"
+        }
+      }
+    },
     "BuildSignatureKeyType": {
       "type": "string",
       "enum": [
@@ -691,6 +699,15 @@
         }
       },
       "description": "This represents a particular package that is distributed over\nvarious channels.\ne.g. glibc (aka libc6) is distributed by many, at various versions."
+    },
+    "PgpSignedAttestationContentType": {
+      "type": "string",
+      "enum": [
+        "CONTENT_TYPE_UNSPECIFIED",
+        "SIMPLE_SIGNING_JSON"
+      ],
+      "default": "CONTENT_TYPE_UNSPECIFIED",
+      "description": "Type (e.g. schema) of the attestation payload that was signed.\n\n - CONTENT_TYPE_UNSPECIFIED: ContentType is not set.\n - SIMPLE_SIGNING_JSON: Atomic format attestation signature. See\nhttps://github.com/containers/image/blob/8a5d2f82a6e3263290c8e0276c3e0f64e77723e7/docs/atomic-signature.md\nThe payload extracted from `signature` is a JSON blob conforming to the\nlinked schema."
     },
     "VersionVersionKind": {
       "type": "string",
@@ -1316,10 +1333,11 @@
         "IMAGE_BASIS",
         "PACKAGE_MANAGER",
         "DEPLOYABLE",
-        "DISCOVERY"
+        "DISCOVERY",
+        "ATTESTATION_AUTHORITY"
       ],
       "default": "KIND_UNSPECIFIED",
-      "description": "This must be 1:1 with members of our oneofs, it can be used for filtering\nNote and Occurrence on their kind.\n\n - KIND_UNSPECIFIED: Unknown\n - PACKAGE_VULNERABILITY: The note and occurrence represent a package vulnerability.\n - BUILD_DETAILS: The note and occurrence assert build provenance.\n - IMAGE_BASIS: This represents an image basis relationship.\n - PACKAGE_MANAGER: This represents a package installed via a package manager.\n - DEPLOYABLE: The note and occurrence track deployment events.\n - DISCOVERY: The note and occurrence track the initial discovery status of a resource."
+      "description": "This must be 1:1 with members of our oneofs, it can be used for filtering\nNote and Occurrence on their kind.\n\n - KIND_UNSPECIFIED: Unknown\n - PACKAGE_VULNERABILITY: The note and occurrence represent a package vulnerability.\n - BUILD_DETAILS: The note and occurrence assert build provenance.\n - IMAGE_BASIS: This represents an image basis relationship.\n - PACKAGE_MANAGER: This represents a package installed via a package manager.\n - DEPLOYABLE: The note and occurrence track deployment events.\n - DISCOVERY: The note and occurrence track the initial discovery status of a resource.\n - ATTESTATION_AUTHORITY: This represents a logical \"role\" that can attest to artifacts."
     },
     "apiOccurrence": {
       "type": "object",
@@ -1364,6 +1382,10 @@
           "$ref": "#/definitions/DiscoveryDiscovered",
           "description": "Describes the initial scan status for this resource."
         },
+        "attestation": {
+          "$ref": "#/definitions/AttestationAuthorityAttestation",
+          "description": "Describes an attestation of an artifact."
+        },
         "remediation": {
           "type": "string",
           "title": "A description of actions that can be taken to remedy the `Note`"
@@ -1398,6 +1420,24 @@
         }
       },
       "title": "An occurrence of a particular package installation found within a\nsystem's filesystem.\ne.g. glibc was found in /var/lib/dpkg/status"
+    },
+    "apiPgpSignedAttestation": {
+      "type": "object",
+      "properties": {
+        "signature": {
+          "type": "string",
+          "description": "The raw content of the signature, as output by gpg or equivalent.  Since\nthis message only supports attached signatures, the payload that was signed\nmust be attached. While the signature format supported is dependent on the\nverification implementation, currently only ASCII-armored (`--armor` to\ngpg), non-clearsigned (`--sign` rather than `--clearsign` to gpg) are\nsupported.\nConcretely, `gpg --sign --armor --output=signature.gpg payload.json` will\ncreate the signature content expected in this field in `signature.gpg` for\nthe `payload.json` attestation payload."
+        },
+        "content_type": {
+          "$ref": "#/definitions/PgpSignedAttestationContentType",
+          "description": "Type (e.g. schema) of the attestation payload that was signed.\nThe verifier must ensure that the provided type is one that the verifier\nsupports, and that the attestation payload is a valid instantiation of that\ntype (e.g. by validating a JSON schema)."
+        },
+        "pgp_key_id": {
+          "type": "string",
+          "description": "The cryptographic fingerprint of the key used to generate the signature,\nas output by, e.g. `gpg --list-keys`. This should be the version 4, full\n160-bit fingerprint, expressed as a 40 character hexidecimal string. See\nhttps://tools.ietf.org/html/rfc4880#section-12.2 for details.\nImplementations may choose to acknowledge \"LONG\", \"SHORT\", or other\nabbreviated key IDs, but only the full fingerprint is guaranteed to work.\nIn gpg, the full fingerprint can be retrieved from the `fpr` field\nreturned when calling --list-keys with --with-colons.  For example:\n```\ngpg --with-colons --with-fingerprint --force-v4-certs \\\n    --list-keys attester@example.com\ntru::1:1513631572:0:3:1:5\npub:...\u003cSNIP\u003e...\nfpr:::::::::24FF6481B76AC91E66A00AC657A93A81EF3AE6FB:\n```\nAbove, the fingerprint is `24FF6481B76AC91E66A00AC657A93A81EF3AE6FB`."
+        }
+      },
+      "description": "An attestation wrapper with a PGP-compatible signature.\nThis message only supports ATTACHED signatures, where the payload that is\nsigned is included alongside the signature itself in the same file."
     },
     "apiProject": {
       "type": "object",
