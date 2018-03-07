@@ -30,6 +30,7 @@ vet:
 v1alpha1/proto/grafeas.pb.go: .install.protoc-gen-go .install.grpc-gateway v1alpha1/proto/grafeas.proto
 	protoc \
 		-I ./ \
+		-I ./include \
 		-I vendor/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
 		-I vendor/github.com/googleapis/googleapis \
 		--go_out=plugins=grpc:. \

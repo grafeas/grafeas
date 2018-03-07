@@ -312,7 +312,7 @@ message AttestationAuthority {
     // The human readable name of this Attestation Authority, e.g. "qa".
     string human_readable_name = 1;
   }
-  message Attestation {
+  message AttestationDetails {
     // The signature, generally over the `resource_url`, that verifies this
     // attestation.  The semantics of the signature veracity are ultimately
     // determined by the verification engine.
@@ -468,7 +468,7 @@ message Command {
 // An artifact that can be deployed in some runtime.
 message Deployable {
   // The period during which some deployable was active in a runtime.
-  message Deployment {
+  message DeploymentDetails {
     // Types of platforms.
     enum Platform {
       // Unknown
@@ -615,7 +615,7 @@ message DockerImage {
   // Derived describes the derived image portion (Occurrence) of the
   // DockerImage relationship.  This image would be produced from a Dockerfile
   // with FROM <DockerImage.Basis in attached Note>.
-  message Derived {
+  message DerivedDetails {
     // The fingerprint of the derived image
     Fingerprint fingerprint = 1;
 
@@ -642,7 +642,7 @@ message DockerImage {
 // note for a resource indicates that analysis hasn't started.
 message Discovery {
   // Provides information about the scan status of a discovered resource.
-  message Discovered {
+  message DiscoveredDetails {
     // Output only. An operation that indicates the status of the current scan.
     google.longrunning.Operation operation = 1;
   }
@@ -795,19 +795,19 @@ message Occurrence {
 
     // Describes how this resource derives from the basis
     // in the associated note.
-    DockerImage.Derived derived_image = 11;
+    DockerImage.DerivedDetails derived_image_details = 11;
 
     // Describes the installation of a package on the linked resource.
-    PackageManager.Installation installation = 12;
+    PackageManager.InstallationDetails installation_details = 12;
 
     // Describes the deployment of an artifact on a runtime.
-    Deployable.Deployment deployment = 14;
+    Deployable.DeploymentDetails deployment_details = 14;
 
     // Describes the initial scan status for this resource.
-    Discovery.Discovered discovered = 15;
+    Discovery.DiscoveredDetails discovered_details = 15;
 
     // Describes an attestation of an artifact.
-    AttestationAuthority.Attestation attestation = 16;
+    AttestationAuthority.AttestationDetails attestation_details = 16;
   }
 
   // A description of actions that can be taken to remedy the `Note`
@@ -875,7 +875,7 @@ message PackageManager {
 
   // This represents how a particular software package may be installed on
   // a system.
-  message Installation {
+  message InstallationDetails {
     // Output only. The name of the installed package.
     string name = 1;
 
