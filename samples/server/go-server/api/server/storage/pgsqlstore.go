@@ -16,11 +16,14 @@ package storage
 
 import (
 	"database/sql"
+	"encoding/base64"
 	"fmt"
 	"log"
+	"strconv"
 
 	"github.com/golang/protobuf/proto"
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/name"
+	server "github.com/grafeas/grafeas/server-go"
 	pb "github.com/grafeas/grafeas/v1alpha1/proto"
 	"github.com/lib/pq"
 	opspb "google.golang.org/genproto/googleapis/longrunning"
@@ -127,21 +130,29 @@ func (pg *pgSQLStore) GetProject(pID string) (*pb.Project, error) {
 }
 
 // ListProjects returns the project id for all projects from the store
-func (pg *pgSQLStore) ListProjects(filters string) ([]*pb.Project, error) {
-	rows, err := pg.DB.Query(listProjects)
+func (pg *pgSQLStore) ListProjects(options *server.ListOptions) ([]*pb.Project, string, error) {
+	var rows *sql.Rows
+	var err error
+	id, err := decodeInt64(options.PageToken)
+	if err == nil {
+		rows, err = pg.DB.Query(listProjectsFromPage, options.PageSize, id)
+	} else {
+		rows, err = pg.DB.Query(listProjects, options.PageSize)
+	}
 	if err != nil {
-		return nil, status.Error(codes.Unknown, fmt.Sprintf("Failed to list Projects from database"))
+		return nil, "", status.Error(codes.Unknown, fmt.Sprintf("Failed to list Projects from database"))
 	}
 	var projects []*pb.Project
+	var lastId int64
 	for rows.Next() {
 		var name string
-		err := rows.Scan(&name)
+		err := rows.Scan(&lastId, &name)
 		if err != nil {
-			return nil, status.Error(codes.Unknown, fmt.Sprintf("Failed to scan Project row"))
+			return nil, "", status.Error(codes.Unknown, fmt.Sprintf("Failed to scan Project row"))
 		}
 		projects = append(projects, &pb.Project{Name: name})
 	}
-	return projects, nil
+	return projects, encodeInt64(lastId), nil
 }
 
 // CreateOccurrence adds the specified occurrence
@@ -471,4 +482,23 @@ func (pg *pgSQLStore) ListOperations(pID, filters string) ([]*opspb.Operation, e
 		ops = append(ops, &op)
 	}
 	return ops, nil
+}
+
+// Encodes int64 value to base64 encoded string
+func encodeInt64(v int64) string {
+	str := strconv.FormatInt(v, 10)
+	return base64.StdEncoding.EncodeToString([]byte(str))
+}
+
+// Decodes base64 encoded string to int64
+func decodeInt64(str string) (int64, error) {
+	bytes, err := base64.StdEncoding.DecodeString(str)
+	if err != nil {
+		return 0, err
+	}
+	x, err := strconv.ParseInt(string(bytes), 10, 64)
+	if err != nil {
+		return 0, err
+	}
+	return x, nil
 }

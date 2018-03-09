@@ -16,17 +16,15 @@ package storage
 
 import (
 	"fmt"
+	"reflect"
 	"sort"
 	"strconv"
+	"strings"
+	"testing"
 
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/name"
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/testing"
 	server "github.com/grafeas/grafeas/server-go"
-
-	"reflect"
-	"strings"
-	"testing"
-
 	pb "github.com/grafeas/grafeas/v1alpha1/proto"
 	opspb "google.golang.org/genproto/googleapis/longrunning"
 	"google.golang.org/grpc/codes"
@@ -440,13 +438,12 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 			}
 			wantProjectNames = append(wantProjectNames, name.FormatProject(pID))
 		}
-		filter := "filters_are_yet_to_be_implemented"
-		gotProjects, err := s.ListProjects(filter)
+		gotProjects, _, err := s.ListProjects(&server.ListOptions{PageSize: 100})
 		if err != nil {
 			t.Fatalf("ListProjects got %v want success", err)
 		}
 		if len(gotProjects) != 20 {
-			t.Errorf("ListProjects got %v operations, want 20", len(gotProjects))
+			t.Errorf("ListProjects got %v projects, want 20", len(gotProjects))
 		}
 		gotProjectNames := make([]string, len(gotProjects))
 		for i, project := range gotProjects {
@@ -517,7 +514,7 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 			t.Fatalf("ListNotes got %v want success", err)
 		}
 		if len(gotNs) != 5 {
-			t.Errorf("ListNotes got %v operations, want 5", len(gotNs))
+			t.Errorf("ListNotes got %v notes, want 5", len(gotNs))
 		}
 		for _, n := range gotNs {
 			want := name.FormatProject(findProject)
@@ -605,6 +602,50 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 			if o.NoteName != n.Name {
 				t.Errorf("ListNoteOccurrences got %v want  %v", o.Name, o.NoteName)
 			}
+		}
+	})
+
+	t.Run("ProjectPagination", func(t *testing.T) {
+		s, cleanUp := createStore(t)
+		defer cleanUp()
+		pID1 := "project1"
+		if err := s.CreateProject(pID1); err != nil {
+			t.Errorf("CreateProject got %v want success", err)
+		}
+		pID2 := "project2"
+		if err := s.CreateProject(pID2); err != nil {
+			t.Errorf("CreateProject got %v want success", err)
+		}
+		pID3 := "project3"
+		if err := s.CreateProject(pID3); err != nil {
+			t.Errorf("CreateProject got %v want success", err)
+		}
+		options := &server.ListOptions{PageSize: 2}
+		// Get projects
+		gotProjects, lastPage, err := s.ListProjects(options)
+		if err != nil {
+			t.Fatalf("ListProjects got %v want success", err)
+		}
+		if len(gotProjects) != 2 {
+			t.Errorf("ListProjects got %v projects, want 2", len(gotProjects))
+		}
+		if p := gotProjects[0]; p.Name != name.FormatProject(pID1) {
+			t.Fatalf("Got %s want %s", p.Name, name.FormatProject(pID1))
+		}
+		if p := gotProjects[1]; p.Name != name.FormatProject(pID2) {
+			t.Fatalf("Got %s want %s", p.Name, name.FormatProject(pID2))
+		}
+		// Get projects again
+		options.PageToken = lastPage
+		gotProjects, _, err = s.ListProjects(options)
+		if err != nil {
+			t.Fatalf("ListProjects got %v want success", err)
+		}
+		if len(gotProjects) != 1 {
+			t.Errorf("ListProjects got %v projects, want 1", len(gotProjects))
+		}
+		if p := gotProjects[0]; p.Name != name.FormatProject(pID3) {
+			t.Fatalf("Got %s want %s", p.Name, name.FormatProject(pID3))
 		}
 	})
 }

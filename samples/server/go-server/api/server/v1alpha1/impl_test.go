@@ -657,3 +657,41 @@ func TestListNoteOccurrences(t *testing.T) {
 		t.Errorf("resp.Occurrences got %d, want 20", len(resp.Occurrences))
 	}
 }
+
+func TestProjectsPagination(t *testing.T) {
+	ctx := context.Background()
+	g := Grafeas{storage.NewMemStore()}
+	var projects []string
+	for i := 0; i < 20; i++ {
+		pID := fmt.Sprintf("proj%v", i)
+		req := pb.CreateProjectRequest{&pb.Project{Name: name.FormatProject(pID)}}
+		if _, err := g.CreateProject(ctx, &req); err != nil {
+			t.Errorf("CreateProject: got %v, want success", err)
+		}
+		if _, err := g.CreateProject(ctx, &req); err == nil {
+			t.Errorf("CreateProject: got %v, want InvalidArgument", err)
+		}
+		projects = append(projects, name.FormatProject(pID))
+	}
+	req := pb.ListProjectsRequest{
+		PageSize: 15,
+	}
+	resp, err := g.ListProjects(ctx, &req)
+	if err != nil {
+		t.Errorf("ListProjects: got %v, want success", err)
+	}
+	if 15 != len(resp.Projects) {
+		t.Errorf("ListProjects: expected 15 projects, got %d", len(resp.Projects))
+	}
+	req = pb.ListProjectsRequest{
+		PageSize:  15,
+		PageToken: resp.NextPageToken,
+	}
+	resp, err = g.ListProjects(ctx, &req)
+	if err != nil {
+		t.Errorf("ListProjects: got %v, want success", err)
+	}
+	if 5 != len(resp.Projects) {
+		t.Errorf("ListProjects: expected 5 projects, got %d", len(resp.Projects))
+	}
+}

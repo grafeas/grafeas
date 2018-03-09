@@ -43,10 +43,11 @@ const (
 			UNIQUE (project_name, operation_name)
 		);`
 
-	insertProject = `INSERT INTO projects(name) VALUES ($1)`
-	projectExists = `SELECT EXISTS (SELECT 1 FROM projects WHERE name = $1)`
-	deleteProject = `DELETE FROM projects WHERE name = $1`
-	listProjects  = `SELECT name FROM projects`
+	insertProject        = `INSERT INTO projects(name) VALUES ($1)`
+	projectExists        = `SELECT EXISTS (SELECT 1 FROM projects WHERE name = $1)`
+	deleteProject        = `DELETE FROM projects WHERE name = $1`
+	listProjects         = `SELECT id, name FROM projects LIMIT $1`
+	listProjectsFromPage = `SELECT id, name FROM projects WHERE id > $2 LIMIT $1`
 
 	insertOccurrence = `INSERT INTO occurrences(project_name, occurrence_name, note_id, data)
                       VALUES ($1, $2, (SELECT id FROM notes WHERE project_name = $3 AND note_name = $4), $5)`
