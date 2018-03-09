@@ -9,6 +9,12 @@
 			"revisionTime": "2017-01-10T19:26:07Z"
 		},
 		{
+			"checksumSHA1": "AC3L+6uB5lMz2ysLswyI52jXWL8=",
+			"path": "github.com/fernet/fernet-go",
+			"revision": "1b2437bc582b3cfbb341ee5a29f8ef5b42912ff2",
+			"revisionTime": "2015-07-09T19:54:58Z"
+		},
+		{
 			"checksumSHA1": "HmbftipkadrLlCfzzVQ+iFHbl6g=",
 			"path": "github.com/golang/glog",
 			"revision": "23def4e6c14b4da8ac2ed8007337bc5eb5007998",

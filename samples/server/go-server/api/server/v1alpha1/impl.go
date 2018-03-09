@@ -323,11 +323,17 @@ func (g *Grafeas) UpdateOperation(ctx context.Context, req *pb.UpdateOperationRe
 // ListProjects returns the project id for all projects in the backing datastore.
 func (g *Grafeas) ListProjects(ctx context.Context, req *pb.ListProjectsRequest) (*pb.ListProjectsResponse, error) {
 	// TODO: support filters
-	ps, err := g.S.ListProjects(req.Filter)
+	if req.PageSize == 0 {
+		req.PageSize = 100
+	}
+	ps, nextToken, err := g.S.ListProjects(req.Filter, int(req.PageSize), req.PageToken)
 	if err != nil {
 		return nil, status.Error(codes.Unknown, "Failed to list projects")
 	}
-	return &pb.ListProjectsResponse{Projects: ps}, nil
+	return &pb.ListProjectsResponse{
+		Projects:      ps,
+		NextPageToken: nextToken,
+	}, nil
 }
 
 func (g *Grafeas) ListOperations(ctx context.Context, req *opspb.ListOperationsRequest) (*opspb.ListOperationsResponse, error) {
@@ -337,11 +343,17 @@ func (g *Grafeas) ListOperations(ctx context.Context, req *opspb.ListOperationsR
 		return nil, status.Error(codes.InvalidArgument, "Invalid Project name")
 	}
 	// TODO: support filters
-	ops, err := g.S.ListOperations(pID, req.Filter)
+	if req.PageSize == 0 {
+		req.PageSize = 100
+	}
+	ops, nextToken, err := g.S.ListOperations(pID, req.Filter, int(req.PageSize), req.PageToken)
 	if err != nil {
 		return nil, status.Error(codes.Unknown, "Failed to list operations")
 	}
-	return &opspb.ListOperationsResponse{Operations: ops}, nil
+	return &opspb.ListOperationsResponse{
+		Operations:    ops,
+		NextPageToken: nextToken,
+	}, nil
 }
 
 func (g *Grafeas) ListNotes(ctx context.Context, req *pb.ListNotesRequest) (*pb.ListNotesResponse, error) {
@@ -351,11 +363,17 @@ func (g *Grafeas) ListNotes(ctx context.Context, req *pb.ListNotesRequest) (*pb.
 		return nil, status.Error(codes.InvalidArgument, "Invalid Project name")
 	}
 	// TODO: support filters
-	ns, err := g.S.ListNotes(pID, req.Filter)
+	if req.PageSize == 0 {
+		req.PageSize = 100
+	}
+	ns, nextToken, err := g.S.ListNotes(pID, req.Filter, int(req.PageSize), req.PageToken)
 	if err != nil {
 		return nil, status.Error(codes.Unknown, "Failed to list notes")
 	}
-	return &pb.ListNotesResponse{Notes: ns}, nil
+	return &pb.ListNotesResponse{
+		Notes:         ns,
+		NextPageToken: nextToken,
+	}, nil
 }
 
 func (g *Grafeas) ListOccurrences(ctx context.Context, req *pb.ListOccurrencesRequest) (*pb.ListOccurrencesResponse, error) {
@@ -365,11 +383,17 @@ func (g *Grafeas) ListOccurrences(ctx context.Context, req *pb.ListOccurrencesRe
 		return nil, err
 	}
 	// TODO: support filters - prioritizing resource url
-	os, err := g.S.ListOccurrences(pID, req.Filter)
+	if req.PageSize == 0 {
+		req.PageSize = 100
+	}
+	os, nextToken, err := g.S.ListOccurrences(pID, req.Filter, int(req.PageSize), req.PageToken)
 	if err != nil {
 		return nil, status.Error(codes.Unknown, "Failed to list occurrences")
 	}
-	return &pb.ListOccurrencesResponse{Occurrences: os}, nil
+	return &pb.ListOccurrencesResponse{
+		Occurrences:   os,
+		NextPageToken: nextToken,
+	}, nil
 }
 
 func (g *Grafeas) ListNoteOccurrences(ctx context.Context, req *pb.ListNoteOccurrencesRequest) (*pb.ListNoteOccurrencesResponse, error) {
@@ -379,11 +403,17 @@ func (g *Grafeas) ListNoteOccurrences(ctx context.Context, req *pb.ListNoteOccur
 		return nil, status.Error(codes.InvalidArgument, "Invalid note name")
 	}
 	// TODO: support filters - prioritizing resource url
-	os, gErr := g.S.ListNoteOccurrences(pID, nID, req.Filter)
+	if req.PageSize == 0 {
+		req.PageSize = 100
+	}
+	os, nextToken, gErr := g.S.ListNoteOccurrences(pID, nID, req.Filter, int(req.PageSize), req.PageToken)
 	if gErr != nil {
 		return nil, gErr
 	}
-	return &pb.ListNoteOccurrencesResponse{Occurrences: os}, nil
+	return &pb.ListNoteOccurrencesResponse{
+		Occurrences:   os,
+		NextPageToken: nextToken,
+	}, nil
 }
 
 func (g *Grafeas) CancelOperation(context.Context, *opspb.CancelOperationRequest) (*empty.Empty, error) {
