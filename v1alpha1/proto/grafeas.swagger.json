@@ -423,7 +423,7 @@
     }
   },
   "definitions": {
-    "AttestationAuthorityAttestation": {
+    "AttestationAuthorityAttestationDetails": {
       "type": "object",
       "properties": {
         "pgp_signed_attestation": {
@@ -442,7 +442,7 @@
       "description": "- KEY_TYPE_UNSPECIFIED: `KeyType` is not set.\n - PGP_ASCII_ARMORED: `PGP ASCII Armored` public key.\n - PKIX_PEM: `PKIX PEM` public key.",
       "title": "Public key formats"
     },
-    "DeployableDeployment": {
+    "DeployableDeploymentDetails": {
       "type": "object",
       "properties": {
         "user_email": {
@@ -475,13 +475,13 @@
           "description": "Output only. Resource URI for the artifact being deployed taken from the\ndeployable field with the same name."
         },
         "platform": {
-          "$ref": "#/definitions/DeploymentPlatform",
+          "$ref": "#/definitions/DeploymentDetailsPlatform",
           "description": "Platform hosting this deployment."
         }
       },
       "description": "The period during which some deployable was active in a runtime."
     },
-    "DeploymentPlatform": {
+    "DeploymentDetailsPlatform": {
       "type": "string",
       "enum": [
         "PLATFORM_UNSPECIFIED",
@@ -492,7 +492,7 @@
       "default": "PLATFORM_UNSPECIFIED",
       "description": "Types of platforms.\n\n - PLATFORM_UNSPECIFIED: Unknown\n - GKE: Google Container Engine\n - FLEX: Google App Engine: Flexible Environment\n - CUSTOM: Custom user-defined platform"
     },
-    "DiscoveryDiscovered": {
+    "DiscoveryDiscoveredDetails": {
       "type": "object",
       "properties": {
         "operation": {
@@ -516,7 +516,7 @@
       },
       "description": "Basis describes the base image portion (Note) of the DockerImage\nrelationship.  Linked occurrences are derived from this or an\nequivalent image via:\n  FROM \u003cBasis.resource_url\u003e\nOr an equivalent reference, e.g. a tag of the resource_url."
     },
-    "DockerImageDerived": {
+    "DockerImageDerivedDetails": {
       "type": "object",
       "properties": {
         "fingerprint": {
@@ -666,7 +666,7 @@
       },
       "title": "This represents a particular channel of distribution for a given package.\ne.g. Debian's jessie-backports dpkg mirror"
     },
-    "PackageManagerInstallation": {
+    "PackageManagerInstallationDetails": {
       "type": "object",
       "properties": {
         "name": {
@@ -1366,24 +1366,24 @@
           "$ref": "#/definitions/apiBuildDetails",
           "description": "Build details for a verifiable build."
         },
-        "derived_image": {
-          "$ref": "#/definitions/DockerImageDerived",
+        "derived_image_details": {
+          "$ref": "#/definitions/DockerImageDerivedDetails",
           "description": "Describes how this resource derives from the basis\nin the associated note."
         },
-        "installation": {
-          "$ref": "#/definitions/PackageManagerInstallation",
+        "installation_details": {
+          "$ref": "#/definitions/PackageManagerInstallationDetails",
           "description": "Describes the installation of a package on the linked resource."
         },
-        "deployment": {
-          "$ref": "#/definitions/DeployableDeployment",
+        "deployment_details": {
+          "$ref": "#/definitions/DeployableDeploymentDetails",
           "description": "Describes the deployment of an artifact on a runtime."
         },
-        "discovered": {
-          "$ref": "#/definitions/DiscoveryDiscovered",
+        "discovered_details": {
+          "$ref": "#/definitions/DiscoveryDiscoveredDetails",
           "description": "Describes the initial scan status for this resource."
         },
-        "attestation": {
-          "$ref": "#/definitions/AttestationAuthorityAttestation",
+        "attestation_details": {
+          "$ref": "#/definitions/AttestationAuthorityAttestationDetails",
           "description": "Describes an attestation of an artifact."
         },
         "remediation": {
