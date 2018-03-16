@@ -25,6 +25,7 @@ import (
 	pb "github.com/grafeas/grafeas/v1alpha1/proto"
 	"golang.org/x/net/context"
 	opspb "google.golang.org/genproto/googleapis/longrunning"
+	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -32,7 +33,21 @@ import (
 // Grafeas is an implementation of the Grafeas API, which should be called by handler methods for verification of logic
 // and storage.
 type Grafeas struct {
-	S server.Storager
+	S           server.Storager
+	ServiceInfo map[string]grpc.ServiceInfo
+}
+
+// Check if the serviceDescriptor registered for serviceName has method with methodName
+// implemented and return true, false otherwise
+func isMethodImplemented(methodName, serviceName string, g *Grafeas) bool {
+	implemented := false
+	for _, value := range g.ServiceInfo[serviceName].Methods {
+		if value.Name == methodName {
+			implemented = true
+			break
+		}
+	}
+	return implemented
 }
 
 // CreateProject validates that a project is valid and then creates a project in the backing datastore.
@@ -75,7 +90,12 @@ func (g *Grafeas) CreateNote(ctx context.Context, req *pb.CreateNoteRequest) (*p
 		return nil, status.Error(codes.NotFound, fmt.Sprintf("Project %v not found", pID))
 	}
 
-	// TODO: Validate that operation exists if it is specified when get methods are implmented
+	// Validate that operation exists if it is specified when get methods are implemented
+	if isMethodImplemented("CreateNote", "grafeas.v1alpha1.api.Grafeas", g) == false {
+		log.Printf("Unable to find implementation for CreateNote")
+		return nil, status.Error(codes.NotFound, fmt.Sprintf("CreateNote implementation not found"))
+	}
+
 	return n, g.S.CreateNote(n)
 }
 
@@ -107,7 +127,12 @@ func (g *Grafeas) CreateOccurrence(ctx context.Context, req *pb.CreateOccurrence
 		log.Printf("Unable to getnote %v, err: %v", n, err)
 		return nil, status.Error(codes.NotFound, fmt.Sprintf("Note %v not found", o.NoteName))
 	}
-	// TODO: Validate that operation exists if it is specified
+	// Validate that operation exists if it is specified
+	if isMethodImplemented("CreateNote", "grafeas.v1alpha1.api.Grafeas", g) == false {
+		log.Printf("Unable to find implementation for CreateNote")
+		return nil, status.Error(codes.NotFound, fmt.Sprintf("CreateNote implementation not found"))
+	}
+
 	return o, g.S.CreateOccurrence(o)
 }
 
