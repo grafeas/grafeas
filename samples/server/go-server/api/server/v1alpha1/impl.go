@@ -37,6 +37,8 @@ type Grafeas struct {
 	ServiceInfo map[string]grpc.ServiceInfo
 }
 
+var serviceName = "grafeas.v1alpha1.api.Grafeas"
+
 // Check if the serviceDescriptor registered for serviceName has method with methodName
 // implemented and return true, false otherwise
 func isMethodImplemented(methodName, serviceName string, g *Grafeas) bool {
@@ -91,9 +93,10 @@ func (g *Grafeas) CreateNote(ctx context.Context, req *pb.CreateNoteRequest) (*p
 	}
 
 	// Validate that operation exists if it is specified when get methods are implemented
-	if isMethodImplemented("CreateNote", "grafeas.v1alpha1.api.Grafeas", g) == false {
-		log.Printf("Unable to find implementation for CreateNote")
-		return nil, status.Error(codes.NotFound, fmt.Sprintf("CreateNote implementation not found"))
+	var methodName = "CreateNote"
+	if !isMethodImplemented(methodName, serviceName, g) {
+		log.Printf("Unable to find implementation for %w", methodName)
+		return nil, status.Error(codes.NotFound, fmt.Sprintf("Unable to find implementation for %w", methodName))
 	}
 
 	return n, g.S.CreateNote(n)
@@ -128,11 +131,11 @@ func (g *Grafeas) CreateOccurrence(ctx context.Context, req *pb.CreateOccurrence
 		return nil, status.Error(codes.NotFound, fmt.Sprintf("Note %v not found", o.NoteName))
 	}
 	// Validate that operation exists if it is specified
-	if isMethodImplemented("CreateNote", "grafeas.v1alpha1.api.Grafeas", g) == false {
-		log.Printf("Unable to find implementation for CreateNote")
-		return nil, status.Error(codes.NotFound, fmt.Sprintf("CreateNote implementation not found"))
+	var methodName = "CreateOccurrence"
+	if !isMethodImplemented(methodName, serviceName, g) {
+		log.Printf("Unable to find implementation for %w", methodName)
+		return nil, status.Error(codes.NotFound, fmt.Sprintf("Unable to find implementation for %w", methodName))
 	}
-
 	return o, g.S.CreateOccurrence(o)
 }
 
@@ -168,6 +171,12 @@ func (g *Grafeas) DeleteOccurrence(ctx context.Context, req *pb.DeleteOccurrence
 		log.Printf("Error parsing name: %v", req.Name)
 		return nil, status.Error(codes.InvalidArgument, "Invalid occurrence name")
 	}
+	// Validate that operation exists if it is specified
+	var methodName = "DeleteOccurrence"
+	if !isMethodImplemented(methodName, serviceName, g) {
+		log.Printf("Unable to find implementation for %w", methodName)
+		return nil, status.Error(codes.NotFound, fmt.Sprintf("Unable to find implementation for %w", methodName))
+	}
 	return &empty.Empty{}, g.S.DeleteOccurrence(pID, oID)
 }
 
@@ -179,6 +188,12 @@ func (g *Grafeas) DeleteNote(ctx context.Context, req *pb.DeleteNoteRequest) (*e
 		return nil, status.Error(codes.InvalidArgument, "Invalid note name")
 	}
 	// TODO: Check for occurrences tied to this note, and return an error if there are any before deletion.
+	// Validate that operation exists if it is specified
+	var methodName = "DeleteNote"
+	if !isMethodImplemented(methodName, serviceName, g) {
+		log.Printf("Unable to find implementation for %w", methodName)
+		return nil, status.Error(codes.NotFound, fmt.Sprintf("Unable to find implementation for %w", methodName))
+	}
 	return &empty.Empty{}, g.S.DeleteNote(pID, nID)
 }
 
@@ -210,6 +225,12 @@ func (g *Grafeas) GetNote(ctx context.Context, req *pb.GetNoteRequest) (*pb.Note
 		log.Printf("Error parsing name: %v", req.Name)
 		return nil, status.Error(codes.InvalidArgument, "Invalid Note name")
 	}
+	// Validate that operation exists if it is specified
+	var methodName = "GetNote"
+	if !isMethodImplemented(methodName, serviceName, g) {
+		log.Printf("Unable to find implementation for %w", methodName)
+		return nil, status.Error(codes.NotFound, fmt.Sprintf("Unable to find implementation for %w", methodName))
+	}
 	return g.S.GetNote(pID, nID)
 }
 
@@ -219,6 +240,12 @@ func (g *Grafeas) GetOccurrence(ctx context.Context, req *pb.GetOccurrenceReques
 	if err != nil {
 		log.Printf("Could note parse name %v", req.Name)
 		return nil, status.Error(codes.InvalidArgument, "Could note parse name")
+	}
+	// Validate that operation exists if it is specified
+	var methodName = "GetOccurrence"
+	if !isMethodImplemented(methodName, serviceName, g) {
+		log.Printf("Unable to find implementation for %w", methodName)
+		return nil, status.Error(codes.NotFound, fmt.Sprintf("Unable to find implementation for %w", methodName))
 	}
 	return g.S.GetOccurrence(pID, oID)
 }
@@ -239,6 +266,12 @@ func (g *Grafeas) GetOccurrenceNote(ctx context.Context, req *pb.GetOccurrenceNo
 	if err != nil {
 		log.Printf("Error parsing name: %v", req.Name)
 		return nil, status.Error(codes.InvalidArgument, "Invalid occurrence name")
+	}
+	// Validate that operation exists if it is specified
+	var methodName = "GetOccurrenceNote"
+	if !isMethodImplemented(methodName, serviceName, g) {
+		log.Printf("Unable to find implementation for %w", methodName)
+		return nil, status.Error(codes.NotFound, fmt.Sprintf("Unable to find implementation for %w", methodName))
 	}
 	o, gErr := g.S.GetOccurrence(pID, oID)
 	if gErr != nil {
@@ -268,7 +301,12 @@ func (g *Grafeas) UpdateNote(ctx context.Context, req *pb.UpdateNoteRequest) (*p
 		log.Printf("Cannot change note name: %v", req.Note.Name)
 		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("Cannot change note name: %v", req.Note.Name))
 	}
-
+	// Validate that operation exists if it is specified
+	var methodName = "UpdateNote"
+	if !isMethodImplemented(methodName, serviceName, g) {
+		log.Printf("Unable to find implementation for %w", methodName)
+		return nil, status.Error(codes.NotFound, fmt.Sprintf("Unable to find implementation for %w", methodName))
+	}
 	// update note
 	if gErr = g.S.UpdateNote(pID, nID, req.Note); err != nil {
 		log.Printf("Cannot update note : %v", gErr)
@@ -304,7 +342,12 @@ func (g *Grafeas) UpdateOccurrence(ctx context.Context, req *pb.UpdateOccurrence
 			return nil, err
 		}
 	}
-
+	// Validate that operation exists if it is specified
+	var methodName = "UpdateOccurrence"
+	if !isMethodImplemented(methodName, serviceName, g) {
+		log.Printf("Unable to find implementation for %w", methodName)
+		return nil, status.Error(codes.NotFound, fmt.Sprintf("Unable to find implementation for %w", methodName))
+	}
 	// update Occurrence
 	if gErr = g.S.UpdateOccurrence(pID, oID, req.Occurrence); gErr != nil {
 		log.Printf("Cannot update occurrence : %v", req.Occurrence.Name)
@@ -376,6 +419,12 @@ func (g *Grafeas) ListNotes(ctx context.Context, req *pb.ListNotesRequest) (*pb.
 		return nil, status.Error(codes.InvalidArgument, "Invalid Project name")
 	}
 	// TODO: support filters
+	// Validate that operation exists if it is specified
+	var methodName = "ListNotes"
+	if !isMethodImplemented(methodName, serviceName, g) {
+		log.Printf("Unable to find implementation for %w", methodName)
+		return nil, status.Error(codes.NotFound, fmt.Sprintf("Unable to find implementation for %w", methodName))
+	}
 	ns, err := g.S.ListNotes(pID, req.Filter)
 	if err != nil {
 		return nil, status.Error(codes.Unknown, "Failed to list notes")
@@ -390,6 +439,12 @@ func (g *Grafeas) ListOccurrences(ctx context.Context, req *pb.ListOccurrencesRe
 		return nil, err
 	}
 	// TODO: support filters - prioritizing resource url
+	// Validate that operation exists if it is specified
+	var methodName = "ListOccurrences"
+	if !isMethodImplemented(methodName, serviceName, g) {
+		log.Printf("Unable to find implementation for %w", methodName)
+		return nil, status.Error(codes.NotFound, fmt.Sprintf("Unable to find implementation for %w", methodName))
+	}
 	os, err := g.S.ListOccurrences(pID, req.Filter)
 	if err != nil {
 		return nil, status.Error(codes.Unknown, "Failed to list occurrences")
@@ -398,6 +453,12 @@ func (g *Grafeas) ListOccurrences(ctx context.Context, req *pb.ListOccurrencesRe
 }
 
 func (g *Grafeas) ListNoteOccurrences(ctx context.Context, req *pb.ListNoteOccurrencesRequest) (*pb.ListNoteOccurrencesResponse, error) {
+	// Validate that operation exists if it is specified
+	var methodName = "ListNoteOccurrences"
+	if !isMethodImplemented(methodName, serviceName, g) {
+		log.Printf("Unable to find implementation for %w", methodName)
+		return nil, status.Error(codes.NotFound, fmt.Sprintf("Unable to find implementation for %w", methodName))
+	}
 	pID, nID, err := name.ParseNote(req.Name)
 	if err != nil {
 		log.Printf("Invalid note name: %v", req.Name)
