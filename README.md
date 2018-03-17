@@ -6,17 +6,17 @@ Grafeas defines metadata API spec for computing components (e.g., VM images, con
 To run your own Grafeas instance just follow the [instructions](docs/running_grafeas.md).
 
 ## Definition of terms
-**Notes**: A note is an item or condition that can be found via an analysis or something that is used multiple times in a process. For example, a CVE could be the result of a vulnerability analysis of a Linux package. In a build process, we would store information about our builder in a note. 
+**Notes**: A note is an item or condition that can be found via an analysis or something that is used multiple times in a process. For example, a CVE could be the result of a vulnerability analysis of a Linux package. In a build process, we would store information about our builder in a note.
 
-A note name should take the format `/projects/<project_id>/notes/<note_id>` where the project_id would typically be different from the project where the occurrence is created and the note_id would be unique per note-project, and informative if possible. 
+A note name should take the format `/projects/<project_id>/notes/<note_id>` where the project_id would typically be different from the project where the occurrence is created and the note_id would be unique per note-project, and informative if possible.
 
 Access to notes should be read-only for users who have access to occurrences referencing them, and editable only by the note owner.
 
 **Occurrences**: An occurrence can be thought of as an instantiation of a note and describes how the note was found in a specific cloud resource or project (e.g., location, specific remediation steps, etc.), or what the results of a specific note were (e.g., the container images that resulted from a build). For example, an occurrence might report that the heartbleed OpenSSL bug (a possible Note) was found in a specific package of a container image, and include information about how to remedy the heartbleed bug based on the customer’s package.
 
-An occurrence name should take the format `/projects/<project_id>/occurrences/<occurrence_id>` where the project_id would typically be different from the project where the note is created and the occurrence_id would be unique per occurrence-project, and would often be random. 
+An occurrence name should take the format `/projects/<project_id>/occurrences/<occurrence_id>` where the project_id would typically be different from the project where the note is created and the occurrence_id would be unique per occurrence-project, and would often be random.
 
-Write access to occurrences should only be granted to users who have access to link a note to the occurrence. Any users can have read access to occurrences. 
+Write access to occurrences should only be granted to users who have access to link a note to the occurrence. Any users can have read access to occurrences.
 
 ## Kind Specific Schemas
 In order to properly aggregate over metadata stored in Grafeas, each kind of information stored has a strict schema. These schemas allow normalization of data from multiple providers, giving users the ability to see meaningful insights in their components over time. Defined below are the currently supported kinds, and a brief summary of what the notes and occurrences for each of them will contain.
@@ -232,3 +232,15 @@ These paths will ideally make their way to "v1beta" and then "v1", once vetted.
 ## Swagger API
 
 To provide a JSON bridge to the Protobuf API, there is now a swagger/OpenAPI representation generated [here](https://raw.githubusercontent.com/Grafeas/Grafeas/master/v1alpha1/proto/grafeas.swagger.json).
+
+## Contributing
+
+See [CONTRIBUTING][contributing].
+
+## License
+
+This library is licensed under Apache 2.0. Full license text is available in [LICENSE][license].
+
+[contributing]: CONTRIBUTING.md
+[license]: LICENSE
+

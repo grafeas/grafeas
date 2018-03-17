@@ -28,3 +28,30 @@ All submissions, including submissions by project members, require review. We
 use GitHub pull requests for this purpose. Consult
 [GitHub Help](https://help.github.com/articles/about-pull-requests/) for more
 information on using pull requests.
+
+## Getting started
+
+To build the codebase, you're going to need a few things:
+- [Go](https://golang.org/doc/install)
+- [Dep](https://golang.github.io/dep/docs/installation.html)
+
+The first time you clone the repository, make sure to run the prepare task:
+```
+$ make prepare
+```
+
+Now you should be able to build.
+```
+$ make build
+```
+
+Before submitting your PR, make sure to run the tests!
+```
+$ make test
+```
+
+We're using [dep](https://golang.github.io/dep/) for dependency management.
+If you want to add a new dependency, make sure to use the [`dep ensure --add path/to/dep`
+command](https://golang.github.io/dep/docs/daily-dep.html#using-dep-ensure).
+
+If you have any questions feel free to [file an issue!](https://github.com/grafeas/grafeas/issues)

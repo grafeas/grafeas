@@ -1,1 +1,5 @@
 .install.protoc-gen-go
+.install.grpc-gateway
+.install.googleapis
+vendor/
+googleapis/
