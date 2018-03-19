@@ -39,17 +39,17 @@ type Grafeas struct {
 
 var serviceName = "grafeas.v1alpha1.api.Grafeas"
 
-// Check if the serviceDescriptor registered for serviceName has method with methodName
-// implemented and return true, false otherwise
-func isMethodImplemented(methodName, serviceName string, g *Grafeas) bool {
-	implemented := false
+// Return true if the serviceDescriptor registered for serviceName has method with methodName
+// false otherwise
+func methodExists(methodName, serviceName string, g *Grafeas) bool {
+	exists := false
 	for _, value := range g.ServiceInfo[serviceName].Methods {
 		if value.Name == methodName {
-			implemented = true
+			exists = true
 			break
 		}
 	}
-	return implemented
+	return exists
 }
 
 // CreateProject validates that a project is valid and then creates a project in the backing datastore.
@@ -94,7 +94,7 @@ func (g *Grafeas) CreateNote(ctx context.Context, req *pb.CreateNoteRequest) (*p
 
 	// Validate that operation exists if it is specified when get methods are implemented
 	var methodName = "CreateNote"
-	if !isMethodImplemented(methodName, serviceName, g) {
+	if !methodExists(methodName, serviceName, g) {
 		log.Printf("Unable to find implementation for %w", methodName)
 		return nil, status.Error(codes.NotFound, fmt.Sprintf("Unable to find implementation for %w", methodName))
 	}
@@ -132,7 +132,7 @@ func (g *Grafeas) CreateOccurrence(ctx context.Context, req *pb.CreateOccurrence
 	}
 	// Validate that operation exists if it is specified
 	var methodName = "CreateOccurrence"
-	if !isMethodImplemented(methodName, serviceName, g) {
+	if !methodExists(methodName, serviceName, g) {
 		log.Printf("Unable to find implementation for %w", methodName)
 		return nil, status.Error(codes.NotFound, fmt.Sprintf("Unable to find implementation for %w", methodName))
 	}
@@ -173,7 +173,7 @@ func (g *Grafeas) DeleteOccurrence(ctx context.Context, req *pb.DeleteOccurrence
 	}
 	// Validate that operation exists if it is specified
 	var methodName = "DeleteOccurrence"
-	if !isMethodImplemented(methodName, serviceName, g) {
+	if !methodExists(methodName, serviceName, g) {
 		log.Printf("Unable to find implementation for %w", methodName)
 		return nil, status.Error(codes.NotFound, fmt.Sprintf("Unable to find implementation for %w", methodName))
 	}
@@ -190,7 +190,7 @@ func (g *Grafeas) DeleteNote(ctx context.Context, req *pb.DeleteNoteRequest) (*e
 	// TODO: Check for occurrences tied to this note, and return an error if there are any before deletion.
 	// Validate that operation exists if it is specified
 	var methodName = "DeleteNote"
-	if !isMethodImplemented(methodName, serviceName, g) {
+	if !methodExists(methodName, serviceName, g) {
 		log.Printf("Unable to find implementation for %w", methodName)
 		return nil, status.Error(codes.NotFound, fmt.Sprintf("Unable to find implementation for %w", methodName))
 	}
@@ -227,7 +227,7 @@ func (g *Grafeas) GetNote(ctx context.Context, req *pb.GetNoteRequest) (*pb.Note
 	}
 	// Validate that operation exists if it is specified
 	var methodName = "GetNote"
-	if !isMethodImplemented(methodName, serviceName, g) {
+	if !methodExists(methodName, serviceName, g) {
 		log.Printf("Unable to find implementation for %w", methodName)
 		return nil, status.Error(codes.NotFound, fmt.Sprintf("Unable to find implementation for %w", methodName))
 	}
@@ -243,7 +243,7 @@ func (g *Grafeas) GetOccurrence(ctx context.Context, req *pb.GetOccurrenceReques
 	}
 	// Validate that operation exists if it is specified
 	var methodName = "GetOccurrence"
-	if !isMethodImplemented(methodName, serviceName, g) {
+	if !methodExists(methodName, serviceName, g) {
 		log.Printf("Unable to find implementation for %w", methodName)
 		return nil, status.Error(codes.NotFound, fmt.Sprintf("Unable to find implementation for %w", methodName))
 	}
@@ -269,7 +269,7 @@ func (g *Grafeas) GetOccurrenceNote(ctx context.Context, req *pb.GetOccurrenceNo
 	}
 	// Validate that operation exists if it is specified
 	var methodName = "GetOccurrenceNote"
-	if !isMethodImplemented(methodName, serviceName, g) {
+	if !methodExists(methodName, serviceName, g) {
 		log.Printf("Unable to find implementation for %w", methodName)
 		return nil, status.Error(codes.NotFound, fmt.Sprintf("Unable to find implementation for %w", methodName))
 	}
@@ -303,7 +303,7 @@ func (g *Grafeas) UpdateNote(ctx context.Context, req *pb.UpdateNoteRequest) (*p
 	}
 	// Validate that operation exists if it is specified
 	var methodName = "UpdateNote"
-	if !isMethodImplemented(methodName, serviceName, g) {
+	if !methodExists(methodName, serviceName, g) {
 		log.Printf("Unable to find implementation for %w", methodName)
 		return nil, status.Error(codes.NotFound, fmt.Sprintf("Unable to find implementation for %w", methodName))
 	}
@@ -344,7 +344,7 @@ func (g *Grafeas) UpdateOccurrence(ctx context.Context, req *pb.UpdateOccurrence
 	}
 	// Validate that operation exists if it is specified
 	var methodName = "UpdateOccurrence"
-	if !isMethodImplemented(methodName, serviceName, g) {
+	if !methodExists(methodName, serviceName, g) {
 		log.Printf("Unable to find implementation for %w", methodName)
 		return nil, status.Error(codes.NotFound, fmt.Sprintf("Unable to find implementation for %w", methodName))
 	}
@@ -421,7 +421,7 @@ func (g *Grafeas) ListNotes(ctx context.Context, req *pb.ListNotesRequest) (*pb.
 	// TODO: support filters
 	// Validate that operation exists if it is specified
 	var methodName = "ListNotes"
-	if !isMethodImplemented(methodName, serviceName, g) {
+	if !methodExists(methodName, serviceName, g) {
 		log.Printf("Unable to find implementation for %w", methodName)
 		return nil, status.Error(codes.NotFound, fmt.Sprintf("Unable to find implementation for %w", methodName))
 	}
@@ -441,7 +441,7 @@ func (g *Grafeas) ListOccurrences(ctx context.Context, req *pb.ListOccurrencesRe
 	// TODO: support filters - prioritizing resource url
 	// Validate that operation exists if it is specified
 	var methodName = "ListOccurrences"
-	if !isMethodImplemented(methodName, serviceName, g) {
+	if !methodExists(methodName, serviceName, g) {
 		log.Printf("Unable to find implementation for %w", methodName)
 		return nil, status.Error(codes.NotFound, fmt.Sprintf("Unable to find implementation for %w", methodName))
 	}
@@ -455,7 +455,7 @@ func (g *Grafeas) ListOccurrences(ctx context.Context, req *pb.ListOccurrencesRe
 func (g *Grafeas) ListNoteOccurrences(ctx context.Context, req *pb.ListNoteOccurrencesRequest) (*pb.ListNoteOccurrencesResponse, error) {
 	// Validate that operation exists if it is specified
 	var methodName = "ListNoteOccurrences"
-	if !isMethodImplemented(methodName, serviceName, g) {
+	if !methodExists(methodName, serviceName, g) {
 		log.Printf("Unable to find implementation for %w", methodName)
 		return nil, status.Error(codes.NotFound, fmt.Sprintf("Unable to find implementation for %w", methodName))
 	}
