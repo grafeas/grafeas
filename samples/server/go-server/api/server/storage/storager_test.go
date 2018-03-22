@@ -438,7 +438,8 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 			}
 			wantProjectNames = append(wantProjectNames, name.FormatProject(pID))
 		}
-		gotProjects, _, err := s.ListProjects(&server.ListOptions{PageSize: 100})
+		filter := "filters_are_yet_to_be_implemented"
+		gotProjects, _, err := s.ListProjects(filter, 100, "")
 		if err != nil {
 			t.Fatalf("ListProjects got %v want success", err)
 		}
@@ -620,9 +621,9 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 		if err := s.CreateProject(pID3); err != nil {
 			t.Errorf("CreateProject got %v want success", err)
 		}
-		options := &server.ListOptions{PageSize: 2}
+		filter := "filters_are_yet_to_be_implemented"
 		// Get projects
-		gotProjects, lastPage, err := s.ListProjects(options)
+		gotProjects, lastPage, err := s.ListProjects(filter, 2, "")
 		if err != nil {
 			t.Fatalf("ListProjects got %v want success", err)
 		}
@@ -636,8 +637,7 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 			t.Fatalf("Got %s want %s", p.Name, name.FormatProject(pID2))
 		}
 		// Get projects again
-		options.PageToken = lastPage
-		gotProjects, _, err = s.ListProjects(options)
+		gotProjects, _, err = s.ListProjects(filter, 100, lastPage)
 		if err != nil {
 			t.Fatalf("ListProjects got %v want success", err)
 		}

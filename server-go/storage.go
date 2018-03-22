@@ -19,16 +19,6 @@ import (
 	opspb "google.golang.org/genproto/googleapis/longrunning"
 )
 
-type ListOptions struct {
-	// Filter string
-	Filter string
-	// Maximum number of items to list
-	PageSize int32
-	// Token representing the first item to be listed.
-	// Use an empty token to list from beginning of the list.
-	PageToken string
-}
-
 // Storager is the interface that a Grafeas storage implementation would provide
 type Storager interface {
 	// CreateProject adds the specified project
@@ -70,8 +60,9 @@ type Storager interface {
 	// GetOperation returns the operation with pID and oID
 	GetOperation(pID, opID string) (*opspb.Operation, error)
 
-	// ListProjects returns the project id for all projects and a next page token
-	ListProjects(options *ListOptions) ([]*pb.Project, string, error)
+	// ListProjects returns up to pageSize number of projects beginning at pageToken (or from
+	// start if pageToken is the emtpy string).
+	ListProjects(filter string, pageSize int, pageToken string) ([]*pb.Project, string, error)
 
 	// ListNoteOccurrences returns the occcurrences on the particular note (nID) for this project (pID)
 	ListNoteOccurrences(pID, nID, filters string) ([]*pb.Occurrence, error)

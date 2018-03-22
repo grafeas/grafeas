@@ -323,7 +323,10 @@ func (g *Grafeas) UpdateOperation(ctx context.Context, req *pb.UpdateOperationRe
 // ListProjects returns the project id for all projects in the backing datastore.
 func (g *Grafeas) ListProjects(ctx context.Context, req *pb.ListProjectsRequest) (*pb.ListProjectsResponse, error) {
 	// TODO: support filters
-	ps, nextToken, err := g.S.ListProjects(newListOptions(req))
+	if req.PageSize == 0 {
+		req.PageSize = 100
+	}
+	ps, nextToken, err := g.S.ListProjects(req.Filter, int(req.PageSize), req.PageToken)
 	if err != nil {
 		return nil, status.Error(codes.Unknown, "Failed to list projects")
 	}
@@ -391,15 +394,4 @@ func (g *Grafeas) ListNoteOccurrences(ctx context.Context, req *pb.ListNoteOccur
 
 func (g *Grafeas) CancelOperation(context.Context, *opspb.CancelOperationRequest) (*empty.Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "Currently Unimplemented")
-}
-
-func newListOptions(req *pb.ListProjectsRequest) *server.ListOptions {
-	if req.PageSize == 0 {
-		req.PageSize = 100
-	}
-	return &server.ListOptions{
-		Filter:    req.Filter,
-		PageSize:  req.PageSize,
-		PageToken: req.PageToken,
-	}
 }

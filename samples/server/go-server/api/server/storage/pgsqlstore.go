@@ -25,7 +25,6 @@ import (
 	"github.com/fernet/fernet-go"
 	"github.com/golang/protobuf/proto"
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/name"
-	server "github.com/grafeas/grafeas/server-go"
 	pb "github.com/grafeas/grafeas/v1alpha1/proto"
 	"github.com/lib/pq"
 	opspb "google.golang.org/genproto/googleapis/longrunning"
@@ -133,14 +132,15 @@ func (pg *pgSQLStore) GetProject(pID string) (*pb.Project, error) {
 
 var paginationKey = "XxoPtCUzrUv4JV5dS+yQ+MdW7yLEJnRMwigVY/bpgtQ="
 
-// ListProjects returns the project id for all projects from the store
-func (pg *pgSQLStore) ListProjects(options *server.ListOptions) ([]*pb.Project, string, error) {
+// ListProjects returns up to pageSize number of projects beginning at pageToken (or from
+// start if pageToken is the emtpy string).
+func (pg *pgSQLStore) ListProjects(filter string, pageSize int, pageToken string) ([]*pb.Project, string, error) {
 	var rows *sql.Rows
-	id, err := decryptInt64(options.PageToken, paginationKey)
+	id, err := decryptInt64(pageToken, paginationKey)
 	if err == nil {
-		rows, err = pg.DB.Query(listProjectsFromPage, options.PageSize, id)
+		rows, err = pg.DB.Query(listProjectsFromPage, pageSize, id)
 	} else {
-		rows, err = pg.DB.Query(listProjects, options.PageSize)
+		rows, err = pg.DB.Query(listProjects, pageSize)
 	}
 	if err != nil {
 		return nil, "", status.Error(codes.Unknown, "Failed to list Projects from database")

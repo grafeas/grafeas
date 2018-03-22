@@ -85,11 +85,12 @@ func (m *memStore) GetProject(pID string) (*pb.Project, error) {
 	return project, nil
 }
 
-// ListProjects returns the project id for all projects from the mem store
-func (m *memStore) ListProjects(options *server.ListOptions) ([]*pb.Project, string, error) {
+// ListProjects returns up to pageSize number of projects beginning at pageToken (or from
+// start if pageToken is the emtpy string).
+func (m *memStore) ListProjects(filter string, pageSize int, pageToken string) ([]*pb.Project, string, error) {
 	m.RLock()
 	defer m.RUnlock()
-	startPos, endPos, err := calcRange(options, len(m.projects))
+	startPos, endPos, err := calcRange(pageSize, pageToken, len(m.projects))
 	if err != nil {
 		return nil, "", err
 	}
@@ -316,17 +317,16 @@ func (m *memStore) ListOperations(pID, filters string) ([]*opspb.Operation, erro
 	return ops, nil
 }
 
-// Calculates start and end positions in a range defined by provided ListOptions and upperLimit
-func calcRange(options *server.ListOptions, upperLimit int) (startPos, endPos int, err error) {
-	pageSize := int(options.PageSize)
-	if options.PageToken != "" {
-		startPos, err = strconv.Atoi(options.PageToken)
+// Calculates start and end positions given the provided constraints
+func calcRange(pageSize int, pageToken string, upperLimit int) (startPos, endPos int, err error) {
+	if pageToken != "" {
+		startPos, err = strconv.Atoi(pageToken)
 		if err != nil {
-			return 0, 0, status.Error(codes.InvalidArgument, fmt.Sprintf("PageToken invalid: %s", options.PageToken))
+			return 0, 0, status.Error(codes.InvalidArgument, fmt.Sprintf("PageToken invalid: %s", pageToken))
 		}
 	}
 	if startPos < 0 || startPos >= upperLimit {
-		return 0, 0, status.Error(codes.OutOfRange, fmt.Sprintf("PageToken out of range: %s", options.PageToken))
+		return 0, 0, status.Error(codes.OutOfRange, fmt.Sprintf("PageToken out of range: %s", pageToken))
 	}
 	return startPos, min(startPos+pageSize, upperLimit), nil
 }
