@@ -16,6 +16,7 @@ package storage
 
 import (
 	"fmt"
+	"sort"
 	"strconv"
 	"strings"
 	"sync"
@@ -34,7 +35,7 @@ type memStore struct {
 	occurrencesByID map[string]*pb.Occurrence
 	notesByID       map[string]*pb.Note
 	opsByID         map[string]*opspb.Operation
-	projects        []*pb.Project
+	projects        map[string]bool
 }
 
 // NewMemStore creates a memStore with all maps initialized.
@@ -43,7 +44,7 @@ func NewMemStore() server.Storager {
 		occurrencesByID: map[string]*pb.Occurrence{},
 		notesByID:       map[string]*pb.Note{},
 		opsByID:         map[string]*opspb.Operation{},
-		projects:        []*pb.Project{},
+		projects:        map[string]bool{},
 	}
 }
 
@@ -51,11 +52,10 @@ func NewMemStore() server.Storager {
 func (m *memStore) CreateProject(pID string) error {
 	m.Lock()
 	defer m.Unlock()
-	project := &pb.Project{Name: name.FormatProject(pID)}
-	if containsProject(m.projects, project) {
+	if _, ok := m.projects[pID]; ok {
 		return status.Error(codes.AlreadyExists, fmt.Sprintf("Project with name %q already exists", pID))
 	}
-	m.projects = append(m.projects, project)
+	m.projects[pID] = true
 	return nil
 }
 
@@ -63,14 +63,10 @@ func (m *memStore) CreateProject(pID string) error {
 func (m *memStore) DeleteProject(pID string) error {
 	m.Lock()
 	defer m.Unlock()
-	project := &pb.Project{Name: name.FormatProject(pID)}
-	index, err := findProject(m.projects, project)
-	if err != nil {
-		return status.Error(codes.NotFound, fmt.Sprintf("Project with name %q does not exist", pID))
+	if _, ok := m.projects[pID]; !ok {
+		return status.Error(codes.NotFound, fmt.Sprintf("Project with name %q does not Exist", pID))
 	}
-	copy(m.projects[index:], m.projects[index+1:])
-	m.projects[len(m.projects)-1] = nil
-	m.projects = m.projects[:len(m.projects)-1]
+	delete(m.projects, pID)
 	return nil
 }
 
@@ -78,11 +74,10 @@ func (m *memStore) DeleteProject(pID string) error {
 func (m *memStore) GetProject(pID string) (*pb.Project, error) {
 	m.RLock()
 	defer m.RUnlock()
-	project := &pb.Project{Name: name.FormatProject(pID)}
-	if !containsProject(m.projects, project) {
-		return nil, status.Error(codes.NotFound, fmt.Sprintf("Project with name %q does not exist", pID))
+	if _, ok := m.projects[pID]; !ok {
+		return nil, status.Error(codes.NotFound, fmt.Sprintf("Project with name %q does not Exist", pID))
 	}
-	return project, nil
+	return &pb.Project{Name: name.FormatProject(pID)}, nil
 }
 
 // ListProjects returns up to pageSize number of projects beginning at pageToken (or from
@@ -90,16 +85,20 @@ func (m *memStore) GetProject(pID string) (*pb.Project, error) {
 func (m *memStore) ListProjects(filter string, pageSize int, pageToken string) ([]*pb.Project, string, error) {
 	m.RLock()
 	defer m.RUnlock()
+	projects := make([]*pb.Project, len(m.projects))
+	i := 0
+	for k := range m.projects {
+		projects[i] = &pb.Project{Name: name.FormatProject(k)}
+		i++
+	}
+	sort.Slice(projects, func(i, j int) bool {
+		return projects[i].Name < projects[j].Name
+	})
 	startPos, endPos, err := calcRange(pageSize, pageToken, len(m.projects))
 	if err != nil {
 		return nil, "", err
 	}
-	projects := make([]*pb.Project, len(m.projects[startPos:endPos]))
-	for i, project := range m.projects[startPos:endPos] {
-		projects[i] = &pb.Project{}
-		*projects[i] = *project
-	}
-	return projects, strconv.Itoa(endPos), nil
+	return projects[startPos:endPos], strconv.Itoa(endPos), nil
 }
 
 // CreateOccurrence adds the specified occurrence to the mem store
@@ -329,32 +328,6 @@ func calcRange(pageSize int, pageToken string, upperLimit int) (startPos, endPos
 		return 0, 0, status.Error(codes.OutOfRange, fmt.Sprintf("PageToken out of range: %s", pageToken))
 	}
 	return startPos, min(startPos+pageSize, upperLimit), nil
-}
-
-func containsProject(haystack []*pb.Project, needle *pb.Project) bool {
-	for _, s := range haystack {
-		if *s == *needle {
-			return true
-		}
-	}
-	return false
-}
-
-func findProject(haystack []*pb.Project, needle *pb.Project) (int, error) {
-	for i, s := range haystack {
-		if *s == *needle {
-			return i, nil
-		}
-	}
-	return 0, fmt.Errorf("Element not found")
-}
-
-func removeProject(projects []*pb.Project, project *pb.Project) ([]*pb.Project, error) {
-	index, err := findProject(projects, project)
-	if err != nil {
-		return nil, err
-	}
-	return append(projects[:index], projects[index+1:]...), nil
 }
 
 func min(a, b int) int {
