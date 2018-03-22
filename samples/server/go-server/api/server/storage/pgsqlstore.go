@@ -16,11 +16,13 @@ package storage
 
 import (
 	"database/sql"
-	"encoding/base64"
+	"errors"
 	"fmt"
 	"log"
 	"strconv"
+	"time"
 
+	"github.com/fernet/fernet-go"
 	"github.com/golang/protobuf/proto"
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/name"
 	server "github.com/grafeas/grafeas/server-go"
@@ -129,18 +131,19 @@ func (pg *pgSQLStore) GetProject(pID string) (*pb.Project, error) {
 	return &pb.Project{Name: pName}, nil
 }
 
+var paginationKey = "XxoPtCUzrUv4JV5dS+yQ+MdW7yLEJnRMwigVY/bpgtQ="
+
 // ListProjects returns the project id for all projects from the store
 func (pg *pgSQLStore) ListProjects(options *server.ListOptions) ([]*pb.Project, string, error) {
 	var rows *sql.Rows
-	var err error
-	id, err := decodeInt64(options.PageToken)
+	id, err := decryptInt64(options.PageToken, paginationKey)
 	if err == nil {
 		rows, err = pg.DB.Query(listProjectsFromPage, options.PageSize, id)
 	} else {
 		rows, err = pg.DB.Query(listProjects, options.PageSize)
 	}
 	if err != nil {
-		return nil, "", status.Error(codes.Unknown, fmt.Sprintf("Failed to list Projects from database"))
+		return nil, "", status.Error(codes.Unknown, "Failed to list Projects from database")
 	}
 	var projects []*pb.Project
 	var lastId int64
@@ -148,11 +151,15 @@ func (pg *pgSQLStore) ListProjects(options *server.ListOptions) ([]*pb.Project, 
 		var name string
 		err := rows.Scan(&lastId, &name)
 		if err != nil {
-			return nil, "", status.Error(codes.Unknown, fmt.Sprintf("Failed to scan Project row"))
+			return nil, "", status.Error(codes.Unknown, "Failed to scan Project row")
 		}
 		projects = append(projects, &pb.Project{Name: name})
 	}
-	return projects, encodeInt64(lastId), nil
+	encryptedPage, err := encryptInt64(lastId, paginationKey)
+	if err != nil {
+		return nil, "", status.Error(codes.Unknown, "Failed to paginate projects")
+	}
+	return projects, encryptedPage, nil
 }
 
 // CreateOccurrence adds the specified occurrence
@@ -484,21 +491,22 @@ func (pg *pgSQLStore) ListOperations(pID, filters string) ([]*opspb.Operation, e
 	return ops, nil
 }
 
-// Encodes int64 value to base64 encoded string
-func encodeInt64(v int64) string {
-	str := strconv.FormatInt(v, 10)
-	return base64.StdEncoding.EncodeToString([]byte(str))
+// Encrypt int64 using provided key
+func encryptInt64(v int64, key string) (string, error) {
+	k, _ := fernet.DecodeKey(key)
+	bytes, err := fernet.EncryptAndSign([]byte(strconv.FormatInt(v, 10)), k)
+	if err != nil {
+		return "", err
+	}
+	return string(bytes), nil
 }
 
-// Decodes base64 encoded string to int64
-func decodeInt64(str string) (int64, error) {
-	bytes, err := base64.StdEncoding.DecodeString(str)
-	if err != nil {
-		return 0, err
+// Decrypts encrypted int64 using provided key
+func decryptInt64(encrypted string, key string) (int64, error) {
+	k, _ := fernet.DecodeKey(key)
+	bytes := fernet.VerifyAndDecrypt([]byte(encrypted), time.Hour, []*fernet.Key{k})
+	if bytes == nil {
+		return 0, errors.New("invalid or expired pagination token")
 	}
-	x, err := strconv.ParseInt(string(bytes), 10, 64)
-	if err != nil {
-		return 0, err
-	}
-	return x, nil
+	return strconv.ParseInt(string(bytes), 10, 64)
 }
