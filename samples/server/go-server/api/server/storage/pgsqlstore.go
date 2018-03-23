@@ -471,25 +471,36 @@ func (pg *pgSQLStore) UpdateOperation(pID, opID string, op *opspb.Operation) err
 // ListOperations returns up to pageSize number of operations for this project (pID) beginning
 // at pageToken (or from start if pageToken is the emtpy string).
 func (pg *pgSQLStore) ListOperations(pID, filters string, pageSize int, pageToken string) ([]*opspb.Operation, string, error) {
-	rows, err := pg.DB.Query(listOperations, pID)
+	var rows *sql.Rows
+	id, err := decryptInt64(pageToken, paginationKey)
+	if err == nil {
+		rows, err = pg.DB.Query(listOperationsFromPage, pID, pageSize, id)
+	} else {
+		rows, err = pg.DB.Query(listOperations, pID, pageSize)
+	}
 	if err != nil {
-		return nil, "", status.Error(codes.Unknown, fmt.Sprintf("Failed to list Operations from database"))
+		return nil, "", status.Error(codes.Unknown, "Failed to list Operations from database")
 	}
 	ops := []*opspb.Operation{}
+	var lastId int64
 	for rows.Next() {
 		var data string
-		err := rows.Scan(&data)
+		err := rows.Scan(&lastId, &data)
 		if err != nil {
-			return nil, "", status.Error(codes.Unknown, fmt.Sprintf("Failed to scan Operations row"))
+			return nil, "", status.Error(codes.Unknown, "Failed to scan Operations row")
 		}
 		var op opspb.Operation
 		proto.UnmarshalText(data, &op)
 		if err != nil {
-			return nil, "", status.Error(codes.Unknown, fmt.Sprintf("Failed to unmarshal Operation from database"))
+			return nil, "", status.Error(codes.Unknown, "Failed to unmarshal Operation from database")
 		}
 		ops = append(ops, &op)
 	}
-	return ops, "", nil
+	encryptedPage, err := encryptInt64(lastId, paginationKey)
+	if err != nil {
+		return nil, "", status.Error(codes.Unknown, "Failed to paginate projects")
+	}
+	return ops, encryptedPage, nil
 }
 
 // Encrypt int64 using provided key

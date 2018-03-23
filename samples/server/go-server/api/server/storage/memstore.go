@@ -314,7 +314,14 @@ func (m *memStore) ListOperations(pID, filters string, pageSize int, pageToken s
 			ops = append(ops, op)
 		}
 	}
-	return ops, "", nil
+	sort.Slice(ops, func(i, j int) bool {
+		return ops[i].Name < ops[j].Name
+	})
+	startPos, endPos, err := calcRange(pageSize, pageToken, len(ops))
+	if err != nil {
+		return nil, "", err
+	}
+	return ops[startPos:endPos], strconv.Itoa(endPos), nil
 }
 
 // Calculates start and end positions given the provided constraints

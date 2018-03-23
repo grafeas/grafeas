@@ -66,9 +66,10 @@ const (
                              AND n.project_name = $1
                              AND n.note_name = $2`
 
-	insertOperation = `INSERT INTO operations(project_name, operation_name, data) VALUES ($1, $2, $3)`
-	searchOperation = `SELECT data FROM operations WHERE project_name = $1 AND operation_name = $2`
-	deleteOperation = `DELETE FROM operations WHERE project_name = $1 AND operation_name = $2`
-	updateOperation = `UPDATE operations SET data = $3 WHERE project_name = $1 AND operation_name = $2`
-	listOperations  = `SELECT data FROM operations WHERE project_name = $1`
+	insertOperation        = `INSERT INTO operations(project_name, operation_name, data) VALUES ($1, $2, $3)`
+	searchOperation        = `SELECT data FROM operations WHERE project_name = $1 AND operation_name = $2`
+	deleteOperation        = `DELETE FROM operations WHERE project_name = $1 AND operation_name = $2`
+	updateOperation        = `UPDATE operations SET data = $3 WHERE project_name = $1 AND operation_name = $2`
+	listOperations         = `SELECT id, data FROM operations WHERE project_name = $1 LIMIT $2`
+	listOperationsFromPage = `SELECT id, data FROM operations WHERE project_name = $1 AND id > $3 LIMIT $2`
 )

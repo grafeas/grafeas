@@ -668,9 +668,6 @@ func TestProjectsPagination(t *testing.T) {
 		if _, err := g.CreateProject(ctx, &req); err != nil {
 			t.Errorf("CreateProject: got %v, want success", err)
 		}
-		if _, err := g.CreateProject(ctx, &req); err == nil {
-			t.Errorf("CreateProject: got %v, want InvalidArgument", err)
-		}
 		projects = append(projects, name.FormatProject(pID))
 	}
 	req := pb.ListProjectsRequest{
@@ -693,5 +690,44 @@ func TestProjectsPagination(t *testing.T) {
 	}
 	if 5 != len(resp.Projects) {
 		t.Errorf("ListProjects: expected 5 projects, got %d", len(resp.Projects))
+	}
+}
+
+func TestOperationPagination(t *testing.T) {
+	ctx := context.Background()
+	g := Grafeas{storage.NewMemStore()}
+	pID := "myproject"
+	createProject(t, pID, ctx, g)
+	for i := 0; i < 20; i++ {
+		o := testutil.Operation(pID)
+		o.Name = name.FormatOperation(pID, string(i))
+		parent := name.FormatProject(pID)
+		cReq := &pb.CreateOperationRequest{Parent: parent, Operation: o}
+		if _, err := g.CreateOperation(ctx, cReq); err != nil {
+			t.Fatalf("CreateOperation(%v) got %v, want success", o, err)
+		}
+	}
+	req := opspb.ListOperationsRequest{
+		Name:     name.FormatProject(pID),
+		PageSize: 15,
+	}
+	resp, err := g.ListOperations(ctx, &req)
+	if err != nil {
+		t.Errorf("ListOperations: got %v, want success", err)
+	}
+	if 15 != len(resp.Operations) {
+		t.Errorf("ListOperations: expected 15 projects, got %d", len(resp.Operations))
+	}
+	req = opspb.ListOperationsRequest{
+		Name:      name.FormatProject(pID),
+		PageSize:  15,
+		PageToken: resp.NextPageToken,
+	}
+	resp, err = g.ListOperations(ctx, &req)
+	if err != nil {
+		t.Errorf("ListOperations: got %v, want success", err)
+	}
+	if 5 != len(resp.Operations) {
+		t.Errorf("ListOperations: expected 5 projects, got %d", len(resp.Operations))
 	}
 }

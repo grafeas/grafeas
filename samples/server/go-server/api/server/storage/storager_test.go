@@ -648,4 +648,54 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 			t.Fatalf("Got %s want %s", p.Name, name.FormatProject(pID3))
 		}
 	})
+
+	t.Run("OperationPagination", func(t *testing.T) {
+		s, cleanUp := createStore(t)
+		defer cleanUp()
+		pID := "project1"
+		oID1 := "operation1"
+		op1 := testutil.Operation(pID)
+		op1.Name = name.FormatOperation(pID, oID1)
+		if err := s.CreateOperation(op1); err != nil {
+			t.Errorf("CreateOperation got %v want success", err)
+		}
+		oID2 := "operation2"
+		op2 := testutil.Operation(pID)
+		op2.Name = name.FormatOperation(pID, oID2)
+		if err := s.CreateOperation(op2); err != nil {
+			t.Errorf("CreateOperation got %v want success", err)
+		}
+		oID3 := "operation3"
+		op3 := testutil.Operation(pID)
+		op3.Name = name.FormatOperation(pID, oID3)
+		if err := s.CreateOperation(op3); err != nil {
+			t.Errorf("CreateOperation got %v want success", err)
+		}
+		filter := "filters_are_yet_to_be_implemented"
+		// Get operations
+		gotOperations, lastPage, err := s.ListOperations(pID, filter, 2, "")
+		if err != nil {
+			t.Fatalf("ListOperations got %v want success", err)
+		}
+		if len(gotOperations) != 2 {
+			t.Errorf("ListOperations got %v operations, want 2", len(gotOperations))
+		}
+		if p := gotOperations[0]; p.Name != name.FormatOperation(pID, oID1) {
+			t.Fatalf("Got %s want %s", p.Name, name.FormatOperation(pID, oID1))
+		}
+		if p := gotOperations[1]; p.Name != name.FormatOperation(pID, oID2) {
+			t.Fatalf("Got %s want %s", p.Name, name.FormatOperation(pID, oID2))
+		}
+		// Get operations again
+		gotOperations, _, err = s.ListOperations(pID, filter, 100, lastPage)
+		if err != nil {
+			t.Fatalf("ListOperations got %v want success", err)
+		}
+		if len(gotOperations) != 1 {
+			t.Errorf("ListOperations got %v operations, want 1", len(gotOperations))
+		}
+		if p := gotOperations[0]; p.Name != name.FormatOperation(pID, oID3) {
+			t.Fatalf("Got %s want %s", p.Name, name.FormatOperation(pID, oID3))
+		}
+	})
 }
