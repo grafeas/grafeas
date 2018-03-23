@@ -237,27 +237,28 @@ func (pg *pgSQLStore) GetOccurrence(pID, oID string) (*pb.Occurrence, error) {
 	return &o, nil
 }
 
-// ListOccurrences returns the occurrences for this project ID (pID)
-func (pg *pgSQLStore) ListOccurrences(pID, filters string) ([]*pb.Occurrence, error) {
+// ListOccurrences returns up to pageSize number of occurrences for this project (pID) beginning
+// at pageToken (or from start if pageToken is the emtpy string).
+func (pg *pgSQLStore) ListOccurrences(pID, filters string, pageSize int, pageToken string) ([]*pb.Occurrence, string, error) {
 	rows, err := pg.DB.Query(listOccurrences, pID)
 	if err != nil {
-		return nil, status.Error(codes.Unknown, fmt.Sprintf("Failed to list Occurrences from database"))
+		return nil, "", status.Error(codes.Unknown, "Failed to list Occurrences from database")
 	}
 	os := []*pb.Occurrence{}
 	for rows.Next() {
 		var data string
 		err := rows.Scan(&data)
 		if err != nil {
-			return nil, status.Error(codes.Unknown, fmt.Sprintf("Failed to scan Occurrences row"))
+			return nil, "", status.Error(codes.Unknown, "Failed to scan Occurrences row")
 		}
 		var o pb.Occurrence
 		proto.UnmarshalText(data, &o)
 		if err != nil {
-			return nil, status.Error(codes.Unknown, fmt.Sprintf("Failed to unmarshal Occurrence from database"))
+			return nil, "", status.Error(codes.Unknown, "Failed to unmarshal Occurrence from database")
 		}
 		os = append(os, &o)
 	}
-	return os, nil
+	return os, "", nil
 }
 
 // CreateNote adds the specified note
@@ -348,54 +349,56 @@ func (pg *pgSQLStore) GetNoteByOccurrence(pID, oID string) (*pb.Note, error) {
 	return n, nil
 }
 
-// ListNotes returns the notes for for this project (pID)
-func (pg *pgSQLStore) ListNotes(pID, filters string) ([]*pb.Note, error) {
+// ListNotes returns up to pageSize number of notes for this project (pID) beginning
+// at pageToken (or from start if pageToken is the emtpy string).
+func (pg *pgSQLStore) ListNotes(pID, filters string, pageSize int, pageToken string) ([]*pb.Note, string, error) {
 	rows, err := pg.DB.Query(listNotes, pID)
 	if err != nil {
-		return nil, status.Error(codes.Unknown, fmt.Sprintf("Failed to list Notes from database"))
+		return nil, "", status.Error(codes.Unknown, "Failed to list Notes from database")
 	}
 	ns := []*pb.Note{}
 	for rows.Next() {
 		var data string
 		err := rows.Scan(&data)
 		if err != nil {
-			return nil, status.Error(codes.Unknown, fmt.Sprintf("Failed to scan Notes row"))
+			return nil, "", status.Error(codes.Unknown, "Failed to scan Notes row")
 		}
 		var n pb.Note
 		proto.UnmarshalText(data, &n)
 		if err != nil {
-			return nil, status.Error(codes.Unknown, fmt.Sprintf("Failed to unmarshal Note from database"))
+			return nil, "", status.Error(codes.Unknown, "Failed to unmarshal Note from database")
 		}
 		ns = append(ns, &n)
 	}
-	return ns, nil
+	return ns, "", nil
 }
 
-// ListNoteOccurrences returns the occcurrences on the particular note (nID) for this project (pID)
-func (pg *pgSQLStore) ListNoteOccurrences(pID, nID, filters string) ([]*pb.Occurrence, error) {
+// ListNoteOccurrences returns up to pageSize number of occcurrences on the particular note (nID)
+// for this project (pID) projects beginning at pageToken (or from start if pageToken is the emtpy string).
+func (pg *pgSQLStore) ListNoteOccurrences(pID, nID, filters string, pageSize int, pageToken string) ([]*pb.Occurrence, string, error) {
 	// Verify that note exists
 	if _, err := pg.GetNote(pID, nID); err != nil {
-		return nil, err
+		return nil, "", err
 	}
 	rows, err := pg.DB.Query(listNoteOccurrences, pID, nID)
 	if err != nil {
-		return nil, status.Error(codes.Unknown, fmt.Sprintf("Failed to list Occurrences from database"))
+		return nil, "", status.Error(codes.Unknown, "Failed to list Occurrences from database")
 	}
 	os := []*pb.Occurrence{}
 	for rows.Next() {
 		var data string
 		err := rows.Scan(&data)
 		if err != nil {
-			return nil, status.Error(codes.Unknown, fmt.Sprintf("Failed to scan Occurrences row"))
+			return nil, "", status.Error(codes.Unknown, "Failed to scan Occurrences row")
 		}
 		var o pb.Occurrence
 		proto.UnmarshalText(data, &o)
 		if err != nil {
-			return nil, status.Error(codes.Unknown, fmt.Sprintf("Failed to unmarshal Occurrence from database"))
+			return nil, "", status.Error(codes.Unknown, "Failed to unmarshal Occurrence from database")
 		}
 		os = append(os, &o)
 	}
-	return os, nil
+	return os, "", nil
 }
 
 // GetOperation returns the operation with pID and oID

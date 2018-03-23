@@ -510,7 +510,7 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 			}
 			ns = append(ns, n)
 		}
-		gotNs, err := s.ListNotes(findProject, "")
+		gotNs, _, err := s.ListNotes(findProject, "", 100, "")
 		if err != nil {
 			t.Fatalf("ListNotes got %v want success", err)
 		}
@@ -549,7 +549,7 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 			}
 			os = append(os, o)
 		}
-		gotOs, err := s.ListOccurrences(findProject, "")
+		gotOs, _, err := s.ListOccurrences(findProject, "", 100, "")
 		if err != nil {
 			t.Fatalf("ListOccurrences got %v want success", err)
 		}
@@ -592,7 +592,7 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 		if err != nil {
 			t.Fatalf("Error parsing note name %v", err)
 		}
-		gotOs, err := s.ListNoteOccurrences(pID, nID, "")
+		gotOs, _, err := s.ListNoteOccurrences(pID, nID, "", 100, "")
 		if err != nil {
 			t.Fatalf("ListNoteOccurrences got %v want success", err)
 		}

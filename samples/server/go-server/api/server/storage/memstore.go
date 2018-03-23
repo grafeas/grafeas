@@ -148,8 +148,9 @@ func (m *memStore) GetOccurrence(pID, oID string) (*pb.Occurrence, error) {
 	return o, nil
 }
 
-// ListOccurrences returns the occurrences for this project ID (pID)
-func (m *memStore) ListOccurrences(pID, filters string) ([]*pb.Occurrence, error) {
+// ListOccurrences returns up to pageSize number of occurrences for this project (pID) beginning
+// at pageToken (or from start if pageToken is the emtpy string).
+func (m *memStore) ListOccurrences(pID, filters string, pageSize int, pageToken string) ([]*pb.Occurrence, string, error) {
 	os := []*pb.Occurrence{}
 	m.RLock()
 	defer m.RUnlock()
@@ -158,7 +159,7 @@ func (m *memStore) ListOccurrences(pID, filters string) ([]*pb.Occurrence, error
 			os = append(os, o)
 		}
 	}
-	return os, nil
+	return os, "", nil
 }
 
 // CreateNote adds the specified note to the mem store
@@ -224,8 +225,9 @@ func (m *memStore) GetNoteByOccurrence(pID, oID string) (*pb.Note, error) {
 	return n, nil
 }
 
-// ListNotes returns the notes for for this project (pID)
-func (m *memStore) ListNotes(pID, filters string) ([]*pb.Note, error) {
+// ListNotes returns up to pageSize number of notes for this project (pID) beginning
+// at pageToken (or from start if pageToken is the emtpy string).
+func (m *memStore) ListNotes(pID, filters string, pageSize int, pageToken string) ([]*pb.Note, string, error) {
 	ns := []*pb.Note{}
 	m.RLock()
 	defer m.RUnlock()
@@ -234,17 +236,18 @@ func (m *memStore) ListNotes(pID, filters string) ([]*pb.Note, error) {
 			ns = append(ns, n)
 		}
 	}
-	return ns, nil
+	return ns, "", nil
 }
 
-// ListNoteOccurrences returns the occcurrences on the particular note (nID) for this project (pID)
-func (m *memStore) ListNoteOccurrences(pID, nID, filters string) ([]*pb.Occurrence, error) {
+// ListNoteOccurrences returns up to pageSize number of occcurrences on the particular note (nID)
+// for this project (pID) projects beginning at pageToken (or from start if pageToken is the emtpy string).
+func (m *memStore) ListNoteOccurrences(pID, nID, filters string, pageSize int, pageToken string) ([]*pb.Occurrence, string, error) {
 	// TODO: use filters
 	m.RLock()
 	defer m.RUnlock()
 	// Verify that note exists
 	if _, err := m.GetNote(pID, nID); err != nil {
-		return nil, err
+		return nil, "", err
 	}
 	nName := name.FormatNote(pID, nID)
 	os := []*pb.Occurrence{}
@@ -253,7 +256,7 @@ func (m *memStore) ListNoteOccurrences(pID, nID, filters string) ([]*pb.Occurren
 			os = append(os, o)
 		}
 	}
-	return os, nil
+	return os, "", nil
 }
 
 // GetOperation returns the operation with pID and oID
