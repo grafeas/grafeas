@@ -73,8 +73,9 @@ type Storager interface {
 	// ListOccurrences returns the occurrences for this project ID (pID)
 	ListOccurrences(pID, filters string) ([]*pb.Occurrence, error)
 
-	// ListOperations returns the operations for this project (pID)
-	ListOperations(pID, filters string) ([]*opspb.Operation, error)
+	// ListOperations returns up to pageSize number of operations for this project (pID) beginning
+	// at pageToken (or from start if pageToken is the emtpy string).
+	ListOperations(pID, filters string, pageSize int, pageToken string) ([]*opspb.Operation, string, error)
 
 	// UpdateNote updates the existing note with the given pID and nID
 	UpdateNote(pID, nID string, n *pb.Note) error

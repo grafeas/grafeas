@@ -303,8 +303,9 @@ func (m *memStore) UpdateOperation(pID, opID string, op *opspb.Operation) error 
 	return nil
 }
 
-// ListOperations returns the operations for this project (pID)
-func (m *memStore) ListOperations(pID, filters string) ([]*opspb.Operation, error) {
+// ListOperations returns up to pageSize number of operations for this project (pID) beginning
+// at pageToken (or from start if pageToken is the emtpy string).
+func (m *memStore) ListOperations(pID, filters string, pageSize int, pageToken string) ([]*opspb.Operation, string, error) {
 	ops := []*opspb.Operation{}
 	m.RLock()
 	defer m.RUnlock()
@@ -313,7 +314,7 @@ func (m *memStore) ListOperations(pID, filters string) ([]*opspb.Operation, erro
 			ops = append(ops, op)
 		}
 	}
-	return ops, nil
+	return ops, "", nil
 }
 
 // Calculates start and end positions given the provided constraints

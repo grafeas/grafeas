@@ -476,7 +476,7 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 			}
 			ops = append(ops, *o)
 		}
-		gotOs, err := s.ListOperations(findProject, "")
+		gotOs, _, err := s.ListOperations(findProject, "", 100, "")
 		if err != nil {
 			t.Fatalf("ListOperations got %v want success", err)
 		}

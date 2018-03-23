@@ -343,11 +343,17 @@ func (g *Grafeas) ListOperations(ctx context.Context, req *opspb.ListOperationsR
 		return nil, status.Error(codes.InvalidArgument, "Invalid Project name")
 	}
 	// TODO: support filters
-	ops, err := g.S.ListOperations(pID, req.Filter)
+	if req.PageSize == 0 {
+		req.PageSize = 100
+	}
+	ops, nextToken, err := g.S.ListOperations(pID, req.Filter, int(req.PageSize), req.PageToken)
 	if err != nil {
 		return nil, status.Error(codes.Unknown, "Failed to list operations")
 	}
-	return &opspb.ListOperationsResponse{Operations: ops}, nil
+	return &opspb.ListOperationsResponse{
+		Operations:    ops,
+		NextPageToken: nextToken,
+	}, nil
 }
 
 func (g *Grafeas) ListNotes(ctx context.Context, req *pb.ListNotesRequest) (*pb.ListNotesResponse, error) {
