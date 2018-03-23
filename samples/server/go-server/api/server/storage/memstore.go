@@ -94,7 +94,7 @@ func (m *memStore) ListProjects(filter string, pageSize int, pageToken string) (
 	sort.Slice(projects, func(i, j int) bool {
 		return projects[i].Name < projects[j].Name
 	})
-	startPos, endPos, err := calcRange(pageSize, pageToken, len(m.projects))
+	startPos, endPos, err := calcRange(pageSize, pageToken, len(projects))
 	if err != nil {
 		return nil, "", err
 	}
@@ -159,7 +159,14 @@ func (m *memStore) ListOccurrences(pID, filters string, pageSize int, pageToken 
 			os = append(os, o)
 		}
 	}
-	return os, "", nil
+	sort.Slice(os, func(i, j int) bool {
+		return os[i].Name < os[j].Name
+	})
+	startPos, endPos, err := calcRange(pageSize, pageToken, len(os))
+	if err != nil {
+		return nil, "", err
+	}
+	return os[startPos:endPos], strconv.Itoa(endPos), nil
 }
 
 // CreateNote adds the specified note to the mem store

@@ -498,7 +498,10 @@ func TestListOccurrences(t *testing.T) {
 		os = append(os, o)
 	}
 
-	lReq := &pb.ListOccurrencesRequest{Parent: name.FormatProject(findProject)}
+	lReq := &pb.ListOccurrencesRequest{
+		Parent:   name.FormatProject(findProject),
+		PageSize: 100,
+	}
 	resp, lErr := g.ListOccurrences(ctx, lReq)
 	if lErr != nil {
 		t.Fatalf("ListOccurrences got %v want success", lErr)
@@ -690,6 +693,54 @@ func TestProjectsPagination(t *testing.T) {
 	}
 	if 5 != len(resp.Projects) {
 		t.Errorf("ListProjects: expected 5 projects, got %d", len(resp.Projects))
+	}
+}
+
+func TestOccurrencePagination(t *testing.T) {
+	ctx := context.Background()
+	g := Grafeas{storage.NewMemStore()}
+	npID := "vulnerability-scanner-a"
+	n := testutil.Note(npID)
+	nParent := name.FormatProject(npID)
+	cReq := &pb.CreateNoteRequest{Parent: nParent, Note: n}
+	createProject(t, npID, ctx, g)
+	if _, err := g.CreateNote(ctx, cReq); err != nil {
+		t.Fatalf("CreateNote(%v) got %v, want success", n, err)
+	}
+
+	pID := "myproject"
+	createProject(t, pID, ctx, g)
+	for i := 0; i < 20; i++ {
+		o := testutil.Occurrence(pID, n.Name)
+		o.Name = name.FormatOccurrence(pID, string(i))
+		parent := name.FormatProject(pID)
+		cReq := &pb.CreateOccurrenceRequest{Parent: parent, Occurrence: o}
+		if _, err := g.CreateOccurrence(ctx, cReq); err != nil {
+			t.Fatalf("CreateOccurrence(%v) got %v, want success", o, err)
+		}
+	}
+	req := pb.ListOccurrencesRequest{
+		Parent:   name.FormatProject(pID),
+		PageSize: 15,
+	}
+	resp, err := g.ListOccurrences(ctx, &req)
+	if err != nil {
+		t.Errorf("ListOccurrences: got %v, want success", err)
+	}
+	if 15 != len(resp.Occurrences) {
+		t.Errorf("ListOccurrences: expected 15 projects, got %d", len(resp.Occurrences))
+	}
+	req = pb.ListOccurrencesRequest{
+		Parent:    name.FormatProject(pID),
+		PageSize:  15,
+		PageToken: resp.NextPageToken,
+	}
+	resp, err = g.ListOccurrences(ctx, &req)
+	if err != nil {
+		t.Errorf("ListOccurrences: got %v, want success", err)
+	}
+	if 5 != len(resp.Occurrences) {
+		t.Errorf("ListOccurrences: expected 5 projects, got %d", len(resp.Occurrences))
 	}
 }
 

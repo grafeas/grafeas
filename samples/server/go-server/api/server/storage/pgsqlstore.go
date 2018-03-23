@@ -240,14 +240,21 @@ func (pg *pgSQLStore) GetOccurrence(pID, oID string) (*pb.Occurrence, error) {
 // ListOccurrences returns up to pageSize number of occurrences for this project (pID) beginning
 // at pageToken (or from start if pageToken is the emtpy string).
 func (pg *pgSQLStore) ListOccurrences(pID, filters string, pageSize int, pageToken string) ([]*pb.Occurrence, string, error) {
-	rows, err := pg.DB.Query(listOccurrences, pID)
+	var rows *sql.Rows
+	id, err := decryptInt64(pageToken, paginationKey)
+	if err == nil {
+		rows, err = pg.DB.Query(listOccurrencesFromPage, pID, pageSize, id)
+	} else {
+		rows, err = pg.DB.Query(listOccurrences, pID, pageSize)
+	}
 	if err != nil {
 		return nil, "", status.Error(codes.Unknown, "Failed to list Occurrences from database")
 	}
 	os := []*pb.Occurrence{}
+	var lastId int64
 	for rows.Next() {
 		var data string
-		err := rows.Scan(&data)
+		err := rows.Scan(&lastId, &data)
 		if err != nil {
 			return nil, "", status.Error(codes.Unknown, "Failed to scan Occurrences row")
 		}
@@ -258,7 +265,11 @@ func (pg *pgSQLStore) ListOccurrences(pID, filters string, pageSize int, pageTok
 		}
 		os = append(os, &o)
 	}
-	return os, "", nil
+	encryptedPage, err := encryptInt64(lastId, paginationKey)
+	if err != nil {
+		return nil, "", status.Error(codes.Unknown, "Failed to paginate projects")
+	}
+	return os, encryptedPage, nil
 }
 
 // CreateNote adds the specified note

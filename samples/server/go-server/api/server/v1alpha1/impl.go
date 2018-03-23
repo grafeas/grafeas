@@ -363,11 +363,14 @@ func (g *Grafeas) ListNotes(ctx context.Context, req *pb.ListNotesRequest) (*pb.
 		return nil, status.Error(codes.InvalidArgument, "Invalid Project name")
 	}
 	// TODO: support filters
-	ns, err := g.S.ListNotes(pID, req.Filter)
+	ns, nextToken, err := g.S.ListNotes(pID, req.Filter, int(req.PageSize), req.PageToken)
 	if err != nil {
 		return nil, status.Error(codes.Unknown, "Failed to list notes")
 	}
-	return &pb.ListNotesResponse{Notes: ns}, nil
+	return &pb.ListNotesResponse{
+		Notes:         ns,
+		NextPageToken: nextToken,
+	}, nil
 }
 
 func (g *Grafeas) ListOccurrences(ctx context.Context, req *pb.ListOccurrencesRequest) (*pb.ListOccurrencesResponse, error) {
@@ -377,11 +380,14 @@ func (g *Grafeas) ListOccurrences(ctx context.Context, req *pb.ListOccurrencesRe
 		return nil, err
 	}
 	// TODO: support filters - prioritizing resource url
-	os, err := g.S.ListOccurrences(pID, req.Filter)
+	os, nextToken, err := g.S.ListOccurrences(pID, req.Filter, int(req.PageSize), req.PageToken)
 	if err != nil {
 		return nil, status.Error(codes.Unknown, "Failed to list occurrences")
 	}
-	return &pb.ListOccurrencesResponse{Occurrences: os}, nil
+	return &pb.ListOccurrencesResponse{
+		Occurrences:   os,
+		NextPageToken: nextToken,
+	}, nil
 }
 
 func (g *Grafeas) ListNoteOccurrences(ctx context.Context, req *pb.ListNoteOccurrencesRequest) (*pb.ListNoteOccurrencesResponse, error) {
@@ -391,11 +397,14 @@ func (g *Grafeas) ListNoteOccurrences(ctx context.Context, req *pb.ListNoteOccur
 		return nil, status.Error(codes.InvalidArgument, "Invalid note name")
 	}
 	// TODO: support filters - prioritizing resource url
-	os, gErr := g.S.ListNoteOccurrences(pID, nID, req.Filter)
+	os, nextToken, gErr := g.S.ListNoteOccurrences(pID, nID, req.Filter, int(req.PageSize), req.PageToken)
 	if gErr != nil {
 		return nil, gErr
 	}
-	return &pb.ListNoteOccurrencesResponse{Occurrences: os}, nil
+	return &pb.ListNoteOccurrencesResponse{
+		Occurrences:   os,
+		NextPageToken: nextToken,
+	}, nil
 }
 
 func (g *Grafeas) CancelOperation(context.Context, *opspb.CancelOperationRequest) (*empty.Empty, error) {

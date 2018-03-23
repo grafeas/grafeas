@@ -51,10 +51,11 @@ const (
 
 	insertOccurrence = `INSERT INTO occurrences(project_name, occurrence_name, note_id, data)
                       VALUES ($1, $2, (SELECT id FROM notes WHERE project_name = $3 AND note_name = $4), $5)`
-	searchOccurrence = `SELECT data FROM occurrences WHERE project_name = $1 AND occurrence_name = $2`
-	updateOccurrence = `UPDATE occurrences SET data = $3 WHERE project_name = $1 AND occurrence_name = $2`
-	deleteOccurrence = `DELETE FROM occurrences WHERE project_name = $1 AND occurrence_name = $2`
-	listOccurrences  = `SELECT data FROM occurrences WHERE project_name = $1`
+	searchOccurrence        = `SELECT data FROM occurrences WHERE project_name = $1 AND occurrence_name = $2`
+	updateOccurrence        = `UPDATE occurrences SET data = $3 WHERE project_name = $1 AND occurrence_name = $2`
+	deleteOccurrence        = `DELETE FROM occurrences WHERE project_name = $1 AND occurrence_name = $2`
+	listOccurrences         = `SELECT id, data FROM occurrences WHERE project_name = $1 LIMIT $2`
+	listOccurrencesFromPage = `SELECT id, data FROM occurrences WHERE project_name = $1 AND id > $3 LIMIT $2`
 
 	insertNote          = `INSERT INTO notes(project_name, note_name, data) VALUES ($1, $2, $3)`
 	searchNote          = `SELECT data FROM notes WHERE project_name = $1 AND note_name = $2`
