@@ -34,6 +34,7 @@ import (
 
 type pgSQLStore struct {
 	*sql.DB
+	paginationKey string
 }
 
 func NewPgSQLStore(config *PgSQLConfig) *pgSQLStore {
@@ -53,8 +54,10 @@ func NewPgSQLStore(config *PgSQLConfig) *pgSQLStore {
 		db.Close()
 		log.Fatal(err.Error())
 	}
-	pg := pgSQLStore{}
-	pg.DB = db
+	pg := pgSQLStore{
+		DB:            db,
+		paginationKey: config.PaginationKey,
+	}
 	return &pg
 }
 
@@ -130,13 +133,11 @@ func (pg *pgSQLStore) GetProject(pID string) (*pb.Project, error) {
 	return &pb.Project{Name: pName}, nil
 }
 
-var paginationKey = "XxoPtCUzrUv4JV5dS+yQ+MdW7yLEJnRMwigVY/bpgtQ="
-
 // ListProjects returns up to pageSize number of projects beginning at pageToken (or from
 // start if pageToken is the emtpy string).
 func (pg *pgSQLStore) ListProjects(filter string, pageSize int, pageToken string) ([]*pb.Project, string, error) {
 	var rows *sql.Rows
-	id, err := decryptInt64(pageToken, paginationKey)
+	id, err := decryptInt64(pageToken, pg.paginationKey)
 	if err == nil {
 		rows, err = pg.DB.Query(listProjectsFromPage, pageSize, id)
 	} else {
@@ -155,7 +156,7 @@ func (pg *pgSQLStore) ListProjects(filter string, pageSize int, pageToken string
 		}
 		projects = append(projects, &pb.Project{Name: name})
 	}
-	encryptedPage, err := encryptInt64(lastId, paginationKey)
+	encryptedPage, err := encryptInt64(lastId, pg.paginationKey)
 	if err != nil {
 		return nil, "", status.Error(codes.Unknown, "Failed to paginate projects")
 	}
@@ -241,7 +242,7 @@ func (pg *pgSQLStore) GetOccurrence(pID, oID string) (*pb.Occurrence, error) {
 // at pageToken (or from start if pageToken is the emtpy string).
 func (pg *pgSQLStore) ListOccurrences(pID, filters string, pageSize int, pageToken string) ([]*pb.Occurrence, string, error) {
 	var rows *sql.Rows
-	id, err := decryptInt64(pageToken, paginationKey)
+	id, err := decryptInt64(pageToken, pg.paginationKey)
 	if err == nil {
 		rows, err = pg.DB.Query(listOccurrencesFromPage, pID, pageSize, id)
 	} else {
@@ -265,7 +266,7 @@ func (pg *pgSQLStore) ListOccurrences(pID, filters string, pageSize int, pageTok
 		}
 		os = append(os, &o)
 	}
-	encryptedPage, err := encryptInt64(lastId, paginationKey)
+	encryptedPage, err := encryptInt64(lastId, pg.paginationKey)
 	if err != nil {
 		return nil, "", status.Error(codes.Unknown, "Failed to paginate projects")
 	}
@@ -486,7 +487,7 @@ func (pg *pgSQLStore) UpdateOperation(pID, opID string, op *opspb.Operation) err
 // at pageToken (or from start if pageToken is the emtpy string).
 func (pg *pgSQLStore) ListOperations(pID, filters string, pageSize int, pageToken string) ([]*opspb.Operation, string, error) {
 	var rows *sql.Rows
-	id, err := decryptInt64(pageToken, paginationKey)
+	id, err := decryptInt64(pageToken, pg.paginationKey)
 	if err == nil {
 		rows, err = pg.DB.Query(listOperationsFromPage, pID, pageSize, id)
 	} else {
@@ -510,7 +511,7 @@ func (pg *pgSQLStore) ListOperations(pID, filters string, pageSize int, pageToke
 		}
 		ops = append(ops, &op)
 	}
-	encryptedPage, err := encryptInt64(lastId, paginationKey)
+	encryptedPage, err := encryptInt64(lastId, pg.paginationKey)
 	if err != nil {
 		return nil, "", status.Error(codes.Unknown, "Failed to paginate projects")
 	}
