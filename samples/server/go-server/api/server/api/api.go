@@ -134,10 +134,6 @@ func newGrpcServer(tlsConfig *tls.Config, storage *server.Storager) *grpc.Server
 	grpcServer := grpc.NewServer(grpcOpts...)
 	g := v1alpha1.Grafeas{S: *storage}
 	pb.RegisterGrafeasServer(grpcServer, &g)
-
-	// Initialize the serviceInfo member from GetServiceInfo
-	g.ServiceInfo = grpcServer.GetServiceInfo()
-
 	pb.RegisterGrafeasProjectsServer(grpcServer, &g)
 	opspb.RegisterOperationsServer(grpcServer, &g)
 

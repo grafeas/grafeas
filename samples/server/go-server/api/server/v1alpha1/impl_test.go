@@ -26,33 +26,9 @@ import (
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/testing"
 	pb "github.com/grafeas/grafeas/v1alpha1/proto"
 	opspb "google.golang.org/genproto/googleapis/longrunning"
-	grpc "google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
-
-var sInfo = grpc.ServiceInfo{
-	Methods: []grpc.MethodInfo{
-		{"CreateNote", false, false},
-		{"CreateOccurrence", false, false},
-		{"GetOccurrence", false, false},
-		{"ListOccurrences", false, false},
-		{"DeleteOccurrence", false, false},
-		{"UpdateOccurrence", false, false},
-		{"GetOccurrenceNote", false, false},
-		{"GetNote", false, false},
-		{"ListNotes", false, false},
-		{"DeleteNote", false, false},
-		{"UpdateNote", false, false},
-		{"ListNoteOccurrences", false, false},
-		{"CreateOperation", false, false},
-		{"UpdateOperation", false, false},
-	},
-}
-var serviceInfo = map[string]grpc.ServiceInfo{
-
-	"grafeas.v1alpha1.api.Grafeas": sInfo,
-}
 
 func createProject(t *testing.T, pID string, ctx context.Context, g Grafeas) {
 	req := pb.CreateProjectRequest{&pb.Project{Name: name.FormatProject(pID)}}
@@ -64,7 +40,7 @@ func createProject(t *testing.T, pID string, ctx context.Context, g Grafeas) {
 func TestCreateProject(t *testing.T) {
 	ctx := context.Background()
 	pID := "myproject"
-	g := Grafeas{storage.NewMemStore(), serviceInfo}
+	g := Grafeas{storage.NewMemStore()}
 	req := pb.CreateProjectRequest{&pb.Project{Name: name.FormatProject(pID)}}
 	_, err := g.CreateProject(ctx, &req)
 	if err != nil {
@@ -78,7 +54,7 @@ func TestCreateProject(t *testing.T) {
 
 func TestCreateOperation(t *testing.T) {
 	ctx := context.Background()
-	g := Grafeas{storage.NewMemStore(), serviceInfo}
+	g := Grafeas{storage.NewMemStore()}
 	op := &opspb.Operation{}
 	req := pb.CreateOperationRequest{Parent: "projects/opp", Operation: op}
 	if _, err := g.CreateOperation(ctx, &req); err == nil {
@@ -103,7 +79,7 @@ func TestCreateOperation(t *testing.T) {
 
 func TestCreateOccurrence(t *testing.T) {
 	ctx := context.Background()
-	g := Grafeas{storage.NewMemStore(), serviceInfo}
+	g := Grafeas{storage.NewMemStore()}
 	pID := "vulnerability-scanner-a"
 	n := testutil.Note(pID)
 	parent := name.FormatProject(pID)
@@ -145,7 +121,7 @@ func TestCreateOccurrence(t *testing.T) {
 
 func TestCreateNote(t *testing.T) {
 	ctx := context.Background()
-	g := Grafeas{storage.NewMemStore(), serviceInfo}
+	g := Grafeas{storage.NewMemStore()}
 	n := &pb.Note{}
 	req := &pb.CreateNoteRequest{Parent: "projects/foo", Note: n}
 	// Try to insert an empty note, expect failure
@@ -170,9 +146,51 @@ func TestCreateNote(t *testing.T) {
 	}
 }
 
+func TestCreateNoteOccurrenceWithOperation(t *testing.T) {
+	ctx := context.Background()
+	g := Grafeas{storage.NewMemStore()}
+	pID := "vulnerability-scanner-a"
+	o := testutil.Operation(pID)
+	createProject(t, pID, ctx, g)
+	parent := name.FormatProject(pID)
+	cReq := &pb.CreateOperationRequest{Parent: parent, Operation: o}
+	if _, err := g.CreateOperation(ctx, cReq); err != nil {
+		t.Fatalf("CreateOperation(%v) got %v, want success", o, err)
+	}
+	n := testutil.Note(pID)
+	n.OperationName = "projects/vulnerability-scanner-a/operation/junk"
+	nreq := &pb.CreateNoteRequest{Parent: parent, Note: n}
+	// Try to create a Note with operation that does not exist and expect failure
+	if _, err := g.CreateNote(ctx, nreq); err == nil {
+		t.Errorf("TestCreateNoteWithOperation: got %v, want %v", err, codes.NotFound)
+	}
+	n.OperationName = o.Name
+	nreq = &pb.CreateNoteRequest{Parent: parent, Note: n}
+	// Try to create a Note with operation that we just created and expect success
+	if _, err := g.CreateNote(ctx, nreq); err != nil {
+		t.Errorf("TestCreateNoteWithOperation(%v) got %v, want success", n.OperationName, err)
+	}
+	// Try to create occurrence with operation name
+	occ := testutil.Occurrence(pID, n.Name)
+	occ.OperationName = "projects/vulnerability-scanner-a/operation/junk"
+	parent = name.FormatProject(pID)
+	occReq := &pb.CreateOccurrenceRequest{Parent: parent, Occurrence: occ}
+	// Try to create an Occurrence with operation that does not exist and expect failure
+	if _, err := g.CreateOccurrence(ctx, occReq); err == nil {
+		t.Errorf("TestCreateNoteWithOperation: got %v, want %v", err, codes.NotFound)
+	}
+	occ.OperationName = o.Name
+	occReq = &pb.CreateOccurrenceRequest{Parent: parent, Occurrence: occ}
+	// Try to create an Occurrence with operation that we just created and expect success
+	if _, err := g.CreateOccurrence(ctx, occReq); err != nil {
+		t.Errorf("TestCreateNoteWithOperation(%v) got %v, want success", occ.OperationName, err)
+
+	}
+}
+
 func TestDeleteProject(t *testing.T) {
 	ctx := context.Background()
-	g := Grafeas{storage.NewMemStore(), nil}
+	g := Grafeas{storage.NewMemStore()}
 	pID := "myproject"
 	req := pb.DeleteProjectRequest{Name: name.FormatProject(pID)}
 	if _, err := g.DeleteProject(ctx, &req); err == nil {
@@ -186,7 +204,7 @@ func TestDeleteProject(t *testing.T) {
 
 func TestDeleteNote(t *testing.T) {
 	ctx := context.Background()
-	g := Grafeas{storage.NewMemStore(), serviceInfo}
+	g := Grafeas{storage.NewMemStore()}
 	pID := "vulnerability-scanner-a"
 	n := testutil.Note(pID)
 	createProject(t, pID, ctx, g)
@@ -206,7 +224,7 @@ func TestDeleteNote(t *testing.T) {
 
 func TestDeleteOccurrence(t *testing.T) {
 	ctx := context.Background()
-	g := Grafeas{storage.NewMemStore(), serviceInfo}
+	g := Grafeas{storage.NewMemStore()}
 	pID := "vulnerability-scanner-a"
 	n := testutil.Note(pID)
 	createProject(t, pID, ctx, g)
@@ -233,7 +251,7 @@ func TestDeleteOccurrence(t *testing.T) {
 
 func TestDeleteOperation(t *testing.T) {
 	ctx := context.Background()
-	g := Grafeas{storage.NewMemStore(), serviceInfo}
+	g := Grafeas{storage.NewMemStore()}
 	pID := "vulnerability-scanner-a"
 	o := testutil.Operation(pID)
 	createProject(t, pID, ctx, g)
@@ -253,7 +271,7 @@ func TestDeleteOperation(t *testing.T) {
 
 func TestGetProjects(t *testing.T) {
 	ctx := context.Background()
-	g := Grafeas{storage.NewMemStore(), serviceInfo}
+	g := Grafeas{storage.NewMemStore()}
 	pID := "myproject"
 	req := pb.GetProjectRequest{Name: name.FormatProject(pID)}
 	if _, err := g.GetProject(ctx, &req); err == nil {
@@ -267,7 +285,7 @@ func TestGetProjects(t *testing.T) {
 
 func TestGetNote(t *testing.T) {
 	ctx := context.Background()
-	g := Grafeas{storage.NewMemStore(), serviceInfo}
+	g := Grafeas{storage.NewMemStore()}
 	pID := "vulnerability-scanner-a"
 	n := testutil.Note(pID)
 	createProject(t, pID, ctx, g)
@@ -289,7 +307,7 @@ func TestGetNote(t *testing.T) {
 
 func TestGetOccurrence(t *testing.T) {
 	ctx := context.Background()
-	g := Grafeas{storage.NewMemStore(), serviceInfo}
+	g := Grafeas{storage.NewMemStore()}
 	pID := "vulnerability-scanner-a"
 	n := testutil.Note(pID)
 	createProject(t, pID, ctx, g)
@@ -319,7 +337,7 @@ func TestGetOccurrence(t *testing.T) {
 
 func TestGetOperation(t *testing.T) {
 	ctx := context.Background()
-	g := Grafeas{storage.NewMemStore(), serviceInfo}
+	g := Grafeas{storage.NewMemStore()}
 	pID := "vulnerability-scanner-a"
 	o := testutil.Operation(pID)
 	createProject(t, pID, ctx, g)
@@ -341,7 +359,7 @@ func TestGetOperation(t *testing.T) {
 
 func TestGetOccurrenceNote(t *testing.T) {
 	ctx := context.Background()
-	g := Grafeas{storage.NewMemStore(), serviceInfo}
+	g := Grafeas{storage.NewMemStore()}
 	pID := "vulnerability-scanner-a"
 	n := testutil.Note(pID)
 	createProject(t, pID, ctx, g)
@@ -379,7 +397,7 @@ func TestUpdateNote(t *testing.T) {
 	ctx := context.Background()
 	// Update Note that doesn't exist
 	updateDesc := "this is a new description"
-	g := Grafeas{storage.NewMemStore(), serviceInfo}
+	g := Grafeas{storage.NewMemStore()}
 	pID := "vulnerability-scanner-a"
 	n := testutil.Note(pID)
 	createProject(t, pID, ctx, g)
@@ -424,7 +442,7 @@ func TestUpdateNote(t *testing.T) {
 func TestUpdateOccurrence(t *testing.T) {
 	ctx := context.Background()
 	// Update occurrence that doesn't exist
-	g := Grafeas{storage.NewMemStore(), serviceInfo}
+	g := Grafeas{storage.NewMemStore()}
 	npID := "vulnerability-scanner-a"
 	n := testutil.Note(npID)
 	createProject(t, npID, ctx, g)
@@ -491,7 +509,7 @@ func TestUpdateOccurrence(t *testing.T) {
 
 func TestListOccurrences(t *testing.T) {
 	ctx := context.Background()
-	g := Grafeas{storage.NewMemStore(), serviceInfo}
+	g := Grafeas{storage.NewMemStore()}
 	npID := "vulnerability-scanner-a"
 	n := testutil.Note(npID)
 	nParent := name.FormatProject(npID)
@@ -534,7 +552,7 @@ func TestListOccurrences(t *testing.T) {
 
 func TestListProjects(t *testing.T) {
 	ctx := context.Background()
-	g := Grafeas{storage.NewMemStore(), serviceInfo}
+	g := Grafeas{storage.NewMemStore()}
 	var projects []string
 	for i := 0; i < 20; i++ {
 		pID := fmt.Sprintf("proj%v", i)
@@ -556,7 +574,7 @@ func TestListProjects(t *testing.T) {
 
 func TestListOperations(t *testing.T) {
 	ctx := context.Background()
-	g := Grafeas{storage.NewMemStore(), serviceInfo}
+	g := Grafeas{storage.NewMemStore()}
 	findProject := "findThese"
 	createProject(t, findProject, ctx, g)
 	dontFind := "dontFind"
@@ -588,7 +606,7 @@ func TestListOperations(t *testing.T) {
 
 func TestListNotes(t *testing.T) {
 	ctx := context.Background()
-	g := Grafeas{storage.NewMemStore(), serviceInfo}
+	g := Grafeas{storage.NewMemStore()}
 	findProject := "findThese"
 	createProject(t, findProject, ctx, g)
 	dontFind := "dontFind"
@@ -620,7 +638,7 @@ func TestListNotes(t *testing.T) {
 
 func TestListNoteOccurrences(t *testing.T) {
 	ctx := context.Background()
-	g := Grafeas{storage.NewMemStore(), serviceInfo}
+	g := Grafeas{storage.NewMemStore()}
 	npID := "vulnerability-scanner-a"
 	n := testutil.Note(npID)
 	createProject(t, npID, ctx, g)
