@@ -520,7 +520,10 @@ func (pg *pgSQLStore) ListOperations(pID, filters string, pageSize int, pageToke
 
 // Encrypt int64 using provided key
 func encryptInt64(v int64, key string) (string, error) {
-	k, _ := fernet.DecodeKey(key)
+	k, err := fernet.DecodeKey(key)
+	if err != nil {
+		return "", err
+	}
 	bytes, err := fernet.EncryptAndSign([]byte(strconv.FormatInt(v, 10)), k)
 	if err != nil {
 		return "", err
@@ -530,7 +533,10 @@ func encryptInt64(v int64, key string) (string, error) {
 
 // Decrypts encrypted int64 using provided key
 func decryptInt64(encrypted string, key string) (int64, error) {
-	k, _ := fernet.DecodeKey(key)
+	k, err := fernet.DecodeKey(key)
+	if err != nil {
+		return 0, err
+	}
 	bytes := fernet.VerifyAndDecrypt([]byte(encrypted), time.Hour, []*fernet.Key{k})
 	if bytes == nil {
 		return 0, errors.New("invalid or expired pagination token")
