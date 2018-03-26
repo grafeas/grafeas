@@ -94,10 +94,8 @@ func (m *memStore) ListProjects(filter string, pageSize int, pageToken string) (
 	sort.Slice(projects, func(i, j int) bool {
 		return projects[i].Name < projects[j].Name
 	})
-	startPos, endPos, err := calcRange(pageSize, pageToken, len(projects))
-	if err != nil {
-		return nil, "", err
-	}
+	startPos := parsePageToken(pageToken, 0)
+	endPos := min(startPos+pageSize, len(projects))
 	return projects[startPos:endPos], strconv.Itoa(endPos), nil
 }
 
@@ -162,10 +160,8 @@ func (m *memStore) ListOccurrences(pID, filters string, pageSize int, pageToken 
 	sort.Slice(os, func(i, j int) bool {
 		return os[i].Name < os[j].Name
 	})
-	startPos, endPos, err := calcRange(pageSize, pageToken, len(os))
-	if err != nil {
-		return nil, "", err
-	}
+	startPos := parsePageToken(pageToken, 0)
+	endPos := min(startPos+pageSize, len(os))
 	return os[startPos:endPos], strconv.Itoa(endPos), nil
 }
 
@@ -246,10 +242,8 @@ func (m *memStore) ListNotes(pID, filters string, pageSize int, pageToken string
 	sort.Slice(ns, func(i, j int) bool {
 		return ns[i].Name < ns[j].Name
 	})
-	startPos, endPos, err := calcRange(pageSize, pageToken, len(ns))
-	if err != nil {
-		return nil, "", err
-	}
+	startPos := parsePageToken(pageToken, 0)
+	endPos := min(startPos+pageSize, len(ns))
 	return ns[startPos:endPos], strconv.Itoa(endPos), nil
 }
 
@@ -273,10 +267,8 @@ func (m *memStore) ListNoteOccurrences(pID, nID, filters string, pageSize int, p
 	sort.Slice(os, func(i, j int) bool {
 		return os[i].Name < os[j].Name
 	})
-	startPos, endPos, err := calcRange(pageSize, pageToken, len(os))
-	if err != nil {
-		return nil, "", err
-	}
+	startPos := parsePageToken(pageToken, 0)
+	endPos := min(startPos+pageSize, len(os))
 	return os[startPos:endPos], strconv.Itoa(endPos), nil
 }
 
@@ -341,30 +333,28 @@ func (m *memStore) ListOperations(pID, filters string, pageSize int, pageToken s
 	sort.Slice(ops, func(i, j int) bool {
 		return ops[i].Name < ops[j].Name
 	})
-	startPos, endPos, err := calcRange(pageSize, pageToken, len(ops))
-	if err != nil {
-		return nil, "", err
-	}
+	startPos := parsePageToken(pageToken, 0)
+	endPos := min(startPos+pageSize, len(ops))
 	return ops[startPos:endPos], strconv.Itoa(endPos), nil
 }
 
-// Calculates start and end positions given the provided constraints
-func calcRange(pageSize int, pageToken string, upperLimit int) (startPos, endPos int, err error) {
-	if pageToken != "" {
-		startPos, err = strconv.Atoi(pageToken)
-		if err != nil {
-			return 0, 0, status.Error(codes.InvalidArgument, fmt.Sprintf("PageToken invalid: %s", pageToken))
-		}
+// Parses the page token to an int. Returns defaultValue if parsing fails
+func parsePageToken(pageToken string, defaultValue int) int {
+	if pageToken == "" {
+		return defaultValue
 	}
-	if startPos < 0 || startPos >= upperLimit {
-		return 0, 0, status.Error(codes.OutOfRange, fmt.Sprintf("PageToken out of range: %s", pageToken))
+	parsed, err := strconv.Atoi(pageToken)
+	if err != nil {
+		return defaultValue
 	}
-	return startPos, min(startPos+pageSize, upperLimit), nil
+	return parsed
 }
 
+// Returns the smallest of a and b
 func min(a, b int) int {
 	if a < b {
 		return a
+	} else {
+		return b
 	}
-	return b
 }
