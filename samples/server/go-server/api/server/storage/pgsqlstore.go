@@ -16,7 +16,6 @@ package storage
 
 import (
 	"database/sql"
-	"errors"
 	"fmt"
 	"log"
 	"strconv"
@@ -137,12 +136,8 @@ func (pg *pgSQLStore) GetProject(pID string) (*pb.Project, error) {
 // start if pageToken is the emtpy string).
 func (pg *pgSQLStore) ListProjects(filter string, pageSize int, pageToken string) ([]*pb.Project, string, error) {
 	var rows *sql.Rows
-	id, err := decryptInt64(pageToken, pg.paginationKey)
-	if err == nil {
-		rows, err = pg.DB.Query(listProjectsFromPage, pageSize, id)
-	} else {
-		rows, err = pg.DB.Query(listProjects, pageSize)
-	}
+	id := decryptInt64(pageToken, pg.paginationKey, 0)
+	rows, err := pg.DB.Query(listProjects, pageSize, id)
 	if err != nil {
 		return nil, "", status.Error(codes.Internal, "Failed to list Projects from database")
 	}
@@ -242,12 +237,8 @@ func (pg *pgSQLStore) GetOccurrence(pID, oID string) (*pb.Occurrence, error) {
 // at pageToken (or from start if pageToken is the emtpy string).
 func (pg *pgSQLStore) ListOccurrences(pID, filters string, pageSize int, pageToken string) ([]*pb.Occurrence, string, error) {
 	var rows *sql.Rows
-	id, err := decryptInt64(pageToken, pg.paginationKey)
-	if err == nil {
-		rows, err = pg.DB.Query(listOccurrencesFromPage, pID, pageSize, id)
-	} else {
-		rows, err = pg.DB.Query(listOccurrences, pID, pageSize)
-	}
+	id := decryptInt64(pageToken, pg.paginationKey, 0)
+	rows, err := pg.DB.Query(listOccurrences, pID, pageSize, id)
 	if err != nil {
 		return nil, "", status.Error(codes.Internal, "Failed to list Occurrences from database")
 	}
@@ -365,12 +356,8 @@ func (pg *pgSQLStore) GetNoteByOccurrence(pID, oID string) (*pb.Note, error) {
 // at pageToken (or from start if pageToken is the emtpy string).
 func (pg *pgSQLStore) ListNotes(pID, filters string, pageSize int, pageToken string) ([]*pb.Note, string, error) {
 	var rows *sql.Rows
-	id, err := decryptInt64(pageToken, pg.paginationKey)
-	if err == nil {
-		rows, err = pg.DB.Query(listNotesFromPage, pID, pageSize, id)
-	} else {
-		rows, err = pg.DB.Query(listNotes, pID, pageSize)
-	}
+	id := decryptInt64(pageToken, pg.paginationKey, 0)
+	rows, err := pg.DB.Query(listNotes, pID, pageSize, id)
 	if err != nil {
 		return nil, "", status.Error(codes.Internal, "Failed to list Notes from database")
 	}
@@ -404,12 +391,8 @@ func (pg *pgSQLStore) ListNoteOccurrences(pID, nID, filters string, pageSize int
 		return nil, "", err
 	}
 	var rows *sql.Rows
-	id, err := decryptInt64(pageToken, pg.paginationKey)
-	if err == nil {
-		rows, err = pg.DB.Query(listNoteOccurrencesFromPage, pID, nID, pageSize, id)
-	} else {
-		rows, err = pg.DB.Query(listNoteOccurrences, pID, nID, pageSize)
-	}
+	id := decryptInt64(pageToken, pg.paginationKey, 0)
+	rows, err := pg.DB.Query(listNoteOccurrences, pID, nID, pageSize, id)
 	if err != nil {
 		return nil, "", status.Error(codes.Internal, "Failed to list Occurrences from database")
 	}
@@ -509,12 +492,8 @@ func (pg *pgSQLStore) UpdateOperation(pID, opID string, op *opspb.Operation) err
 // at pageToken (or from start if pageToken is the emtpy string).
 func (pg *pgSQLStore) ListOperations(pID, filters string, pageSize int, pageToken string) ([]*opspb.Operation, string, error) {
 	var rows *sql.Rows
-	id, err := decryptInt64(pageToken, pg.paginationKey)
-	if err == nil {
-		rows, err = pg.DB.Query(listOperationsFromPage, pID, pageSize, id)
-	} else {
-		rows, err = pg.DB.Query(listOperations, pID, pageSize)
-	}
+	id := decryptInt64(pageToken, pg.paginationKey, 0)
+	rows, err := pg.DB.Query(listOperations, pID, pageSize, id)
 	if err != nil {
 		return nil, "", status.Error(codes.Internal, "Failed to list Operations from database")
 	}
@@ -553,15 +532,19 @@ func encryptInt64(v int64, key string) (string, error) {
 	return string(bytes), nil
 }
 
-// Decrypts encrypted int64 using provided key
-func decryptInt64(encrypted string, key string) (int64, error) {
+// Decrypts encrypted int64 using provided key. Returns defaultValue if decryption fails.
+func decryptInt64(encrypted string, key string, defaultValue int64) int64 {
 	k, err := fernet.DecodeKey(key)
 	if err != nil {
-		return 0, err
+		return defaultValue
 	}
 	bytes := fernet.VerifyAndDecrypt([]byte(encrypted), time.Hour, []*fernet.Key{k})
 	if bytes == nil {
-		return 0, errors.New("invalid or expired pagination token")
+		return defaultValue
 	}
-	return strconv.ParseInt(string(bytes), 10, 64)
+	decryptedValue, err := strconv.ParseInt(string(bytes), 10, 64)
+	if err != nil {
+		return defaultValue
+	}
+	return decryptedValue
 }
