@@ -21,9 +21,9 @@ option java_package = "io.grafeas.v1beta1.attestation";
 option objc_class_prefix = "GRA";
 option py_api_version = 2;
 
-// An attestation wrapper with a PGP-compatible signature.
-// This message only supports `ATTACHED` signatures, where the payload that is
-// signed is included alongside the signature itself in the same file.
+// An attestation wrapper with a PGP-compatible signature. This message only
+// supports `ATTACHED` signatures, where the payload that is signed is included
+// alongside the signature itself in the same file.
 message PgpSignedAttestation {
   // The raw content of the signature, as output by GNU Privacy Guard (GPG) or
   // equivalent.  Since this message only supports attached signatures, the
@@ -126,6 +126,7 @@ message Attestation {
   // attestation. The semantics of the signature veracity are ultimately
   // determined by the verification engine.
   oneof signature {
+    // A PGP signed attestation.
     PgpSignedAttestation pgp_signed_attestation = 1;
   }
 }
