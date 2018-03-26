@@ -540,7 +540,10 @@ func TestListOccurrences(t *testing.T) {
 		os = append(os, o)
 	}
 
-	lReq := &pb.ListOccurrencesRequest{Parent: name.FormatProject(findProject)}
+	lReq := &pb.ListOccurrencesRequest{
+		Parent:   name.FormatProject(findProject),
+		PageSize: 100,
+	}
 	resp, lErr := g.ListOccurrences(ctx, lReq)
 	if lErr != nil {
 		t.Fatalf("ListOccurrences got %v want success", lErr)
@@ -697,5 +700,212 @@ func TestListNoteOccurrences(t *testing.T) {
 	}
 	if len(resp.Occurrences) != 20 {
 		t.Errorf("resp.Occurrences got %d, want 20", len(resp.Occurrences))
+	}
+}
+
+func TestProjectsPagination(t *testing.T) {
+	ctx := context.Background()
+	g := Grafeas{storage.NewMemStore()}
+	var projects []string
+	for i := 0; i < 20; i++ {
+		pID := fmt.Sprintf("proj%v", i)
+		req := pb.CreateProjectRequest{&pb.Project{Name: name.FormatProject(pID)}}
+		if _, err := g.CreateProject(ctx, &req); err != nil {
+			t.Errorf("CreateProject: got %v, want success", err)
+		}
+		projects = append(projects, name.FormatProject(pID))
+	}
+	req := pb.ListProjectsRequest{
+		PageSize: 15,
+	}
+	resp, err := g.ListProjects(ctx, &req)
+	if err != nil {
+		t.Errorf("ListProjects: got %v, want success", err)
+	}
+	if 15 != len(resp.Projects) {
+		t.Errorf("ListProjects: expected 15 projects, got %d", len(resp.Projects))
+	}
+	req = pb.ListProjectsRequest{
+		PageSize:  15,
+		PageToken: resp.NextPageToken,
+	}
+	resp, err = g.ListProjects(ctx, &req)
+	if err != nil {
+		t.Errorf("ListProjects: got %v, want success", err)
+	}
+	if 5 != len(resp.Projects) {
+		t.Errorf("ListProjects: expected 5 projects, got %d", len(resp.Projects))
+	}
+}
+
+func TestNotePagination(t *testing.T) {
+	ctx := context.Background()
+	g := Grafeas{storage.NewMemStore()}
+	pID := "myproject"
+	createProject(t, pID, ctx, g)
+	for i := 0; i < 20; i++ {
+		o := testutil.Note(pID)
+		o.Name = name.FormatNote(pID, string(i))
+		parent := name.FormatProject(pID)
+		cReq := &pb.CreateNoteRequest{Parent: parent, Note: o}
+		if _, err := g.CreateNote(ctx, cReq); err != nil {
+			t.Fatalf("CreateNote(%v) got %v, want success", o, err)
+		}
+	}
+	req := pb.ListNotesRequest{
+		Parent:   name.FormatProject(pID),
+		PageSize: 15,
+	}
+	resp, err := g.ListNotes(ctx, &req)
+	if err != nil {
+		t.Errorf("ListNotes: got %v, want success", err)
+	}
+	if 15 != len(resp.Notes) {
+		t.Errorf("ListNotes: expected 15 notes, got %d", len(resp.Notes))
+	}
+	req = pb.ListNotesRequest{
+		Parent:    name.FormatProject(pID),
+		PageSize:  15,
+		PageToken: resp.NextPageToken,
+	}
+	resp, err = g.ListNotes(ctx, &req)
+	if err != nil {
+		t.Errorf("ListNotes: got %v, want success", err)
+	}
+	if 5 != len(resp.Notes) {
+		t.Errorf("ListNotes: expected 5 notes, got %d", len(resp.Notes))
+	}
+}
+
+func TestOccurrencePagination(t *testing.T) {
+	ctx := context.Background()
+	g := Grafeas{storage.NewMemStore()}
+	npID := "vulnerability-scanner-a"
+	n := testutil.Note(npID)
+	nParent := name.FormatProject(npID)
+	cReq := &pb.CreateNoteRequest{Parent: nParent, Note: n}
+	createProject(t, npID, ctx, g)
+	if _, err := g.CreateNote(ctx, cReq); err != nil {
+		t.Fatalf("CreateNote(%v) got %v, want success", n, err)
+	}
+	pID := "myproject"
+	createProject(t, pID, ctx, g)
+	for i := 0; i < 20; i++ {
+		o := testutil.Occurrence(pID, n.Name)
+		o.Name = name.FormatOccurrence(pID, string(i))
+		parent := name.FormatProject(pID)
+		cReq := &pb.CreateOccurrenceRequest{Parent: parent, Occurrence: o}
+		if _, err := g.CreateOccurrence(ctx, cReq); err != nil {
+			t.Fatalf("CreateOccurrence(%v) got %v, want success", o, err)
+		}
+	}
+	req := pb.ListOccurrencesRequest{
+		Parent:   name.FormatProject(pID),
+		PageSize: 15,
+	}
+	resp, err := g.ListOccurrences(ctx, &req)
+	if err != nil {
+		t.Errorf("ListOccurrences: got %v, want success", err)
+	}
+	if 15 != len(resp.Occurrences) {
+		t.Errorf("ListOccurrences: expected 15 occurrences, got %d", len(resp.Occurrences))
+	}
+	req = pb.ListOccurrencesRequest{
+		Parent:    name.FormatProject(pID),
+		PageSize:  15,
+		PageToken: resp.NextPageToken,
+	}
+	resp, err = g.ListOccurrences(ctx, &req)
+	if err != nil {
+		t.Errorf("ListOccurrences: got %v, want success", err)
+	}
+	if 5 != len(resp.Occurrences) {
+		t.Errorf("ListOccurrences: expected 5 occurrences, got %d", len(resp.Occurrences))
+	}
+}
+
+func TestNoteOccurrencePagination(t *testing.T) {
+	ctx := context.Background()
+	g := Grafeas{storage.NewMemStore()}
+	npID := "vulnerability-scanner-a"
+	n := testutil.Note(npID)
+	nParent := name.FormatProject(npID)
+	cReq := &pb.CreateNoteRequest{Parent: nParent, Note: n}
+	createProject(t, npID, ctx, g)
+	if _, err := g.CreateNote(ctx, cReq); err != nil {
+		t.Fatalf("CreateNote(%v) got %v, want success", n, err)
+	}
+	pID := "myproject"
+	createProject(t, pID, ctx, g)
+	for i := 0; i < 20; i++ {
+		o := testutil.Occurrence(pID, n.Name)
+		o.Name = name.FormatOccurrence(pID, string(i))
+		parent := name.FormatProject(pID)
+		cReq := &pb.CreateOccurrenceRequest{Parent: parent, Occurrence: o}
+		if _, err := g.CreateOccurrence(ctx, cReq); err != nil {
+			t.Fatalf("CreateOccurrence(%v) got %v, want success", o, err)
+		}
+	}
+	req := pb.ListNoteOccurrencesRequest{
+		Name:     n.Name,
+		PageSize: 15,
+	}
+	resp, err := g.ListNoteOccurrences(ctx, &req)
+	if err != nil {
+		t.Errorf("ListNoteOccurrences: got %v, want success", err)
+	}
+	if 15 != len(resp.Occurrences) {
+		t.Errorf("ListNoteOccurrences: expected 15 occurrences, got %d", len(resp.Occurrences))
+	}
+	req = pb.ListNoteOccurrencesRequest{
+		Name:      n.Name,
+		PageSize:  15,
+		PageToken: resp.NextPageToken,
+	}
+	resp, err = g.ListNoteOccurrences(ctx, &req)
+	if err != nil {
+		t.Errorf("ListNoteOccurrences: got %v, want success", err)
+	}
+	if 5 != len(resp.Occurrences) {
+		t.Errorf("ListNoteOccurrences: expected 5 occurrences, got %d", len(resp.Occurrences))
+	}
+}
+
+func TestOperationPagination(t *testing.T) {
+	ctx := context.Background()
+	g := Grafeas{storage.NewMemStore()}
+	pID := "myproject"
+	createProject(t, pID, ctx, g)
+	for i := 0; i < 20; i++ {
+		o := testutil.Operation(pID)
+		o.Name = name.FormatOperation(pID, string(i))
+		parent := name.FormatProject(pID)
+		cReq := &pb.CreateOperationRequest{Parent: parent, Operation: o}
+		if _, err := g.CreateOperation(ctx, cReq); err != nil {
+			t.Fatalf("CreateOperation(%v) got %v, want success", o, err)
+		}
+	}
+	req := opspb.ListOperationsRequest{
+		Name:     name.FormatProject(pID),
+		PageSize: 15,
+	}
+	resp, err := g.ListOperations(ctx, &req)
+	if err != nil {
+		t.Errorf("ListOperations: got %v, want success", err)
+	}
+	if 15 != len(resp.Operations) {
+		t.Errorf("ListOperations: expected 15 operations, got %d", len(resp.Operations))
+	}
+	req = opspb.ListOperationsRequest{
+		Name:      name.FormatProject(pID),
+		PageSize:  15,
+		PageToken: resp.NextPageToken,
+	}
+	resp, err = g.ListOperations(ctx, &req)
+	if err != nil {
+		t.Errorf("ListOperations: got %v, want success", err)
+	}
+	if 5 != len(resp.Operations) {
+		t.Errorf("ListOperations: expected 5 operations, got %d", len(resp.Operations))
 	}
 }
