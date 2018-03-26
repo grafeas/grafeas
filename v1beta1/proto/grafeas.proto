@@ -87,6 +87,10 @@ service Grafeas {
   // Creates new occurrences in batch.
   rpc BatchCreateOccurrences(BatchCreateOccurrencesRequest)
       returns (BatchCreateOccurrencesResponse) {
+    option (google.api.http) = {
+      post: "/v1beta1/{parent=projects/*}/occurrences:batchCreate"
+      body: "*"
+    };
   };
 
   // Updates the specified occurrence.
@@ -137,6 +141,10 @@ service Grafeas {
   // Creates new notes in batch.
   rpc BatchCreateNotes(BatchCreateNotesRequest)
       returns (BatchCreateNotesResponse) {
+    option (google.api.http) = {
+      post: "/v1beta1/{parent=projects/*}/notes:batchCreate"
+      body: "*"
+    };
   };
 
   // Updates the specified note.
@@ -171,6 +179,15 @@ service Grafeas {
       returns (google.longrunning.Operation) {
     option (google.api.http) = {
       post: "/v1beta1/{parent=projects/*}/operations"
+      body: "google.longrunning.Operation"
+    };
+  };
+
+  // Creates new operations in batch.
+  rpc BatchCreateOperations(BatchCreateOperationsRequest)
+      returns (BatchCreateOperationsResponse) {
+    option (google.api.http) = {
+      post: "/v1beta1/{parent=projects/*}/operations:batchCreate"
       body: "*"
     };
   };
@@ -181,7 +198,7 @@ service Grafeas {
       returns (google.longrunning.Operation) {
     option (google.api.http) = {
       patch: "/v1beta1/{name=projects/*/operations/*}"
-      body: "*"
+      body: "google.longrunning.Operation"
     };
   };
 };
@@ -527,6 +544,30 @@ message BatchCreateOccurrencesRequest {
 message BatchCreateOccurrencesResponse {
   // The occurrences that were created.
   repeated Occurrence occurrences = 1;
+}
+
+// Request to create operations in batch.
+message BatchCreateOperationsRequest {
+  // The name of the project in the form of `projects/[PROJECT_ID]`, under which
+  // the operations are to be created.
+  string parent = 1;
+
+  // Wraps the operation to create with a specified ID.
+  message OperationContainer {
+    // The ID to use for this operation.
+    string operation_id = 1;
+    // The operation to create.
+    google.longrunning.Operation operation = 2;
+  }
+
+  // The operations to create.
+  repeated OperationContainer operations = 2;
+}
+
+// Response for createing operations in batch.
+message BatchCreateOperationsResponse {
+  // The operations that were created.
+  repeated google.longrunning.Operation operations = 1;
 }
 
 // Request to get a vulnerability summary for some set of occurrences.
