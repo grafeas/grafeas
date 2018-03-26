@@ -696,6 +696,45 @@ func TestProjectsPagination(t *testing.T) {
 	}
 }
 
+func TestNotePagination(t *testing.T) {
+	ctx := context.Background()
+	g := Grafeas{storage.NewMemStore()}
+	pID := "myproject"
+	createProject(t, pID, ctx, g)
+	for i := 0; i < 20; i++ {
+		o := testutil.Note(pID)
+		o.Name = name.FormatNote(pID, string(i))
+		parent := name.FormatProject(pID)
+		cReq := &pb.CreateNoteRequest{Parent: parent, Note: o}
+		if _, err := g.CreateNote(ctx, cReq); err != nil {
+			t.Fatalf("CreateNote(%v) got %v, want success", o, err)
+		}
+	}
+	req := pb.ListNotesRequest{
+		Parent:   name.FormatProject(pID),
+		PageSize: 15,
+	}
+	resp, err := g.ListNotes(ctx, &req)
+	if err != nil {
+		t.Errorf("ListNotes: got %v, want success", err)
+	}
+	if 15 != len(resp.Notes) {
+		t.Errorf("ListNotes: expected 15 notes, got %d", len(resp.Notes))
+	}
+	req = pb.ListNotesRequest{
+		Parent:    name.FormatProject(pID),
+		PageSize:  15,
+		PageToken: resp.NextPageToken,
+	}
+	resp, err = g.ListNotes(ctx, &req)
+	if err != nil {
+		t.Errorf("ListNotes: got %v, want success", err)
+	}
+	if 5 != len(resp.Notes) {
+		t.Errorf("ListNotes: expected 5 notes, got %d", len(resp.Notes))
+	}
+}
+
 func TestOccurrencePagination(t *testing.T) {
 	ctx := context.Background()
 	g := Grafeas{storage.NewMemStore()}
@@ -728,7 +767,7 @@ func TestOccurrencePagination(t *testing.T) {
 		t.Errorf("ListOccurrences: got %v, want success", err)
 	}
 	if 15 != len(resp.Occurrences) {
-		t.Errorf("ListOccurrences: expected 15 projects, got %d", len(resp.Occurrences))
+		t.Errorf("ListOccurrences: expected 15 occurrences, got %d", len(resp.Occurrences))
 	}
 	req = pb.ListOccurrencesRequest{
 		Parent:    name.FormatProject(pID),
@@ -740,7 +779,7 @@ func TestOccurrencePagination(t *testing.T) {
 		t.Errorf("ListOccurrences: got %v, want success", err)
 	}
 	if 5 != len(resp.Occurrences) {
-		t.Errorf("ListOccurrences: expected 5 projects, got %d", len(resp.Occurrences))
+		t.Errorf("ListOccurrences: expected 5 occurrences, got %d", len(resp.Occurrences))
 	}
 }
 
@@ -767,7 +806,7 @@ func TestOperationPagination(t *testing.T) {
 		t.Errorf("ListOperations: got %v, want success", err)
 	}
 	if 15 != len(resp.Operations) {
-		t.Errorf("ListOperations: expected 15 projects, got %d", len(resp.Operations))
+		t.Errorf("ListOperations: expected 15 operations, got %d", len(resp.Operations))
 	}
 	req = opspb.ListOperationsRequest{
 		Name:      name.FormatProject(pID),
@@ -779,6 +818,6 @@ func TestOperationPagination(t *testing.T) {
 		t.Errorf("ListOperations: got %v, want success", err)
 	}
 	if 5 != len(resp.Operations) {
-		t.Errorf("ListOperations: expected 5 projects, got %d", len(resp.Operations))
+		t.Errorf("ListOperations: expected 5 operations, got %d", len(resp.Operations))
 	}
 }

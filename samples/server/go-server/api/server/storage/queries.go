@@ -61,7 +61,8 @@ const (
 	searchNote          = `SELECT data FROM notes WHERE project_name = $1 AND note_name = $2`
 	updateNote          = `UPDATE notes SET data = $3 WHERE project_name = $1 AND note_name = $2`
 	deleteNote          = `DELETE FROM notes WHERE project_name = $1 AND note_name = $2`
-	listNotes           = `SELECT data FROM notes WHERE project_name = $1`
+	listNotes           = `SELECT id, data FROM notes WHERE project_name = $1 LIMIT $2`
+	listNotesFromPage   = `SELECT id, data FROM notes WHERE project_name = $1 AND id > $3 LIMIT $2`
 	listNoteOccurrences = `SELECT o.data FROM occurrences as o, notes as n
                            WHERE n.id = o.note_id
                              AND n.project_name = $1

@@ -364,14 +364,21 @@ func (pg *pgSQLStore) GetNoteByOccurrence(pID, oID string) (*pb.Note, error) {
 // ListNotes returns up to pageSize number of notes for this project (pID) beginning
 // at pageToken (or from start if pageToken is the emtpy string).
 func (pg *pgSQLStore) ListNotes(pID, filters string, pageSize int, pageToken string) ([]*pb.Note, string, error) {
-	rows, err := pg.DB.Query(listNotes, pID)
+	var rows *sql.Rows
+	id, err := decryptInt64(pageToken, pg.paginationKey)
+	if err == nil {
+		rows, err = pg.DB.Query(listNotesFromPage, pID, pageSize, id)
+	} else {
+		rows, err = pg.DB.Query(listNotes, pID, pageSize)
+	}
 	if err != nil {
 		return nil, "", status.Error(codes.Internal, "Failed to list Notes from database")
 	}
 	ns := []*pb.Note{}
+	var lastId int64
 	for rows.Next() {
 		var data string
-		err := rows.Scan(&data)
+		err := rows.Scan(&lastId, &data)
 		if err != nil {
 			return nil, "", status.Error(codes.Internal, "Failed to scan Notes row")
 		}
@@ -382,7 +389,11 @@ func (pg *pgSQLStore) ListNotes(pID, filters string, pageSize int, pageToken str
 		}
 		ns = append(ns, &n)
 	}
-	return ns, "", nil
+	encryptedPage, err := encryptInt64(lastId, pg.paginationKey)
+	if err != nil {
+		return nil, "", status.Error(codes.Internal, "Failed to paginate projects")
+	}
+	return ns, encryptedPage, nil
 }
 
 // ListNoteOccurrences returns up to pageSize number of occcurrences on the particular note (nID)

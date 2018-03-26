@@ -243,7 +243,14 @@ func (m *memStore) ListNotes(pID, filters string, pageSize int, pageToken string
 			ns = append(ns, n)
 		}
 	}
-	return ns, "", nil
+	sort.Slice(ns, func(i, j int) bool {
+		return ns[i].Name < ns[j].Name
+	})
+	startPos, endPos, err := calcRange(pageSize, pageToken, len(ns))
+	if err != nil {
+		return nil, "", err
+	}
+	return ns[startPos:endPos], strconv.Itoa(endPos), nil
 }
 
 // ListNoteOccurrences returns up to pageSize number of occcurrences on the particular note (nID)

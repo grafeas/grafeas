@@ -363,6 +363,9 @@ func (g *Grafeas) ListNotes(ctx context.Context, req *pb.ListNotesRequest) (*pb.
 		return nil, status.Error(codes.InvalidArgument, "Invalid Project name")
 	}
 	// TODO: support filters
+	if req.PageSize == 0 {
+		req.PageSize = 100
+	}
 	ns, nextToken, err := g.S.ListNotes(pID, req.Filter, int(req.PageSize), req.PageToken)
 	if err != nil {
 		return nil, status.Error(codes.Unknown, "Failed to list notes")
