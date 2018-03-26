@@ -564,7 +564,7 @@ message BatchCreateOperationsRequest {
   repeated OperationContainer operations = 2;
 }
 
-// Response for createing operations in batch.
+// Response for creating operations in batch.
 message BatchCreateOperationsResponse {
   // The operations that were created.
   repeated google.longrunning.Operation operations = 1;
