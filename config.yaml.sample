@@ -39,3 +39,7 @@ grafeas:
     # Valid sslmodes disable, allow, prefer, require, verify-ca, verify-full.
     # See https://www.postgresql.org/docs/current/static/libpq-connect.html for details
     sslmode: "require"
+    # 32-bit URL-safe base64 key used to encrypt pagination tokens
+    # If one is not provided, it will be generated.
+    # Multiple grafeas instances in the same cluster need the same value.
+    paginationkey:
