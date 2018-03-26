@@ -754,6 +754,62 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 		}
 	})
 
+	t.Run("NoteOccurrencePagination", func(t *testing.T) {
+		s, cleanUp := createStore(t)
+		defer cleanUp()
+		pID := "project"
+		nPID := "noteproject"
+		oID1 := "occurrence1"
+		n := testutil.Note(nPID)
+		if err := s.CreateNote(n); err != nil {
+			t.Fatalf("CreateNote got %v want success", err)
+		}
+		op1 := testutil.Occurrence(pID, n.Name)
+		op1.Name = name.FormatOccurrence(pID, oID1)
+		if err := s.CreateOccurrence(op1); err != nil {
+			t.Errorf("CreateOccurrence got %v want success", err)
+		}
+		oID2 := "occurrence2"
+		op2 := testutil.Occurrence(pID, n.Name)
+		op2.Name = name.FormatOccurrence(pID, oID2)
+		if err := s.CreateOccurrence(op2); err != nil {
+			t.Errorf("CreateOccurrence got %v want success", err)
+		}
+		oID3 := "occurrence3"
+		op3 := testutil.Occurrence(pID, n.Name)
+		op3.Name = name.FormatOccurrence(pID, oID3)
+		if err := s.CreateOccurrence(op3); err != nil {
+			t.Errorf("CreateOccurrence got %v want success", err)
+		}
+		filter := "filters_are_yet_to_be_implemented"
+		_, nID, err := name.ParseNote(n.Name)
+		// Get occurrences
+		gotOccurrences, lastPage, err := s.ListNoteOccurrences(nPID, nID, filter, 2, "")
+		if err != nil {
+			t.Fatalf("ListNoteOccurrences got %v want success", err)
+		}
+		if len(gotOccurrences) != 2 {
+			t.Errorf("ListNoteOccurrences got %v occurrences, want 2", len(gotOccurrences))
+		}
+		if p := gotOccurrences[0]; p.Name != name.FormatOccurrence(pID, oID1) {
+			t.Fatalf("Got %s want %s", p.Name, name.FormatOccurrence(pID, oID1))
+		}
+		if p := gotOccurrences[1]; p.Name != name.FormatOccurrence(pID, oID2) {
+			t.Fatalf("Got %s want %s", p.Name, name.FormatOccurrence(pID, oID2))
+		}
+		// Get occurrences again
+		gotOccurrences, _, err = s.ListNoteOccurrences(nPID, nID, filter, 100, lastPage)
+		if err != nil {
+			t.Fatalf("ListNoteOccurrences got %v want success", err)
+		}
+		if len(gotOccurrences) != 1 {
+			t.Errorf("ListNoteOccurrences got %v operations, want 1", len(gotOccurrences))
+		}
+		if p := gotOccurrences[0]; p.Name != name.FormatOccurrence(pID, oID3) {
+			t.Fatalf("Got %s want %s", p.Name, name.FormatOccurrence(pID, oID3))
+		}
+	})
+
 	t.Run("OperationPagination", func(t *testing.T) {
 		s, cleanUp := createStore(t)
 		defer cleanUp()

@@ -383,6 +383,9 @@ func (g *Grafeas) ListOccurrences(ctx context.Context, req *pb.ListOccurrencesRe
 		return nil, err
 	}
 	// TODO: support filters - prioritizing resource url
+	if req.PageSize == 0 {
+		req.PageSize = 100
+	}
 	os, nextToken, err := g.S.ListOccurrences(pID, req.Filter, int(req.PageSize), req.PageToken)
 	if err != nil {
 		return nil, status.Error(codes.Unknown, "Failed to list occurrences")
@@ -400,6 +403,9 @@ func (g *Grafeas) ListNoteOccurrences(ctx context.Context, req *pb.ListNoteOccur
 		return nil, status.Error(codes.InvalidArgument, "Invalid note name")
 	}
 	// TODO: support filters - prioritizing resource url
+	if req.PageSize == 0 {
+		req.PageSize = 100
+	}
 	os, nextToken, gErr := g.S.ListNoteOccurrences(pID, nID, req.Filter, int(req.PageSize), req.PageToken)
 	if gErr != nil {
 		return nil, gErr

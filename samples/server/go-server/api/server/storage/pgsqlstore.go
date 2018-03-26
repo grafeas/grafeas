@@ -403,14 +403,21 @@ func (pg *pgSQLStore) ListNoteOccurrences(pID, nID, filters string, pageSize int
 	if _, err := pg.GetNote(pID, nID); err != nil {
 		return nil, "", err
 	}
-	rows, err := pg.DB.Query(listNoteOccurrences, pID, nID)
+	var rows *sql.Rows
+	id, err := decryptInt64(pageToken, pg.paginationKey)
+	if err == nil {
+		rows, err = pg.DB.Query(listNoteOccurrencesFromPage, pID, nID, pageSize, id)
+	} else {
+		rows, err = pg.DB.Query(listNoteOccurrences, pID, nID, pageSize)
+	}
 	if err != nil {
 		return nil, "", status.Error(codes.Internal, "Failed to list Occurrences from database")
 	}
 	os := []*pb.Occurrence{}
+	var lastId int64
 	for rows.Next() {
 		var data string
-		err := rows.Scan(&data)
+		err := rows.Scan(&lastId, &data)
 		if err != nil {
 			return nil, "", status.Error(codes.Internal, "Failed to scan Occurrences row")
 		}
@@ -421,7 +428,11 @@ func (pg *pgSQLStore) ListNoteOccurrences(pID, nID, filters string, pageSize int
 		}
 		os = append(os, &o)
 	}
-	return os, "", nil
+	encryptedPage, err := encryptInt64(lastId, pg.paginationKey)
+	if err != nil {
+		return nil, "", status.Error(codes.Internal, "Failed to paginate projects")
+	}
+	return os, encryptedPage, nil
 }
 
 // GetOperation returns the operation with pID and oID

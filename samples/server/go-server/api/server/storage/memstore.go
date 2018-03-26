@@ -270,7 +270,14 @@ func (m *memStore) ListNoteOccurrences(pID, nID, filters string, pageSize int, p
 			os = append(os, o)
 		}
 	}
-	return os, "", nil
+	sort.Slice(os, func(i, j int) bool {
+		return os[i].Name < os[j].Name
+	})
+	startPos, endPos, err := calcRange(pageSize, pageToken, len(os))
+	if err != nil {
+		return nil, "", err
+	}
+	return os[startPos:endPos], strconv.Itoa(endPos), nil
 }
 
 // GetOperation returns the operation with pID and oID

@@ -746,7 +746,6 @@ func TestOccurrencePagination(t *testing.T) {
 	if _, err := g.CreateNote(ctx, cReq); err != nil {
 		t.Fatalf("CreateNote(%v) got %v, want success", n, err)
 	}
-
 	pID := "myproject"
 	createProject(t, pID, ctx, g)
 	for i := 0; i < 20; i++ {
@@ -780,6 +779,53 @@ func TestOccurrencePagination(t *testing.T) {
 	}
 	if 5 != len(resp.Occurrences) {
 		t.Errorf("ListOccurrences: expected 5 occurrences, got %d", len(resp.Occurrences))
+	}
+}
+
+func TestNoteOccurrencePagination(t *testing.T) {
+	ctx := context.Background()
+	g := Grafeas{storage.NewMemStore()}
+	npID := "vulnerability-scanner-a"
+	n := testutil.Note(npID)
+	nParent := name.FormatProject(npID)
+	cReq := &pb.CreateNoteRequest{Parent: nParent, Note: n}
+	createProject(t, npID, ctx, g)
+	if _, err := g.CreateNote(ctx, cReq); err != nil {
+		t.Fatalf("CreateNote(%v) got %v, want success", n, err)
+	}
+	pID := "myproject"
+	createProject(t, pID, ctx, g)
+	for i := 0; i < 20; i++ {
+		o := testutil.Occurrence(pID, n.Name)
+		o.Name = name.FormatOccurrence(pID, string(i))
+		parent := name.FormatProject(pID)
+		cReq := &pb.CreateOccurrenceRequest{Parent: parent, Occurrence: o}
+		if _, err := g.CreateOccurrence(ctx, cReq); err != nil {
+			t.Fatalf("CreateOccurrence(%v) got %v, want success", o, err)
+		}
+	}
+	req := pb.ListNoteOccurrencesRequest{
+		Name:     n.Name,
+		PageSize: 15,
+	}
+	resp, err := g.ListNoteOccurrences(ctx, &req)
+	if err != nil {
+		t.Errorf("ListNoteOccurrences: got %v, want success", err)
+	}
+	if 15 != len(resp.Occurrences) {
+		t.Errorf("ListNoteOccurrences: expected 15 occurrences, got %d", len(resp.Occurrences))
+	}
+	req = pb.ListNoteOccurrencesRequest{
+		Name:      n.Name,
+		PageSize:  15,
+		PageToken: resp.NextPageToken,
+	}
+	resp, err = g.ListNoteOccurrences(ctx, &req)
+	if err != nil {
+		t.Errorf("ListNoteOccurrences: got %v, want success", err)
+	}
+	if 5 != len(resp.Occurrences) {
+		t.Errorf("ListNoteOccurrences: expected 5 occurrences, got %d", len(resp.Occurrences))
 	}
 }
 

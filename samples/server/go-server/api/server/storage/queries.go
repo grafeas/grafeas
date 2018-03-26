@@ -63,10 +63,17 @@ const (
 	deleteNote          = `DELETE FROM notes WHERE project_name = $1 AND note_name = $2`
 	listNotes           = `SELECT id, data FROM notes WHERE project_name = $1 LIMIT $2`
 	listNotesFromPage   = `SELECT id, data FROM notes WHERE project_name = $1 AND id > $3 LIMIT $2`
-	listNoteOccurrences = `SELECT o.data FROM occurrences as o, notes as n
+	listNoteOccurrences = `SELECT o.id, o.data FROM occurrences as o, notes as n
                            WHERE n.id = o.note_id
                              AND n.project_name = $1
-                             AND n.note_name = $2`
+                             AND n.note_name = $2
+                             LIMIT $3`
+	listNoteOccurrencesFromPage = `SELECT o.id, o.data FROM occurrences as o, notes as n
+                           WHERE n.id = o.note_id
+                             AND n.project_name = $1
+                             AND n.note_name = $2
+														 AND o.id > $4
+														 LIMIT $3`
 
 	insertOperation        = `INSERT INTO operations(project_name, operation_name, data) VALUES ($1, $2, $3)`
 	searchOperation        = `SELECT data FROM operations WHERE project_name = $1 AND operation_name = $2`
