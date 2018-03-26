@@ -96,7 +96,7 @@ func (pg *pgSQLStore) CreateProject(pID string) error {
 			return status.Error(codes.AlreadyExists, fmt.Sprintf("Project with name %q already exists", pID))
 		} else {
 			log.Println("Failed to insert Project in database", err)
-			return status.Error(codes.Unknown, fmt.Sprintf("Failed to insert Project in database"))
+			return status.Error(codes.Internal, "Failed to insert Project in database")
 		}
 	}
 	return nil
@@ -107,11 +107,11 @@ func (pg *pgSQLStore) DeleteProject(pID string) error {
 	pName := name.FormatProject(pID)
 	result, err := pg.DB.Exec(deleteProject, pName)
 	if err != nil {
-		return status.Error(codes.Unknown, fmt.Sprintf("Failed to delete Project from database"))
+		return status.Error(codes.Internal, "Failed to delete Project from database")
 	}
 	count, err := result.RowsAffected()
 	if err != nil {
-		return status.Error(codes.Unknown, fmt.Sprintf("Failed to delete Project from database"))
+		return status.Error(codes.Internal, "Failed to delete Project from database")
 	}
 	if count == 0 {
 		return status.Error(codes.NotFound, fmt.Sprintf("Project with name %q does not Exist", pName))
@@ -125,7 +125,7 @@ func (pg *pgSQLStore) GetProject(pID string) (*pb.Project, error) {
 	var exists bool
 	err := pg.DB.QueryRow(projectExists, pName).Scan(&exists)
 	if err != nil {
-		return nil, status.Error(codes.Unknown, fmt.Sprintf("Failed to query Project from database"))
+		return nil, status.Error(codes.Internal, "Failed to query Project from database")
 	}
 	if !exists {
 		return nil, status.Error(codes.NotFound, fmt.Sprintf("Project with name %q does not Exist", pName))
@@ -144,7 +144,7 @@ func (pg *pgSQLStore) ListProjects(filter string, pageSize int, pageToken string
 		rows, err = pg.DB.Query(listProjects, pageSize)
 	}
 	if err != nil {
-		return nil, "", status.Error(codes.Unknown, "Failed to list Projects from database")
+		return nil, "", status.Error(codes.Internal, "Failed to list Projects from database")
 	}
 	var projects []*pb.Project
 	var lastId int64
@@ -152,13 +152,13 @@ func (pg *pgSQLStore) ListProjects(filter string, pageSize int, pageToken string
 		var name string
 		err := rows.Scan(&lastId, &name)
 		if err != nil {
-			return nil, "", status.Error(codes.Unknown, "Failed to scan Project row")
+			return nil, "", status.Error(codes.Internal, "Failed to scan Project row")
 		}
 		projects = append(projects, &pb.Project{Name: name})
 	}
 	encryptedPage, err := encryptInt64(lastId, pg.paginationKey)
 	if err != nil {
-		return nil, "", status.Error(codes.Unknown, "Failed to paginate projects")
+		return nil, "", status.Error(codes.Internal, "Failed to paginate projects")
 	}
 	return projects, encryptedPage, nil
 }
@@ -182,7 +182,7 @@ func (pg *pgSQLStore) CreateOccurrence(o *pb.Occurrence) error {
 			return status.Error(codes.AlreadyExists, fmt.Sprintf("Occurrence with name %q already exists", o.Name))
 		} else {
 			log.Println("Failed to insert Occurrence in database", err)
-			return status.Error(codes.Unknown, fmt.Sprintf("Failed to insert Occurrence in database"))
+			return status.Error(codes.Internal, "Failed to insert Occurrence in database")
 		}
 	}
 	return nil
@@ -192,11 +192,11 @@ func (pg *pgSQLStore) CreateOccurrence(o *pb.Occurrence) error {
 func (pg *pgSQLStore) DeleteOccurrence(pID, oID string) error {
 	result, err := pg.DB.Exec(deleteOccurrence, pID, oID)
 	if err != nil {
-		return status.Error(codes.Unknown, fmt.Sprintf("Failed to delete Occurrence from database"))
+		return status.Error(codes.Internal, "Failed to delete Occurrence from database")
 	}
 	count, err := result.RowsAffected()
 	if err != nil {
-		return status.Error(codes.Unknown, fmt.Sprintf("Failed to delete Occurrence from database"))
+		return status.Error(codes.Internal, "Failed to delete Occurrence from database")
 	}
 	if count == 0 {
 		return status.Error(codes.NotFound, fmt.Sprintf("Occurrence with name %q/%q does not Exist", pID, oID))
@@ -208,11 +208,11 @@ func (pg *pgSQLStore) DeleteOccurrence(pID, oID string) error {
 func (pg *pgSQLStore) UpdateOccurrence(pID, oID string, o *pb.Occurrence) error {
 	result, err := pg.DB.Exec(updateOccurrence, pID, oID, proto.MarshalTextString(o))
 	if err != nil {
-		return status.Error(codes.Unknown, fmt.Sprintf("Failed to update Occurrence"))
+		return status.Error(codes.Internal, "Failed to update Occurrence")
 	}
 	count, err := result.RowsAffected()
 	if err != nil {
-		return status.Error(codes.Unknown, fmt.Sprintf("Failed to update Occurrence"))
+		return status.Error(codes.Internal, "Failed to update Occurrence")
 	}
 	if count == 0 {
 		return status.Error(codes.NotFound, fmt.Sprintf("Occurrence with name %q/%q does not Exist", pID, oID))
@@ -228,12 +228,12 @@ func (pg *pgSQLStore) GetOccurrence(pID, oID string) (*pb.Occurrence, error) {
 	case err == sql.ErrNoRows:
 		return nil, status.Error(codes.NotFound, fmt.Sprintf("Occurrence with name %q/%q does not Exist", pID, oID))
 	case err != nil:
-		return nil, status.Error(codes.Unknown, fmt.Sprintf("Failed to query Occurrence from database"))
+		return nil, status.Error(codes.Internal, "Failed to query Occurrence from database")
 	}
 	var o pb.Occurrence
 	proto.UnmarshalText(data, &o)
 	if err != nil {
-		return nil, status.Error(codes.Unknown, fmt.Sprintf("Failed to unmarshal Occurrence from database"))
+		return nil, status.Error(codes.Internal, "Failed to unmarshal Occurrence from database")
 	}
 	return &o, nil
 }
@@ -249,7 +249,7 @@ func (pg *pgSQLStore) ListOccurrences(pID, filters string, pageSize int, pageTok
 		rows, err = pg.DB.Query(listOccurrences, pID, pageSize)
 	}
 	if err != nil {
-		return nil, "", status.Error(codes.Unknown, "Failed to list Occurrences from database")
+		return nil, "", status.Error(codes.Internal, "Failed to list Occurrences from database")
 	}
 	os := []*pb.Occurrence{}
 	var lastId int64
@@ -257,18 +257,18 @@ func (pg *pgSQLStore) ListOccurrences(pID, filters string, pageSize int, pageTok
 		var data string
 		err := rows.Scan(&lastId, &data)
 		if err != nil {
-			return nil, "", status.Error(codes.Unknown, "Failed to scan Occurrences row")
+			return nil, "", status.Error(codes.Internal, "Failed to scan Occurrences row")
 		}
 		var o pb.Occurrence
 		proto.UnmarshalText(data, &o)
 		if err != nil {
-			return nil, "", status.Error(codes.Unknown, "Failed to unmarshal Occurrence from database")
+			return nil, "", status.Error(codes.Internal, "Failed to unmarshal Occurrence from database")
 		}
 		os = append(os, &o)
 	}
 	encryptedPage, err := encryptInt64(lastId, pg.paginationKey)
 	if err != nil {
-		return nil, "", status.Error(codes.Unknown, "Failed to paginate projects")
+		return nil, "", status.Error(codes.Internal, "Failed to paginate projects")
 	}
 	return os, encryptedPage, nil
 }
@@ -287,7 +287,7 @@ func (pg *pgSQLStore) CreateNote(n *pb.Note) error {
 			return status.Error(codes.AlreadyExists, fmt.Sprintf("Note with name %q already exists", n.Name))
 		} else {
 			log.Println("Failed to insert Note in database", err)
-			return status.Error(codes.Unknown, fmt.Sprintf("Failed to insert Note in database"))
+			return status.Error(codes.Internal, "Failed to insert Note in database")
 		}
 	}
 	return nil
@@ -297,11 +297,11 @@ func (pg *pgSQLStore) CreateNote(n *pb.Note) error {
 func (pg *pgSQLStore) DeleteNote(pID, nID string) error {
 	result, err := pg.DB.Exec(deleteNote, pID, nID)
 	if err != nil {
-		return status.Error(codes.Unknown, fmt.Sprintf("Failed to delete Note from database"))
+		return status.Error(codes.Internal, "Failed to delete Note from database")
 	}
 	count, err := result.RowsAffected()
 	if err != nil {
-		return status.Error(codes.Unknown, fmt.Sprintf("Failed to delete Note from database"))
+		return status.Error(codes.Internal, "Failed to delete Note from database")
 	}
 	if count == 0 {
 		return status.Error(codes.NotFound, fmt.Sprintf("Note with name %q/%q does not Exist", pID, nID))
@@ -313,11 +313,11 @@ func (pg *pgSQLStore) DeleteNote(pID, nID string) error {
 func (pg *pgSQLStore) UpdateNote(pID, nID string, n *pb.Note) error {
 	result, err := pg.DB.Exec(updateNote, pID, nID, proto.MarshalTextString(n))
 	if err != nil {
-		return status.Error(codes.Unknown, fmt.Sprintf("Failed to update Note"))
+		return status.Error(codes.Internal, "Failed to update Note")
 	}
 	count, err := result.RowsAffected()
 	if err != nil {
-		return status.Error(codes.Unknown, fmt.Sprintf("Failed to update Note"))
+		return status.Error(codes.Internal, "Failed to update Note")
 	}
 	if count == 0 {
 		return status.Error(codes.NotFound, fmt.Sprintf("Note with name %q/%q does not Exist", pID, nID))
@@ -333,12 +333,12 @@ func (pg *pgSQLStore) GetNote(pID, nID string) (*pb.Note, error) {
 	case err == sql.ErrNoRows:
 		return nil, status.Error(codes.NotFound, fmt.Sprintf("Note with name %q/%q does not Exist", pID, nID))
 	case err != nil:
-		return nil, status.Error(codes.Unknown, fmt.Sprintf("Failed to query Note from database"))
+		return nil, status.Error(codes.Internal, "Failed to query Note from database")
 	}
 	var note pb.Note
 	proto.UnmarshalText(data, &note)
 	if err != nil {
-		return nil, status.Error(codes.Unknown, fmt.Sprintf("Failed to unmarshal Note from database"))
+		return nil, status.Error(codes.Internal, "Failed to unmarshal Note from database")
 	}
 	return &note, nil
 }
@@ -366,19 +366,19 @@ func (pg *pgSQLStore) GetNoteByOccurrence(pID, oID string) (*pb.Note, error) {
 func (pg *pgSQLStore) ListNotes(pID, filters string, pageSize int, pageToken string) ([]*pb.Note, string, error) {
 	rows, err := pg.DB.Query(listNotes, pID)
 	if err != nil {
-		return nil, "", status.Error(codes.Unknown, "Failed to list Notes from database")
+		return nil, "", status.Error(codes.Internal, "Failed to list Notes from database")
 	}
 	ns := []*pb.Note{}
 	for rows.Next() {
 		var data string
 		err := rows.Scan(&data)
 		if err != nil {
-			return nil, "", status.Error(codes.Unknown, "Failed to scan Notes row")
+			return nil, "", status.Error(codes.Internal, "Failed to scan Notes row")
 		}
 		var n pb.Note
 		proto.UnmarshalText(data, &n)
 		if err != nil {
-			return nil, "", status.Error(codes.Unknown, "Failed to unmarshal Note from database")
+			return nil, "", status.Error(codes.Internal, "Failed to unmarshal Note from database")
 		}
 		ns = append(ns, &n)
 	}
@@ -394,19 +394,19 @@ func (pg *pgSQLStore) ListNoteOccurrences(pID, nID, filters string, pageSize int
 	}
 	rows, err := pg.DB.Query(listNoteOccurrences, pID, nID)
 	if err != nil {
-		return nil, "", status.Error(codes.Unknown, "Failed to list Occurrences from database")
+		return nil, "", status.Error(codes.Internal, "Failed to list Occurrences from database")
 	}
 	os := []*pb.Occurrence{}
 	for rows.Next() {
 		var data string
 		err := rows.Scan(&data)
 		if err != nil {
-			return nil, "", status.Error(codes.Unknown, "Failed to scan Occurrences row")
+			return nil, "", status.Error(codes.Internal, "Failed to scan Occurrences row")
 		}
 		var o pb.Occurrence
 		proto.UnmarshalText(data, &o)
 		if err != nil {
-			return nil, "", status.Error(codes.Unknown, "Failed to unmarshal Occurrence from database")
+			return nil, "", status.Error(codes.Internal, "Failed to unmarshal Occurrence from database")
 		}
 		os = append(os, &o)
 	}
@@ -421,12 +421,12 @@ func (pg *pgSQLStore) GetOperation(pID, opID string) (*opspb.Operation, error) {
 	case err == sql.ErrNoRows:
 		return nil, status.Error(codes.NotFound, fmt.Sprintf("Operation with name %q/%q does not Exist", pID, opID))
 	case err != nil:
-		return nil, status.Error(codes.Unknown, fmt.Sprintf("Failed to query Operation from database"))
+		return nil, status.Error(codes.Internal, "Failed to query Operation from database")
 	}
 	var op opspb.Operation
 	proto.UnmarshalText(data, &op)
 	if err != nil {
-		return nil, status.Error(codes.Unknown, fmt.Sprintf("Failed to unmarshal Operation from database"))
+		return nil, status.Error(codes.Internal, "Failed to unmarshal Operation from database")
 	}
 	return &op, nil
 }
@@ -445,7 +445,7 @@ func (pg *pgSQLStore) CreateOperation(o *opspb.Operation) error {
 			return status.Error(codes.AlreadyExists, fmt.Sprintf("Operation with name %q/%q already exists", pID, opID))
 		} else {
 			log.Println("Failed to insert Operation in database", err)
-			return status.Error(codes.Unknown, fmt.Sprintf("Failed to insert Operation in database"))
+			return status.Error(codes.Internal, "Failed to insert Operation in database")
 		}
 	}
 	return nil
@@ -455,11 +455,11 @@ func (pg *pgSQLStore) CreateOperation(o *opspb.Operation) error {
 func (pg *pgSQLStore) DeleteOperation(pID, opID string) error {
 	result, err := pg.DB.Exec(deleteOperation, pID, opID)
 	if err != nil {
-		return status.Error(codes.Unknown, fmt.Sprintf("Failed to delete Operation from database"))
+		return status.Error(codes.Internal, "Failed to delete Operation from database")
 	}
 	count, err := result.RowsAffected()
 	if err != nil {
-		return status.Error(codes.Unknown, fmt.Sprintf("Failed to delete Operation from database"))
+		return status.Error(codes.Internal, "Failed to delete Operation from database")
 	}
 	if count == 0 {
 		return status.Error(codes.NotFound, fmt.Sprintf("Operation with name %q/%q does not Exist", pID, opID))
@@ -471,11 +471,11 @@ func (pg *pgSQLStore) DeleteOperation(pID, opID string) error {
 func (pg *pgSQLStore) UpdateOperation(pID, opID string, op *opspb.Operation) error {
 	result, err := pg.DB.Exec(updateOperation, pID, opID, proto.MarshalTextString(op))
 	if err != nil {
-		return status.Error(codes.Unknown, fmt.Sprintf("Failed to update Operation"))
+		return status.Error(codes.Internal, "Failed to update Operation")
 	}
 	count, err := result.RowsAffected()
 	if err != nil {
-		return status.Error(codes.Unknown, fmt.Sprintf("Failed to update Operation"))
+		return status.Error(codes.Internal, "Failed to update Operation")
 	}
 	if count == 0 {
 		return status.Error(codes.NotFound, fmt.Sprintf("Operation with name %q/%q does not Exist", pID, opID))
@@ -494,7 +494,7 @@ func (pg *pgSQLStore) ListOperations(pID, filters string, pageSize int, pageToke
 		rows, err = pg.DB.Query(listOperations, pID, pageSize)
 	}
 	if err != nil {
-		return nil, "", status.Error(codes.Unknown, "Failed to list Operations from database")
+		return nil, "", status.Error(codes.Internal, "Failed to list Operations from database")
 	}
 	ops := []*opspb.Operation{}
 	var lastId int64
@@ -502,18 +502,18 @@ func (pg *pgSQLStore) ListOperations(pID, filters string, pageSize int, pageToke
 		var data string
 		err := rows.Scan(&lastId, &data)
 		if err != nil {
-			return nil, "", status.Error(codes.Unknown, "Failed to scan Operations row")
+			return nil, "", status.Error(codes.Internal, "Failed to scan Operations row")
 		}
 		var op opspb.Operation
 		proto.UnmarshalText(data, &op)
 		if err != nil {
-			return nil, "", status.Error(codes.Unknown, "Failed to unmarshal Operation from database")
+			return nil, "", status.Error(codes.Internal, "Failed to unmarshal Operation from database")
 		}
 		ops = append(ops, &op)
 	}
 	encryptedPage, err := encryptInt64(lastId, pg.paginationKey)
 	if err != nil {
-		return nil, "", status.Error(codes.Unknown, "Failed to paginate projects")
+		return nil, "", status.Error(codes.Internal, "Failed to paginate projects")
 	}
 	return ops, encryptedPage, nil
 }
