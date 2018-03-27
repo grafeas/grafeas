@@ -179,7 +179,7 @@ service Grafeas {
       returns (google.longrunning.Operation) {
     option (google.api.http) = {
       post: "/v1beta1/{parent=projects/*}/operations"
-      body: "google.longrunning.Operation"
+      body: "operation"
     };
   };
 
@@ -198,7 +198,7 @@ service Grafeas {
       returns (google.longrunning.Operation) {
     option (google.api.http) = {
       patch: "/v1beta1/{name=projects/*/operations/*}"
-      body: "google.longrunning.Operation"
+      body: "operation"
     };
   };
 };
