@@ -22,15 +22,15 @@ option objc_class_prefix = "GRA";
 option py_api_version = 2;
 
 import "google/api/annotations.proto";
-import "v1beta1/proto/attestation.proto";
-import "v1beta1/proto/build.proto";
-import "v1beta1/proto/deployment.proto";
-import "v1beta1/proto/discovery.proto";
-import "v1beta1/proto/image.proto";
-import "v1beta1/proto/note_kind.proto";
-import "v1beta1/proto/package.proto";
-import "v1beta1/proto/provenance.proto";
-import "v1beta1/proto/vulnerability.proto";
+import "third_party/grafeas/v1beta1/proto/attestation.proto";
+import "third_party/grafeas/v1beta1/proto/build.proto";
+import "third_party/grafeas/v1beta1/proto/deployment.proto";
+import "third_party/grafeas/v1beta1/proto/discovery.proto";
+import "third_party/grafeas/v1beta1/proto/image.proto";
+import "third_party/grafeas/v1beta1/proto/note_kind.proto";
+import "third_party/grafeas/v1beta1/proto/package.proto";
+import "third_party/grafeas/v1beta1/proto/provenance.proto";
+import "third_party/grafeas/v1beta1/proto/vulnerability.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/field_mask.proto";
 import "google/protobuf/timestamp.proto";
@@ -179,7 +179,7 @@ service Grafeas {
       returns (google.longrunning.Operation) {
     option (google.api.http) = {
       post: "/v1beta1/{parent=projects/*}/operations"
-      body: "google.longrunning.Operation"
+      body: "operation"
     };
   };
 
@@ -198,7 +198,7 @@ service Grafeas {
       returns (google.longrunning.Operation) {
     option (google.api.http) = {
       patch: "/v1beta1/{name=projects/*/operations/*}"
-      body: "google.longrunning.Operation"
+      body: "operation"
     };
   };
 };

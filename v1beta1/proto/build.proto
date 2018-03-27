@@ -21,7 +21,7 @@ option java_package = "io.grafeas.v1beta1.build";
 option objc_class_prefix = "GRA";
 option py_api_version = 2;
 
-import "v1beta1/proto/provenance.proto";
+import "third_party/grafeas/v1beta1/proto/provenance.proto";
 
 // Note holding the version of the provider's builder and the signature of the
 // provenance message in linked BuildDetails.
