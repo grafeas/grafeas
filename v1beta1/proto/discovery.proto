@@ -21,7 +21,7 @@ option java_package = "io.grafeas.v1beta1.discovery";
 option objc_class_prefix = "GRA";
 option py_api_version = 2;
 
-import "v1beta1/proto/note_kind.proto";
+import "third_party/grafeas/v1beta1/proto/note_kind.proto";
 import "google/protobuf/timestamp.proto";
 
 // A note that indicates a type of analysis a provider would perform. This note
