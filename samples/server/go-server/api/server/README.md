@@ -1,6 +1,6 @@
 # Grafeas API Reference Implementation
 
-This is a reference implementation of the [Grafeas API Spec](https://github.com/Grafeas/Grafeas/blob/master/README) 
+This is a reference implementation of the [Grafeas API Spec](https://github.com/grafeas/grafeas/blob/master/README.md) 
 
 ## Overview
 
