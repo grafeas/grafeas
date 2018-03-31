@@ -2,7 +2,13 @@
 
 ## Start Grafeas
 
-To start the server go to `samples/server/go-server/api/server/main` and execute
+To start the server
+
+Pull the grafeas lib using "go get"
+
+	go get github.com/grafeas/grafeas
+
+Go to `samples/server/go-server/api/server/main` and execute
 
     go run main.go
 
