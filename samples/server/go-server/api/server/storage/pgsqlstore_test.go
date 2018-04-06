@@ -46,11 +46,12 @@ func TestPgSQLStore(t *testing.T) {
 	createPgSQLStore := func(t *testing.T) (server.Storager, func()) {
 		t.Helper()
 		config := &PgSQLConfig{
-			Host:     "127.0.0.1:5432",
-			DbName:   "test_db",
-			User:     "postgres",
-			Password: "password",
-			SSLMode:  "disable",
+			Host:          "127.0.0.1:5432",
+			DbName:        "test_db",
+			User:          "postgres",
+			Password:      "password",
+			SSLMode:       "disable",
+			PaginationKey: "XxoPtCUzrUv4JV5dS+yQ+MdW7yLEJnRMwigVY/bpgtQ=",
 		}
 		pg := NewPgSQLStore(config)
 		return pg, func() { dropDatabase(t, config); pg.Close() }

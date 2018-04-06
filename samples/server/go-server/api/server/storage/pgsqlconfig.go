@@ -23,7 +23,8 @@ type PgSQLConfig struct {
 	Password string `yaml:"password"`
 	// Valid sslmodes: disable, allow, prefer, require, verify-ca, verify-full.
 	// See https://www.postgresql.org/docs/current/static/libpq-connect.html for details
-	SSLMode string `yaml:"sslmode"`
+	SSLMode       string `yaml:"sslmode"`
+	PaginationKey string `yaml:"paginationkey"`
 }
 
 func createSourceString(config *PgSQLConfig) string {

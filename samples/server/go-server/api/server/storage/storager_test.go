@@ -16,17 +16,15 @@ package storage
 
 import (
 	"fmt"
+	"reflect"
 	"sort"
 	"strconv"
+	"strings"
+	"testing"
 
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/name"
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/testing"
 	server "github.com/grafeas/grafeas/server-go"
-
-	"reflect"
-	"strings"
-	"testing"
-
 	pb "github.com/grafeas/grafeas/v1alpha1/proto"
 	opspb "google.golang.org/genproto/googleapis/longrunning"
 	"google.golang.org/grpc/codes"
@@ -441,12 +439,12 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 			wantProjectNames = append(wantProjectNames, name.FormatProject(pID))
 		}
 		filter := "filters_are_yet_to_be_implemented"
-		gotProjects, err := s.ListProjects(filter)
+		gotProjects, _, err := s.ListProjects(filter, 100, "")
 		if err != nil {
 			t.Fatalf("ListProjects got %v want success", err)
 		}
 		if len(gotProjects) != 20 {
-			t.Errorf("ListProjects got %v operations, want 20", len(gotProjects))
+			t.Errorf("ListProjects got %v projects, want 20", len(gotProjects))
 		}
 		gotProjectNames := make([]string, len(gotProjects))
 		for i, project := range gotProjects {
@@ -478,7 +476,7 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 			}
 			ops = append(ops, *o)
 		}
-		gotOs, err := s.ListOperations(findProject, "")
+		gotOs, _, err := s.ListOperations(findProject, "", 100, "")
 		if err != nil {
 			t.Fatalf("ListOperations got %v want success", err)
 		}
@@ -512,12 +510,12 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 			}
 			ns = append(ns, n)
 		}
-		gotNs, err := s.ListNotes(findProject, "")
+		gotNs, _, err := s.ListNotes(findProject, "", 100, "")
 		if err != nil {
 			t.Fatalf("ListNotes got %v want success", err)
 		}
 		if len(gotNs) != 5 {
-			t.Errorf("ListNotes got %v operations, want 5", len(gotNs))
+			t.Errorf("ListNotes got %v notes, want 5", len(gotNs))
 		}
 		for _, n := range gotNs {
 			want := name.FormatProject(findProject)
@@ -551,7 +549,7 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 			}
 			os = append(os, o)
 		}
-		gotOs, err := s.ListOccurrences(findProject, "")
+		gotOs, _, err := s.ListOccurrences(findProject, "", 100, "")
 		if err != nil {
 			t.Fatalf("ListOccurrences got %v want success", err)
 		}
@@ -594,7 +592,7 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 		if err != nil {
 			t.Fatalf("Error parsing note name %v", err)
 		}
-		gotOs, err := s.ListNoteOccurrences(pID, nID, "")
+		gotOs, _, err := s.ListNoteOccurrences(pID, nID, "", 100, "")
 		if err != nil {
 			t.Fatalf("ListNoteOccurrences got %v want success", err)
 		}
@@ -605,6 +603,260 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 			if o.NoteName != n.Name {
 				t.Errorf("ListNoteOccurrences got %v want  %v", o.Name, o.NoteName)
 			}
+		}
+	})
+
+	t.Run("ProjectPagination", func(t *testing.T) {
+		s, cleanUp := createStore(t)
+		defer cleanUp()
+		pID1 := "project1"
+		if err := s.CreateProject(pID1); err != nil {
+			t.Errorf("CreateProject got %v want success", err)
+		}
+		pID2 := "project2"
+		if err := s.CreateProject(pID2); err != nil {
+			t.Errorf("CreateProject got %v want success", err)
+		}
+		pID3 := "project3"
+		if err := s.CreateProject(pID3); err != nil {
+			t.Errorf("CreateProject got %v want success", err)
+		}
+		filter := "filters_are_yet_to_be_implemented"
+		// Get projects
+		gotProjects, lastPage, err := s.ListProjects(filter, 2, "")
+		if err != nil {
+			t.Fatalf("ListProjects got %v want success", err)
+		}
+		if len(gotProjects) != 2 {
+			t.Errorf("ListProjects got %v projects, want 2", len(gotProjects))
+		}
+		if p := gotProjects[0]; p.Name != name.FormatProject(pID1) {
+			t.Fatalf("Got %s want %s", p.Name, name.FormatProject(pID1))
+		}
+		if p := gotProjects[1]; p.Name != name.FormatProject(pID2) {
+			t.Fatalf("Got %s want %s", p.Name, name.FormatProject(pID2))
+		}
+		// Get projects again
+		gotProjects, _, err = s.ListProjects(filter, 100, lastPage)
+		if err != nil {
+			t.Fatalf("ListProjects got %v want success", err)
+		}
+		if len(gotProjects) != 1 {
+			t.Errorf("ListProjects got %v projects, want 1", len(gotProjects))
+		}
+		if p := gotProjects[0]; p.Name != name.FormatProject(pID3) {
+			t.Fatalf("Got %s want %s", p.Name, name.FormatProject(pID3))
+		}
+	})
+
+	t.Run("NotesPagination", func(t *testing.T) {
+		s, cleanUp := createStore(t)
+		defer cleanUp()
+		pID := "project"
+		nID1 := "note1"
+		op1 := testutil.Note(pID)
+		op1.Name = name.FormatNote(pID, nID1)
+		if err := s.CreateNote(op1); err != nil {
+			t.Errorf("CreateNote got %v want success", err)
+		}
+		nID2 := "note2"
+		op2 := testutil.Note(pID)
+		op2.Name = name.FormatNote(pID, nID2)
+		if err := s.CreateNote(op2); err != nil {
+			t.Errorf("CreateNote got %v want success", err)
+		}
+		nID3 := "note3"
+		op3 := testutil.Note(pID)
+		op3.Name = name.FormatNote(pID, nID3)
+		if err := s.CreateNote(op3); err != nil {
+			t.Errorf("CreateNote got %v want success", err)
+		}
+		filter := "filters_are_yet_to_be_implemented"
+		// Get occurrences
+		gotNotes, lastPage, err := s.ListNotes(pID, filter, 2, "")
+		if err != nil {
+			t.Fatalf("ListNotes got %v want success", err)
+		}
+		if len(gotNotes) != 2 {
+			t.Errorf("ListNotes got %v notes, want 2", len(gotNotes))
+		}
+		if p := gotNotes[0]; p.Name != name.FormatNote(pID, nID1) {
+			t.Fatalf("Got %s want %s", p.Name, name.FormatNote(pID, nID1))
+		}
+		if p := gotNotes[1]; p.Name != name.FormatNote(pID, nID2) {
+			t.Fatalf("Got %s want %s", p.Name, name.FormatNote(pID, nID2))
+		}
+		// Get occurrences again
+		gotNotes, _, err = s.ListNotes(pID, filter, 100, lastPage)
+		if err != nil {
+			t.Fatalf("ListNotes got %v want success", err)
+		}
+		if len(gotNotes) != 1 {
+			t.Errorf("ListNotes got %v notes, want 1", len(gotNotes))
+		}
+		if p := gotNotes[0]; p.Name != name.FormatNote(pID, nID3) {
+			t.Fatalf("Got %s want %s", p.Name, name.FormatNote(pID, nID3))
+		}
+	})
+
+	t.Run("OccurrencePagination", func(t *testing.T) {
+		s, cleanUp := createStore(t)
+		defer cleanUp()
+		pID := "project"
+		nPID := "noteproject"
+		oID1 := "occurrence1"
+		n := testutil.Note(nPID)
+		if err := s.CreateNote(n); err != nil {
+			t.Fatalf("CreateNote got %v want success", err)
+		}
+		op1 := testutil.Occurrence(pID, n.Name)
+		op1.Name = name.FormatOccurrence(pID, oID1)
+		if err := s.CreateOccurrence(op1); err != nil {
+			t.Errorf("CreateOccurrence got %v want success", err)
+		}
+		oID2 := "occurrence2"
+		op2 := testutil.Occurrence(pID, n.Name)
+		op2.Name = name.FormatOccurrence(pID, oID2)
+		if err := s.CreateOccurrence(op2); err != nil {
+			t.Errorf("CreateOccurrence got %v want success", err)
+		}
+		oID3 := "occurrence3"
+		op3 := testutil.Occurrence(pID, n.Name)
+		op3.Name = name.FormatOccurrence(pID, oID3)
+		if err := s.CreateOccurrence(op3); err != nil {
+			t.Errorf("CreateOccurrence got %v want success", err)
+		}
+		filter := "filters_are_yet_to_be_implemented"
+		// Get occurrences
+		gotOccurrences, lastPage, err := s.ListOccurrences(pID, filter, 2, "")
+		if err != nil {
+			t.Fatalf("ListOccurrences got %v want success", err)
+		}
+		if len(gotOccurrences) != 2 {
+			t.Errorf("ListOccurrences got %v occurrences, want 2", len(gotOccurrences))
+		}
+		if p := gotOccurrences[0]; p.Name != name.FormatOccurrence(pID, oID1) {
+			t.Fatalf("Got %s want %s", p.Name, name.FormatOccurrence(pID, oID1))
+		}
+		if p := gotOccurrences[1]; p.Name != name.FormatOccurrence(pID, oID2) {
+			t.Fatalf("Got %s want %s", p.Name, name.FormatOccurrence(pID, oID2))
+		}
+		// Get occurrences again
+		gotOccurrences, _, err = s.ListOccurrences(pID, filter, 100, lastPage)
+		if err != nil {
+			t.Fatalf("ListOccurrences got %v want success", err)
+		}
+		if len(gotOccurrences) != 1 {
+			t.Errorf("ListOccurrences got %v operations, want 1", len(gotOccurrences))
+		}
+		if p := gotOccurrences[0]; p.Name != name.FormatOccurrence(pID, oID3) {
+			t.Fatalf("Got %s want %s", p.Name, name.FormatOccurrence(pID, oID3))
+		}
+	})
+
+	t.Run("NoteOccurrencePagination", func(t *testing.T) {
+		s, cleanUp := createStore(t)
+		defer cleanUp()
+		pID := "project"
+		nPID := "noteproject"
+		oID1 := "occurrence1"
+		n := testutil.Note(nPID)
+		if err := s.CreateNote(n); err != nil {
+			t.Fatalf("CreateNote got %v want success", err)
+		}
+		op1 := testutil.Occurrence(pID, n.Name)
+		op1.Name = name.FormatOccurrence(pID, oID1)
+		if err := s.CreateOccurrence(op1); err != nil {
+			t.Errorf("CreateOccurrence got %v want success", err)
+		}
+		oID2 := "occurrence2"
+		op2 := testutil.Occurrence(pID, n.Name)
+		op2.Name = name.FormatOccurrence(pID, oID2)
+		if err := s.CreateOccurrence(op2); err != nil {
+			t.Errorf("CreateOccurrence got %v want success", err)
+		}
+		oID3 := "occurrence3"
+		op3 := testutil.Occurrence(pID, n.Name)
+		op3.Name = name.FormatOccurrence(pID, oID3)
+		if err := s.CreateOccurrence(op3); err != nil {
+			t.Errorf("CreateOccurrence got %v want success", err)
+		}
+		filter := "filters_are_yet_to_be_implemented"
+		_, nID, err := name.ParseNote(n.Name)
+		// Get occurrences
+		gotOccurrences, lastPage, err := s.ListNoteOccurrences(nPID, nID, filter, 2, "")
+		if err != nil {
+			t.Fatalf("ListNoteOccurrences got %v want success", err)
+		}
+		if len(gotOccurrences) != 2 {
+			t.Errorf("ListNoteOccurrences got %v occurrences, want 2", len(gotOccurrences))
+		}
+		if p := gotOccurrences[0]; p.Name != name.FormatOccurrence(pID, oID1) {
+			t.Fatalf("Got %s want %s", p.Name, name.FormatOccurrence(pID, oID1))
+		}
+		if p := gotOccurrences[1]; p.Name != name.FormatOccurrence(pID, oID2) {
+			t.Fatalf("Got %s want %s", p.Name, name.FormatOccurrence(pID, oID2))
+		}
+		// Get occurrences again
+		gotOccurrences, _, err = s.ListNoteOccurrences(nPID, nID, filter, 100, lastPage)
+		if err != nil {
+			t.Fatalf("ListNoteOccurrences got %v want success", err)
+		}
+		if len(gotOccurrences) != 1 {
+			t.Errorf("ListNoteOccurrences got %v operations, want 1", len(gotOccurrences))
+		}
+		if p := gotOccurrences[0]; p.Name != name.FormatOccurrence(pID, oID3) {
+			t.Fatalf("Got %s want %s", p.Name, name.FormatOccurrence(pID, oID3))
+		}
+	})
+
+	t.Run("OperationPagination", func(t *testing.T) {
+		s, cleanUp := createStore(t)
+		defer cleanUp()
+		pID := "project1"
+		oID1 := "operation1"
+		op1 := testutil.Operation(pID)
+		op1.Name = name.FormatOperation(pID, oID1)
+		if err := s.CreateOperation(op1); err != nil {
+			t.Errorf("CreateOperation got %v want success", err)
+		}
+		oID2 := "operation2"
+		op2 := testutil.Operation(pID)
+		op2.Name = name.FormatOperation(pID, oID2)
+		if err := s.CreateOperation(op2); err != nil {
+			t.Errorf("CreateOperation got %v want success", err)
+		}
+		oID3 := "operation3"
+		op3 := testutil.Operation(pID)
+		op3.Name = name.FormatOperation(pID, oID3)
+		if err := s.CreateOperation(op3); err != nil {
+			t.Errorf("CreateOperation got %v want success", err)
+		}
+		filter := "filters_are_yet_to_be_implemented"
+		// Get operations
+		gotOperations, lastPage, err := s.ListOperations(pID, filter, 2, "")
+		if err != nil {
+			t.Fatalf("ListOperations got %v want success", err)
+		}
+		if len(gotOperations) != 2 {
+			t.Errorf("ListOperations got %v operations, want 2", len(gotOperations))
+		}
+		if p := gotOperations[0]; p.Name != name.FormatOperation(pID, oID1) {
+			t.Fatalf("Got %s want %s", p.Name, name.FormatOperation(pID, oID1))
+		}
+		if p := gotOperations[1]; p.Name != name.FormatOperation(pID, oID2) {
+			t.Fatalf("Got %s want %s", p.Name, name.FormatOperation(pID, oID2))
+		}
+		// Get operations again
+		gotOperations, _, err = s.ListOperations(pID, filter, 100, lastPage)
+		if err != nil {
+			t.Fatalf("ListOperations got %v want success", err)
+		}
+		if len(gotOperations) != 1 {
+			t.Errorf("ListOperations got %v operations, want 1", len(gotOperations))
+		}
+		if p := gotOperations[0]; p.Name != name.FormatOperation(pID, oID3) {
+			t.Fatalf("Got %s want %s", p.Name, name.FormatOperation(pID, oID3))
 		}
 	})
 }
