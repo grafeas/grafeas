@@ -763,6 +763,10 @@ message Note {
   // Output only. The time this note was last updated. This field can be used as
   // a filter in list requests.
   google.protobuf.Timestamp update_time = 12;
+
+  // The name of the `Operation` in the form
+  // "projects/{project_id}/operation/{OPERATION_ID}"
+  string operation_name = 19;
 }
 
 // `Occurrence` includes information about analysis occurrences for an image.
@@ -818,6 +822,11 @@ message Occurrence {
 
   // Output only. The time this `Occurrence` was last updated.
   google.protobuf.Timestamp update_time = 10;
+
+  // The name of the `Operation` in the form
+  // "projects/{project_id}/operation/{OPERATION_ID}"
+  string operation_name = 19;
+
 }
 
 // PackageManager provides metadata about available / installed packages.

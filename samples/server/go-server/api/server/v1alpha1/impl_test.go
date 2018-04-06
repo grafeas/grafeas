@@ -146,6 +146,48 @@ func TestCreateNote(t *testing.T) {
 	}
 }
 
+func TestCreateNoteOccurrenceWithOperation(t *testing.T) {
+	ctx := context.Background()
+	g := Grafeas{storage.NewMemStore()}
+	pID := "vulnerability-scanner-a"
+	o := testutil.Operation(pID)
+	createProject(t, pID, ctx, g)
+	parent := name.FormatProject(pID)
+	cReq := &pb.CreateOperationRequest{Parent: parent, Operation: o}
+	if _, err := g.CreateOperation(ctx, cReq); err != nil {
+		t.Fatalf("CreateOperation(%v) got %v, want success", o, err)
+	}
+	n := testutil.Note(pID)
+	n.OperationName = "projects/vulnerability-scanner-a/operation/junk"
+	nreq := &pb.CreateNoteRequest{Parent: parent, Note: n}
+	// Try to create a Note with operation that does not exist and expect failure
+	if _, err := g.CreateNote(ctx, nreq); err == nil {
+		t.Errorf("TestCreateNoteWithOperation: got %v, want %v", err, codes.NotFound)
+	}
+	n.OperationName = o.Name
+	nreq = &pb.CreateNoteRequest{Parent: parent, Note: n}
+	// Try to create a Note with operation that we just created and expect success
+	if _, err := g.CreateNote(ctx, nreq); err != nil {
+		t.Errorf("TestCreateNoteWithOperation(%v) got %v, want success", n.OperationName, err)
+	}
+	// Try to create occurrence with operation name
+	occ := testutil.Occurrence(pID, n.Name)
+	occ.OperationName = "projects/vulnerability-scanner-a/operation/junk"
+	parent = name.FormatProject(pID)
+	occReq := &pb.CreateOccurrenceRequest{Parent: parent, Occurrence: occ}
+	// Try to create an Occurrence with operation that does not exist and expect failure
+	if _, err := g.CreateOccurrence(ctx, occReq); err == nil {
+		t.Errorf("TestCreateNoteWithOperation: got %v, want %v", err, codes.NotFound)
+	}
+	occ.OperationName = o.Name
+	occReq = &pb.CreateOccurrenceRequest{Parent: parent, Occurrence: occ}
+	// Try to create an Occurrence with operation that we just created and expect success
+	if _, err := g.CreateOccurrence(ctx, occReq); err != nil {
+		t.Errorf("TestCreateNoteWithOperation(%v) got %v, want success", occ.OperationName, err)
+
+	}
+}
+
 func TestDeleteProject(t *testing.T) {
 	ctx := context.Background()
 	g := Grafeas{storage.NewMemStore()}

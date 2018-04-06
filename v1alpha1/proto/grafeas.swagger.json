@@ -1320,6 +1320,10 @@
           "type": "string",
           "format": "date-time",
           "description": "Output only. The time this note was last updated. This field can be used as\na filter in list requests."
+        },
+        "operation_name": {
+          "type": "string",
+          "title": "The name of the `Operation` in the form\n\"projects/{project_id}/operation/{OPERATION_ID}\""
         }
       },
       "description": "Provides a detailed description of a `Note`."
@@ -1399,6 +1403,10 @@
           "type": "string",
           "format": "date-time",
           "description": "Output only. The time this `Occurrence` was last updated."
+        },
+        "operation_name": {
+          "type": "string",
+          "title": "The name of the `Operation` in the form\n\"projects/{project_id}/operation/{OPERATION_ID}\""
         }
       },
       "description": "`Occurrence` includes information about analysis occurrences for an image."

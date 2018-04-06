@@ -75,7 +75,19 @@ func (g *Grafeas) CreateNote(ctx context.Context, req *pb.CreateNoteRequest) (*p
 		return nil, status.Error(codes.NotFound, fmt.Sprintf("Project %v not found", pID))
 	}
 
-	// TODO: Validate that operation exists if it is specified when get methods are implmented
+	// Validate that operation exists if it is specified when get methods are implmented
+	if n.OperationName != "" {
+		pID, oID, err := name.ParseOperation(n.OperationName)
+		if err != nil {
+			log.Printf("Error parsing name: %v", n.OperationName)
+			return nil, status.Error(codes.InvalidArgument, "Invalid Operation name")
+
+		}
+		if _, err = g.S.GetOperation(pID, oID); err != nil {
+			log.Printf("Operation:%v for Note: %v not found in pID %v", oID, n.Name, pID)
+			return nil, status.Error(codes.NotFound, fmt.Sprintf("Operation:%v for Note: %v not found", oID, n.Name))
+		}
+	}
 	return n, g.S.CreateNote(n)
 }
 
@@ -107,7 +119,19 @@ func (g *Grafeas) CreateOccurrence(ctx context.Context, req *pb.CreateOccurrence
 		log.Printf("Unable to getnote %v, err: %v", n, err)
 		return nil, status.Error(codes.NotFound, fmt.Sprintf("Note %v not found", o.NoteName))
 	}
-	// TODO: Validate that operation exists if it is specified
+	// Validate that operation exists if it is specified
+	if o.OperationName != "" {
+		pID, oID, err := name.ParseOperation(o.OperationName)
+		if err != nil {
+			log.Printf("Error parsing name: %v", o.OperationName)
+			return nil, status.Error(codes.InvalidArgument, "Invalid Operation name")
+
+		}
+		if _, err = g.S.GetOperation(pID, oID); err != nil {
+			log.Printf("Operation:%v for Occurrence: %v not found", oID, o.Name)
+			return nil, status.Error(codes.NotFound, fmt.Sprintf("Operation:%v for Occurrence: %v not found", oID, o.Name))
+		}
+	}
 	return o, g.S.CreateOccurrence(o)
 }
 
