@@ -764,7 +764,7 @@ message Note {
   // a filter in list requests.
   google.protobuf.Timestamp update_time = 12;
 
-  // The name of the `Ooperation` in the form
+  // The name of the `Operation` in the form
   // "projects/{project_id}/operation/{OPERATION_ID}"
   string operation_name = 19;
 }

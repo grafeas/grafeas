@@ -2093,7 +2093,7 @@ type Note struct {
 	// Output only. The time this note was last updated. This field can be used as
 	// a filter in list requests.
 	UpdateTime *google_protobuf3.Timestamp `protobuf:"bytes,12,opt,name=update_time,json=updateTime" json:"update_time,omitempty"`
-	// The name of the `Ooperation` in the form
+	// The name of the `Operation` in the form
 	// "projects/{project_id}/operation/{OPERATION_ID}"
 	OperationName string `protobuf:"bytes,19,opt,name=operation_name,json=operationName" json:"operation_name,omitempty"`
 }
