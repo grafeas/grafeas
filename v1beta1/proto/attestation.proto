@@ -1,3 +1,17 @@
+// Copyright 2018 The Grafeas Authors. All rights reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 syntax = "proto3";
 
 package grafeas.v1beta1.attestation;
@@ -7,9 +21,9 @@ option java_package = "io.grafeas.v1beta1.attestation";
 option objc_class_prefix = "GRA";
 option py_api_version = 2;
 
-// An attestation wrapper with a PGP-compatible signature.
-// This message only supports `ATTACHED` signatures, where the payload that is
-// signed is included alongside the signature itself in the same file.
+// An attestation wrapper with a PGP-compatible signature. This message only
+// supports `ATTACHED` signatures, where the payload that is signed is included
+// alongside the signature itself in the same file.
 message PgpSignedAttestation {
   // The raw content of the signature, as output by GNU Privacy Guard (GPG) or
   // equivalent.  Since this message only supports attached signatures, the
@@ -112,6 +126,7 @@ message Attestation {
   // attestation. The semantics of the signature veracity are ultimately
   // determined by the verification engine.
   oneof signature {
+    // A PGP signed attestation.
     PgpSignedAttestation pgp_signed_attestation = 1;
   }
 }
