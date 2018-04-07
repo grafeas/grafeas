@@ -67,6 +67,11 @@ func LoadConfig(fileName string) (*config, error) {
 		return nil, err
 	}
 	config := configFile.Grafeas
+
+	if config.StorageType == "memstore" {
+		return config, nil
+	}
+
 	// Generate a pagination key if none is provided.
 	if config.PgSQLConfig.PaginationKey == "" {
 		log.Println("pagination key is empty, generating...")
