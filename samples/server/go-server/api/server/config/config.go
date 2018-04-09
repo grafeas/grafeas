@@ -68,23 +68,21 @@ func LoadConfig(fileName string) (*config, error) {
 	}
 	config := configFile.Grafeas
 
-	if config.StorageType == "memstore" {
-		return config, nil
-	}
-
-	// Generate a pagination key if none is provided.
-	if config.PgSQLConfig.PaginationKey == "" {
-		log.Println("pagination key is empty, generating...")
-		var key fernet.Key
-		if err = key.Generate(); err != nil {
-			return nil, err
-		}
-		config.PgSQLConfig.PaginationKey = key.Encode()
-	} else {
-		_, err = fernet.DecodeKey(config.PgSQLConfig.PaginationKey)
-		if err != nil {
-			err = errors.New("Invalid Pagination key; must be 32-bit URL-safe base64")
-			return nil, err
+	if config.StorageType == "postgres" {
+		// Generate a pagination key if none is provided.
+		if config.PgSQLConfig.PaginationKey == "" {
+			log.Println("pagination key is empty, generating...")
+			var key fernet.Key
+			if err = key.Generate(); err != nil {
+				return nil, err
+			}
+			config.PgSQLConfig.PaginationKey = key.Encode()
+		} else {
+			_, err = fernet.DecodeKey(config.PgSQLConfig.PaginationKey)
+			if err != nil {
+				err = errors.New("Invalid Pagination key; must be 32-bit URL-safe base64")
+				return nil, err
+			}
 		}
 	}
 	return config, nil
