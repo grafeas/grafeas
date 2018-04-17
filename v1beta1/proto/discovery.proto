@@ -81,5 +81,5 @@ message Discovered {
   // When an error is encountered this will contain a LocalizedMessage under
   // details to show to the user. The LocalizedMessage is output only and
   // populated by the API.
-  google.rpc.Status analysis_status_error = 6;
+  google.rpc.Status analysis_status_error = 4;
 }
