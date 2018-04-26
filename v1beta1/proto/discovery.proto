@@ -23,6 +23,7 @@ option py_api_version = 2;
 
 import "v1beta1/proto/note_kind.proto";
 import "google/protobuf/timestamp.proto";
+import "google/rpc/status.proto";
 
 // A note that indicates a type of analysis a provider would perform. This note
 // exists in a provider's project. A `Discovery` occurrence is created in a
@@ -74,4 +75,9 @@ message Discovered {
 
   // The status of discovery for the resource.
   AnalysisStatus analysis_status = 3;
+
+  // When an error is encountered this will contain a LocalizedMessage under
+  // details to show to the user. The LocalizedMessage is output only and
+  // populated by the API.
+  google.rpc.Status analysis_status_error = 4;
 }
