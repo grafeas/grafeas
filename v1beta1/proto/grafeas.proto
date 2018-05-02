@@ -313,8 +313,8 @@ message Note {
   // Other notes related to this note.
   repeated string related_note_names = 10;
 
-  // The types of analysis this note can represent.
-  oneof note_type {
+  // The type of analysis this note represents.
+  oneof type {
     // A note describing a package vulnerability.
     grafeas.v1beta1.vulnerability.Vulnerability vulnerability = 11;
     // A note describing build provenance for a verifiable build.
