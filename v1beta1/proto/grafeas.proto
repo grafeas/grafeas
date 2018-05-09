@@ -521,8 +521,9 @@ message BatchCreateNotesRequest {
   // The name of the project in the form of `projects/[PROJECT_ID]`, under which
   // the notes are to be created.
   string parent = 1;
+
   // The notes to create.
-  repeated Note notes = 2;
+  map<string, Note> notes = 2;
 }
 
 // Response for creating notes in batch.
@@ -552,16 +553,8 @@ message BatchCreateOperationsRequest {
   // the operations are to be created.
   string parent = 1;
 
-  // Wraps the operation to create with a specified ID.
-  message OperationContainer {
-    // The ID to use for this operation.
-    string operation_id = 1;
-    // The operation to create.
-    google.longrunning.Operation operation = 2;
-  }
-
   // The operations to create.
-  repeated OperationContainer operations = 2;
+  map<string, google.longrunning.Operation> operations = 2;
 }
 
 // Response for creating operations in batch.
