@@ -24,15 +24,15 @@ option py_api_version = 2;
 import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
 
-// [GrafeasProjects](grafeas.io) API.
+// [Projects](grafeas.io) API.
 //
 // Manages Grafeas `Projects`. Projects contain sets of other Grafeas entities
 // such as `Notes`, `Occurrences`, and `Operations`.
-service GrafeasProjects {
+service Projects {
   // Creates a new project.
   rpc CreateProject(CreateProjectRequest) returns (Project) {
     option (google.api.http) = {
-      post: "/v1alpha1/projects"
+      post: "/v1beta1/projects"
       body: "project"
     };
   }
@@ -40,21 +40,21 @@ service GrafeasProjects {
   // Gets the specified project.
   rpc GetProject(GetProjectRequest) returns (Project) {
     option (google.api.http) = {
-      get: "/v1alpha1/{name=projects/*}"
+      get: "/v1beta1/{name=projects/*}"
     };
   }
 
   // Lists projects.
   rpc ListProjects(ListProjectsRequest) returns (ListProjectsResponse) {
     option (google.api.http) = {
-      get: "/v1alpha1/projects"
+      get: "/v1beta1/projects"
     };
   }
 
   // Deletes the specified project.
   rpc DeleteProject(DeleteProjectRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      delete: "/v1alpha1/{name=projects/*}"
+      delete: "/v1beta1/{name=projects/*}"
     };
   }
 }
