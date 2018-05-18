@@ -26,12 +26,17 @@ jobs:
           name: Install protoc
           command: >
             sudo apt-get update
+            
             sudo wget
             https://github.com/google/protobuf/releases/download/v3.3.0/protoc-3.3.0-linux-x86_64.zip
+
             unzip protoc-3.3.0-linux-x86_64.zip -d .
             rm protoc-3.3.0-linux-x86_64.zip
+
             sudo apt-get remove -y wget unzip
+
             sudo apt-get autoremove -y
+
       - run:
           name: Make protoc executables available globally
           command: |
