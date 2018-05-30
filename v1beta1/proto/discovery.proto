@@ -71,6 +71,8 @@ message Discovered {
     // Analysis has finished unsuccessfully, the analysis itself is in a bad
     // state.
     FINISHED_FAILED = 4;
+    // The resource is known not to be supported
+    FINISHED_UNSUPPORTED = 5;
   }
 
   // The status of discovery for the resource.
