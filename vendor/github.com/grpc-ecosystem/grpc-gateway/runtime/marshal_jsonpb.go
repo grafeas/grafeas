@@ -14,6 +14,9 @@ import (
 // JSONPb is a Marshaler which marshals/unmarshals into/from JSON
 // with the "github.com/golang/protobuf/jsonpb".
 // It supports fully functionality of protobuf unlike JSONBuiltin.
+//
+// The NewDecoder method returns a DecoderWrapper, so the underlying
+// *json.Decoder methods can be used.
 type JSONPb jsonpb.Marshaler
 
 // ContentType always returns "application/json".
@@ -21,9 +24,7 @@ func (*JSONPb) ContentType() string {
 	return "application/json"
 }
 
-// Marshal marshals "v" into JSON
-// Currently it can marshal only proto.Message.
-// TODO(yugui) Support fields of primitive types in a message.
+// Marshal marshals "v" into JSON.
 func (j *JSONPb) Marshal(v interface{}) ([]byte, error) {
 	if _, ok := v.(proto.Message); !ok {
 		return j.marshalNonProtoField(v)
@@ -55,6 +56,9 @@ func (j *JSONPb) marshalTo(w io.Writer, v interface{}) error {
 // i.e. primitive types, enums; pointers to primitives or enums; maps from
 // integer/string types to primitives/enums/pointers to messages.
 func (j *JSONPb) marshalNonProtoField(v interface{}) ([]byte, error) {
+	if v == nil {
+		return []byte("null"), nil
+	}
 	rv := reflect.ValueOf(v)
 	for rv.Kind() == reflect.Ptr {
 		if rv.IsNil() {
@@ -84,8 +88,6 @@ func (j *JSONPb) marshalNonProtoField(v interface{}) ([]byte, error) {
 }
 
 // Unmarshal unmarshals JSON "data" into "v"
-// Currently it can marshal only proto.Message.
-// TODO(yugui) Support fields of primitive types in a message.
 func (j *JSONPb) Unmarshal(data []byte, v interface{}) error {
 	return unmarshalJSONPb(data, v)
 }
@@ -93,7 +95,19 @@ func (j *JSONPb) Unmarshal(data []byte, v interface{}) error {
 // NewDecoder returns a Decoder which reads JSON stream from "r".
 func (j *JSONPb) NewDecoder(r io.Reader) Decoder {
 	d := json.NewDecoder(r)
-	return DecoderFunc(func(v interface{}) error { return decodeJSONPb(d, v) })
+	return DecoderWrapper{Decoder: d}
+}
+
+// DecoderWrapper is a wrapper around a *json.Decoder that adds
+// support for protos to the Decode method.
+type DecoderWrapper struct {
+	*json.Decoder
+}
+
+// Decode wraps the embedded decoder's Decode method to support
+// protos using a jsonpb.Unmarshaler.
+func (d DecoderWrapper) Decode(v interface{}) error {
+	return decodeJSONPb(d.Decoder, v)
 }
 
 // NewEncoder returns an Encoder which writes JSON stream into "w".
