@@ -286,15 +286,7 @@ message Note {
   grafeas.v1beta1.NoteKind kind = 4;
 
   // URLs associated with this note.
-  repeated RelatedUrl related_url = 5;
-
-  // Metadata for any related URL information.
-  message RelatedUrl {
-    // Specific URL to associate with the note.
-    string url = 1;
-    // Label to describe usage of the URL.
-    string label = 2;
-  }
+  repeated grafeas.v1beta1.RelatedUrl related_url = 5;
 
   // Time of expiration for this note. Empty if note does not expire.
   google.protobuf.Timestamp expiration_time = 6;
