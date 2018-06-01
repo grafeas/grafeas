@@ -43,8 +43,8 @@ enum NoteKind {
 
 // Metadata for any related URL information.
 message RelatedUrl {
- // Specific URL associated with the resource.
- string url = 1;
- // Label to describe usage of the URL.
- string label = 2;
+  // Specific URL associated with the resource.
+  string url = 1;
+  // Label to describe usage of the URL.
+  string label = 2;
 }
