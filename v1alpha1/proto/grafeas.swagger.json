@@ -1299,6 +1299,10 @@
           "$ref": "#/definitions/apiDiscovery",
           "description": "A note describing a provider/analysis type."
         },
+        "attestation": {
+          "$ref": "#/definitions/AttestationAuthorityAttestation",
+          "description": "Describes an attestation of an artifact."
+        },
         "related_url": {
           "type": "array",
           "items": {
