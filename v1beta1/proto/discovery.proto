@@ -21,7 +21,7 @@ option java_package = "io.grafeas.v1beta1.discovery";
 option objc_class_prefix = "GRA";
 option py_api_version = 2;
 
-import "v1beta1/proto/note_kind.proto";
+import "v1beta1/proto/common.proto";
 import "google/protobuf/timestamp.proto";
 import "google/rpc/status.proto";
 
