@@ -568,11 +568,22 @@ message GetVulnerabilityOccurrencesSummaryRequest {
 message VulnerabilityOccurrencesSummary {
   // A map of how many occurrences were found for each severity.
   repeated SeverityCount counts = 1;
+  // A listing by resource of the number of fixable and total vulnerabilities.
+  repeated FixableTotalByDigest fixable_counts = 2;
   // The number of occurrences for a specific severity.
   message SeverityCount {
     // The severity of the occurrences.
     grafeas.v1beta1.vulnerability.Severity severity = 1;
     // The number of occurrences with the severity.
     int64 count = 2;
+  }
+  // Per resource counts of fixable and total vulnerabilites.
+  message FixableTotalByDigest {
+    // The affected resource.
+    Resource resource = 1;
+    // The number of fixable vulnerabilities associated with this resource.
+    int64 fixable_count = 2;
+    // The total number of vulnerabilities associated with this resource.
+    int64 total_count = 3;
   }
 }
