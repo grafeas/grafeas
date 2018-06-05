@@ -564,10 +564,10 @@ message GetVulnerabilityOccurrencesSummaryRequest {
   string filter = 2;
 }
 
-// A summary of how many vulnerability occurrences there are per severity type.
+// A summary of how many vulnerability occurrences there are per resource and severity type.
 message VulnerabilityOccurrencesSummary {
   // A listing by resource of the number of fixable and total vulnerabilities.
-  repeated FixableTotalByDigest fixable_counts = 1;
+  repeated FixableTotalByDigest counts = 1;
 
   // Per resource and severity counts of fixable and total vulnerabilites.
   message FixableTotalByDigest {
