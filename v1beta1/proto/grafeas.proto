@@ -201,29 +201,26 @@ message Occurrence {
   // Output only. The time this occurrence was last updated.
   google.protobuf.Timestamp update_time = 7;
 
-  // The name of the operation that created this occurrence.
-  string operation_name = 8;
-
   // Describes the details of the note kind found on this resource.
   oneof details {
     // Describes a security vulnerability.
-    grafeas.v1beta1.vulnerability.Details vulnerability = 9;
+    grafeas.v1beta1.vulnerability.Details vulnerability = 8;
     // Describes a verifiable build.
-    grafeas.v1beta1.build.Details build = 10;
+    grafeas.v1beta1.build.Details build = 9;
     // Describes how this resource derives from the basis in the associated
     // note.
-    grafeas.v1beta1.image.Details derived_image = 11;
+    grafeas.v1beta1.image.Details derived_image = 10;
     // Describes the installation of a package on the linked resource.
-    grafeas.v1beta1.package.Details installation = 12;
+    grafeas.v1beta1.package.Details installation = 11;
     // Describes the deployment of an artifact on a runtime.
-    grafeas.v1beta1.deployment.Details deployment = 13;
+    grafeas.v1beta1.deployment.Details deployment = 12;
     // Describes when a resource was discovered.
-    grafeas.v1beta1.discovery.Details discovered = 14;
+    grafeas.v1beta1.discovery.Details discovered = 13;
     // Describes an attestation of an artifact.
-    grafeas.v1beta1.attestation.Details attestation = 15;
+    grafeas.v1beta1.attestation.Details attestation = 14;
   }
 
-  // next_id = 16;
+  // next_id = 15;
 }
 
 // An entity that can have metadata. For example, a Docker image.
@@ -270,31 +267,28 @@ message Note {
   // a filter in list requests.
   google.protobuf.Timestamp update_time = 8;
 
-  // The name of the operation that created this note.
-  string operation_name = 9;
-
   // Other notes related to this note.
-  repeated string related_note_names = 10;
+  repeated string related_note_names = 9;
 
   // The type of analysis this note represents.
   oneof type {
     // A note describing a package vulnerability.
-    grafeas.v1beta1.vulnerability.Vulnerability vulnerability = 11;
+    grafeas.v1beta1.vulnerability.Vulnerability vulnerability = 10;
     // A note describing build provenance for a verifiable build.
-    grafeas.v1beta1.build.Build build = 12;
+    grafeas.v1beta1.build.Build build = 11;
     // A note describing a base image.
-    grafeas.v1beta1.image.Basis base_image = 13;
+    grafeas.v1beta1.image.Basis base_image = 12;
     // A note describing a package hosted by various package managers.
-    grafeas.v1beta1.package.Package package = 14;
+    grafeas.v1beta1.package.Package package = 13;
     // A note describing something that can be deployed.
-    grafeas.v1beta1.deployment.Deployable deployable = 15;
+    grafeas.v1beta1.deployment.Deployable deployable = 14;
     // A note describing the initial analysis of a resource.
-    grafeas.v1beta1.discovery.Discovery discovery = 16;
+    grafeas.v1beta1.discovery.Discovery discovery = 15;
     // A note describing an attestation role.
-    grafeas.v1beta1.attestation.Authority attestation_authority = 17;
+    grafeas.v1beta1.attestation.Authority attestation_authority = 16;
   }
 
-  // next_id = 18;
+  // next_id = 17;
 }
 
 // Request to get an occurrence.
