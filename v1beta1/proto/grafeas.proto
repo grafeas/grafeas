@@ -22,15 +22,15 @@ option objc_class_prefix = "GRA";
 option py_api_version = 2;
 
 import "google/api/annotations.proto";
-import "v1beta1/proto/attestation.proto";
-import "v1beta1/proto/build.proto";
-import "v1beta1/proto/common.proto";
-import "v1beta1/proto/deployment.proto";
-import "v1beta1/proto/discovery.proto";
-import "v1beta1/proto/image.proto";
-import "v1beta1/proto/package.proto";
-import "v1beta1/proto/provenance.proto";
-import "v1beta1/proto/vulnerability.proto";
+import "third_party/grafeas/v1beta1/proto/attestation.proto";
+import "third_party/grafeas/v1beta1/proto/build.proto";
+import "third_party/grafeas/v1beta1/proto/common.proto";
+import "third_party/grafeas/v1beta1/proto/deployment.proto";
+import "third_party/grafeas/v1beta1/proto/discovery.proto";
+import "third_party/grafeas/v1beta1/proto/image.proto";
+import "third_party/grafeas/v1beta1/proto/package.proto";
+import "third_party/grafeas/v1beta1/proto/provenance.proto";
+import "third_party/grafeas/v1beta1/proto/vulnerability.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/field_mask.proto";
 import "google/protobuf/timestamp.proto";
@@ -483,7 +483,8 @@ message GetVulnerabilityOccurrencesSummaryRequest {
   string filter = 2;
 }
 
-// A summary of how many vulnerability occurrences there are per resource and severity type.
+// A summary of how many vulnerability occurrences there are per resource and
+// severity type.
 message VulnerabilityOccurrencesSummary {
   // A listing by resource of the number of fixable and total vulnerabilities.
   repeated FixableTotalByDigest counts = 1;
@@ -492,7 +493,8 @@ message VulnerabilityOccurrencesSummary {
   message FixableTotalByDigest {
     // The affected resource.
     Resource resource = 1;
-    // The severity for this count. SEVERITY_UNSPECIFIED indicates total across all severities.
+    // The severity for this count. SEVERITY_UNSPECIFIED indicates total across
+    // all severities.
     grafeas.v1beta1.vulnerability.Severity severity = 2;
     // The number of fixable vulnerabilities associated with this resource.
     int64 fixable_count = 3;
