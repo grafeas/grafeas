@@ -1,8 +1,13 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "v1alpha1/proto/grafeas.proto",
-    "version": "version not set"
+    "title": "Grafeas API",
+    "version": "v1alpha1",
+    "description": "An API to insert and retrieve annotations on cloud artifacts.",
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    }
   },
   "schemes": [
     "http",
