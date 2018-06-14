@@ -130,11 +130,16 @@ func (g *Grafeas) CreateOccurrence(ctx context.Context, req *pb.CreateOccurrence
 		}
 	}
 	if o.Name != "" {
-		log.Printf("Invalid Argument. Occurrence Name field is read-only")
-		return nil, status.Error(codes.InvalidArgument, "Occurrence Name field is read-only")
+		log.Printf("Invalid Argument. Name field is read-only")
+		return nil, status.Error(codes.InvalidArgument, "Name field is read-only")
 	}
 	// assign a random name
-	o.Name = name.OccurrenceName(pID, uuid.New().String())
+	randID, err := uuid.NewRandom()
+	if err != nil {
+		log.Printf("Error Assiging Occurrence Name: %v", err)
+		return nil, status.Error(codes.Internal, "Internal Error: Could not generate Occurrence Name")
+	}
+	o.Name = name.OccurrenceName(pID, randID.String())
 	return o, g.S.CreateOccurrence(o)
 }
 
