@@ -20,6 +20,7 @@ import (
 	"log"
 
 	"github.com/golang/protobuf/ptypes/empty"
+	"github.com/google/uuid"
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/name"
 	server "github.com/grafeas/grafeas/server-go"
 	pb "github.com/grafeas/grafeas/v1alpha1/proto"
@@ -98,21 +99,13 @@ func (g *Grafeas) CreateOccurrence(ctx context.Context, req *pb.CreateOccurrence
 		log.Print("Occurrence must not be empty.")
 		return nil, status.Error(codes.InvalidArgument, "Occurrence must not be empty")
 	}
-	if o.Name == "" {
-		log.Printf("Invalid occurrence name: %v", o.Name)
-		return nil, status.Error(codes.InvalidArgument, "Invalid occurrence name")
-	}
+
 	if o.NoteName == "" {
 		log.Print("No note is associated with this occurrence")
 	}
-	pID, _, err := name.ParseOccurrence(o.Name)
-	if _, err = g.S.GetProject(pID); err != nil {
-		log.Printf("Unable to get project %v, err: %v", pID, err)
-		return nil, status.Error(codes.NotFound, fmt.Sprintf("Project %v not found", pID))
-	}
 	pID, nID, err := name.ParseNote(o.NoteName)
 	if err != nil {
-		log.Printf("Invalid note name: %v", o.Name)
+		log.Printf("Invalid note name: %v", o.NoteName)
 		return nil, status.Error(codes.InvalidArgument, "Invalid note name")
 	}
 	if n, err := g.S.GetNote(pID, nID); n == nil || err != nil {
@@ -128,10 +121,16 @@ func (g *Grafeas) CreateOccurrence(ctx context.Context, req *pb.CreateOccurrence
 
 		}
 		if _, err = g.S.GetOperation(pID, oID); err != nil {
-			log.Printf("Operation:%v for Occurrence: %v not found", oID, o.Name)
-			return nil, status.Error(codes.NotFound, fmt.Sprintf("Operation:%v for Occurrence: %v not found", oID, o.Name))
+			log.Printf("Operation:%v for Project: %v not found", oID, pID)
+			return nil, status.Error(codes.NotFound, fmt.Sprintf("Operation:%v for Project: %v not found", oID, pID))
 		}
 	}
+	if o.Name != "" {
+		log.Printf("Invalid Argument. Occurrence Name field is read-only")
+		return nil, status.Error(codes.InvalidArgument, "Occurrence Name field is read-only")
+	}
+	// assign a random name
+	o.Name = name.OccurrenceName(pID, uuid.New().String())
 	return o, g.S.CreateOccurrence(o)
 }
 
