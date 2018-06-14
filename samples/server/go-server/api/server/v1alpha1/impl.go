@@ -108,6 +108,10 @@ func (g *Grafeas) CreateOccurrence(ctx context.Context, req *pb.CreateOccurrence
 		log.Printf("Invalid note name: %v", o.NoteName)
 		return nil, status.Error(codes.InvalidArgument, "Invalid note name")
 	}
+	if _, err = g.S.GetProject(pID); err != nil {
+		log.Printf("Unable to get project %v, err: %v", pID, err)
+		return nil, status.Error(codes.NotFound, fmt.Sprintf("Project %v not found", pID))
+	}
 	if n, err := g.S.GetNote(pID, nID); n == nil || err != nil {
 		log.Printf("Unable to getnote %v, err: %v", n, err)
 		return nil, status.Error(codes.NotFound, fmt.Sprintf("Note %v not found", o.NoteName))
