@@ -49,7 +49,7 @@ import "google/protobuf/timestamp.proto";
 // For example, an SSL vulnerability could affect multiple images. In this case,
 // there would be one note for the vulnerability and an occurrence for each
 // image with the vulnerability referring to that note.
-service Grafeas {
+service GrafeasV1Beta1 {
   // Gets the specified occurrence.
   rpc GetOccurrence(GetOccurrenceRequest) returns (Occurrence) {
     option (google.api.http) = {
