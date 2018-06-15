@@ -53,8 +53,8 @@ message BuildProvenance {
   // not represent the same end-user for all time.
   string creator = 8;
 
-  // Google Cloud Storage bucket where logs were written.
-  string logs_bucket = 9;
+  // URI where any logs for this provenance were written.
+  string logs_uri = 9;
 
   // Details of the Source input to the build.
   Source source_provenance = 10;
@@ -76,7 +76,7 @@ message BuildProvenance {
 message Source {
   // If provided, the input binary artifacts for the build came from this
   // location.
-  StorageSource artifact_storage_source = 1;
+  string artifact_storage_source_uri = 1;
 
   // Hash(es) of the build source, which can be used to verify that the original
   // source integrity was maintained in the build.
@@ -119,21 +119,6 @@ message Hash {
   HashType type = 1;
   // The hash value.
   bytes value = 2;
-}
-
-// StorageSource describes the location of the source in an archive file in
-// Google Cloud Storage.
-message StorageSource {
-  // Google Cloud Storage bucket containing source (see [Bucket Name
-  // Requirements]
-  // (https://cloud.google.com/storage/docs/bucket-naming#requirements)).
-  string bucket = 1;
-
-  // Google Cloud Storage object containing source.
-  string object = 2;
-
-  // Google Cloud Storage generation for the object.
-  int64 generation = 3;
 }
 
 // Command describes a step performed as part of the build pipeline.
