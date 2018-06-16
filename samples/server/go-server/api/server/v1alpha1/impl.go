@@ -99,10 +99,6 @@ func (g *Grafeas) CreateOccurrence(ctx context.Context, req *pb.CreateOccurrence
 		log.Print("Occurrence must not be empty.")
 		return nil, status.Error(codes.InvalidArgument, "Occurrence must not be empty")
 	}
-
-	if o.NoteName == "" {
-		log.Print("No note is associated with this occurrence")
-	}
 	pID, nID, err := name.ParseNote(o.NoteName)
 	if err != nil {
 		log.Printf("Invalid note name: %v", o.NoteName)
@@ -110,7 +106,7 @@ func (g *Grafeas) CreateOccurrence(ctx context.Context, req *pb.CreateOccurrence
 	}
 	if _, err = g.S.GetProject(pID); err != nil {
 		log.Printf("Unable to get project %v, err: %v", pID, err)
-		return nil, status.Error(codes.NotFound, fmt.Sprintf("Project %v not found", pID))
+		return nil, status.Errorf(codes.NotFound, "project %v not found", pID)
 	}
 	if n, err := g.S.GetNote(pID, nID); n == nil || err != nil {
 		log.Printf("Unable to getnote %v, err: %v", n, err)
@@ -129,15 +125,10 @@ func (g *Grafeas) CreateOccurrence(ctx context.Context, req *pb.CreateOccurrence
 			return nil, status.Error(codes.NotFound, fmt.Sprintf("Operation:%v for Project: %v not found", oID, pID))
 		}
 	}
-	if o.Name != "" {
-		log.Printf("Invalid Argument. Name field is read-only")
-		return nil, status.Error(codes.InvalidArgument, "Name field is read-only")
-	}
-	// assign a random name
 	randID, err := uuid.NewRandom()
 	if err != nil {
-		log.Printf("Error Assiging Occurrence Name: %v", err)
-		return nil, status.Error(codes.Internal, "Internal Error: Could not generate Occurrence Name")
+		log.Printf("Error Generating Occurrence Name: %v", err)
+		return nil, status.Error(codes.Internal, "could not generate occurrence name")
 	}
 	o.Name = name.OccurrenceName(pID, randID.String())
 	return o, g.S.CreateOccurrence(o)
