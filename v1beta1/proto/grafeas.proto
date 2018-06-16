@@ -49,7 +49,7 @@ import "google/protobuf/timestamp.proto";
 // For example, an SSL vulnerability could affect multiple images. In this case,
 // there would be one note for the vulnerability and an occurrence for each
 // image with the vulnerability referring to that note.
-service Grafeas {
+service GrafeasV1Beta1 {
   // Gets the specified occurrence.
   rpc GetOccurrence(GetOccurrenceRequest) returns (Occurrence) {
     option (google.api.http) = {
@@ -180,12 +180,12 @@ message Occurrence {
   // `projects/[PROJECT_ID]/occurrences/[OCCURRENCE_ID]`.
   string name = 1;
 
-  // The resource for which the occurrence applies.
+  // Required. Immutable. The resource for which the occurrence applies.
   Resource resource = 2;
 
-  // An analysis note associated with this image, in the form of
-  // `projects[PROVIDER_ID]/notes/[NOTE_ID]`. This field can be used as a filter
-  // in list requests.
+  // Required. Immutable. The analysis note associated with this occurrence, in
+  // the form of `projects[PROVIDER_ID]/notes/[NOTE_ID]`. This field can be used
+  // as a filter in list requests.
   string note_name = 3;
 
   // Output only. This explicitly denotes which of the occurrence details are
@@ -201,7 +201,8 @@ message Occurrence {
   // Output only. The time this occurrence was last updated.
   google.protobuf.Timestamp update_time = 7;
 
-  // Describes the details of the note kind found on this resource.
+  // Required. Immutable. Describes the details of the note kind found on this
+  // resource.
   oneof details {
     // Describes a security vulnerability.
     grafeas.v1beta1.vulnerability.Details vulnerability = 8;
@@ -239,7 +240,7 @@ message Resource {
 
 // A type of analysis that can be done for a resource.
 message Note {
-  // The name of the note in the form of
+  // Output only. The name of the note in the form of
   // `projects/[PROVIDER_ID]/notes/[NOTE_ID]`.
   string name = 1;
 
@@ -270,7 +271,7 @@ message Note {
   // Other notes related to this note.
   repeated string related_note_names = 9;
 
-  // The type of analysis this note represents.
+  // Required. Immutable. The type of analysis this note represents.
   oneof type {
     // A note describing a package vulnerability.
     grafeas.v1beta1.vulnerability.Vulnerability vulnerability = 10;
