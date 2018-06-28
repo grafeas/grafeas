@@ -325,12 +325,14 @@ func TestGetOccurrence(t *testing.T) {
 	}
 	oParent := name.FormatProject(opID)
 	ocReq := &pb.CreateOccurrenceRequest{Parent: oParent, Occurrence: o}
-	if _, err := g.CreateOccurrence(ctx, ocReq); err != nil {
+	oNew, err := g.CreateOccurrence(ctx, ocReq); 
+	if err != nil {
 		t.Fatalf("CreateOccurrence(%v) got %v, want success", n, err)
 	}
+	req = &pb.GetOccurrenceRequest{Name: oNew.Name}
 	if got, err := g.GetOccurrence(ctx, req); err != nil {
 		t.Fatalf("GetOccurrence(%v) got %v, want success", o, err)
-	} else if o.Name != got.Name || !reflect.DeepEqual(o.GetVulnerabilityDetails(), got.GetVulnerabilityDetails()) {
+	} else if oNew.Name != got.Name || !reflect.DeepEqual(o.GetVulnerabilityDetails(), got.GetVulnerabilityDetails()) {
 		t.Errorf("GetOccurrence got %v, want %v", *got, o)
 	}
 }
@@ -383,9 +385,11 @@ func TestGetOccurrenceNote(t *testing.T) {
 	}
 	parent = name.FormatProject(opID)
 	coReq := &pb.CreateOccurrenceRequest{Parent: parent, Occurrence: o}
-	if _, err := g.CreateOccurrence(ctx, coReq); err != nil {
+	oNew, err := g.CreateOccurrence(ctx, coReq)
+	if err != nil {
 		t.Fatalf("CreateOccurrence(%v) got %v, want success", n, err)
 	}
+	req = &pb.GetOccurrenceNoteRequest{Name: oNew.Name}
 	if got, err := g.GetOccurrenceNote(ctx, req); err != nil {
 		t.Fatalf("GetOccurrenceNote(%v) got %v, want success", n, err)
 	} else if n.Name != got.Name || !reflect.DeepEqual(n.GetVulnerabilityType(), got.GetVulnerabilityType()) {
@@ -528,9 +532,9 @@ func TestListOccurrences(t *testing.T) {
 		pID := "_"
 		o := testutil.Occurrence(pID, n.Name)
 		if i < 5 {
-			o.Name = name.FormatOccurrence(findProject, string(i))
+			pID = findProject
 		} else {
-			o.Name = name.FormatOccurrence(dontFind, string(i))
+			pID = dontFind
 		}
 		parent := name.FormatProject(pID)
 		ocReq := &pb.CreateOccurrenceRequest{Parent: parent, Occurrence: o}
@@ -658,9 +662,9 @@ func TestListNoteOccurrences(t *testing.T) {
 		pID := "_"
 		o := testutil.Occurrence(pID, n.Name)
 		if i < 5 {
-			o.Name = name.FormatOccurrence(findProject, string(i))
+			pID = findProject
 		} else {
-			o.Name = name.FormatOccurrence(dontFind, string(i))
+			pID = dontFind
 		}
 		parent := name.FormatProject(pID)
 		ocReq := &pb.CreateOccurrenceRequest{Parent: parent, Occurrence: o}

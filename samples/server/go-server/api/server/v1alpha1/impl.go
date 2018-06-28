@@ -20,6 +20,7 @@ import (
 	"log"
 
 	"github.com/golang/protobuf/ptypes/empty"
+	"github.com/google/uuid"
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/name"
 	server "github.com/grafeas/grafeas/server-go"
 	pb "github.com/grafeas/grafeas/v1alpha1/proto"
@@ -96,42 +97,45 @@ func (g *Grafeas) CreateOccurrence(ctx context.Context, req *pb.CreateOccurrence
 	o := req.Occurrence
 	if req == nil {
 		log.Print("Occurrence must not be empty.")
-		return nil, status.Error(codes.InvalidArgument, "Occurrence must not be empty")
+		return nil, status.Error(codes.InvalidArgument, "occurrence must not be empty")
 	}
-	if o.Name == "" {
-		log.Printf("Invalid occurrence name: %v", o.Name)
-		return nil, status.Error(codes.InvalidArgument, "Invalid occurrence name")
-	}
-	if o.NoteName == "" {
-		log.Print("No note is associated with this occurrence")
-	}
-	pID, _, err := name.ParseOccurrence(o.Name)
-	if _, err = g.S.GetProject(pID); err != nil {
-		log.Printf("Unable to get project %v, err: %v", pID, err)
-		return nil, status.Error(codes.NotFound, fmt.Sprintf("Project %v not found", pID))
-	}
-	pID, nID, err := name.ParseNote(o.NoteName)
+	npID, nID, err := name.ParseNote(o.NoteName)
 	if err != nil {
-		log.Printf("Invalid note name: %v", o.Name)
-		return nil, status.Error(codes.InvalidArgument, "Invalid note name")
+		log.Printf("Invalid note name: %v", o.NoteName)
+		return nil, status.Error(codes.InvalidArgument, "invalid note name")
 	}
-	if n, err := g.S.GetNote(pID, nID); n == nil || err != nil {
+	if n, err := g.S.GetNote(npID, nID); n == nil || err != nil {
 		log.Printf("Unable to getnote %v, err: %v", n, err)
-		return nil, status.Error(codes.NotFound, fmt.Sprintf("Note %v not found", o.NoteName))
+		return nil, status.Errorf(codes.NotFound, "note %v not found", o.NoteName)
+	}
+	pID, err := name.ParseProject(req.Parent)
+	if err != nil {
+		log.Printf("Invalid project name: %v", req.Parent)
+		return nil, status.Error(codes.InvalidArgument, "invalid project name")
+	}
+	if _, err := g.S.GetProject(pID); err != nil {
+		log.Printf("Unable to get project %v, err: %v", pID, err)
+		return nil, status.Errorf(codes.NotFound, "project %v not found", pID)
 	}
 	// Validate that operation exists if it is specified
 	if o.OperationName != "" {
-		pID, oID, err := name.ParseOperation(o.OperationName)
+		opID, oID, err := name.ParseOperation(o.OperationName)
 		if err != nil {
 			log.Printf("Error parsing name: %v", o.OperationName)
-			return nil, status.Error(codes.InvalidArgument, "Invalid Operation name")
+			return nil, status.Error(codes.InvalidArgument, "invalid operation name")
 
 		}
-		if _, err = g.S.GetOperation(pID, oID); err != nil {
-			log.Printf("Operation:%v for Occurrence: %v not found", oID, o.Name)
-			return nil, status.Error(codes.NotFound, fmt.Sprintf("Operation:%v for Occurrence: %v not found", oID, o.Name))
+		if _, err = g.S.GetOperation(opID, oID); err != nil {
+			log.Printf("Operation:%v for Project: %v not found", oID, opID)
+			return nil, status.Errorf(codes.NotFound, "operation: %v for project: %v not found", oID, opID)
 		}
 	}
+	randID, err := uuid.NewRandom()
+	if err != nil {
+		log.Printf("Error Generating Occurrence Name: %v", err)
+		return nil, status.Error(codes.Internal, "could not generate occurrence name")
+	}
+	o.Name = name.OccurrenceName(pID, randID.String())
 	return o, g.S.CreateOccurrence(o)
 }
 
