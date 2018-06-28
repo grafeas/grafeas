@@ -81,7 +81,7 @@ func (m *memStore) GetProject(pID string) (*pb.Project, error) {
 }
 
 // ListProjects returns up to pageSize number of projects beginning at pageToken (or from
-// start if pageToken is the emtpy string).
+// start if pageToken is the empty string).
 func (m *memStore) ListProjects(filter string, pageSize int, pageToken string) ([]*pb.Project, string, error) {
 	m.RLock()
 	defer m.RUnlock()
@@ -147,7 +147,7 @@ func (m *memStore) GetOccurrence(pID, oID string) (*pb.Occurrence, error) {
 }
 
 // ListOccurrences returns up to pageSize number of occurrences for this project (pID) beginning
-// at pageToken (or from start if pageToken is the emtpy string).
+// at pageToken (or from start if pageToken is the empty string).
 func (m *memStore) ListOccurrences(pID, filters string, pageSize int, pageToken string) ([]*pb.Occurrence, string, error) {
 	os := []*pb.Occurrence{}
 	m.RLock()
@@ -229,7 +229,7 @@ func (m *memStore) GetNoteByOccurrence(pID, oID string) (*pb.Note, error) {
 }
 
 // ListNotes returns up to pageSize number of notes for this project (pID) beginning
-// at pageToken (or from start if pageToken is the emtpy string).
+// at pageToken (or from start if pageToken is the empty string).
 func (m *memStore) ListNotes(pID, filters string, pageSize int, pageToken string) ([]*pb.Note, string, error) {
 	ns := []*pb.Note{}
 	m.RLock()
@@ -248,7 +248,7 @@ func (m *memStore) ListNotes(pID, filters string, pageSize int, pageToken string
 }
 
 // ListNoteOccurrences returns up to pageSize number of occcurrences on the particular note (nID)
-// for this project (pID) projects beginning at pageToken (or from start if pageToken is the emtpy string).
+// for this project (pID) projects beginning at pageToken (or from start if pageToken is the empty string).
 func (m *memStore) ListNoteOccurrences(pID, nID, filters string, pageSize int, pageToken string) ([]*pb.Occurrence, string, error) {
 	// TODO: use filters
 	m.RLock()
@@ -320,7 +320,7 @@ func (m *memStore) UpdateOperation(pID, opID string, op *opspb.Operation) error 
 }
 
 // ListOperations returns up to pageSize number of operations for this project (pID) beginning
-// at pageToken (or from start if pageToken is the emtpy string).
+// at pageToken (or from start if pageToken is the empty string).
 func (m *memStore) ListOperations(pID, filters string, pageSize int, pageToken string) ([]*opspb.Operation, string, error) {
 	ops := []*opspb.Operation{}
 	m.RLock()

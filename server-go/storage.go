@@ -61,23 +61,23 @@ type Storager interface {
 	GetOperation(pID, opID string) (*opspb.Operation, error)
 
 	// ListProjects returns up to pageSize number of projects beginning at pageToken (or from
-	// start if pageToken is the emtpy string).
+	// start if pageToken is the empty string).
 	ListProjects(filter string, pageSize int, pageToken string) ([]*pb.Project, string, error)
 
 	// ListNoteOccurrences returns up to pageSize number of occcurrences on the particular note (nID)
-	// for this project (pID) projects beginning at pageToken (or from start if pageToken is the emtpy string).
+	// for this project (pID) projects beginning at pageToken (or from start if pageToken is the empty string).
 	ListNoteOccurrences(pID, nID, filters string, pageSize int, pageToken string) ([]*pb.Occurrence, string, error)
 
 	// ListNotes returns up to pageSize number of notes for this project (pID) beginning
-	// at pageToken (or from start if pageToken is the emtpy string).
+	// at pageToken (or from start if pageToken is the empty string).
 	ListNotes(pID, filters string, pageSize int, pageToken string) ([]*pb.Note, string, error)
 
 	// ListOccurrences returns up to pageSize number of occurrences for this project (pID) beginning
-	// at pageToken (or from start if pageToken is the emtpy string).
+	// at pageToken (or from start if pageToken is the empty string).
 	ListOccurrences(pID, filters string, pageSize int, pageToken string) ([]*pb.Occurrence, string, error)
 
 	// ListOperations returns up to pageSize number of operations for this project (pID) beginning
-	// at pageToken (or from start if pageToken is the emtpy string).
+	// at pageToken (or from start if pageToken is the empty string).
 	ListOperations(pID, filters string, pageSize int, pageToken string) ([]*opspb.Operation, string, error)
 
 	// UpdateNote updates the existing note with the given pID and nID
