@@ -134,7 +134,7 @@ func Note(pID string) *pb.Note {
 					},
 					&pb.VulnerabilityType_Detail{
 						CpeUri:  "cpe:/o:canonical:ubuntu_linux:14.04",
-						Package: "andriod",
+						Package: "android",
 						Description: "Stack-based buffer overflow in the ures_getByKeyWithFallback function in " +
 							"common/uresbund.cpp in International Components for Unicode (ICU) before 54.1 for C/C++ allows " +
 							"remote attackers to cause a denial of service or possibly have unspecified other impact via a crafted uloc_getDisplayName call.",
@@ -145,7 +145,7 @@ func Note(pID string) *pb.Note {
 
 						FixedLocation: &pb.VulnerabilityType_VulnerabilityLocation{
 							CpeUri:  "cpe:/o:canonical:ubuntu_linux:14.04",
-							Package: "andriod",
+							Package: "android",
 							Version: &pb.VulnerabilityType_Version{
 								Kind: pb.VulnerabilityType_Version_MAXIMUM,
 							},
