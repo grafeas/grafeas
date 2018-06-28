@@ -133,7 +133,7 @@ func (pg *pgSQLStore) GetProject(pID string) (*pb.Project, error) {
 }
 
 // ListProjects returns up to pageSize number of projects beginning at pageToken (or from
-// start if pageToken is the emtpy string).
+// start if pageToken is the empty string).
 func (pg *pgSQLStore) ListProjects(filter string, pageSize int, pageToken string) ([]*pb.Project, string, error) {
 	var rows *sql.Rows
 	id := decryptInt64(pageToken, pg.paginationKey, 0)
@@ -234,7 +234,7 @@ func (pg *pgSQLStore) GetOccurrence(pID, oID string) (*pb.Occurrence, error) {
 }
 
 // ListOccurrences returns up to pageSize number of occurrences for this project (pID) beginning
-// at pageToken (or from start if pageToken is the emtpy string).
+// at pageToken (or from start if pageToken is the empty string).
 func (pg *pgSQLStore) ListOccurrences(pID, filters string, pageSize int, pageToken string) ([]*pb.Occurrence, string, error) {
 	var rows *sql.Rows
 	id := decryptInt64(pageToken, pg.paginationKey, 0)
@@ -353,7 +353,7 @@ func (pg *pgSQLStore) GetNoteByOccurrence(pID, oID string) (*pb.Note, error) {
 }
 
 // ListNotes returns up to pageSize number of notes for this project (pID) beginning
-// at pageToken (or from start if pageToken is the emtpy string).
+// at pageToken (or from start if pageToken is the empty string).
 func (pg *pgSQLStore) ListNotes(pID, filters string, pageSize int, pageToken string) ([]*pb.Note, string, error) {
 	var rows *sql.Rows
 	id := decryptInt64(pageToken, pg.paginationKey, 0)
@@ -384,7 +384,7 @@ func (pg *pgSQLStore) ListNotes(pID, filters string, pageSize int, pageToken str
 }
 
 // ListNoteOccurrences returns up to pageSize number of occcurrences on the particular note (nID)
-// for this project (pID) projects beginning at pageToken (or from start if pageToken is the emtpy string).
+// for this project (pID) projects beginning at pageToken (or from start if pageToken is the empty string).
 func (pg *pgSQLStore) ListNoteOccurrences(pID, nID, filters string, pageSize int, pageToken string) ([]*pb.Occurrence, string, error) {
 	// Verify that note exists
 	if _, err := pg.GetNote(pID, nID); err != nil {
@@ -489,7 +489,7 @@ func (pg *pgSQLStore) UpdateOperation(pID, opID string, op *opspb.Operation) err
 }
 
 // ListOperations returns up to pageSize number of operations for this project (pID) beginning
-// at pageToken (or from start if pageToken is the emtpy string).
+// at pageToken (or from start if pageToken is the empty string).
 func (pg *pgSQLStore) ListOperations(pID, filters string, pageSize int, pageToken string) ([]*opspb.Operation, string, error) {
 	var rows *sql.Rows
 	id := decryptInt64(pageToken, pg.paginationKey, 0)
