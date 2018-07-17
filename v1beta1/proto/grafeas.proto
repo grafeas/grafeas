@@ -314,10 +314,7 @@ message ListOccurrencesRequest {
   // Token to provide to skip to a particular spot in the list.
   string page_token = 4;
 
-  // The kind of occurrences to list.
-  grafeas.v1beta1.NoteKind kind = 6;
-
-  // next_id = 7;
+  // next_id = 55555;
 }
 
 // Response for listing occurrences.
