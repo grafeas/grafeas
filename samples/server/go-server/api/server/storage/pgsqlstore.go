@@ -37,11 +37,11 @@ type pgSQLStore struct {
 }
 
 func NewPgSQLStore(config *PgSQLConfig) *pgSQLStore {
-	err := createDatabase(createSourceString(config), config.DbName)
+	err := createDatabase(createSourceString(config.User, config.Password, config.Host, "postgres", config.SSLMode), config.DbName)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	db, err := sql.Open("postgres", createSourceStringWithDbName(config))
+	db, err := sql.Open("postgres", createSourceString(config.User, config.Password, config.Host, config.DbName, config.SSLMode))
 	if err != nil {
 		log.Fatal(err.Error())
 	}

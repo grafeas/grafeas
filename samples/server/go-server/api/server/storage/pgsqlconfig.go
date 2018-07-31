@@ -27,10 +27,6 @@ type PgSQLConfig struct {
 	PaginationKey string `yaml:"paginationkey"`
 }
 
-func createSourceString(config *PgSQLConfig) string {
-	return fmt.Sprintf("postgres://%s:%s@%s/?sslmode=%s", config.User, config.Password, config.Host, config.SSLMode)
-}
-
-func createSourceStringWithDbName(config *PgSQLConfig) string {
-	return fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=%s", config.User, config.Password, config.Host, config.DbName, config.SSLMode)
+func createSourceString(user, password, host, dbName, SSLMode string) string {
+	return fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=%s", user, password, host, dbName, SSLMode)
 }
