@@ -16,6 +16,7 @@ package storage
 
 import (
 	"database/sql"
+	"os"
 	"testing"
 
 	server "github.com/grafeas/grafeas/server-go"
@@ -53,6 +54,26 @@ func TestPgSQLStore(t *testing.T) {
 			SSLMode:       "disable",
 			PaginationKey: "XxoPtCUzrUv4JV5dS+yQ+MdW7yLEJnRMwigVY/bpgtQ=",
 		}
+		pg := NewPgSQLStore(config)
+		return pg, func() { dropDatabase(t, config); pg.Close() }
+	}
+
+	doTestStorager(t, createPgSQLStore)
+}
+
+func TestPgSQLStoreWithUserAsEnv(t *testing.T) {
+	createPgSQLStore := func(t *testing.T) (server.Storager, func()) {
+		t.Helper()
+		config := &PgSQLConfig{
+			Host:          "127.0.0.1:5432",
+			DbName:        "test_db",
+			User:          "",
+			Password:      "",
+			SSLMode:       "disable",
+			PaginationKey: "XxoPtCUzrUv4JV5dS+yQ+MdW7yLEJnRMwigVY/bpgtQ=",
+		}
+		_ = os.Setenv("PGUSER", "postgres")
+		_ = os.Setenv("PGPASSWORD", "password")
 		pg := NewPgSQLStore(config)
 		return pg, func() { dropDatabase(t, config); pg.Close() }
 	}

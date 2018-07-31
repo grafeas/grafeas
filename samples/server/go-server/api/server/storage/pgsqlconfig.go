@@ -28,5 +28,8 @@ type PgSQLConfig struct {
 }
 
 func createSourceString(user, password, host, dbName, SSLMode string) string {
+	if user == "" {
+		return fmt.Sprintf("postgres://%s/%s?sslmode=%s", host, dbName, SSLMode)
+	}
 	return fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=%s", user, password, host, dbName, SSLMode)
 }
