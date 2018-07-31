@@ -24,7 +24,7 @@ import (
 func dropDatabase(t *testing.T, config *PgSQLConfig) {
 	t.Helper()
 	// Open database
-	source := createSourceString(config)
+	source := createSourceString(config.User, config.Password, config.Host, "postgres", config.SSLMode)
 	db, err := sql.Open("postgres", source)
 	if err != nil {
 		t.Fatalf("Failed to open database: %v", err)
