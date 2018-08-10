@@ -1,4 +1,4 @@
-.PHONY: build fmt test vet clean
+.PHONY: build fmt test vet clean grafeas_go
 
 SRC = $(shell find . -type f -name '*.go' -not -path "./vendor/*")
 CLEAN := *~
@@ -27,7 +27,7 @@ test:
 vet:
 	@go tool vet ${SRC}
 
-v1alpha1/proto/grafeas.pb.go: .install.protoc-gen-go .install.grpc-gateway v1alpha1/proto/grafeas.proto
+grafeas_go: .install.protoc-gen-go .install.grpc-gateway v1alpha1/proto/grafeas.proto
 	protoc \
 		-I ./ \
 		-I vendor/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
@@ -36,10 +36,6 @@ v1alpha1/proto/grafeas.pb.go: .install.protoc-gen-go .install.grpc-gateway v1alp
 	    --grpc-gateway_out=logtostderr=true:. \
         --swagger_out=logtostderr=true:. \
 	    v1alpha1/proto/grafeas.proto
-
-
-.PHONY: grafeas_go
-grafeas_go: v1alpha1/proto/grafeas.pb.go
 
 clean:
 	go clean ./...
