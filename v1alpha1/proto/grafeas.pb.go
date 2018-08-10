@@ -80,9 +80,9 @@ var Deployable_DeploymentDetails_Platform_name = map[int32]string{
 }
 var Deployable_DeploymentDetails_Platform_value = map[string]int32{
 	"PLATFORM_UNSPECIFIED": 0,
-	"GKE":    1,
-	"FLEX":   2,
-	"CUSTOM": 3,
+	"GKE":                  1,
+	"FLEX":                 2,
+	"CUSTOM":               3,
 }
 
 func (x Deployable_DeploymentDetails_Platform) String() string {
@@ -278,8 +278,8 @@ var PackageManager_Architecture_name = map[int32]string{
 }
 var PackageManager_Architecture_value = map[string]int32{
 	"ARCHITECTURE_UNSPECIFIED": 0,
-	"X86": 1,
-	"X64": 2,
+	"X86":                      1,
+	"X64":                      2,
 }
 
 func (x PackageManager_Architecture) String() string {

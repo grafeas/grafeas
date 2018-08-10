@@ -325,7 +325,7 @@ func TestGetOccurrence(t *testing.T) {
 	}
 	oParent := name.FormatProject(opID)
 	ocReq := &pb.CreateOccurrenceRequest{Parent: oParent, Occurrence: o}
-	oNew, err := g.CreateOccurrence(ctx, ocReq); 
+	oNew, err := g.CreateOccurrence(ctx, ocReq)
 	if err != nil {
 		t.Fatalf("CreateOccurrence(%v) got %v, want success", n, err)
 	}
