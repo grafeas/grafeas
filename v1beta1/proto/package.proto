@@ -102,8 +102,10 @@ message Installation {
 message Version {
   // Used to correct mistakes in the version numbering scheme.
   int32 epoch = 1;
-  // The main part of the version name.
+
+  // Required. The main part of the version name.
   string name = 2;
+
   // The iteration of the package build from the above version.
   string revision = 3;
 
@@ -121,7 +123,7 @@ message Version {
     MAXIMUM = 3;
   };
 
-  // Distinguish between sentinel MIN/MAX versions and normal versions. If
-  // kind is not NORMAL, then the other fields are ignored.
+  // Required. Distinguish between sentinel MIN/MAX versions and normal
+  // versions. If kind is not NORMAL, then the other fields are ignored.
   VersionKind kind = 4;
 }
