@@ -29,7 +29,8 @@ import "google/rpc/status.proto";
 // exists in a provider's project. A `Discovery` occurrence is created in a
 // consumer's project at the start of analysis.
 message Discovery {
-  // The kind of analysis that is handled by this discovery.
+  // Required. Immutable. The kind of analysis that is handled by this
+  // discovery.
   grafeas.v1beta1.NoteKind analysis_kind = 1;
 }
 
