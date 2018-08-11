@@ -34,7 +34,7 @@ enum Architecture {
 // This represents a particular channel of distribution for a given package.
 // E.g., Debian's jessie-backports dpkg mirror.
 message Distribution {
-  // The cpe_uri in [cpe format](https://cpe.mitre.org/specification/)
+  // Required. The cpe_uri in [CPE format](https://cpe.mitre.org/specification/)
   // denoting the package manager version distributing a package.
   string cpe_uri = 1;
 
@@ -42,8 +42,7 @@ message Distribution {
   // built.
   Architecture architecture = 2;
 
-  // The latest available version of this package in this distribution
-  // channel.
+  // The latest available version of this package in this distribution channel.
   Version latest_version = 3;
 
   // A freeform string denoting the maintainer of this package.
@@ -74,7 +73,7 @@ message Location {
 // channels. E.g., glibc (aka libc6) is distributed by many, at various
 // versions.
 message Package {
-  // The name of the package.
+  // Required. Immutable. The name of the package.
   string name = 1;
 
   // The various channels by which a package is distributed.
