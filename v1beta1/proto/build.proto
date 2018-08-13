@@ -29,8 +29,8 @@ message Build {
   // Required. Immutable. Version of the builder which produced this build.
   string builder_version = 1;
 
-  // Required. Immutable. Signature of the build in occurrences pointing to this
-  // build note containing build details.
+  // Signature of the build in occurrences pointing to this build note
+  // containing build details.
   BuildSignature signature = 2;
 }
 
