@@ -31,7 +31,7 @@ message Deployable {
 
 // Details of a deployment occurrence.
 message Details {
-  // Deployment history for the resource.
+  // Required. Deployment history for the resource.
   Deployment deployment = 1;
 }
 
@@ -40,7 +40,7 @@ message Deployment {
   // Identity of the user that triggered this deployment.
   string user_email = 1;
 
-  // Beginning of the lifetime of this deployment.
+  // Required. Beginning of the lifetime of this deployment.
   google.protobuf.Timestamp deploy_time = 2;
 
   // End of the lifetime of this deployment.
