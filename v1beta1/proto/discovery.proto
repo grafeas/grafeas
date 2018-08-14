@@ -36,7 +36,7 @@ message Discovery {
 
 // Details of a discovery occurrence.
 message Details {
-  // Analysis status for the discovered resource.
+  // Required. Analysis status for the discovered resource.
   Discovered discovered = 1;
 }
 
