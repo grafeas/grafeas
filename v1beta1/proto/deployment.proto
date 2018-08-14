@@ -25,7 +25,7 @@ import "google/protobuf/timestamp.proto";
 
 // An artifact that can be deployed in some runtime.
 message Deployable {
-  // Resource URI for the artifact being deployed.
+  // Required. Resource URI for the artifact being deployed.
   repeated string resource_uri = 1;
 }
 
