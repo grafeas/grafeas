@@ -42,13 +42,13 @@ message BuildSignature {
   //
   // This field may be empty if `key_id` references an external key.
   //
-  // For Google Cloud Build based signatures, this is a PEM encoded public key.
-  // To verify the Cloud Build signature, place the contents of this field into
-  // a file (public.pem). The signature field is base64-decoded into its binary
-  // representation in signature.bin, and the provenance bytes from
-  // `BuildDetails` are base64-decoded into a binary representation in
+  // For Cloud Build based signatures, this is a PEM encoded public
+  // key. To verify the Cloud Build signature, place the contents of
+  // this field into a file (public.pem). The signature field is base64-decoded
+  // into its binary representation in signature.bin, and the provenance bytes
+  // from `BuildDetails` are base64-decoded into a binary representation in
   // signed.bin. OpenSSL can then verify the signature:
-  // `openssl sha256 -verify public.pem -signature signature.bin signed.bin`.
+  // `openssl sha256 -verify public.pem -signature signature.bin signed.bin`
   string public_key = 1;
 
   // Required. Signature of the related `BuildProvenance`. In JSON, this is
