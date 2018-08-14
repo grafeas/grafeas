@@ -25,9 +25,9 @@ option py_api_version = 2;
 // supports `ATTACHED` signatures, where the payload that is signed is included
 // alongside the signature itself in the same file.
 message PgpSignedAttestation {
-  // The raw content of the signature, as output by GNU Privacy Guard (GPG) or
-  // equivalent.  Since this message only supports attached signatures, the
-  // payload that was signed must be attached. While the signature format
+  // Required. The raw content of the signature, as output by GNU Privacy Guard
+  // (GPG) or equivalent. Since this message only supports attached signatures,
+  // the payload that was signed must be attached. While the signature format
   // supported is dependent on the verification implementation, currently only
   // ASCII-armored (`--armor` to gpg), non-clearsigned (`--sign` rather than
   // `--clearsign` to gpg) are supported. Concretely, `gpg --sign --armor
@@ -54,9 +54,9 @@ message PgpSignedAttestation {
   ContentType content_type = 3;
 
   // This field is used by verifiers to select the public key used to validate
-  // the signature.  Note that the policy of the verifier ultimately determines
+  // the signature. Note that the policy of the verifier ultimately determines
   // which public keys verify a signature based on the context of the
-  // verification.  There is no guarantee validation will succeed if the
+  // verification. There is no guarantee validation will succeed if the
   // verifier has no key matching this ID, even if it has a key under a
   // different ID that would verify the signature. Note that this ID should also
   // be present in the signature content above, but that is not expected to be
@@ -110,21 +110,21 @@ message Authority {
 
 // Details of an attestation occurrence.
 message Details {
-  // Attestation for the resource.
+  // Required. Attestation for the resource.
   Attestation attestation = 1;
 }
 
 // Occurrence that represents a single "attestation". The authenticity of an
-// Attestation can be verified using the attached signature. If the verifier
+// attestation can be verified using the attached signature. If the verifier
 // trusts the public key of the signer, then verifying the signature is
-// sufficient to establish trust. In this circumstance, the Authority to which
-// this Attestation is attached is primarily useful for look-up (how to find
-// this Attestation if you already know the Authority and artifact to be
+// sufficient to establish trust. In this circumstance, the authority to which
+// this attestation is attached is primarily useful for look-up (how to find
+// this attestation if you already know the authority and artifact to be
 // verified) and intent (which authority was this attestation intended to sign
 // for).
 message Attestation {
-  // The signature, generally over the `resource_url`, that verifies this
-  // attestation. The semantics of the signature veracity are ultimately
+  // Required. The signature, generally over the `resource_url`, that verifies
+  // this attestation. The semantics of the signature veracity are ultimately
   // determined by the verification engine.
   oneof signature {
     // A PGP signed attestation.
