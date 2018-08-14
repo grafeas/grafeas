@@ -56,9 +56,9 @@ message Distribution {
 }
 
 // An occurrence of a particular package installation found within a system's
-// filesystem. E.g., glibc was found in /var/lib/dpkg/status.
+// filesystem. E.g., glibc was found in `/var/lib/dpkg/status`.
 message Location {
-  // The cpe_uri in [cpe format](https://cpe.mitre.org/specification/)
+  // Required. The CPE URI in [CPE format](https://cpe.mitre.org/specification/)
   // denoting the package manager version distributing a package.
   string cpe_uri = 1;
 
@@ -82,7 +82,7 @@ message Package {
 
 // Details of a package occurrence.
 message Details {
-  // Where the package was installed.
+  // Required. Where the package was installed.
   Installation installation = 1;
 }
 
@@ -92,7 +92,7 @@ message Installation {
   // Output only. The name of the installed package.
   string name = 1;
 
-  // All of the places within the filesystem versions of this package
+  // Required. All of the places within the filesystem versions of this package
   // have been found.
   repeated Location location = 2;
 }
