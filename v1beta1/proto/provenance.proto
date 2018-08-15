@@ -151,8 +151,8 @@ message Artifact {
   // container.
   string checksum = 1;
 
-  // Required. Artifact ID, if any; for container images, this will be a URL by
-  // digest like `gcr.io/projectID/imagename@sha256:123456`.
+  // Artifact ID, if any; for container images, this will be a URL by digest
+  // like `gcr.io/projectID/imagename@sha256:123456`.
   string id = 2;
 
   // Related artifact names. This may be the path to a binary or jar file, or in
