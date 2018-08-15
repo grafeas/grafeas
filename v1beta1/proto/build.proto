@@ -78,7 +78,7 @@ message BuildSignature {
 
 // Details of a build occurrence.
 message Details {
-  // The actual provenance for the build.
+  // Required. The actual provenance for the build.
   grafeas.v1beta1.provenance.BuildProvenance provenance = 1;
 
   // Serialized JSON representation of the provenance, used in generating the
