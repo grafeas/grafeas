@@ -1,234 +1,108 @@
 # Grafeas: A Component Metadata API
-Grafeas defines metadata API spec for computing components (e.g., VM images, container images, jar files, scripts) that can assist with aggregations over your metadata. Grafeas uses two API concepts, a **note** and an **occurrence**. This division allows 3rd party metadata providers to create and manage metadata on behalf of many customers. Additionally, the division also allows implementation of access control settings that allow fine grain access control.
 
-## Running grafeas
+Grafeas defines an API spec for managing metadata about software resources, such
+as container images, Virtual Machine (VM) images, JAR files, and scripts. You
+can use Grafeas to define and aggregate information about your project's
+components.
 
-To run your own Grafeas instance just follow the [instructions](docs/running_grafeas.md).
+Grafeas divides the metadata information into [_notes_](#notes) and
+[_occurrences_](#occurrences). Notes are high-level descriptions of particular
+types of metadata. Occurrences are instantiations of notes, which describe how
+and when a given note occurs on the resource associated with the occurrence.
+This division allows third-party metadata providers to create and manage
+metadata on behalf of many customers. It also allows for fine-grained access
+control of different types of metadata.
 
-## Definition of terms
-**Notes**: A note is an item or condition that can be found via an analysis or something that is used multiple times in a process. For example, a CVE could be the result of a vulnerability analysis of a Linux package. In a build process, we would store information about our builder in a note. 
+## Notes
 
-A note name should take the format `/projects/<project_id>/notes/<note_id>` where the project_id would typically be different from the project where the occurrence is created and the note_id would be unique per note-project, and informative if possible. 
+A _note_ describes a high-level piece of metadata. For example, you could create
+a note about a particular vulnerability after analyzing a Linux package. You
+would also use a note to store information about the builder of a build process.
+Notes are often owned and created by the providers doing the analysis. Notes are
+generally found via analysis and occur multiple times across different projects.
 
-Access to notes should be read-only for users who have access to occurrences referencing them, and editable only by the note owner.
+Note names must follow the format `/projects/<project_id>/notes/<note_id>`. The
+note ID must be unique per project, and be as informative as possible. For
+example, the name of a vulnerability note could be `CVE-2013-4869`, referencing
+the [CVE](http://cve.mitre.org/) it describes.
 
-**Occurrences**: An occurrence can be thought of as an instantiation of a note and describes how the note was found in a specific cloud resource or project (e.g., location, specific remediation steps, etc.), or what the results of a specific note were (e.g., the container images that resulted from a build). For example, an occurrence might report that the heartbleed OpenSSL bug (a possible Note) was found in a specific package of a container image, and include information about how to remedy the heartbleed bug based on the customer’s package.
+It's generally preferable to store notes and occurrences in separate projects,
+allowing for more fine-grained access control.
 
-An occurrence name should take the format `/projects/<project_id>/occurrences/<occurrence_id>` where the project_id would typically be different from the project where the note is created and the occurrence_id would be unique per occurrence-project, and would often be random. 
+Notes should be editable only by the note owner, and read-only for users who
+have access to occurrences referencing them.
 
-Write access to occurrences should only be granted to users who have access to link a note to the occurrence. Any users can have read access to occurrences. 
+## Occurrences
 
-## Kind Specific Schemas
-In order to properly aggregate over metadata stored in Grafeas, each kind of information stored has a strict schema. These schemas allow normalization of data from multiple providers, giving users the ability to see meaningful insights in their components over time. Defined below are the currently supported kinds, and a brief summary of what the notes and occurrences for each of them will contain.
-Specifying a kind in our notes and occurrences makes Grafeas extensible. As new metadata types need support, new kinds can be added, each with their own schema.
+An _occurrence_ is an instantiation of a note. Occurrences describe
+project-specific details of a given note. For example, an occurrence of a note
+about a vulnerability would describe the package that the vulnerability was
+found in, specific remediation steps, and so on. Alternatively, an occurrence of
+a note about build details would describe the container images that resulted
+from a build.
 
->TODO:Document the process for adding a new kind to the spec and generating the model, documents, and client libraries to include that kind. #38
+Occurrence names should follow the format
+`/projects/<project_id>/occurrences/<occurrence_id>`. The occurrence ID must be
+unique per project and is often random. Typically, occurrences are stored in
+separate projects than those where notes are created.
 
+Write access to occurrences should only be granted to users who have access to
+link a note to the occurrence. Any user can have read access to occurrences.
 
-|Kind                 |Note Summary                                                             |Occurrence Summary                               |
-|---------------------|-------------------------------------------------------------------------|-------------------------------------------------|
-|PACKAGE_VULNERABILITY|CVE or vulnerability description and details including severity, versions|Affected packages/versions in a specific resource|
-|BUILD_DETAILS        |Builder version and signature                                            |Details of this specific build including inputs and outputs|
-|IMAGE_BASIS          |Base Image for a container                                               |An image that uses the base image, and layers included on top of base image|
-|PACKAGE_MANAGER      |Package Descriptions                                                     |Filesystem locations of where the package is installed in a specific resource|
-|DEPLOYMENT_HISTORY   |A resource that can be deployed                                          |Details of each deployment of the resource|
-|ATTESTATION          |A logical attestation "role" or "authority", used as an anchor for attestations|An attestation by an authority for a specific property and resource|
+## Resource URLs
 
+A _resource URL_ is a unique URL for the resource to which a given occurrence
+applies. Common examples of resources are container images, Virtual Machine (VM)
+images, or JAR files. Resource URLs must be unique per resource and immutable.
+This ensures that each occurrence is always associated with exactly one
+component. If using resources that cannot be made immutable, you must append a
+timestamp. Where possible, use content-addressable resource URLs.
 
+The following table provides examples of possible resource URLs for several
+component types:
 
-## Examples
-A vulnerability scanning provider would create a note under their project with the following json for CVE-2017-14159
-```json
-{
-  "name": "projects/security-scanner/notes/CVE-2017-14159",
-  "shortDescription": "CVE-2017-14159",
-  "longDescription": "NIST vectors: AV:L/AC:M/Au:N/C:N/I:N",
-  "relatedUrl": [
-    {
-      "url": "https://security-tracker.debian.org/tracker/CVE-2017-14159",
-      "label": "More Info"
-    },
-    {
-      "url": "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2017-14159",
-      "label": "More Info"
-    }
-  ],
-  "kind": "PACKAGE_VULNERABILITY",
-  "createTime": "2017-09-05T21:44:52.071982Z",
-  "updateTime": "2017-09-29T16:16:01.140652Z",
-  "vulnerabilityType": {
-    "cvssScore": 1.9,
-    "severity": "LOW",
-    "details": [
-      {
-        "cpeUri": "cpe:/o:debian:debian_linux:7",
-        "severityName": "LOW",
-        "fixedLocation": {
-          "cpeUri": "cpe:/o:debian:debian_linux:7",
-          "package": "openldap",
-          "version": {
-            "kind": "MAXIMUM"
-          }
-        },
-        "minAffectedVersion": {
-          "kind": "MINIMUM"
-        },
-        "package": "openldap",
-        "description": "slapd in OpenLDAP 2.4.45 and earlier creates a PID file after dropping privileges to a non-root account, which might allow local users to kill arbitrary processes by leveraging access to this non-root account for PID file modification before a root script executes a \"kill `cat /pathname`\" command, as demonstrated by openldap-initscript."
-      },
-      {
-        "cpeUri": "cpe:/o:debian:debian_linux:unstable",
-        "severityName": "LOW",
-        "fixedLocation": {
-          "cpeUri": "cpe:/o:debian:debian_linux:unstable",
-          "package": "openldap",
-          "version": {
-            "kind": "MAXIMUM"
-          }
-        },
-        "minAffectedVersion": {
-          "kind": "MINIMUM"
-        },
-        "package": "openldap",
-        "description": "slapd in OpenLDAP 2.4.45 and earlier creates a PID file after dropping privileges to a non-root account, which might allow local users to kill arbitrary processes by leveraging access to this non-root account for PID file modification before a root script executes a \"kill `cat /pathname`\" command, as demonstrated by openldap-initscript."
-      },
-      {
-        "cpeUri": "cpe:/o:debian:debian_linux:9",
-        "severityName": "LOW",
-        "fixedLocation": {
-          "cpeUri": "cpe:/o:debian:debian_linux:9",
-          "package": "openldap",
-          "version": {
-            "kind": "MAXIMUM"
-          }
-        },
-        "minAffectedVersion": {
-          "kind": "MINIMUM"
-        },
-        "package": "openldap",
-        "description": "slapd in OpenLDAP 2.4.45 and earlier creates a PID file after dropping privileges to a non-root account, which might allow local users to kill arbitrary processes by leveraging access to this non-root account for PID file modification before a root script executes a \"kill `cat /pathname`\" command, as demonstrated by openldap-initscript."
-      },
-      {
-        "cpeUri": "cpe:/o:debian:debian_linux:8",
-        "severityName": "LOW",
-        "fixedLocation": {
-          "cpeUri": "cpe:/o:debian:debian_linux:8",
-          "package": "openldap",
-          "version": {
-            "kind": "MAXIMUM"
-          }
-        },
-        "minAffectedVersion": {
-          "kind": "MINIMUM"
-        },
-        "package": "openldap",
-        "description": "slapd in OpenLDAP 2.4.45 and earlier creates a PID file after dropping privileges to a non-root account, which might allow local users to kill arbitrary processes by leveraging access to this non-root account for PID file modification before a root script executes a \"kill `cat /pathname`\" command, as demonstrated by openldap-initscript."
-      },
-      {
-        "cpeUri": "cpe:/o:canonical:ubuntu_linux:14.04",
-        "severityName": "LOW",
-        "fixedLocation": {
-          "cpeUri": "cpe:/o:canonical:ubuntu_linux:14.04",
-          "package": "openldap",
-          "version": {
-            "kind": "MAXIMUM"
-          }
-        },
-        "minAffectedVersion": {
-          "kind": "MINIMUM"
-        },
-        "package": "openldap",
-        "description": "slapd in OpenLDAP 2.4.45 and earlier creates a PID file after dropping privileges to a non-root account, which might allow local users to kill arbitrary processes by leveraging access to this non-root account for PID file modification before a root script executes a \"kill `cat /pathname`\" command, as demonstrated by openldap-initscript."
-      },
-      {
-        "cpeUri": "cpe:/o:canonical:ubuntu_linux:16.04",
-        "severityName": "LOW",
-        "fixedLocation": {
-          "cpeUri": "cpe:/o:canonical:ubuntu_linux:16.04",
-          "package": "openldap",
-          "version": {
-            "kind": "MAXIMUM"
-          }
-        },
-        "minAffectedVersion": {
-          "kind": "MINIMUM"
-        },
-        "package": "openldap",
-        "description": "slapd in OpenLDAP 2.4.45 and earlier creates a PID file after dropping privileges to a non-root account, which might allow local users to kill arbitrary processes by leveraging access to this non-root account for PID file modification before a root script executes a \"kill `cat /pathname`\" command, as demonstrated by openldap-initscript."
-      }
-    ]
-  }
-}
-```
+Component Type | Identifier                               | Example
+-------------- | ---------------------------------------- | -------
+Debian         | deb://dist(optional):arch:name:version   | deb://lucid:i386:acl:2.2.49-2
+Docker         | https://Namespace/name@sha256:<Checksum> | https://gcr.io/scanning-customer/dockerimage@sha256:244fd47e07d1004f0aed9c156aa09083c82bf8944eceb67c946ff7430510a77b
+Generic file   | file://sha256:<Checksum>:name            | file://sha256:244fd47e07d1004f0aed9c156aa09083c82bf8944eceb67c946ff7430510a77b:foo.jar
+Maven          | gav://group:artifact:version             | `gav://ant:ant:1.6.5`
+NPM            | npm://package:version                    | npm://mocha:2.4.5
+NuGet          | nuget://module:version                   | nuget://log4net:9.0.1
+Python         | pip://package:version                    | pip://raven:5.13.0
+RPM            | rpm://dist(optional):arch:name:version   | rpm://el6:i386:ImageMagick:6.7.2.7-4
 
-On scanning and coming across this vulnerability, a security scanning provider would create the following in their customer’s project:
+## Kind-Specific Schemas
 
-```json
-{
-  "name": "projects/scanning-customer/occurrences/randomId1234",
-  "resourceUrl": "https://gcr.io/scanning-customer/dockerimage@sha256:hash",
-  "noteName": "projects/security-scanner/notes/CVE-2017-14159",
-  "kind": "PACKAGE_VULNERABILITY",
-  "createTime": "2017-09-29T02:58:23.376798Z",
-  "updateTime": "2017-09-29T07:35:22.141762Z",
-  "vulnerabilityDetails": {
-    "severity": "LOW",
-    "cvssScore": 1.9,
-    "packageIssue": [
-      {
-        "affectedLocation": {
-          "cpeUri": "cpe:/o:debian:debian_linux:8",
-          "package": "openldap",
-          "version": {
-            "name": "2.4.40+dfsg",
-            "revision": "1+deb8u2"
-          }
-        },
-        "fixedLocation": {
-          "cpeUri": "cpe:/o:debian:debian_linux:8",
-          "package": "openldap",
-          "version": {
-            "kind": "MAXIMUM"
-          }
-        },
-        "severityName": "LOW"
-      }
-    ]
-  }
-}
+Each kind of metadata information has a strict schema. This allows you to
+normalize data from multiple providers, making it easier to see meaningful
+insights about your components over time. Defining different kinds of data
+also makes it easy to expand Grafeas to support new metadata types.
 
-```
+The currently supported kinds are defined below, along with a brief summary of
+the type of information each kind of note and occurrence contains.
 
-## Resource Urls
+|Kind         |Note Summary                                   |Occurrence Summary     |
+|-------------|-----------------------------------------------|-----------------------|
+|ATTESTATION  |A logical attestation role or authority, used as an anchor for specific attestations|An attestation by an authority for a specific property and resource|
+|BUILD        |Builder version and signature                  |Details of this specific build, such as inputs and outputs|
+|DEPLOYMENT   |A resource that can be deployed                |Details of each deployment of the resource|
+|DISCOVERY    |Only used as an anchor for specific occurrences|Information about the status of an image after the first scan, such as package vulnerability, base image, and package manager info|
+|IMAGE        |Information about the base image of a container|Information about layers included on top of the base image in a particular container|
+|PACKAGE      |Package descriptions                           |Filesystem locations detailing where the package is installed in a specific resource|
+|VULNERABILITY|CVE or vulnerability description and details including severity, versions|Affected packages/versions in a specific resource|
 
-Component resource Urls need to be unique per resource as well as immutable. This will mean that the metadata associated with a resourceUrl will always be associated with exactly one component, and what is pointed at should never change. Content addressable resource urls are preferred. In the case with resources that cannot be immutable, a timestamp should be appended.
+## The API
+The authoritative API for grafeas is the [protobuf
+files](https://github.com/Grafeas/Grafeas/tree/master/v1beta1/proto). We're
+currently working from master, and have a versioned path as well.
 
-The following table provides examples one could use as resource urls for several component types:
+There is a swagger/OpenAPI representation of the API as well, which provides a
+JSON bridge to the Protobuf API.
 
-Component Type|Identifier                                  |Example|
---------------|--------------------------------------------|-------|
-|Debian       |deb://dist(optional):arch:name:version      |deb://lucid:i386:acl:2.2.49-2|
-|Docker       |https://Namespace/name@sha256:<Checksum>    |https://gcr.io/scanning-customer/dockerimage@sha256:244fd47e07d1004f0aed9c156aa09083c82bf8944eceb67c946ff7430510a77b|
-|Generic file |file://sha256:<Checksum>:name               |file://sha256:244fd47e07d1004f0aed9c156aa09083c82bf8944eceb67c946ff7430510a77b:foo.jar|
-|Maven        |gav://group:artifact:version                |`gav://ant:ant:1.6.5`|
-|NPM          |npm://package:version                       |npm://mocha:2.4.5|
-|NuGet        |nuget://module:version                      |nuget://log4net:9.0.1|
-|Python       |pip://package:version                       |pip://raven:5.13.0|
-|RPM          |rpm://dist(optional):arch:name:version      |rpm://el6:i386:ImageMagick:6.7.2.7-4|
-
-
-## Protobuf API
-
-The authoritative API for grafeas is the protobuf files.
-[https://github.com/Grafeas/Grafeas/tree/master/v1alpha1/proto](https://github.com/Grafeas/Grafeas/tree/master/v1alpha1/proto)
-We're currently working from master, and have a versioned path as well.
-These paths will ideally make their way to "v1beta" and then "v1", once vetted.
-
-
-## Golang API
-
-[Documentation of `github.com/Grafeas/Grafeas/v1alpha1/proto`](https://godoc.org/github.com/Grafeas/Grafeas/v1alpha1/proto) is the golang package for the Protobuf API.
-
-## Swagger API
-
-To provide a JSON bridge to the Protobuf API, there is now a swagger/OpenAPI representation generated [here](https://raw.githubusercontent.com/Grafeas/Grafeas/master/v1alpha1/proto/grafeas.swagger.json).
+## Next steps
+You can run Grafeas locally following [these
+instructions](docs/running_grafeas.md). Once you have a running server, you can
+use the [client libraries](https://github.com/grafeas) to experiment with
+creating notes and occurrences in Grafeas. There are client libraries available
+in Java, Go, Ruby, and Python.
