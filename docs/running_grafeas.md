@@ -100,6 +100,7 @@ When using a go client to access Grafeas with a self signed certificate you need
 package main
 
 import (
+        "context"
 	"crypto/tls"
 	"crypto/x509"
 	"io/ioutil"
