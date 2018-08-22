@@ -82,33 +82,33 @@ makes it easy to expand Grafeas to support new metadata types.
 The currently supported kinds are defined below, along with a brief summary of
 the type of information each kind of note and occurrence contains.
 
-| Kind          | Note Summary                 | Occurrence Summary            |
-| ------------- | ---------------------------- | ----------------------------- |
-| ATTESTATION   | A logical attestation role   | An attestation by an          |
-:               : or authority, used as an     : authority for a specific      :
-:               : anchor for specific          : property and resource         :
-:               : attestations                 :                               :
-| BUILD         | Builder version and          | Details of this specific      |
-:               : signature                    : build, such as inputs and     :
-:               :                              : outputs                       :
-| DEPLOYMENT    | A resource that can be       | Details of each deployment of |
-:               : deployed                     : the resource                  :
-| DISCOVERY     | Only used as an anchor for   | Information about the status  |
-:               : specific occurrences         : of an image after the first   :
-:               :                              : scan, such as package         :
-:               :                              : vulnerability, base image,    :
-:               :                              : and package manager info      :
-| IMAGE         | Information about the base   | Information about layers      |
-:               : image of a container         : included on top of the base   :
-:               :                              : image in a particular         :
-:               :                              : container                     :
-| PACKAGE       | Package descriptions         | Filesystem locations          |
-:               :                              : detailing where the package   :
-:               :                              : is installed in a specific    :
-:               :                              : resource                      :
-| VULNERABILITY | CVE or vulnerability         | Affected packages/versions in |
-:               : description and details      : a specific resource           :
-:               : including severity, versions :                               :
+Kind          | Note Summary                 | Occurrence Summary
+------------- | ---------------------------- | -----------------------------
+ATTESTATION   | A logical attestation role   | An attestation by an
+              | or authority, used as an     | authority for a specific
+              | anchor for specific          | property and resource
+              | attestations                 |
+BUILD         | Builder version and          | Details of this specific
+              | signature                    | build, such as inputs and
+              |                              | outputs
+DEPLOYMENT    | A resource that can be       | Details of each deployment of
+              | deployed                     | the resource
+DISCOVERY     | Only used as an anchor for   | Information about the status
+              | specific occurrences         | of an image after the first
+              |                              | scan, such as package
+              |                              | vulnerability, base image,
+              |                              | and package manager info
+IMAGE         | Information about the base   | Information about layers
+              | image of a container         | included on top of the base
+              |                              | image in a particular
+              |                              | container
+PACKAGE       | Package descriptions         | Filesystem locations
+              |                              | detailing where the package
+              |                              | is installed in a specific
+              |                              | resource
+VULNERABILITY | CVE or vulnerability         | Affected packages/versions in
+              | description and details      | a specific resource
+              | including severity, versions |
 
 ## The API
 
