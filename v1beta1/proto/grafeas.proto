@@ -310,8 +310,8 @@ message ListOccurrencesRequest {
   // The filter expression.
   string filter = 2;
 
-  // Must be positive. Max allowed page size is 1000. Number of occurrences to
-  // return in the list. If not specified, page size defaults to 20.
+  // Number of occurrences to return in the list. Must be positive. Max allowed
+  // page size is 1000. If not specified, page size defaults to 20.
   int32 page_size = 3;
 
   // Token to provide to skip to a particular spot in the list.
@@ -380,8 +380,8 @@ message ListNotesRequest {
   // The filter expression.
   string filter = 2;
 
-  // Must be positive. Max allowed page size is 1000. Number of notes to return
-  // in the list. If not specified, page size defaults to 20.
+  // Number of notes to return in the list. Must be positive. Max allowed page
+  // size is 1000. If not specified, page size defaults to 20.
   int32 page_size = 3;
 
   // Token to provide to skip to a particular spot in the list.
@@ -454,7 +454,7 @@ message BatchCreateNotesRequest {
   // the notes are to be created.
   string parent = 1;
 
-  // Max allowed length is 1000. The notes to create.
+  // The notes to create. Max allowed length is 1000.
   map<string, Note> notes = 2;
 }
 
@@ -469,7 +469,8 @@ message BatchCreateOccurrencesRequest {
   // The name of the project in the form of `projects/[PROJECT_ID]`, under which
   // the occurrences are to be created.
   string parent = 1;
-  // Max allowed length is 1000. The occurrences to create.
+
+  // The occurrences to create. Max allowed length is 1000.
   repeated Occurrence occurrences = 2;
 }
 
