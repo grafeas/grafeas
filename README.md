@@ -76,33 +76,53 @@ RPM            | rpm://dist(optional):arch:name:version   | rpm://el6:i386:Image
 
 Each kind of metadata information has a strict schema. This allows you to
 normalize data from multiple providers, making it easier to see meaningful
-insights about your components over time. Defining different kinds of data
-also makes it easy to expand Grafeas to support new metadata types.
+insights about your components over time. Defining different kinds of data also
+makes it easy to expand Grafeas to support new metadata types.
 
 The currently supported kinds are defined below, along with a brief summary of
 the type of information each kind of note and occurrence contains.
 
-|Kind         |Note Summary                                   |Occurrence Summary     |
-|-------------|-----------------------------------------------|-----------------------|
-|ATTESTATION  |A logical attestation role or authority, used as an anchor for specific attestations|An attestation by an authority for a specific property and resource|
-|BUILD        |Builder version and signature                  |Details of this specific build, such as inputs and outputs|
-|DEPLOYMENT   |A resource that can be deployed                |Details of each deployment of the resource|
-|DISCOVERY    |Only used as an anchor for specific occurrences|Information about the status of an image after the first scan, such as package vulnerability, base image, and package manager info|
-|IMAGE        |Information about the base image of a container|Information about layers included on top of the base image in a particular container|
-|PACKAGE      |Package descriptions                           |Filesystem locations detailing where the package is installed in a specific resource|
-|VULNERABILITY|CVE or vulnerability description and details including severity, versions|Affected packages/versions in a specific resource|
+| Kind          | Note Summary                 | Occurrence Summary            |
+| ------------- | ---------------------------- | ----------------------------- |
+| ATTESTATION   | A logical attestation role   | An attestation by an          |
+:               : or authority, used as an     : authority for a specific      :
+:               : anchor for specific          : property and resource         :
+:               : attestations                 :                               :
+| BUILD         | Builder version and          | Details of this specific      |
+:               : signature                    : build, such as inputs and     :
+:               :                              : outputs                       :
+| DEPLOYMENT    | A resource that can be       | Details of each deployment of |
+:               : deployed                     : the resource                  :
+| DISCOVERY     | Only used as an anchor for   | Information about the status  |
+:               : specific occurrences         : of an image after the first   :
+:               :                              : scan, such as package         :
+:               :                              : vulnerability, base image,    :
+:               :                              : and package manager info      :
+| IMAGE         | Information about the base   | Information about layers      |
+:               : image of a container         : included on top of the base   :
+:               :                              : image in a particular         :
+:               :                              : container                     :
+| PACKAGE       | Package descriptions         | Filesystem locations          |
+:               :                              : detailing where the package   :
+:               :                              : is installed in a specific    :
+:               :                              : resource                      :
+| VULNERABILITY | CVE or vulnerability         | Affected packages/versions in |
+:               : description and details      : a specific resource           :
+:               : including severity, versions :                               :
 
 ## The API
-The authoritative API for grafeas is the [protobuf
-files](https://github.com/Grafeas/Grafeas/tree/master/v1beta1/proto). We're
-currently working from master, and have a versioned path as well.
+
+The authoritative API for grafeas is the
+[protobuf files](https://github.com/Grafeas/Grafeas/tree/master/v1beta1/proto).
+We're currently working from master, and have a versioned path as well.
 
 There is a swagger/OpenAPI representation of the API as well, which provides a
 JSON bridge to the Protobuf API.
 
 ## Next steps
-You can run Grafeas locally following [these
-instructions](docs/running_grafeas.md). Once you have a running server, you can
-use the [client libraries](https://github.com/grafeas) to experiment with
-creating notes and occurrences in Grafeas. There are client libraries available
-in Java, Go, Ruby, and Python.
+
+You can run Grafeas locally following
+[these instructions](docs/running_grafeas.md). Once you have a running server,
+you can use the [client libraries](https://github.com/grafeas) to experiment
+with creating notes and occurrences in Grafeas. There are client libraries
+available in Java, Go, Ruby, and Python.
