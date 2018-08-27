@@ -56,6 +56,7 @@ message Discovered {
   ContinuousAnalysis continuous_analysis = 1;
 
   // The last time continuous analysis was done for this resource.
+  // Deprecated, do not use.
   google.protobuf.Timestamp last_analysis_time = 2;
 
   // Analysis status for a resource. Currently for initial analysis only (not
