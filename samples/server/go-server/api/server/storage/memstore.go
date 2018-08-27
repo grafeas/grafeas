@@ -303,7 +303,7 @@ func (m *memStore) DeleteOperation(pID, opID string) error {
 	if _, ok := m.opsByID[opName]; !ok {
 		return status.Error(codes.NotFound, fmt.Sprintf("Operation with name %q does not Exist", opName))
 	}
-	delete(m.occurrencesByID, opName)
+	delete(m.opsByID, opName)
 	return nil
 }
 

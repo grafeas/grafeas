@@ -390,6 +390,10 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 		if err := s.DeleteOperation(pID, oID); err != nil {
 			t.Errorf("DeleteOperation got %v, want success ", err)
 		}
+
+		if err := s.DeleteOperation(pID, oID); err == nil {
+			t.Error("Deleting an operation that was deleted, got success, want error")
+		}
 	})
 
 	t.Run("UpdateOperation", func(t *testing.T) {
