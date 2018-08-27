@@ -22,18 +22,18 @@ option objc_class_prefix = "GRA";
 option py_api_version = 2;
 
 import "google/api/annotations.proto";
-import "v1beta1/proto/attestation.proto";
-import "v1beta1/proto/build.proto";
-import "v1beta1/proto/common.proto";
-import "v1beta1/proto/deployment.proto";
-import "v1beta1/proto/discovery.proto";
-import "v1beta1/proto/image.proto";
-import "v1beta1/proto/package.proto";
-import "v1beta1/proto/provenance.proto";
-import "v1beta1/proto/vulnerability.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/field_mask.proto";
 import "google/protobuf/timestamp.proto";
+import "proto/v1beta1/attestation.proto";
+import "proto/v1beta1/build.proto";
+import "proto/v1beta1/common.proto";
+import "proto/v1beta1/deployment.proto";
+import "proto/v1beta1/discovery.proto";
+import "proto/v1beta1/image.proto";
+import "proto/v1beta1/package.proto";
+import "proto/v1beta1/provenance.proto";
+import "proto/v1beta1/vulnerability.proto";
 
 // [Grafeas](grafeas.io) API.
 //
