@@ -16,6 +16,7 @@ syntax = "proto3";
 
 package grafeas.v1beta1.deployment;
 
+option go_package = "github.com/grafeas/grafeas/proto/v1beta1/deployment_go_proto";
 option java_multiple_files = true;
 option java_package = "io.grafeas.v1beta1.deployment";
 option objc_class_prefix = "GRA";
