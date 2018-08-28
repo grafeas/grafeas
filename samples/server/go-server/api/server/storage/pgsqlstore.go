@@ -92,7 +92,7 @@ func (pg *pgSQLStore) CreateProject(pID string) error {
 	if err, ok := err.(*pq.Error); ok {
 		// Check for unique_violation
 		if err.Code == "23505" {
-			return status.Error(codes.AlreadyExists, fmt.Sprintf("Project with name %q already exists", pID))
+			return status.Errorf(codes.AlreadyExists, "Project with name %q already exists", pID)
 		} else {
 			log.Println("Failed to insert Project in database", err)
 			return status.Error(codes.Internal, "Failed to insert Project in database")
@@ -113,7 +113,7 @@ func (pg *pgSQLStore) DeleteProject(pID string) error {
 		return status.Error(codes.Internal, "Failed to delete Project from database")
 	}
 	if count == 0 {
-		return status.Error(codes.NotFound, fmt.Sprintf("Project with name %q does not Exist", pName))
+		return status.Errorf(codes.NotFound, "Project with name %q does not Exist", pName)
 	}
 	return nil
 }
@@ -127,7 +127,7 @@ func (pg *pgSQLStore) GetProject(pID string) (*pb.Project, error) {
 		return nil, status.Error(codes.Internal, "Failed to query Project from database")
 	}
 	if !exists {
-		return nil, status.Error(codes.NotFound, fmt.Sprintf("Project with name %q does not Exist", pName))
+		return nil, status.Errorf(codes.NotFound, "Project with name %q does not Exist", pName)
 	}
 	return &pb.Project{Name: pName}, nil
 }
@@ -174,7 +174,7 @@ func (pg *pgSQLStore) CreateOccurrence(o *pb.Occurrence) error {
 	if err, ok := err.(*pq.Error); ok {
 		// Check for unique_violation
 		if err.Code == "23505" {
-			return status.Error(codes.AlreadyExists, fmt.Sprintf("Occurrence with name %q already exists", o.Name))
+			return status.Errorf(codes.AlreadyExists, "Occurrence with name %q already exists", o.Name)
 		} else {
 			log.Println("Failed to insert Occurrence in database", err)
 			return status.Error(codes.Internal, "Failed to insert Occurrence in database")
@@ -194,7 +194,7 @@ func (pg *pgSQLStore) DeleteOccurrence(pID, oID string) error {
 		return status.Error(codes.Internal, "Failed to delete Occurrence from database")
 	}
 	if count == 0 {
-		return status.Error(codes.NotFound, fmt.Sprintf("Occurrence with name %q/%q does not Exist", pID, oID))
+		return status.Errorf(codes.NotFound, "Occurrence with name %q/%q does not Exist", pID, oID)
 	}
 	return nil
 }
@@ -210,7 +210,7 @@ func (pg *pgSQLStore) UpdateOccurrence(pID, oID string, o *pb.Occurrence) error 
 		return status.Error(codes.Internal, "Failed to update Occurrence")
 	}
 	if count == 0 {
-		return status.Error(codes.NotFound, fmt.Sprintf("Occurrence with name %q/%q does not Exist", pID, oID))
+		return status.Errorf(codes.NotFound, "Occurrence with name %q/%q does not Exist", pID, oID)
 	}
 	return nil
 }
@@ -221,7 +221,7 @@ func (pg *pgSQLStore) GetOccurrence(pID, oID string) (*pb.Occurrence, error) {
 	err := pg.DB.QueryRow(searchOccurrence, pID, oID).Scan(&data)
 	switch {
 	case err == sql.ErrNoRows:
-		return nil, status.Error(codes.NotFound, fmt.Sprintf("Occurrence with name %q/%q does not Exist", pID, oID))
+		return nil, status.Errorf(codes.NotFound, "Occurrence with name %q/%q does not Exist", pID, oID)
 	case err != nil:
 		return nil, status.Error(codes.Internal, "Failed to query Occurrence from database")
 	}
@@ -275,7 +275,7 @@ func (pg *pgSQLStore) CreateNote(n *pb.Note) error {
 	if err, ok := err.(*pq.Error); ok {
 		// Check for unique_violation
 		if err.Code == "23505" {
-			return status.Error(codes.AlreadyExists, fmt.Sprintf("Note with name %q already exists", n.Name))
+			return status.Errorf(codes.AlreadyExists, "Note with name %q already exists", n.Name)
 		} else {
 			log.Println("Failed to insert Note in database", err)
 			return status.Error(codes.Internal, "Failed to insert Note in database")
@@ -295,7 +295,7 @@ func (pg *pgSQLStore) DeleteNote(pID, nID string) error {
 		return status.Error(codes.Internal, "Failed to delete Note from database")
 	}
 	if count == 0 {
-		return status.Error(codes.NotFound, fmt.Sprintf("Note with name %q/%q does not Exist", pID, nID))
+		return status.Errorf(codes.NotFound, "Note with name %q/%q does not Exist", pID, nID)
 	}
 	return nil
 }
@@ -311,7 +311,7 @@ func (pg *pgSQLStore) UpdateNote(pID, nID string, n *pb.Note) error {
 		return status.Error(codes.Internal, "Failed to update Note")
 	}
 	if count == 0 {
-		return status.Error(codes.NotFound, fmt.Sprintf("Note with name %q/%q does not Exist", pID, nID))
+		return status.Errorf(codes.NotFound, "Note with name %q/%q does not Exist", pID, nID)
 	}
 	return nil
 }
@@ -322,7 +322,7 @@ func (pg *pgSQLStore) GetNote(pID, nID string) (*pb.Note, error) {
 	err := pg.DB.QueryRow(searchNote, pID, nID).Scan(&data)
 	switch {
 	case err == sql.ErrNoRows:
-		return nil, status.Error(codes.NotFound, fmt.Sprintf("Note with name %q/%q does not Exist", pID, nID))
+		return nil, status.Errorf(codes.NotFound, "Note with name %q/%q does not Exist", pID, nID)
 	case err != nil:
 		return nil, status.Error(codes.Internal, "Failed to query Note from database")
 	}
@@ -424,7 +424,7 @@ func (pg *pgSQLStore) GetOperation(pID, opID string) (*opspb.Operation, error) {
 	err := pg.DB.QueryRow(searchOperation, pID, opID).Scan(&data)
 	switch {
 	case err == sql.ErrNoRows:
-		return nil, status.Error(codes.NotFound, fmt.Sprintf("Operation with name %q/%q does not Exist", pID, opID))
+		return nil, status.Errorf(codes.NotFound, "Operation with name %q/%q does not Exist", pID, opID)
 	case err != nil:
 		return nil, status.Error(codes.Internal, "Failed to query Operation from database")
 	}
@@ -447,7 +447,7 @@ func (pg *pgSQLStore) CreateOperation(o *opspb.Operation) error {
 	if err, ok := err.(*pq.Error); ok {
 		// Check for unique_violation
 		if err.Code == "23505" {
-			return status.Error(codes.AlreadyExists, fmt.Sprintf("Operation with name %q/%q already exists", pID, opID))
+			return status.Errorf(codes.AlreadyExists, "Operation with name %q/%q already exists", pID, opID)
 		} else {
 			log.Println("Failed to insert Operation in database", err)
 			return status.Error(codes.Internal, "Failed to insert Operation in database")
@@ -467,7 +467,7 @@ func (pg *pgSQLStore) DeleteOperation(pID, opID string) error {
 		return status.Error(codes.Internal, "Failed to delete Operation from database")
 	}
 	if count == 0 {
-		return status.Error(codes.NotFound, fmt.Sprintf("Operation with name %q/%q does not Exist", pID, opID))
+		return status.Errorf(codes.NotFound, "Operation with name %q/%q does not Exist", pID, opID)
 	}
 	return nil
 }
@@ -483,7 +483,7 @@ func (pg *pgSQLStore) UpdateOperation(pID, opID string, op *opspb.Operation) err
 		return status.Error(codes.Internal, "Failed to update Operation")
 	}
 	if count == 0 {
-		return status.Error(codes.NotFound, fmt.Sprintf("Operation with name %q/%q does not Exist", pID, opID))
+		return status.Errorf(codes.NotFound, "Operation with name %q/%q does not Exist", pID, opID)
 	}
 	return nil
 }
