@@ -19,7 +19,6 @@ package grafeas.v1beta1.image;
 option java_multiple_files = true;
 option java_package = "io.grafeas.v1beta1.image";
 option objc_class_prefix = "GRA";
-option py_api_version = 2;
 
 // Layer holds metadata specific to a layer of a Docker image.
 message Layer {
