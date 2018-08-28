@@ -14,7 +14,7 @@ CLEAN += .install.protoc-gen-go .install.grpc-gateway
 .install.grpc-gateway:
 	go get -u -v github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger && touch $@
 
-build: vet fmt grafeas_go_v1alpha1
+build: vet fmt grafeas_go_v1alpha1 attestation_go_v1beta1 build_go_v1beta1 common_go_v1beta1 deployment_go_v1beta1 discovery_go_v1beta1 grafeas_go_v1beta1 image_go_v1beta1 package_go_v1beta1 project_go_v1beta1 provenance_go_v1beta1 source_go_v1beta1 vulnerability_go_v1beta1
 	go build -v ./...
 
 # http://golang.org/cmd/go/#hdr-Run_gofmt_on_package_sources

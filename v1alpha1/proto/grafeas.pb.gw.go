@@ -572,14 +572,14 @@ func RegisterGrafeasHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeM
 	defer func() {
 		if err != nil {
 			if cerr := conn.Close(); cerr != nil {
-				grpclog.Printf("Failed to close conn to %s: %v", endpoint, cerr)
+				grpclog.Infof("Failed to close conn to %s: %v", endpoint, cerr)
 			}
 			return
 		}
 		go func() {
 			<-ctx.Done()
 			if cerr := conn.Close(); cerr != nil {
-				grpclog.Printf("Failed to close conn to %s: %v", endpoint, cerr)
+				grpclog.Infof("Failed to close conn to %s: %v", endpoint, cerr)
 			}
 		}()
 	}()
@@ -593,8 +593,8 @@ func RegisterGrafeasHandler(ctx context.Context, mux *runtime.ServeMux, conn *gr
 	return RegisterGrafeasHandlerClient(ctx, mux, NewGrafeasClient(conn))
 }
 
-// RegisterGrafeasHandler registers the http handlers for service Grafeas to "mux".
-// The handlers forward requests to the grpc endpoint over the given implementation of "GrafeasClient".
+// RegisterGrafeasHandlerClient registers the http handlers for service Grafeas
+// to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "GrafeasClient".
 // Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "GrafeasClient"
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
 // "GrafeasClient" to call the correct interceptors.
@@ -1079,14 +1079,14 @@ func RegisterGrafeasProjectsHandlerFromEndpoint(ctx context.Context, mux *runtim
 	defer func() {
 		if err != nil {
 			if cerr := conn.Close(); cerr != nil {
-				grpclog.Printf("Failed to close conn to %s: %v", endpoint, cerr)
+				grpclog.Infof("Failed to close conn to %s: %v", endpoint, cerr)
 			}
 			return
 		}
 		go func() {
 			<-ctx.Done()
 			if cerr := conn.Close(); cerr != nil {
-				grpclog.Printf("Failed to close conn to %s: %v", endpoint, cerr)
+				grpclog.Infof("Failed to close conn to %s: %v", endpoint, cerr)
 			}
 		}()
 	}()
@@ -1100,8 +1100,8 @@ func RegisterGrafeasProjectsHandler(ctx context.Context, mux *runtime.ServeMux, 
 	return RegisterGrafeasProjectsHandlerClient(ctx, mux, NewGrafeasProjectsClient(conn))
 }
 
-// RegisterGrafeasProjectsHandler registers the http handlers for service GrafeasProjects to "mux".
-// The handlers forward requests to the grpc endpoint over the given implementation of "GrafeasProjectsClient".
+// RegisterGrafeasProjectsHandlerClient registers the http handlers for service GrafeasProjects
+// to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "GrafeasProjectsClient".
 // Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "GrafeasProjectsClient"
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
 // "GrafeasProjectsClient" to call the correct interceptors.

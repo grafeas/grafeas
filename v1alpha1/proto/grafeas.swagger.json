@@ -1,13 +1,8 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "Grafeas API",
-    "version": "v1alpha1",
-    "description": "An API to insert and retrieve annotations on cloud artifacts.",
-    "license": {
-      "name": "Apache 2.0",
-      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
-    }
+    "title": "v1alpha1/proto/grafeas.proto",
+    "version": "version not set"
   },
   "schemes": [
     "http",
@@ -22,7 +17,7 @@
   "paths": {
     "/v1alpha1/projects": {
       "get": {
-        "summary": "Lists `Projects`",
+        "summary": "Deletes the given `Occurrence` from the system. Use this when\nan `Occurrence` is no longer applicable for the given resource.",
         "operationId": "ListProjects",
         "responses": {
           "200": {
@@ -61,7 +56,7 @@
         ]
       },
       "post": {
-        "summary": "Creates a new `Project`.",
+        "summary": "Returns the requested `Occurrence`.",
         "operationId": "CreateProject",
         "responses": {
           "200": {
@@ -74,6 +69,7 @@
         "parameters": [
           {
             "name": "body",
+            "description": "The project to be inserted",
             "in": "body",
             "required": true,
             "schema": {
@@ -88,7 +84,7 @@
     },
     "/v1alpha1/{name}": {
       "get": {
-        "summary": "Returns the requested `Project`.",
+        "summary": "Lists active `Occurrences` for a given project matching the filters.",
         "operationId": "GetProject",
         "responses": {
           "200": {
@@ -101,6 +97,7 @@
         "parameters": [
           {
             "name": "name",
+            "description": "The name of the project of the form\n\"projects/{project_id}\"",
             "in": "path",
             "required": true,
             "type": "string"
@@ -111,7 +108,7 @@
         ]
       },
       "delete": {
-        "summary": "Deletes the given `Project` from the system.",
+        "summary": "Creates a new `Occurrence`. Use this method to create `Occurrences`\nfor a resource.",
         "operationId": "DeleteProject",
         "responses": {
           "200": {
@@ -124,6 +121,7 @@
         "parameters": [
           {
             "name": "name",
+            "description": "The name of the project of the form\n\"projects/{project_id}\"",
             "in": "path",
             "required": true,
             "type": "string"
@@ -147,12 +145,14 @@
         "parameters": [
           {
             "name": "name",
+            "description": "The name of the note.\nShould be of the form \"projects/{provider_id}/notes/{note_id}\".",
             "in": "path",
             "required": true,
             "type": "string"
           },
           {
             "name": "body",
+            "description": "The updated note.",
             "in": "body",
             "required": true,
             "schema": {
@@ -180,6 +180,7 @@
         "parameters": [
           {
             "name": "name",
+            "description": "The name of the occurrence in the form\n\"projects/{project_id}/occurrences/{OCCURRENCE_ID}\"",
             "in": "path",
             "required": true,
             "type": "string"
@@ -205,6 +206,7 @@
         "parameters": [
           {
             "name": "name",
+            "description": "The name field will contain the note name for example:\n  \"provider/{provider_id}/notes/{note_id}\"",
             "in": "path",
             "required": true,
             "type": "string"
@@ -252,6 +254,7 @@
         "parameters": [
           {
             "name": "parent",
+            "description": "This field contains the project ID for example: \"projects/{project_id}\".",
             "in": "path",
             "required": true,
             "type": "string"
@@ -297,12 +300,14 @@
         "parameters": [
           {
             "name": "parent",
+            "description": "This field contains the project Id for example:\n\"project/{project_id}",
             "in": "path",
             "required": true,
             "type": "string"
           },
           {
             "name": "body",
+            "description": "The Note to be inserted",
             "in": "body",
             "required": true,
             "schema": {
@@ -330,6 +335,7 @@
         "parameters": [
           {
             "name": "parent",
+            "description": "This contains the project Id for example: projects/{project_id}.",
             "in": "path",
             "required": true,
             "type": "string"
@@ -375,12 +381,14 @@
         "parameters": [
           {
             "name": "parent",
+            "description": "This field contains the project Id for example: \"projects/{project_id}\"",
             "in": "path",
             "required": true,
             "type": "string"
           },
           {
             "name": "body",
+            "description": "The occurrence to be inserted",
             "in": "body",
             "required": true,
             "schema": {
@@ -408,6 +416,7 @@
         "parameters": [
           {
             "name": "parent",
+            "description": "The projectId that this operation should be created under.",
             "in": "path",
             "required": true,
             "type": "string"

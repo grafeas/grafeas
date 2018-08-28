@@ -431,7 +431,7 @@ func (AliasContext_Kind) EnumDescriptor() ([]byte, []int) {
 // Request to insert a new Project.
 type CreateProjectRequest struct {
 	// The project to be inserted
-	Project              *Project `protobuf:"bytes,1,opt,name=project" json:"project,omitempty"`
+	Project              *Project `protobuf:"bytes,1,opt,name=project,proto3" json:"project,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -472,7 +472,7 @@ func (m *CreateProjectRequest) GetProject() *Project {
 type GetProjectRequest struct {
 	// The name of the project of the form
 	// "projects/{project_id}"
-	Name                 string   `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
+	Name                 string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -512,11 +512,11 @@ func (m *GetProjectRequest) GetName() string {
 // Request to list projects.
 type ListProjectsRequest struct {
 	// The filter expression.
-	Filter string `protobuf:"bytes,1,opt,name=filter" json:"filter,omitempty"`
+	Filter string `protobuf:"bytes,1,opt,name=filter,proto3" json:"filter,omitempty"`
 	// Number of projects to return in the list.
-	PageSize int32 `protobuf:"varint,2,opt,name=page_size,json=pageSize" json:"page_size,omitempty"`
+	PageSize int32 `protobuf:"varint,2,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
 	// Token to provide to skip to a particular spot in the list.
-	PageToken            string   `protobuf:"bytes,3,opt,name=page_token,json=pageToken" json:"page_token,omitempty"`
+	PageToken            string   `protobuf:"bytes,3,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -571,7 +571,7 @@ func (m *ListProjectsRequest) GetPageToken() string {
 type DeleteProjectRequest struct {
 	// The name of the project of the form
 	// "projects/{project_id}"
-	Name                 string   `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
+	Name                 string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -612,7 +612,7 @@ func (m *DeleteProjectRequest) GetName() string {
 type GetOccurrenceRequest struct {
 	// The name of the occurrence of the form
 	// "projects/{project_id}/occurrences/{OCCURRENCE_ID}"
-	Name                 string   `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
+	Name                 string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -652,13 +652,13 @@ func (m *GetOccurrenceRequest) GetName() string {
 // Request to list occurrences.
 type ListOccurrencesRequest struct {
 	// This contains the project Id for example: projects/{project_id}.
-	Parent string `protobuf:"bytes,5,opt,name=parent" json:"parent,omitempty"`
+	Parent string `protobuf:"bytes,5,opt,name=parent,proto3" json:"parent,omitempty"`
 	// The filter expression.
-	Filter string `protobuf:"bytes,2,opt,name=filter" json:"filter,omitempty"`
+	Filter string `protobuf:"bytes,2,opt,name=filter,proto3" json:"filter,omitempty"`
 	// Number of occurrences to return in the list.
-	PageSize int32 `protobuf:"varint,3,opt,name=page_size,json=pageSize" json:"page_size,omitempty"`
+	PageSize int32 `protobuf:"varint,3,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
 	// Token to provide to skip to a particular spot in the list.
-	PageToken            string   `protobuf:"bytes,4,opt,name=page_token,json=pageToken" json:"page_token,omitempty"`
+	PageToken            string   `protobuf:"bytes,4,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -720,7 +720,7 @@ func (m *ListOccurrencesRequest) GetPageToken() string {
 type DeleteOccurrenceRequest struct {
 	// The name of the occurrence in the form of
 	// "projects/{project_id}/occurrences/{OCCURRENCE_ID}"
-	Name                 string   `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
+	Name                 string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -760,9 +760,9 @@ func (m *DeleteOccurrenceRequest) GetName() string {
 // Request to insert a new occurrence.
 type CreateOccurrenceRequest struct {
 	// This field contains the project Id for example: "projects/{project_id}"
-	Parent string `protobuf:"bytes,3,opt,name=parent" json:"parent,omitempty"`
+	Parent string `protobuf:"bytes,3,opt,name=parent,proto3" json:"parent,omitempty"`
 	// The occurrence to be inserted
-	Occurrence           *Occurrence `protobuf:"bytes,2,opt,name=occurrence" json:"occurrence,omitempty"`
+	Occurrence           *Occurrence `protobuf:"bytes,2,opt,name=occurrence,proto3" json:"occurrence,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}    `json:"-"`
 	XXX_unrecognized     []byte      `json:"-"`
 	XXX_sizecache        int32       `json:"-"`
@@ -810,11 +810,11 @@ func (m *CreateOccurrenceRequest) GetOccurrence() *Occurrence {
 type UpdateOccurrenceRequest struct {
 	// The name of the occurrence.
 	// Should be of the form "projects/{project_id}/occurrences/{OCCURRENCE_ID}".
-	Name string `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	// The updated occurrence.
-	Occurrence *Occurrence `protobuf:"bytes,2,opt,name=occurrence" json:"occurrence,omitempty"`
+	Occurrence *Occurrence `protobuf:"bytes,2,opt,name=occurrence,proto3" json:"occurrence,omitempty"`
 	// The fields to update.
-	UpdateMask           *field_mask.FieldMask `protobuf:"bytes,3,opt,name=update_mask,json=updateMask" json:"update_mask,omitempty"`
+	UpdateMask           *field_mask.FieldMask `protobuf:"bytes,3,opt,name=update_mask,json=updateMask,proto3" json:"update_mask,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}              `json:"-"`
 	XXX_unrecognized     []byte                `json:"-"`
 	XXX_sizecache        int32                 `json:"-"`
@@ -869,7 +869,7 @@ func (m *UpdateOccurrenceRequest) GetUpdateMask() *field_mask.FieldMask {
 type GetNoteRequest struct {
 	// The name of the note in the form of
 	// "providers/{provider_id}/notes/{NOTE_ID}"
-	Name                 string   `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
+	Name                 string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -910,7 +910,7 @@ func (m *GetNoteRequest) GetName() string {
 type GetOccurrenceNoteRequest struct {
 	// The name of the occurrence in the form
 	// "projects/{project_id}/occurrences/{OCCURRENCE_ID}"
-	Name                 string   `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
+	Name                 string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -950,13 +950,13 @@ func (m *GetOccurrenceNoteRequest) GetName() string {
 // Request to list notes.
 type ListNotesRequest struct {
 	// This field contains the project ID for example: "projects/{project_id}".
-	Parent string `protobuf:"bytes,5,opt,name=parent" json:"parent,omitempty"`
+	Parent string `protobuf:"bytes,5,opt,name=parent,proto3" json:"parent,omitempty"`
 	// The filter expression.
-	Filter string `protobuf:"bytes,2,opt,name=filter" json:"filter,omitempty"`
+	Filter string `protobuf:"bytes,2,opt,name=filter,proto3" json:"filter,omitempty"`
 	// Number of notes to return in the list.
-	PageSize int32 `protobuf:"varint,3,opt,name=page_size,json=pageSize" json:"page_size,omitempty"`
+	PageSize int32 `protobuf:"varint,3,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
 	// Token to provide to skip to a particular spot in the list.
-	PageToken            string   `protobuf:"bytes,4,opt,name=page_token,json=pageToken" json:"page_token,omitempty"`
+	PageToken            string   `protobuf:"bytes,4,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -1018,7 +1018,7 @@ func (m *ListNotesRequest) GetPageToken() string {
 type DeleteNoteRequest struct {
 	// The name of the note in the form of
 	// "providers/{provider_id}/notes/{NOTE_ID}"
-	Name                 string   `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
+	Name                 string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -1059,11 +1059,11 @@ func (m *DeleteNoteRequest) GetName() string {
 type CreateNoteRequest struct {
 	// This field contains the project Id for example:
 	// "project/{project_id}
-	Parent string `protobuf:"bytes,4,opt,name=parent" json:"parent,omitempty"`
+	Parent string `protobuf:"bytes,4,opt,name=parent,proto3" json:"parent,omitempty"`
 	// The ID to use for this note.
-	NoteId string `protobuf:"bytes,2,opt,name=note_id,json=noteId" json:"note_id,omitempty"`
+	NoteId string `protobuf:"bytes,2,opt,name=note_id,json=noteId,proto3" json:"note_id,omitempty"`
 	// The Note to be inserted
-	Note                 *Note    `protobuf:"bytes,3,opt,name=note" json:"note,omitempty"`
+	Note                 *Note    `protobuf:"bytes,3,opt,name=note,proto3" json:"note,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -1118,11 +1118,11 @@ func (m *CreateNoteRequest) GetNote() *Note {
 type UpdateNoteRequest struct {
 	// The name of the note.
 	// Should be of the form "projects/{provider_id}/notes/{note_id}".
-	Name string `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	// The updated note.
-	Note *Note `protobuf:"bytes,2,opt,name=note" json:"note,omitempty"`
+	Note *Note `protobuf:"bytes,2,opt,name=note,proto3" json:"note,omitempty"`
 	// The fields to update.
-	UpdateMask           *field_mask.FieldMask `protobuf:"bytes,3,opt,name=update_mask,json=updateMask" json:"update_mask,omitempty"`
+	UpdateMask           *field_mask.FieldMask `protobuf:"bytes,3,opt,name=update_mask,json=updateMask,proto3" json:"update_mask,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}              `json:"-"`
 	XXX_unrecognized     []byte                `json:"-"`
 	XXX_sizecache        int32                 `json:"-"`
@@ -1177,13 +1177,13 @@ func (m *UpdateNoteRequest) GetUpdateMask() *field_mask.FieldMask {
 type ListNoteOccurrencesRequest struct {
 	// The name field will contain the note name for example:
 	//   "provider/{provider_id}/notes/{note_id}"
-	Name string `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	// The filter expression.
-	Filter string `protobuf:"bytes,2,opt,name=filter" json:"filter,omitempty"`
+	Filter string `protobuf:"bytes,2,opt,name=filter,proto3" json:"filter,omitempty"`
 	// Number of notes to return in the list.
-	PageSize int32 `protobuf:"varint,3,opt,name=page_size,json=pageSize" json:"page_size,omitempty"`
+	PageSize int32 `protobuf:"varint,3,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
 	// Token to provide to skip to a particular spot in the list.
-	PageToken            string   `protobuf:"bytes,4,opt,name=page_token,json=pageToken" json:"page_token,omitempty"`
+	PageToken            string   `protobuf:"bytes,4,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -1244,11 +1244,11 @@ func (m *ListNoteOccurrencesRequest) GetPageToken() string {
 // Response including listed projects
 type ListProjectsResponse struct {
 	// The projects requested.
-	Projects []*Project `protobuf:"bytes,1,rep,name=projects" json:"projects,omitempty"`
+	Projects []*Project `protobuf:"bytes,1,rep,name=projects,proto3" json:"projects,omitempty"`
 	// The next pagination token in the list response. It should be used as
 	// `page_token` for the following request. An empty value means no more
 	// results.
-	NextPageToken        string   `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken" json:"next_page_token,omitempty"`
+	NextPageToken        string   `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken,proto3" json:"next_page_token,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -1295,9 +1295,9 @@ func (m *ListProjectsResponse) GetNextPageToken() string {
 // Response including listed occurrences for a note.
 type ListNoteOccurrencesResponse struct {
 	// The occurrences attached to the specified note.
-	Occurrences []*Occurrence `protobuf:"bytes,1,rep,name=occurrences" json:"occurrences,omitempty"`
+	Occurrences []*Occurrence `protobuf:"bytes,1,rep,name=occurrences,proto3" json:"occurrences,omitempty"`
 	// Token to receive the next page of notes.
-	NextPageToken        string   `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken" json:"next_page_token,omitempty"`
+	NextPageToken        string   `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken,proto3" json:"next_page_token,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -1344,10 +1344,10 @@ func (m *ListNoteOccurrencesResponse) GetNextPageToken() string {
 // Response including listed notes.
 type ListNotesResponse struct {
 	// The occurrences requested
-	Notes []*Note `protobuf:"bytes,1,rep,name=notes" json:"notes,omitempty"`
+	Notes []*Note `protobuf:"bytes,1,rep,name=notes,proto3" json:"notes,omitempty"`
 	// The next pagination token in the list response. It should be used as
 	// page_token for the following request. An empty value means no more result.
-	NextPageToken        string   `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken" json:"next_page_token,omitempty"`
+	NextPageToken        string   `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken,proto3" json:"next_page_token,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -1394,11 +1394,11 @@ func (m *ListNotesResponse) GetNextPageToken() string {
 // Response including listed active occurrences.
 type ListOccurrencesResponse struct {
 	// The occurrences requested.
-	Occurrences []*Occurrence `protobuf:"bytes,1,rep,name=occurrences" json:"occurrences,omitempty"`
+	Occurrences []*Occurrence `protobuf:"bytes,1,rep,name=occurrences,proto3" json:"occurrences,omitempty"`
 	// The next pagination token in the list response. It should be used as
 	// `page_token` for the following request. An empty value means no more
 	// results.
-	NextPageToken        string   `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken" json:"next_page_token,omitempty"`
+	NextPageToken        string   `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken,proto3" json:"next_page_token,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -1446,9 +1446,9 @@ func (m *ListOccurrencesResponse) GetNextPageToken() string {
 type ListOperationsResponse struct {
 	// The next pagination token in the List response. It should be used as
 	// page_token for the following request. An empty value means no more results.
-	NextPageToken string `protobuf:"bytes,1,opt,name=nextPageToken" json:"nextPageToken,omitempty"`
+	NextPageToken string `protobuf:"bytes,1,opt,name=nextPageToken,proto3" json:"nextPageToken,omitempty"`
 	// The operations requested.
-	Operations           []*longrunning.Operation `protobuf:"bytes,2,rep,name=operations" json:"operations,omitempty"`
+	Operations           []*longrunning.Operation `protobuf:"bytes,2,rep,name=operations,proto3" json:"operations,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}                 `json:"-"`
 	XXX_unrecognized     []byte                   `json:"-"`
 	XXX_sizecache        int32                    `json:"-"`
@@ -1496,9 +1496,9 @@ func (m *ListOperationsResponse) GetOperations() []*longrunning.Operation {
 type UpdateOperationRequest struct {
 	// The name of the Operation.
 	// Should be of the form "projects/{provider_id}/operations/{operation_id}".
-	Name string `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	// The operation to create.
-	Operation            *longrunning.Operation `protobuf:"bytes,3,opt,name=operation" json:"operation,omitempty"`
+	Operation            *longrunning.Operation `protobuf:"bytes,3,opt,name=operation,proto3" json:"operation,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}               `json:"-"`
 	XXX_unrecognized     []byte                 `json:"-"`
 	XXX_sizecache        int32                  `json:"-"`
@@ -1545,11 +1545,11 @@ func (m *UpdateOperationRequest) GetOperation() *longrunning.Operation {
 // Request for creating an operation
 type CreateOperationRequest struct {
 	// The projectId that this operation should be created under.
-	Parent string `protobuf:"bytes,1,opt,name=parent" json:"parent,omitempty"`
+	Parent string `protobuf:"bytes,1,opt,name=parent,proto3" json:"parent,omitempty"`
 	// The ID to use for this operation.
-	OperationId string `protobuf:"bytes,2,opt,name=operation_id,json=operationId" json:"operation_id,omitempty"`
+	OperationId string `protobuf:"bytes,2,opt,name=operation_id,json=operationId,proto3" json:"operation_id,omitempty"`
 	// The operation to create.
-	Operation            *longrunning.Operation `protobuf:"bytes,3,opt,name=operation" json:"operation,omitempty"`
+	Operation            *longrunning.Operation `protobuf:"bytes,3,opt,name=operation,proto3" json:"operation,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}               `json:"-"`
 	XXX_unrecognized     []byte                 `json:"-"`
 	XXX_sizecache        int32                  `json:"-"`
@@ -1604,7 +1604,7 @@ func (m *CreateOperationRequest) GetOperation() *longrunning.Operation {
 type Project struct {
 	// The name of the project of the form
 	// "projects/{project_id}"
-	Name                 string   `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
+	Name                 string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -1645,9 +1645,9 @@ func (m *Project) GetName() string {
 // that created by Container Analysis Providers
 type OperationMetadata struct {
 	// Output only. The time this operation was created.
-	CreateTime *timestamp.Timestamp `protobuf:"bytes,1,opt,name=create_time,json=createTime" json:"create_time,omitempty"`
+	CreateTime *timestamp.Timestamp `protobuf:"bytes,1,opt,name=create_time,json=createTime,proto3" json:"create_time,omitempty"`
 	// Output only. The time that this operation was marked completed or failed.
-	EndTime              *timestamp.Timestamp `protobuf:"bytes,2,opt,name=end_time,json=endTime" json:"end_time,omitempty"`
+	EndTime              *timestamp.Timestamp `protobuf:"bytes,2,opt,name=end_time,json=endTime,proto3" json:"end_time,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}             `json:"-"`
 	XXX_unrecognized     []byte               `json:"-"`
 	XXX_sizecache        int32                `json:"-"`
@@ -1701,19 +1701,19 @@ type Artifact struct {
 	// to exist here to allow existing BuildProvenance serialized to json in
 	// google.devtools.containeranalysis.v1alpha1.BuildDetails.provenance_bytes to
 	// deserialize back into proto.
-	Name string `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	// Hash or checksum value of a binary, or Docker Registry 2.0 digest of a
 	// container.
-	Checksum string `protobuf:"bytes,2,opt,name=checksum" json:"checksum,omitempty"`
+	Checksum string `protobuf:"bytes,2,opt,name=checksum,proto3" json:"checksum,omitempty"`
 	// Artifact ID, if any; for container images, this will be a URL by digest
 	// like gcr.io/projectID/imagename@sha256:123456
-	Id string `protobuf:"bytes,3,opt,name=id" json:"id,omitempty"`
+	Id string `protobuf:"bytes,3,opt,name=id,proto3" json:"id,omitempty"`
 	// Related artifact names. This may be the path to a binary or jar file, or in
 	// the case of a container build, the name used to push the container image to
 	// Google Container Registry, as presented to `docker push`. Note that a
 	// single Artifact ID can have multiple names, for example if two tags are
 	// applied to one image.
-	Names                []string `protobuf:"bytes,4,rep,name=names" json:"names,omitempty"`
+	Names                []string `protobuf:"bytes,4,rep,name=names,proto3" json:"names,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -1779,7 +1779,7 @@ func (m *Artifact) GetNames() []string {
 // all attached Attestation Occurrences, even if they don't all live in the same
 // project.
 type AttestationAuthority struct {
-	Hint                 *AttestationAuthority_AttestationAuthorityHint `protobuf:"bytes,1,opt,name=hint" json:"hint,omitempty"`
+	Hint                 *AttestationAuthority_AttestationAuthorityHint `protobuf:"bytes,1,opt,name=hint,proto3" json:"hint,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}                                       `json:"-"`
 	XXX_unrecognized     []byte                                         `json:"-"`
 	XXX_sizecache        int32                                          `json:"-"`
@@ -1818,7 +1818,7 @@ func (m *AttestationAuthority) GetHint() *AttestationAuthority_AttestationAuthor
 
 type AttestationAuthority_AttestationAuthorityHint struct {
 	// The human readable name of this Attestation Authority, e.g. "qa".
-	HumanReadableName    string   `protobuf:"bytes,1,opt,name=human_readable_name,json=humanReadableName" json:"human_readable_name,omitempty"`
+	HumanReadableName    string   `protobuf:"bytes,1,opt,name=human_readable_name,json=humanReadableName,proto3" json:"human_readable_name,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -1903,7 +1903,7 @@ type isAttestationAuthority_AttestationDetails_Signature interface {
 }
 
 type AttestationAuthority_AttestationDetails_PgpSignedAttestation struct {
-	PgpSignedAttestation *PgpSignedAttestation `protobuf:"bytes,1,opt,name=pgp_signed_attestation,json=pgpSignedAttestation,oneof"`
+	PgpSignedAttestation *PgpSignedAttestation `protobuf:"bytes,1,opt,name=pgp_signed_attestation,json=pgpSignedAttestation,proto3,oneof"`
 }
 
 func (*AttestationAuthority_AttestationDetails_PgpSignedAttestation) isAttestationAuthority_AttestationDetails_Signature() {
@@ -1981,7 +1981,7 @@ func _AttestationAuthority_AttestationDetails_OneofSizer(msg proto.Message) (n i
 // Message encapsulating build provenance details.
 type BuildDetails struct {
 	// The actual provenance
-	Provenance *BuildProvenance `protobuf:"bytes,1,opt,name=provenance" json:"provenance,omitempty"`
+	Provenance *BuildProvenance `protobuf:"bytes,1,opt,name=provenance,proto3" json:"provenance,omitempty"`
 	// Serialized JSON representation of the provenance, used in generating the
 	// `BuildSignature` in the corresponding Result. After verifying the
 	// signature, `provenance_bytes` can be unmarshalled and compared to the
@@ -1993,7 +1993,7 @@ type BuildDetails struct {
 	// The serialized form is captured both to avoid ambiguity in how the
 	// provenance is marshalled to json as well to prevent incompatibilities with
 	// future changes.
-	ProvenanceBytes      string   `protobuf:"bytes,2,opt,name=provenance_bytes,json=provenanceBytes" json:"provenance_bytes,omitempty"`
+	ProvenanceBytes      string   `protobuf:"bytes,2,opt,name=provenance_bytes,json=provenanceBytes,proto3" json:"provenance_bytes,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -2041,34 +2041,34 @@ func (m *BuildDetails) GetProvenanceBytes() string {
 // details about the build from source to completion.
 type BuildProvenance struct {
 	// Unique identifier of the build.
-	Id string `protobuf:"bytes,1,opt,name=id" json:"id,omitempty"`
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	// ID of the project.
-	ProjectId string `protobuf:"bytes,2,opt,name=project_id,json=projectId" json:"project_id,omitempty"`
+	ProjectId string `protobuf:"bytes,2,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
 	// Commands requested by the build.
-	Commands []*Command `protobuf:"bytes,5,rep,name=commands" json:"commands,omitempty"`
+	Commands []*Command `protobuf:"bytes,5,rep,name=commands,proto3" json:"commands,omitempty"`
 	// Output of the build.
-	BuiltArtifacts []*Artifact `protobuf:"bytes,6,rep,name=built_artifacts,json=builtArtifacts" json:"built_artifacts,omitempty"`
+	BuiltArtifacts []*Artifact `protobuf:"bytes,6,rep,name=built_artifacts,json=builtArtifacts,proto3" json:"built_artifacts,omitempty"`
 	// Time at which the build was created.
-	CreateTime *timestamp.Timestamp `protobuf:"bytes,7,opt,name=create_time,json=createTime" json:"create_time,omitempty"`
+	CreateTime *timestamp.Timestamp `protobuf:"bytes,7,opt,name=create_time,json=createTime,proto3" json:"create_time,omitempty"`
 	// Time at which execution of the build was started.
-	StartTime *timestamp.Timestamp `protobuf:"bytes,8,opt,name=start_time,json=startTime" json:"start_time,omitempty"`
+	StartTime *timestamp.Timestamp `protobuf:"bytes,8,opt,name=start_time,json=startTime,proto3" json:"start_time,omitempty"`
 	// Time at which execution of the build was finished.
-	FinishTime *timestamp.Timestamp `protobuf:"bytes,9,opt,name=finish_time,json=finishTime" json:"finish_time,omitempty"`
+	FinishTime *timestamp.Timestamp `protobuf:"bytes,9,opt,name=finish_time,json=finishTime,proto3" json:"finish_time,omitempty"`
 	// E-mail address of the user who initiated this build. Note that this was the
 	// user's e-mail address at the time the build was initiated; this address may
 	// not represent the same end-user for all time.
-	Creator string `protobuf:"bytes,11,opt,name=creator" json:"creator,omitempty"`
+	Creator string `protobuf:"bytes,11,opt,name=creator,proto3" json:"creator,omitempty"`
 	// Google Cloud Storage bucket where logs were written.
-	LogsBucket string `protobuf:"bytes,13,opt,name=logs_bucket,json=logsBucket" json:"logs_bucket,omitempty"`
+	LogsBucket string `protobuf:"bytes,13,opt,name=logs_bucket,json=logsBucket,proto3" json:"logs_bucket,omitempty"`
 	// Details of the Source input to the build.
-	SourceProvenance *Source `protobuf:"bytes,14,opt,name=source_provenance,json=sourceProvenance" json:"source_provenance,omitempty"`
+	SourceProvenance *Source `protobuf:"bytes,14,opt,name=source_provenance,json=sourceProvenance,proto3" json:"source_provenance,omitempty"`
 	// Trigger identifier if the build was triggered automatically; empty if not.
-	TriggerId string `protobuf:"bytes,15,opt,name=trigger_id,json=triggerId" json:"trigger_id,omitempty"`
+	TriggerId string `protobuf:"bytes,15,opt,name=trigger_id,json=triggerId,proto3" json:"trigger_id,omitempty"`
 	// Special options applied to this build. This is a catch-all field where
 	// build providers can enter any desired additional details.
-	BuildOptions map[string]string `protobuf:"bytes,16,rep,name=build_options,json=buildOptions" json:"build_options,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	BuildOptions map[string]string `protobuf:"bytes,16,rep,name=build_options,json=buildOptions,proto3" json:"build_options,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 	// Version string of the builder at the time this build was executed.
-	BuilderVersion       string   `protobuf:"bytes,17,opt,name=builder_version,json=builderVersion" json:"builder_version,omitempty"`
+	BuilderVersion       string   `protobuf:"bytes,17,opt,name=builder_version,json=builderVersion,proto3" json:"builder_version,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -2204,17 +2204,17 @@ type BuildSignature struct {
 	// from `BuildDetails` are base64-decoded into a binary representation in
 	// signed.bin. OpenSSL can then verify the signature:
 	// `openssl sha256 -verify public.pem -signature signature.bin signed.bin`
-	PublicKey string `protobuf:"bytes,1,opt,name=public_key,json=publicKey" json:"public_key,omitempty"`
+	PublicKey string `protobuf:"bytes,1,opt,name=public_key,json=publicKey,proto3" json:"public_key,omitempty"`
 	// Signature of the related `BuildProvenance`, encoded in a base64 string.
-	Signature string `protobuf:"bytes,2,opt,name=signature" json:"signature,omitempty"`
+	Signature string `protobuf:"bytes,2,opt,name=signature,proto3" json:"signature,omitempty"`
 	// An Id for the key used to sign. This could be either an Id for the key
 	// stored in `public_key` (such as the Id or fingerprint for a PGP key, or the
 	// CN for a cert), or a reference to an external key (such as a reference to a
 	// key in Cloud Key Management Service).
-	KeyId string `protobuf:"bytes,3,opt,name=key_id,json=keyId" json:"key_id,omitempty"`
+	KeyId string `protobuf:"bytes,3,opt,name=key_id,json=keyId,proto3" json:"key_id,omitempty"`
 	// The type of the key, either stored in `public_key` or referenced in
 	// `key_id`
-	KeyType              BuildSignature_KeyType `protobuf:"varint,4,opt,name=key_type,json=keyType,enum=grafeas.v1alpha1.api.BuildSignature_KeyType" json:"key_type,omitempty"`
+	KeyType              BuildSignature_KeyType `protobuf:"varint,4,opt,name=key_type,json=keyType,proto3,enum=grafeas.v1alpha1.api.BuildSignature_KeyType" json:"key_type,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}               `json:"-"`
 	XXX_unrecognized     []byte                 `json:"-"`
 	XXX_sizecache        int32                  `json:"-"`
@@ -2276,10 +2276,10 @@ func (m *BuildSignature) GetKeyType() BuildSignature_KeyType {
 // the provenance message in linked BuildDetails.
 type BuildType struct {
 	// Version of the builder which produced this Note.
-	BuilderVersion string `protobuf:"bytes,1,opt,name=builder_version,json=builderVersion" json:"builder_version,omitempty"`
+	BuilderVersion string `protobuf:"bytes,1,opt,name=builder_version,json=builderVersion,proto3" json:"builder_version,omitempty"`
 	// Signature of the build in Occurrences pointing to the Note containing this
 	// `BuilderDetails`.
-	Signature            *BuildSignature `protobuf:"bytes,2,opt,name=signature" json:"signature,omitempty"`
+	Signature            *BuildSignature `protobuf:"bytes,2,opt,name=signature,proto3" json:"signature,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}        `json:"-"`
 	XXX_unrecognized     []byte          `json:"-"`
 	XXX_sizecache        int32           `json:"-"`
@@ -2327,19 +2327,19 @@ func (m *BuildType) GetSignature() *BuildSignature {
 type Command struct {
 	// Name of the command, as presented on the command line, or if the command is
 	// packaged as a Docker container, as presented to `docker pull`.
-	Name string `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	// Environment variables set before running this Command.
-	Env []string `protobuf:"bytes,2,rep,name=env" json:"env,omitempty"`
+	Env []string `protobuf:"bytes,2,rep,name=env,proto3" json:"env,omitempty"`
 	// Command-line arguments used when executing this Command.
-	Args []string `protobuf:"bytes,3,rep,name=args" json:"args,omitempty"`
+	Args []string `protobuf:"bytes,3,rep,name=args,proto3" json:"args,omitempty"`
 	// Working directory (relative to project source root) used when running
 	// this Command.
-	Dir string `protobuf:"bytes,4,opt,name=dir" json:"dir,omitempty"`
+	Dir string `protobuf:"bytes,4,opt,name=dir,proto3" json:"dir,omitempty"`
 	// Optional unique identifier for this Command, used in wait_for to reference
 	// this Command as a dependency.
-	Id string `protobuf:"bytes,5,opt,name=id" json:"id,omitempty"`
+	Id string `protobuf:"bytes,5,opt,name=id,proto3" json:"id,omitempty"`
 	// The ID(s) of the Command(s) that this Command depends on.
-	WaitFor              []string `protobuf:"bytes,6,rep,name=wait_for,json=waitFor" json:"wait_for,omitempty"`
+	WaitFor              []string `protobuf:"bytes,6,rep,name=wait_for,json=waitFor,proto3" json:"wait_for,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -2414,7 +2414,7 @@ func (m *Command) GetWaitFor() []string {
 // An artifact that can be deployed in some runtime.
 type Deployable struct {
 	// Resource URI for the artifact being deployed.
-	ResourceUri          []string `protobuf:"bytes,1,rep,name=resource_uri,json=resourceUri" json:"resource_uri,omitempty"`
+	ResourceUri          []string `protobuf:"bytes,1,rep,name=resource_uri,json=resourceUri,proto3" json:"resource_uri,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -2454,20 +2454,20 @@ func (m *Deployable) GetResourceUri() []string {
 // The period during which some deployable was active in a runtime.
 type Deployable_DeploymentDetails struct {
 	// Identity of the user that triggered this deployment.
-	UserEmail string `protobuf:"bytes,1,opt,name=user_email,json=userEmail" json:"user_email,omitempty"`
+	UserEmail string `protobuf:"bytes,1,opt,name=user_email,json=userEmail,proto3" json:"user_email,omitempty"`
 	// Beginning of the lifetime of this deployment.
-	DeployTime *timestamp.Timestamp `protobuf:"bytes,2,opt,name=deploy_time,json=deployTime" json:"deploy_time,omitempty"`
+	DeployTime *timestamp.Timestamp `protobuf:"bytes,2,opt,name=deploy_time,json=deployTime,proto3" json:"deploy_time,omitempty"`
 	// End of the lifetime of this deployment.
-	UndeployTime *timestamp.Timestamp `protobuf:"bytes,3,opt,name=undeploy_time,json=undeployTime" json:"undeploy_time,omitempty"`
+	UndeployTime *timestamp.Timestamp `protobuf:"bytes,3,opt,name=undeploy_time,json=undeployTime,proto3" json:"undeploy_time,omitempty"`
 	// Configuration used to create this deployment.
-	Config string `protobuf:"bytes,8,opt,name=config" json:"config,omitempty"`
+	Config string `protobuf:"bytes,8,opt,name=config,proto3" json:"config,omitempty"`
 	// Address of the runtime element hosting this deployment.
-	Address string `protobuf:"bytes,5,opt,name=address" json:"address,omitempty"`
+	Address string `protobuf:"bytes,5,opt,name=address,proto3" json:"address,omitempty"`
 	// Output only. Resource URI for the artifact being deployed taken from the
 	// deployable field with the same name.
-	ResourceUri []string `protobuf:"bytes,6,rep,name=resource_uri,json=resourceUri" json:"resource_uri,omitempty"`
+	ResourceUri []string `protobuf:"bytes,6,rep,name=resource_uri,json=resourceUri,proto3" json:"resource_uri,omitempty"`
 	// Platform hosting this deployment.
-	Platform             Deployable_DeploymentDetails_Platform `protobuf:"varint,7,opt,name=platform,enum=grafeas.v1alpha1.api.Deployable_DeploymentDetails_Platform" json:"platform,omitempty"`
+	Platform             Deployable_DeploymentDetails_Platform `protobuf:"varint,7,opt,name=platform,proto3,enum=grafeas.v1alpha1.api.Deployable_DeploymentDetails_Platform" json:"platform,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}                              `json:"-"`
 	XXX_unrecognized     []byte                                `json:"-"`
 	XXX_sizecache        int32                                 `json:"-"`
@@ -2581,9 +2581,9 @@ var xxx_messageInfo_DockerImage proto.InternalMessageInfo
 // Layer holds metadata specific to a layer of a Docker image.
 type DockerImage_Layer struct {
 	// The recovered Dockerfile directive used to construct this layer.
-	Directive DockerImage_Layer_Directive `protobuf:"varint,1,opt,name=directive,enum=grafeas.v1alpha1.api.DockerImage_Layer_Directive" json:"directive,omitempty"`
+	Directive DockerImage_Layer_Directive `protobuf:"varint,1,opt,name=directive,proto3,enum=grafeas.v1alpha1.api.DockerImage_Layer_Directive" json:"directive,omitempty"`
 	// The recovered arguments to the Dockerfile directive.
-	Arguments            string   `protobuf:"bytes,2,opt,name=arguments" json:"arguments,omitempty"`
+	Arguments            string   `protobuf:"bytes,2,opt,name=arguments,proto3" json:"arguments,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -2632,15 +2632,15 @@ type DockerImage_Fingerprint struct {
 	// The layer-id of the final layer in the Docker image's v1
 	// representation.
 	// This field can be used as a filter in list requests.
-	V1Name string `protobuf:"bytes,1,opt,name=v1_name,json=v1Name" json:"v1_name,omitempty"`
+	V1Name string `protobuf:"bytes,1,opt,name=v1_name,json=v1Name,proto3" json:"v1_name,omitempty"`
 	// The ordered list of v2 blobs that represent a given image.
-	V2Blob []string `protobuf:"bytes,2,rep,name=v2_blob,json=v2Blob" json:"v2_blob,omitempty"`
+	V2Blob []string `protobuf:"bytes,2,rep,name=v2_blob,json=v2Blob,proto3" json:"v2_blob,omitempty"`
 	// Output only. The name of the image's v2 blobs computed via:
 	//   [bottom] := v2_blob[bottom]
 	//   [N] := sha256(v2_blob[N] + " " + v2_name[N+1])
 	// Only the name of the final blob is kept.
 	// This field can be used as a filter in list requests.
-	V2Name               string   `protobuf:"bytes,3,opt,name=v2_name,json=v2Name" json:"v2_name,omitempty"`
+	V2Name               string   `protobuf:"bytes,3,opt,name=v2_name,json=v2Name,proto3" json:"v2_name,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -2699,9 +2699,9 @@ func (m *DockerImage_Fingerprint) GetV2Name() string {
 type DockerImage_Basis struct {
 	// The resource_url for the resource representing the basis of
 	// associated occurrence images.
-	ResourceUrl string `protobuf:"bytes,1,opt,name=resource_url,json=resourceUrl" json:"resource_url,omitempty"`
+	ResourceUrl string `protobuf:"bytes,1,opt,name=resource_url,json=resourceUrl,proto3" json:"resource_url,omitempty"`
 	// The fingerprint of the base image
-	Fingerprint          *DockerImage_Fingerprint `protobuf:"bytes,2,opt,name=fingerprint" json:"fingerprint,omitempty"`
+	Fingerprint          *DockerImage_Fingerprint `protobuf:"bytes,2,opt,name=fingerprint,proto3" json:"fingerprint,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}                 `json:"-"`
 	XXX_unrecognized     []byte                   `json:"-"`
 	XXX_sizecache        int32                    `json:"-"`
@@ -2750,18 +2750,18 @@ func (m *DockerImage_Basis) GetFingerprint() *DockerImage_Fingerprint {
 // with FROM <DockerImage.Basis in attached Note>.
 type DockerImage_DerivedDetails struct {
 	// The fingerprint of the derived image
-	Fingerprint *DockerImage_Fingerprint `protobuf:"bytes,1,opt,name=fingerprint" json:"fingerprint,omitempty"`
+	Fingerprint *DockerImage_Fingerprint `protobuf:"bytes,1,opt,name=fingerprint,proto3" json:"fingerprint,omitempty"`
 	// Output only. The number of layers by which this image differs from
 	// the associated image basis.
-	Distance uint32 `protobuf:"varint,2,opt,name=distance" json:"distance,omitempty"`
+	Distance uint32 `protobuf:"varint,2,opt,name=distance,proto3" json:"distance,omitempty"`
 	// This contains layer-specific metadata, if populated it
 	// has length "distance" and is ordered with [distance] being the
 	// layer immediately following the base image and [1]
 	// being the final layer.
-	LayerInfo []*DockerImage_Layer `protobuf:"bytes,3,rep,name=layer_info,json=layerInfo" json:"layer_info,omitempty"`
+	LayerInfo []*DockerImage_Layer `protobuf:"bytes,3,rep,name=layer_info,json=layerInfo,proto3" json:"layer_info,omitempty"`
 	// Output only.This contains the base image url for the derived image
 	// Occurrence
-	BaseResourceUrl      string   `protobuf:"bytes,4,opt,name=base_resource_url,json=baseResourceUrl" json:"base_resource_url,omitempty"`
+	BaseResourceUrl      string   `protobuf:"bytes,4,opt,name=base_resource_url,json=baseResourceUrl,proto3" json:"base_resource_url,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -2826,7 +2826,7 @@ func (m *DockerImage_DerivedDetails) GetBaseResourceUrl() string {
 // note for a resource indicates that analysis hasn't started.
 type Discovery struct {
 	// The kind of analysis that is handled by this discovery.
-	AnalysisKind         Note_Kind `protobuf:"varint,1,opt,name=analysis_kind,json=analysisKind,enum=grafeas.v1alpha1.api.Note_Kind" json:"analysis_kind,omitempty"`
+	AnalysisKind         Note_Kind `protobuf:"varint,1,opt,name=analysis_kind,json=analysisKind,proto3,enum=grafeas.v1alpha1.api.Note_Kind" json:"analysis_kind,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}  `json:"-"`
 	XXX_unrecognized     []byte    `json:"-"`
 	XXX_sizecache        int32     `json:"-"`
@@ -2866,7 +2866,7 @@ func (m *Discovery) GetAnalysisKind() Note_Kind {
 // Provides information about the scan status of a discovered resource.
 type Discovery_DiscoveredDetails struct {
 	// Output only. An operation that indicates the status of the current scan.
-	Operation            *longrunning.Operation `protobuf:"bytes,1,opt,name=operation" json:"operation,omitempty"`
+	Operation            *longrunning.Operation `protobuf:"bytes,1,opt,name=operation,proto3" json:"operation,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}               `json:"-"`
 	XXX_unrecognized     []byte                 `json:"-"`
 	XXX_sizecache        int32                  `json:"-"`
@@ -2907,7 +2907,7 @@ func (m *Discovery_DiscoveredDetails) GetOperation() *longrunning.Operation {
 // messages to verify integrity of source input to the build.
 type FileHashes struct {
 	// Collection of file hashes.
-	FileHash             []*Hash  `protobuf:"bytes,1,rep,name=file_hash,json=fileHash" json:"file_hash,omitempty"`
+	FileHash             []*Hash  `protobuf:"bytes,1,rep,name=file_hash,json=fileHash,proto3" json:"file_hash,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -2947,7 +2947,7 @@ func (m *FileHashes) GetFileHash() []*Hash {
 // Container message for hash values.
 type Hash struct {
 	// The type of hash that was performed.
-	Type Hash_HashType `protobuf:"varint,1,opt,name=type,enum=grafeas.v1alpha1.api.Hash_HashType" json:"type,omitempty"`
+	Type Hash_HashType `protobuf:"varint,1,opt,name=type,proto3,enum=grafeas.v1alpha1.api.Hash_HashType" json:"type,omitempty"`
 	// The hash value.
 	Value                []byte   `protobuf:"bytes,2,opt,name=value,proto3" json:"value,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -2997,14 +2997,14 @@ func (m *Hash) GetValue() []byte {
 type Note struct {
 	// The name of the note in the form
 	// "providers/{provider_id}/notes/{NOTE_ID}"
-	Name string `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	// A one sentence description of this `Note`.
-	ShortDescription string `protobuf:"bytes,3,opt,name=short_description,json=shortDescription" json:"short_description,omitempty"`
+	ShortDescription string `protobuf:"bytes,3,opt,name=short_description,json=shortDescription,proto3" json:"short_description,omitempty"`
 	// A detailed description of this `Note`.
-	LongDescription string `protobuf:"bytes,4,opt,name=long_description,json=longDescription" json:"long_description,omitempty"`
+	LongDescription string `protobuf:"bytes,4,opt,name=long_description,json=longDescription,proto3" json:"long_description,omitempty"`
 	// Output only. This explicitly denotes which kind of note is specified. This
 	// field can be used as a filter in list requests.
-	Kind Note_Kind `protobuf:"varint,9,opt,name=kind,enum=grafeas.v1alpha1.api.Note_Kind" json:"kind,omitempty"`
+	Kind Note_Kind `protobuf:"varint,9,opt,name=kind,proto3,enum=grafeas.v1alpha1.api.Note_Kind" json:"kind,omitempty"`
 	// The type of note.
 	//
 	// Types that are valid to be assigned to NoteType:
@@ -3016,18 +3016,18 @@ type Note struct {
 	//	*Note_Discovery
 	NoteType isNote_NoteType `protobuf_oneof:"note_type"`
 	// URLs associated with this note
-	RelatedUrl []*Note_RelatedUrl `protobuf:"bytes,7,rep,name=related_url,json=relatedUrl" json:"related_url,omitempty"`
+	RelatedUrl []*Note_RelatedUrl `protobuf:"bytes,7,rep,name=related_url,json=relatedUrl,proto3" json:"related_url,omitempty"`
 	// Time of expiration for this note, null if note does not expire.
-	ExpirationTime *timestamp.Timestamp `protobuf:"bytes,10,opt,name=expiration_time,json=expirationTime" json:"expiration_time,omitempty"`
+	ExpirationTime *timestamp.Timestamp `protobuf:"bytes,10,opt,name=expiration_time,json=expirationTime,proto3" json:"expiration_time,omitempty"`
 	// Output only. The time this note was created. This field can be used as a
 	// filter in list requests.
-	CreateTime *timestamp.Timestamp `protobuf:"bytes,11,opt,name=create_time,json=createTime" json:"create_time,omitempty"`
+	CreateTime *timestamp.Timestamp `protobuf:"bytes,11,opt,name=create_time,json=createTime,proto3" json:"create_time,omitempty"`
 	// Output only. The time this note was last updated. This field can be used as
 	// a filter in list requests.
-	UpdateTime *timestamp.Timestamp `protobuf:"bytes,12,opt,name=update_time,json=updateTime" json:"update_time,omitempty"`
+	UpdateTime *timestamp.Timestamp `protobuf:"bytes,12,opt,name=update_time,json=updateTime,proto3" json:"update_time,omitempty"`
 	// The name of the `Operation` in the form
 	// "projects/{project_id}/operation/{OPERATION_ID}"
-	OperationName        string   `protobuf:"bytes,19,opt,name=operation_name,json=operationName" json:"operation_name,omitempty"`
+	OperationName        string   `protobuf:"bytes,19,opt,name=operation_name,json=operationName,proto3" json:"operation_name,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -3057,43 +3057,6 @@ func (m *Note) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Note proto.InternalMessageInfo
 
-type isNote_NoteType interface {
-	isNote_NoteType()
-}
-
-type Note_VulnerabilityType struct {
-	VulnerabilityType *VulnerabilityType `protobuf:"bytes,6,opt,name=vulnerability_type,json=vulnerabilityType,oneof"`
-}
-type Note_BuildType struct {
-	BuildType *BuildType `protobuf:"bytes,8,opt,name=build_type,json=buildType,oneof"`
-}
-type Note_BaseImage struct {
-	BaseImage *DockerImage_Basis `protobuf:"bytes,13,opt,name=base_image,json=baseImage,oneof"`
-}
-type Note_Package struct {
-	Package *PackageManager_Package `protobuf:"bytes,14,opt,name=package,oneof"`
-}
-type Note_Deployable struct {
-	Deployable *Deployable `protobuf:"bytes,17,opt,name=deployable,oneof"`
-}
-type Note_Discovery struct {
-	Discovery *Discovery `protobuf:"bytes,18,opt,name=discovery,oneof"`
-}
-
-func (*Note_VulnerabilityType) isNote_NoteType() {}
-func (*Note_BuildType) isNote_NoteType()         {}
-func (*Note_BaseImage) isNote_NoteType()         {}
-func (*Note_Package) isNote_NoteType()           {}
-func (*Note_Deployable) isNote_NoteType()        {}
-func (*Note_Discovery) isNote_NoteType()         {}
-
-func (m *Note) GetNoteType() isNote_NoteType {
-	if m != nil {
-		return m.NoteType
-	}
-	return nil
-}
-
 func (m *Note) GetName() string {
 	if m != nil {
 		return m.Name
@@ -3120,6 +3083,53 @@ func (m *Note) GetKind() Note_Kind {
 		return m.Kind
 	}
 	return Note_KIND_UNSPECIFIED
+}
+
+type isNote_NoteType interface {
+	isNote_NoteType()
+}
+
+type Note_VulnerabilityType struct {
+	VulnerabilityType *VulnerabilityType `protobuf:"bytes,6,opt,name=vulnerability_type,json=vulnerabilityType,proto3,oneof"`
+}
+
+type Note_BuildType struct {
+	BuildType *BuildType `protobuf:"bytes,8,opt,name=build_type,json=buildType,proto3,oneof"`
+}
+
+type Note_BaseImage struct {
+	BaseImage *DockerImage_Basis `protobuf:"bytes,13,opt,name=base_image,json=baseImage,proto3,oneof"`
+}
+
+type Note_Package struct {
+	Package *PackageManager_Package `protobuf:"bytes,14,opt,name=package,proto3,oneof"`
+}
+
+type Note_Deployable struct {
+	Deployable *Deployable `protobuf:"bytes,17,opt,name=deployable,proto3,oneof"`
+}
+
+type Note_Discovery struct {
+	Discovery *Discovery `protobuf:"bytes,18,opt,name=discovery,proto3,oneof"`
+}
+
+func (*Note_VulnerabilityType) isNote_NoteType() {}
+
+func (*Note_BuildType) isNote_NoteType() {}
+
+func (*Note_BaseImage) isNote_NoteType() {}
+
+func (*Note_Package) isNote_NoteType() {}
+
+func (*Note_Deployable) isNote_NoteType() {}
+
+func (*Note_Discovery) isNote_NoteType() {}
+
+func (m *Note) GetNoteType() isNote_NoteType {
+	if m != nil {
+		return m.NoteType
+	}
+	return nil
 }
 
 func (m *Note) GetVulnerabilityType() *VulnerabilityType {
@@ -3352,9 +3362,9 @@ func _Note_OneofSizer(msg proto.Message) (n int) {
 // Metadata for any related URL information
 type Note_RelatedUrl struct {
 	// Specific URL to associate with the note
-	Url string `protobuf:"bytes,1,opt,name=url" json:"url,omitempty"`
+	Url string `protobuf:"bytes,1,opt,name=url,proto3" json:"url,omitempty"`
 	// Label to describe usage of the URL
-	Label                string   `protobuf:"bytes,2,opt,name=label" json:"label,omitempty"`
+	Label                string   `protobuf:"bytes,2,opt,name=label,proto3" json:"label,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -3402,18 +3412,18 @@ func (m *Note_RelatedUrl) GetLabel() string {
 type Occurrence struct {
 	// Output only. The name of the `Occurrence` in the form
 	// "projects/{project_id}/occurrences/{OCCURRENCE_ID}"
-	Name string `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	// The unique URL of the image or the container for which the `Occurrence`
 	// applies. For example, https://gcr.io/project/image@sha256:foo This field
 	// can be used as a filter in list requests.
-	ResourceUrl string `protobuf:"bytes,2,opt,name=resource_url,json=resourceUrl" json:"resource_url,omitempty"`
+	ResourceUrl string `protobuf:"bytes,2,opt,name=resource_url,json=resourceUrl,proto3" json:"resource_url,omitempty"`
 	// An analysis note associated with this image, in the form
 	// "providers/{provider_id}/notes/{NOTE_ID}"
 	// This field can be used as a filter in list requests.
-	NoteName string `protobuf:"bytes,3,opt,name=note_name,json=noteName" json:"note_name,omitempty"`
+	NoteName string `protobuf:"bytes,3,opt,name=note_name,json=noteName,proto3" json:"note_name,omitempty"`
 	// Output only. This explicitly denotes which of the `Occurrence` details are
 	// specified. This field can be used as a filter in list requests.
-	Kind Note_Kind `protobuf:"varint,6,opt,name=kind,enum=grafeas.v1alpha1.api.Note_Kind" json:"kind,omitempty"`
+	Kind Note_Kind `protobuf:"varint,6,opt,name=kind,proto3,enum=grafeas.v1alpha1.api.Note_Kind" json:"kind,omitempty"`
 	// Describes the details of the vulnerability `Note` found in this resource.
 	//
 	// Types that are valid to be assigned to Details:
@@ -3426,14 +3436,14 @@ type Occurrence struct {
 	//	*Occurrence_AttestationDetails
 	Details isOccurrence_Details `protobuf_oneof:"details"`
 	// A description of actions that can be taken to remedy the `Note`
-	Remediation string `protobuf:"bytes,5,opt,name=remediation" json:"remediation,omitempty"`
+	Remediation string `protobuf:"bytes,5,opt,name=remediation,proto3" json:"remediation,omitempty"`
 	// Output only. The time this `Occurrence` was created.
-	CreateTime *timestamp.Timestamp `protobuf:"bytes,9,opt,name=create_time,json=createTime" json:"create_time,omitempty"`
+	CreateTime *timestamp.Timestamp `protobuf:"bytes,9,opt,name=create_time,json=createTime,proto3" json:"create_time,omitempty"`
 	// Output only. The time this `Occurrence` was last updated.
-	UpdateTime *timestamp.Timestamp `protobuf:"bytes,10,opt,name=update_time,json=updateTime" json:"update_time,omitempty"`
+	UpdateTime *timestamp.Timestamp `protobuf:"bytes,10,opt,name=update_time,json=updateTime,proto3" json:"update_time,omitempty"`
 	// The name of the `Operation` in the form
 	// "projects/{project_id}/operation/{OPERATION_ID}"
-	OperationName        string   `protobuf:"bytes,19,opt,name=operation_name,json=operationName" json:"operation_name,omitempty"`
+	OperationName        string   `protobuf:"bytes,19,opt,name=operation_name,json=operationName,proto3" json:"operation_name,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -3463,47 +3473,6 @@ func (m *Occurrence) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Occurrence proto.InternalMessageInfo
 
-type isOccurrence_Details interface {
-	isOccurrence_Details()
-}
-
-type Occurrence_VulnerabilityDetails struct {
-	VulnerabilityDetails *VulnerabilityType_VulnerabilityDetails `protobuf:"bytes,8,opt,name=vulnerability_details,json=vulnerabilityDetails,oneof"`
-}
-type Occurrence_BuildDetails struct {
-	BuildDetails *BuildDetails `protobuf:"bytes,7,opt,name=build_details,json=buildDetails,oneof"`
-}
-type Occurrence_DerivedImageDetails struct {
-	DerivedImageDetails *DockerImage_DerivedDetails `protobuf:"bytes,11,opt,name=derived_image_details,json=derivedImageDetails,oneof"`
-}
-type Occurrence_InstallationDetails struct {
-	InstallationDetails *PackageManager_InstallationDetails `protobuf:"bytes,12,opt,name=installation_details,json=installationDetails,oneof"`
-}
-type Occurrence_DeploymentDetails struct {
-	DeploymentDetails *Deployable_DeploymentDetails `protobuf:"bytes,14,opt,name=deployment_details,json=deploymentDetails,oneof"`
-}
-type Occurrence_DiscoveredDetails struct {
-	DiscoveredDetails *Discovery_DiscoveredDetails `protobuf:"bytes,15,opt,name=discovered_details,json=discoveredDetails,oneof"`
-}
-type Occurrence_AttestationDetails struct {
-	AttestationDetails *AttestationAuthority_AttestationDetails `protobuf:"bytes,16,opt,name=attestation_details,json=attestationDetails,oneof"`
-}
-
-func (*Occurrence_VulnerabilityDetails) isOccurrence_Details() {}
-func (*Occurrence_BuildDetails) isOccurrence_Details()         {}
-func (*Occurrence_DerivedImageDetails) isOccurrence_Details()  {}
-func (*Occurrence_InstallationDetails) isOccurrence_Details()  {}
-func (*Occurrence_DeploymentDetails) isOccurrence_Details()    {}
-func (*Occurrence_DiscoveredDetails) isOccurrence_Details()    {}
-func (*Occurrence_AttestationDetails) isOccurrence_Details()   {}
-
-func (m *Occurrence) GetDetails() isOccurrence_Details {
-	if m != nil {
-		return m.Details
-	}
-	return nil
-}
-
 func (m *Occurrence) GetName() string {
 	if m != nil {
 		return m.Name
@@ -3530,6 +3499,59 @@ func (m *Occurrence) GetKind() Note_Kind {
 		return m.Kind
 	}
 	return Note_KIND_UNSPECIFIED
+}
+
+type isOccurrence_Details interface {
+	isOccurrence_Details()
+}
+
+type Occurrence_VulnerabilityDetails struct {
+	VulnerabilityDetails *VulnerabilityType_VulnerabilityDetails `protobuf:"bytes,8,opt,name=vulnerability_details,json=vulnerabilityDetails,proto3,oneof"`
+}
+
+type Occurrence_BuildDetails struct {
+	BuildDetails *BuildDetails `protobuf:"bytes,7,opt,name=build_details,json=buildDetails,proto3,oneof"`
+}
+
+type Occurrence_DerivedImageDetails struct {
+	DerivedImageDetails *DockerImage_DerivedDetails `protobuf:"bytes,11,opt,name=derived_image_details,json=derivedImageDetails,proto3,oneof"`
+}
+
+type Occurrence_InstallationDetails struct {
+	InstallationDetails *PackageManager_InstallationDetails `protobuf:"bytes,12,opt,name=installation_details,json=installationDetails,proto3,oneof"`
+}
+
+type Occurrence_DeploymentDetails struct {
+	DeploymentDetails *Deployable_DeploymentDetails `protobuf:"bytes,14,opt,name=deployment_details,json=deploymentDetails,proto3,oneof"`
+}
+
+type Occurrence_DiscoveredDetails struct {
+	DiscoveredDetails *Discovery_DiscoveredDetails `protobuf:"bytes,15,opt,name=discovered_details,json=discoveredDetails,proto3,oneof"`
+}
+
+type Occurrence_AttestationDetails struct {
+	AttestationDetails *AttestationAuthority_AttestationDetails `protobuf:"bytes,16,opt,name=attestation_details,json=attestationDetails,proto3,oneof"`
+}
+
+func (*Occurrence_VulnerabilityDetails) isOccurrence_Details() {}
+
+func (*Occurrence_BuildDetails) isOccurrence_Details() {}
+
+func (*Occurrence_DerivedImageDetails) isOccurrence_Details() {}
+
+func (*Occurrence_InstallationDetails) isOccurrence_Details() {}
+
+func (*Occurrence_DeploymentDetails) isOccurrence_Details() {}
+
+func (*Occurrence_DiscoveredDetails) isOccurrence_Details() {}
+
+func (*Occurrence_AttestationDetails) isOccurrence_Details() {}
+
+func (m *Occurrence) GetDetails() isOccurrence_Details {
+	if m != nil {
+		return m.Details
+	}
+	return nil
 }
 
 func (m *Occurrence) GetVulnerabilityDetails() *VulnerabilityType_VulnerabilityDetails {
@@ -3814,19 +3836,19 @@ var xxx_messageInfo_PackageManager proto.InternalMessageInfo
 type PackageManager_Distribution struct {
 	// The cpe_uri in [cpe format](https://cpe.mitre.org/specification/)
 	// denoting the package manager version distributing a package.
-	CpeUri string `protobuf:"bytes,1,opt,name=cpe_uri,json=cpeUri" json:"cpe_uri,omitempty"`
+	CpeUri string `protobuf:"bytes,1,opt,name=cpe_uri,json=cpeUri,proto3" json:"cpe_uri,omitempty"`
 	// The CPU architecture for which packages in this distribution
 	// channel were built
-	Architecture PackageManager_Architecture `protobuf:"varint,2,opt,name=architecture,enum=grafeas.v1alpha1.api.PackageManager_Architecture" json:"architecture,omitempty"`
+	Architecture PackageManager_Architecture `protobuf:"varint,2,opt,name=architecture,proto3,enum=grafeas.v1alpha1.api.PackageManager_Architecture" json:"architecture,omitempty"`
 	// The latest available version of this package in
 	// this distribution channel.
-	LatestVersion *VulnerabilityType_Version `protobuf:"bytes,3,opt,name=latest_version,json=latestVersion" json:"latest_version,omitempty"`
+	LatestVersion *VulnerabilityType_Version `protobuf:"bytes,3,opt,name=latest_version,json=latestVersion,proto3" json:"latest_version,omitempty"`
 	// A freeform string denoting the maintainer of this package.
-	Maintainer string `protobuf:"bytes,4,opt,name=maintainer" json:"maintainer,omitempty"`
+	Maintainer string `protobuf:"bytes,4,opt,name=maintainer,proto3" json:"maintainer,omitempty"`
 	// The distribution channel-specific homepage for this package.
-	Url string `protobuf:"bytes,6,opt,name=url" json:"url,omitempty"`
+	Url string `protobuf:"bytes,6,opt,name=url,proto3" json:"url,omitempty"`
 	// The distribution channel-specific description of this package.
-	Description          string   `protobuf:"bytes,7,opt,name=description" json:"description,omitempty"`
+	Description          string   `protobuf:"bytes,7,opt,name=description,proto3" json:"description,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -3904,11 +3926,11 @@ func (m *PackageManager_Distribution) GetDescription() string {
 type PackageManager_Location struct {
 	// The cpe_uri in [cpe format](https://cpe.mitre.org/specification/)
 	// denoting the package manager version distributing a package.
-	CpeUri string `protobuf:"bytes,1,opt,name=cpe_uri,json=cpeUri" json:"cpe_uri,omitempty"`
+	CpeUri string `protobuf:"bytes,1,opt,name=cpe_uri,json=cpeUri,proto3" json:"cpe_uri,omitempty"`
 	// The version installed at this location.
-	Version *VulnerabilityType_Version `protobuf:"bytes,2,opt,name=version" json:"version,omitempty"`
+	Version *VulnerabilityType_Version `protobuf:"bytes,2,opt,name=version,proto3" json:"version,omitempty"`
 	// The path from which we gathered that this package/version is installed.
-	Path                 string   `protobuf:"bytes,3,opt,name=path" json:"path,omitempty"`
+	Path                 string   `protobuf:"bytes,3,opt,name=path,proto3" json:"path,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -3964,9 +3986,9 @@ func (m *PackageManager_Location) GetPath() string {
 // e.g. glibc (aka libc6) is distributed by many, at various versions.
 type PackageManager_Package struct {
 	// The name of the package.
-	Name string `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	// The various channels by which a package is distributed.
-	Distribution         []*PackageManager_Distribution `protobuf:"bytes,10,rep,name=distribution" json:"distribution,omitempty"`
+	Distribution         []*PackageManager_Distribution `protobuf:"bytes,10,rep,name=distribution,proto3" json:"distribution,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}                       `json:"-"`
 	XXX_unrecognized     []byte                         `json:"-"`
 	XXX_sizecache        int32                          `json:"-"`
@@ -4014,10 +4036,10 @@ func (m *PackageManager_Package) GetDistribution() []*PackageManager_Distributio
 // a system.
 type PackageManager_InstallationDetails struct {
 	// Output only. The name of the installed package.
-	Name string `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	// All of the places within the filesystem versions of this package
 	// have been found.
-	Location             []*PackageManager_Location `protobuf:"bytes,2,rep,name=location" json:"location,omitempty"`
+	Location             []*PackageManager_Location `protobuf:"bytes,2,rep,name=location,proto3" json:"location,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}                   `json:"-"`
 	XXX_unrecognized     []byte                     `json:"-"`
 	XXX_sizecache        int32                      `json:"-"`
@@ -4074,12 +4096,12 @@ type PgpSignedAttestation struct {
 	// Concretely, `gpg --sign --armor --output=signature.gpg payload.json` will
 	// create the signature content expected in this field in `signature.gpg` for
 	// the `payload.json` attestation payload.
-	Signature string `protobuf:"bytes,1,opt,name=signature" json:"signature,omitempty"`
+	Signature string `protobuf:"bytes,1,opt,name=signature,proto3" json:"signature,omitempty"`
 	// Type (e.g. schema) of the attestation payload that was signed.
 	// The verifier must ensure that the provided type is one that the verifier
 	// supports, and that the attestation payload is a valid instantiation of that
 	// type (e.g. by validating a JSON schema).
-	ContentType PgpSignedAttestation_ContentType `protobuf:"varint,3,opt,name=content_type,json=contentType,enum=grafeas.v1alpha1.api.PgpSignedAttestation_ContentType" json:"content_type,omitempty"`
+	ContentType PgpSignedAttestation_ContentType `protobuf:"varint,3,opt,name=content_type,json=contentType,proto3,enum=grafeas.v1alpha1.api.PgpSignedAttestation_ContentType" json:"content_type,omitempty"`
 	// This field is used by verifiers to select the public key used to validate
 	// the signature.  Note that the policy of the verifier ultimately determines
 	// which public keys verify a signature based on the context of the
@@ -4121,23 +4143,6 @@ func (m *PgpSignedAttestation) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_PgpSignedAttestation proto.InternalMessageInfo
 
-type isPgpSignedAttestation_KeyId interface {
-	isPgpSignedAttestation_KeyId()
-}
-
-type PgpSignedAttestation_PgpKeyId struct {
-	PgpKeyId string `protobuf:"bytes,2,opt,name=pgp_key_id,json=pgpKeyId,oneof"`
-}
-
-func (*PgpSignedAttestation_PgpKeyId) isPgpSignedAttestation_KeyId() {}
-
-func (m *PgpSignedAttestation) GetKeyId() isPgpSignedAttestation_KeyId {
-	if m != nil {
-		return m.KeyId
-	}
-	return nil
-}
-
 func (m *PgpSignedAttestation) GetSignature() string {
 	if m != nil {
 		return m.Signature
@@ -4150,6 +4155,23 @@ func (m *PgpSignedAttestation) GetContentType() PgpSignedAttestation_ContentType
 		return m.ContentType
 	}
 	return PgpSignedAttestation_CONTENT_TYPE_UNSPECIFIED
+}
+
+type isPgpSignedAttestation_KeyId interface {
+	isPgpSignedAttestation_KeyId()
+}
+
+type PgpSignedAttestation_PgpKeyId struct {
+	PgpKeyId string `protobuf:"bytes,2,opt,name=pgp_key_id,json=pgpKeyId,proto3,oneof"`
+}
+
+func (*PgpSignedAttestation_PgpKeyId) isPgpSignedAttestation_KeyId() {}
+
+func (m *PgpSignedAttestation) GetKeyId() isPgpSignedAttestation_KeyId {
+	if m != nil {
+		return m.KeyId
+	}
+	return nil
 }
 
 func (m *PgpSignedAttestation) GetPgpKeyId() string {
@@ -4220,7 +4242,7 @@ type Source struct {
 	Source isSource_Source `protobuf_oneof:"source"`
 	// If provided, the input binary artifacts for the build came from this
 	// location.
-	ArtifactStorageSource *StorageSource `protobuf:"bytes,4,opt,name=artifact_storage_source,json=artifactStorageSource" json:"artifact_storage_source,omitempty"`
+	ArtifactStorageSource *StorageSource `protobuf:"bytes,4,opt,name=artifact_storage_source,json=artifactStorageSource,proto3" json:"artifact_storage_source,omitempty"`
 	// Hash(es) of the build source, which can be used to verify that the original
 	// source integrity was maintained in the build.
 	//
@@ -4229,14 +4251,14 @@ type Source struct {
 	//
 	// If the build source came in a single package such as a gzipped tarfile
 	// (.tar.gz), the FileHash will be for the single path to that file.
-	FileHashes map[string]*FileHashes `protobuf:"bytes,3,rep,name=file_hashes,json=fileHashes" json:"file_hashes,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	FileHashes map[string]*FileHashes `protobuf:"bytes,3,rep,name=file_hashes,json=fileHashes,proto3" json:"file_hashes,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 	// If provided, the source code used for the build came from this location.
-	Context *SourceContext `protobuf:"bytes,7,opt,name=context" json:"context,omitempty"`
+	Context *SourceContext `protobuf:"bytes,7,opt,name=context,proto3" json:"context,omitempty"`
 	// If provided, some of the source code used for the build may be found in
 	// these locations, in the case where the source repository had multiple
 	// remotes or submodules. This list will not include the context specified in
 	// the context field.
-	AdditionalContexts   []*SourceContext `protobuf:"bytes,8,rep,name=additional_contexts,json=additionalContexts" json:"additional_contexts,omitempty"`
+	AdditionalContexts   []*SourceContext `protobuf:"bytes,8,rep,name=additional_contexts,json=additionalContexts,proto3" json:"additional_contexts,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}         `json:"-"`
 	XXX_unrecognized     []byte           `json:"-"`
 	XXX_sizecache        int32            `json:"-"`
@@ -4271,14 +4293,16 @@ type isSource_Source interface {
 }
 
 type Source_StorageSource struct {
-	StorageSource *StorageSource `protobuf:"bytes,1,opt,name=storage_source,json=storageSource,oneof"`
+	StorageSource *StorageSource `protobuf:"bytes,1,opt,name=storage_source,json=storageSource,proto3,oneof"`
 }
+
 type Source_RepoSource struct {
-	RepoSource *RepoSource `protobuf:"bytes,2,opt,name=repo_source,json=repoSource,oneof"`
+	RepoSource *RepoSource `protobuf:"bytes,2,opt,name=repo_source,json=repoSource,proto3,oneof"`
 }
 
 func (*Source_StorageSource) isSource_Source() {}
-func (*Source_RepoSource) isSource_Source()    {}
+
+func (*Source_RepoSource) isSource_Source() {}
 
 func (m *Source) GetSource() isSource_Source {
 	if m != nil {
@@ -4407,9 +4431,9 @@ func _Source_OneofSizer(msg proto.Message) (n int) {
 // Repository.
 type RepoSource struct {
 	// ID of the project that owns the repo.
-	ProjectId string `protobuf:"bytes,1,opt,name=project_id,json=projectId" json:"project_id,omitempty"`
+	ProjectId string `protobuf:"bytes,1,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
 	// Name of the repo.
-	RepoName string `protobuf:"bytes,2,opt,name=repo_name,json=repoName" json:"repo_name,omitempty"`
+	RepoName string `protobuf:"bytes,2,opt,name=repo_name,json=repoName,proto3" json:"repo_name,omitempty"`
 	// A revision within the source repository must be specified in
 	// one of these ways.
 	//
@@ -4447,31 +4471,6 @@ func (m *RepoSource) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_RepoSource proto.InternalMessageInfo
 
-type isRepoSource_Revision interface {
-	isRepoSource_Revision()
-}
-
-type RepoSource_BranchName struct {
-	BranchName string `protobuf:"bytes,3,opt,name=branch_name,json=branchName,oneof"`
-}
-type RepoSource_TagName struct {
-	TagName string `protobuf:"bytes,4,opt,name=tag_name,json=tagName,oneof"`
-}
-type RepoSource_CommitSha struct {
-	CommitSha string `protobuf:"bytes,5,opt,name=commit_sha,json=commitSha,oneof"`
-}
-
-func (*RepoSource_BranchName) isRepoSource_Revision() {}
-func (*RepoSource_TagName) isRepoSource_Revision()    {}
-func (*RepoSource_CommitSha) isRepoSource_Revision()  {}
-
-func (m *RepoSource) GetRevision() isRepoSource_Revision {
-	if m != nil {
-		return m.Revision
-	}
-	return nil
-}
-
 func (m *RepoSource) GetProjectId() string {
 	if m != nil {
 		return m.ProjectId
@@ -4484,6 +4483,35 @@ func (m *RepoSource) GetRepoName() string {
 		return m.RepoName
 	}
 	return ""
+}
+
+type isRepoSource_Revision interface {
+	isRepoSource_Revision()
+}
+
+type RepoSource_BranchName struct {
+	BranchName string `protobuf:"bytes,3,opt,name=branch_name,json=branchName,proto3,oneof"`
+}
+
+type RepoSource_TagName struct {
+	TagName string `protobuf:"bytes,4,opt,name=tag_name,json=tagName,proto3,oneof"`
+}
+
+type RepoSource_CommitSha struct {
+	CommitSha string `protobuf:"bytes,5,opt,name=commit_sha,json=commitSha,proto3,oneof"`
+}
+
+func (*RepoSource_BranchName) isRepoSource_Revision() {}
+
+func (*RepoSource_TagName) isRepoSource_Revision() {}
+
+func (*RepoSource_CommitSha) isRepoSource_Revision() {}
+
+func (m *RepoSource) GetRevision() isRepoSource_Revision {
+	if m != nil {
+		return m.Revision
+	}
+	return nil
 }
 
 func (m *RepoSource) GetBranchName() string {
@@ -4594,11 +4622,11 @@ type StorageSource struct {
 	// Google Cloud Storage bucket containing source (see [Bucket Name
 	// Requirements]
 	// (https://cloud.google.com/storage/docs/bucket-naming#requirements)).
-	Bucket string `protobuf:"bytes,1,opt,name=bucket" json:"bucket,omitempty"`
+	Bucket string `protobuf:"bytes,1,opt,name=bucket,proto3" json:"bucket,omitempty"`
 	// Google Cloud Storage object containing source.
-	Object string `protobuf:"bytes,2,opt,name=object" json:"object,omitempty"`
+	Object string `protobuf:"bytes,2,opt,name=object,proto3" json:"object,omitempty"`
 	// Google Cloud Storage generation for the object.
-	Generation           int64    `protobuf:"varint,3,opt,name=generation" json:"generation,omitempty"`
+	Generation           int64    `protobuf:"varint,3,opt,name=generation,proto3" json:"generation,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -4652,13 +4680,13 @@ func (m *StorageSource) GetGeneration() int64 {
 // VulnerabilityType provides metadata about a security vulnerability.
 type VulnerabilityType struct {
 	// The CVSS score for this Vulnerability.
-	CvssScore float32 `protobuf:"fixed32,2,opt,name=cvss_score,json=cvssScore" json:"cvss_score,omitempty"`
+	CvssScore float32 `protobuf:"fixed32,2,opt,name=cvss_score,json=cvssScore,proto3" json:"cvss_score,omitempty"`
 	// Note provider assigned impact of the vulnerability
-	Severity VulnerabilityType_Severity `protobuf:"varint,3,opt,name=severity,enum=grafeas.v1alpha1.api.VulnerabilityType_Severity" json:"severity,omitempty"`
+	Severity VulnerabilityType_Severity `protobuf:"varint,3,opt,name=severity,proto3,enum=grafeas.v1alpha1.api.VulnerabilityType_Severity" json:"severity,omitempty"`
 	// All information about the package to specifically identify this
 	// vulnerability. One entry per (version range and cpe_uri) the
 	// package vulnerability has manifested in.
-	Details              []*VulnerabilityType_Detail `protobuf:"bytes,4,rep,name=details" json:"details,omitempty"`
+	Details              []*VulnerabilityType_Detail `protobuf:"bytes,4,rep,name=details,proto3" json:"details,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}                    `json:"-"`
 	XXX_unrecognized     []byte                      `json:"-"`
 	XXX_sizecache        int32                       `json:"-"`
@@ -4716,14 +4744,14 @@ func (m *VulnerabilityType) GetDetails() []*VulnerabilityType_Detail {
 // http://blog.jasonantman.com/2014/07/how-yum-and-rpm-compare-versions/
 type VulnerabilityType_Version struct {
 	// Used to correct mistakes in the version numbering scheme.
-	Epoch int32 `protobuf:"varint,1,opt,name=epoch" json:"epoch,omitempty"`
+	Epoch int32 `protobuf:"varint,1,opt,name=epoch,proto3" json:"epoch,omitempty"`
 	// The main part of the version name.
-	Name string `protobuf:"bytes,2,opt,name=name" json:"name,omitempty"`
+	Name string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	// The iteration of the package build from the above version.
-	Revision string `protobuf:"bytes,3,opt,name=revision" json:"revision,omitempty"`
+	Revision string `protobuf:"bytes,3,opt,name=revision,proto3" json:"revision,omitempty"`
 	// Distinguish between sentinel MIN/MAX versions and normal versions.
 	// If kind is not NORMAL, then the other fields are ignored.
-	Kind                 VulnerabilityType_Version_VersionKind `protobuf:"varint,5,opt,name=kind,enum=grafeas.v1alpha1.api.VulnerabilityType_Version_VersionKind" json:"kind,omitempty"`
+	Kind                 VulnerabilityType_Version_VersionKind `protobuf:"varint,5,opt,name=kind,proto3,enum=grafeas.v1alpha1.api.VulnerabilityType_Version_VersionKind" json:"kind,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}                              `json:"-"`
 	XXX_unrecognized     []byte                                `json:"-"`
 	XXX_sizecache        int32                                 `json:"-"`
@@ -4789,24 +4817,24 @@ type VulnerabilityType_Detail struct {
 	// which the vulnerability manifests.  Examples include distro or storage
 	// location for vulnerable jar.
 	// This field can be used as a filter in list requests.
-	CpeUri string `protobuf:"bytes,1,opt,name=cpe_uri,json=cpeUri" json:"cpe_uri,omitempty"`
+	CpeUri string `protobuf:"bytes,1,opt,name=cpe_uri,json=cpeUri,proto3" json:"cpe_uri,omitempty"`
 	// The name of the package where the vulnerability was found.
 	// This field can be used as a filter in list requests.
-	Package string `protobuf:"bytes,8,opt,name=package" json:"package,omitempty"`
+	Package string `protobuf:"bytes,8,opt,name=package,proto3" json:"package,omitempty"`
 	// The min version of the package in which the vulnerability exists.
-	MinAffectedVersion *VulnerabilityType_Version `protobuf:"bytes,6,opt,name=min_affected_version,json=minAffectedVersion" json:"min_affected_version,omitempty"`
+	MinAffectedVersion *VulnerabilityType_Version `protobuf:"bytes,6,opt,name=min_affected_version,json=minAffectedVersion,proto3" json:"min_affected_version,omitempty"`
 	// The max version of the package in which the vulnerability exists.
 	// This field can be used as a filter in list requests.
-	MaxAffectedVersion *VulnerabilityType_Version `protobuf:"bytes,7,opt,name=max_affected_version,json=maxAffectedVersion" json:"max_affected_version,omitempty"`
+	MaxAffectedVersion *VulnerabilityType_Version `protobuf:"bytes,7,opt,name=max_affected_version,json=maxAffectedVersion,proto3" json:"max_affected_version,omitempty"`
 	// The severity (eg: distro assigned severity) for this vulnerability.
-	SeverityName string `protobuf:"bytes,4,opt,name=severity_name,json=severityName" json:"severity_name,omitempty"`
+	SeverityName string `protobuf:"bytes,4,opt,name=severity_name,json=severityName,proto3" json:"severity_name,omitempty"`
 	// A vendor-specific description of this note.
-	Description string `protobuf:"bytes,9,opt,name=description" json:"description,omitempty"`
+	Description string `protobuf:"bytes,9,opt,name=description,proto3" json:"description,omitempty"`
 	// The fix for this specific package version.
-	FixedLocation *VulnerabilityType_VulnerabilityLocation `protobuf:"bytes,5,opt,name=fixed_location,json=fixedLocation" json:"fixed_location,omitempty"`
+	FixedLocation *VulnerabilityType_VulnerabilityLocation `protobuf:"bytes,5,opt,name=fixed_location,json=fixedLocation,proto3" json:"fixed_location,omitempty"`
 	// The type of package; whether native or non native(ruby gems,
 	// node.js packages etc)
-	PackageType          string   `protobuf:"bytes,10,opt,name=package_type,json=packageType" json:"package_type,omitempty"`
+	PackageType          string   `protobuf:"bytes,10,opt,name=package_type,json=packageType,proto3" json:"package_type,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -4897,16 +4925,16 @@ func (m *VulnerabilityType_Detail) GetPackageType() string {
 type VulnerabilityType_VulnerabilityDetails struct {
 	// The type of package; whether native or non native(ruby gems,
 	// node.js packages etc)
-	Type string `protobuf:"bytes,3,opt,name=type" json:"type,omitempty"`
+	Type string `protobuf:"bytes,3,opt,name=type,proto3" json:"type,omitempty"`
 	// Output only. The note provider assigned Severity of the vulnerability.
-	Severity VulnerabilityType_Severity `protobuf:"varint,4,opt,name=severity,enum=grafeas.v1alpha1.api.VulnerabilityType_Severity" json:"severity,omitempty"`
+	Severity VulnerabilityType_Severity `protobuf:"varint,4,opt,name=severity,proto3,enum=grafeas.v1alpha1.api.VulnerabilityType_Severity" json:"severity,omitempty"`
 	// Output only. The CVSS score of this vulnerability. CVSS score is on a
 	// scale of 0-10 where 0 indicates low severity and 10 indicates high
 	// severity.
-	CvssScore float32 `protobuf:"fixed32,5,opt,name=cvss_score,json=cvssScore" json:"cvss_score,omitempty"`
+	CvssScore float32 `protobuf:"fixed32,5,opt,name=cvss_score,json=cvssScore,proto3" json:"cvss_score,omitempty"`
 	// The set of affected locations and their fixes (if available) within
 	// the associated resource.
-	PackageIssue         []*VulnerabilityType_PackageIssue `protobuf:"bytes,6,rep,name=package_issue,json=packageIssue" json:"package_issue,omitempty"`
+	PackageIssue         []*VulnerabilityType_PackageIssue `protobuf:"bytes,6,rep,name=package_issue,json=packageIssue,proto3" json:"package_issue,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}                          `json:"-"`
 	XXX_unrecognized     []byte                            `json:"-"`
 	XXX_sizecache        int32                             `json:"-"`
@@ -4970,11 +4998,11 @@ func (m *VulnerabilityType_VulnerabilityDetails) GetPackageIssue() []*Vulnerabil
 // associated fix (if one is available).
 type VulnerabilityType_PackageIssue struct {
 	// The location of the vulnerability.
-	AffectedLocation *VulnerabilityType_VulnerabilityLocation `protobuf:"bytes,1,opt,name=affected_location,json=affectedLocation" json:"affected_location,omitempty"`
+	AffectedLocation *VulnerabilityType_VulnerabilityLocation `protobuf:"bytes,1,opt,name=affected_location,json=affectedLocation,proto3" json:"affected_location,omitempty"`
 	// The location of the available fix for vulnerability.
-	FixedLocation *VulnerabilityType_VulnerabilityLocation `protobuf:"bytes,2,opt,name=fixed_location,json=fixedLocation" json:"fixed_location,omitempty"`
+	FixedLocation *VulnerabilityType_VulnerabilityLocation `protobuf:"bytes,2,opt,name=fixed_location,json=fixedLocation,proto3" json:"fixed_location,omitempty"`
 	// The severity (eg: distro assigned severity) for this vulnerability.
-	SeverityName         string   `protobuf:"bytes,3,opt,name=severity_name,json=severityName" json:"severity_name,omitempty"`
+	SeverityName         string   `protobuf:"bytes,3,opt,name=severity_name,json=severityName,proto3" json:"severity_name,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -5030,12 +5058,12 @@ type VulnerabilityType_VulnerabilityLocation struct {
 	// The cpe_uri in [cpe format] (https://cpe.mitre.org/specification/)
 	// format. Examples include distro or storage location for vulnerable jar.
 	// This field can be used as a filter in list requests.
-	CpeUri string `protobuf:"bytes,1,opt,name=cpe_uri,json=cpeUri" json:"cpe_uri,omitempty"`
+	CpeUri string `protobuf:"bytes,1,opt,name=cpe_uri,json=cpeUri,proto3" json:"cpe_uri,omitempty"`
 	// The package being described.
-	Package string `protobuf:"bytes,2,opt,name=package" json:"package,omitempty"`
+	Package string `protobuf:"bytes,2,opt,name=package,proto3" json:"package,omitempty"`
 	// The version of the package being described.
 	// This field can be used as a filter in list requests.
-	Version              *VulnerabilityType_Version `protobuf:"bytes,4,opt,name=version" json:"version,omitempty"`
+	Version              *VulnerabilityType_Version `protobuf:"bytes,4,opt,name=version,proto3" json:"version,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}                   `json:"-"`
 	XXX_unrecognized     []byte                     `json:"-"`
 	XXX_sizecache        int32                      `json:"-"`
@@ -5099,7 +5127,7 @@ type SourceContext struct {
 	//	*SourceContext_Git
 	Context isSourceContext_Context `protobuf_oneof:"context"`
 	// Labels with user defined metadata.
-	Labels               map[string]string `protobuf:"bytes,4,rep,name=labels" json:"labels,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	Labels               map[string]string `protobuf:"bytes,4,rep,name=labels,proto3" json:"labels,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 	XXX_NoUnkeyedLiteral struct{}          `json:"-"`
 	XXX_unrecognized     []byte            `json:"-"`
 	XXX_sizecache        int32             `json:"-"`
@@ -5134,18 +5162,22 @@ type isSourceContext_Context interface {
 }
 
 type SourceContext_CloudRepo struct {
-	CloudRepo *CloudRepoSourceContext `protobuf:"bytes,1,opt,name=cloud_repo,json=cloudRepo,oneof"`
+	CloudRepo *CloudRepoSourceContext `protobuf:"bytes,1,opt,name=cloud_repo,json=cloudRepo,proto3,oneof"`
 }
+
 type SourceContext_Gerrit struct {
-	Gerrit *GerritSourceContext `protobuf:"bytes,2,opt,name=gerrit,oneof"`
+	Gerrit *GerritSourceContext `protobuf:"bytes,2,opt,name=gerrit,proto3,oneof"`
 }
+
 type SourceContext_Git struct {
-	Git *GitSourceContext `protobuf:"bytes,3,opt,name=git,oneof"`
+	Git *GitSourceContext `protobuf:"bytes,3,opt,name=git,proto3,oneof"`
 }
 
 func (*SourceContext_CloudRepo) isSourceContext_Context() {}
-func (*SourceContext_Gerrit) isSourceContext_Context()    {}
-func (*SourceContext_Git) isSourceContext_Context()       {}
+
+func (*SourceContext_Gerrit) isSourceContext_Context() {}
+
+func (*SourceContext_Git) isSourceContext_Context() {}
 
 func (m *SourceContext) GetContext() isSourceContext_Context {
 	if m != nil {
@@ -5278,9 +5310,9 @@ func _SourceContext_OneofSizer(msg proto.Message) (n int) {
 // An alias to a repo revision.
 type AliasContext struct {
 	// The alias kind.
-	Kind AliasContext_Kind `protobuf:"varint,1,opt,name=kind,enum=grafeas.v1alpha1.api.AliasContext_Kind" json:"kind,omitempty"`
+	Kind AliasContext_Kind `protobuf:"varint,1,opt,name=kind,proto3,enum=grafeas.v1alpha1.api.AliasContext_Kind" json:"kind,omitempty"`
 	// The alias name.
-	Name                 string   `protobuf:"bytes,2,opt,name=name" json:"name,omitempty"`
+	Name                 string   `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -5328,7 +5360,7 @@ func (m *AliasContext) GetName() string {
 // Source Repo.
 type CloudRepoSourceContext struct {
 	// The ID of the repo.
-	RepoId *RepoId `protobuf:"bytes,1,opt,name=repo_id,json=repoId" json:"repo_id,omitempty"`
+	RepoId *RepoId `protobuf:"bytes,1,opt,name=repo_id,json=repoId,proto3" json:"repo_id,omitempty"`
 	// A revision in a Cloud Repo can be identified by either its revision ID or
 	// its alias.
 	//
@@ -5365,30 +5397,32 @@ func (m *CloudRepoSourceContext) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_CloudRepoSourceContext proto.InternalMessageInfo
 
+func (m *CloudRepoSourceContext) GetRepoId() *RepoId {
+	if m != nil {
+		return m.RepoId
+	}
+	return nil
+}
+
 type isCloudRepoSourceContext_Revision interface {
 	isCloudRepoSourceContext_Revision()
 }
 
 type CloudRepoSourceContext_RevisionId struct {
-	RevisionId string `protobuf:"bytes,2,opt,name=revision_id,json=revisionId,oneof"`
-}
-type CloudRepoSourceContext_AliasContext struct {
-	AliasContext *AliasContext `protobuf:"bytes,3,opt,name=alias_context,json=aliasContext,oneof"`
+	RevisionId string `protobuf:"bytes,2,opt,name=revision_id,json=revisionId,proto3,oneof"`
 }
 
-func (*CloudRepoSourceContext_RevisionId) isCloudRepoSourceContext_Revision()   {}
+type CloudRepoSourceContext_AliasContext struct {
+	AliasContext *AliasContext `protobuf:"bytes,3,opt,name=alias_context,json=aliasContext,proto3,oneof"`
+}
+
+func (*CloudRepoSourceContext_RevisionId) isCloudRepoSourceContext_Revision() {}
+
 func (*CloudRepoSourceContext_AliasContext) isCloudRepoSourceContext_Revision() {}
 
 func (m *CloudRepoSourceContext) GetRevision() isCloudRepoSourceContext_Revision {
 	if m != nil {
 		return m.Revision
-	}
-	return nil
-}
-
-func (m *CloudRepoSourceContext) GetRepoId() *RepoId {
-	if m != nil {
-		return m.RepoId
 	}
 	return nil
 }
@@ -5480,11 +5514,11 @@ func _CloudRepoSourceContext_OneofSizer(msg proto.Message) (n int) {
 // A SourceContext referring to a Gerrit project.
 type GerritSourceContext struct {
 	// The URI of a running Gerrit instance.
-	HostUri string `protobuf:"bytes,1,opt,name=host_uri,json=hostUri" json:"host_uri,omitempty"`
+	HostUri string `protobuf:"bytes,1,opt,name=host_uri,json=hostUri,proto3" json:"host_uri,omitempty"`
 	// The full project name within the host. Projects may be nested, so
 	// "project/subproject" is a valid project name. The "repo name" is
 	// the hostURI/project.
-	GerritProject string `protobuf:"bytes,2,opt,name=gerrit_project,json=gerritProject" json:"gerrit_project,omitempty"`
+	GerritProject string `protobuf:"bytes,2,opt,name=gerrit_project,json=gerritProject,proto3" json:"gerrit_project,omitempty"`
 	// A revision in a Gerrit project can be identified by either its revision ID
 	// or its alias.
 	//
@@ -5521,27 +5555,6 @@ func (m *GerritSourceContext) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_GerritSourceContext proto.InternalMessageInfo
 
-type isGerritSourceContext_Revision interface {
-	isGerritSourceContext_Revision()
-}
-
-type GerritSourceContext_RevisionId struct {
-	RevisionId string `protobuf:"bytes,3,opt,name=revision_id,json=revisionId,oneof"`
-}
-type GerritSourceContext_AliasContext struct {
-	AliasContext *AliasContext `protobuf:"bytes,4,opt,name=alias_context,json=aliasContext,oneof"`
-}
-
-func (*GerritSourceContext_RevisionId) isGerritSourceContext_Revision()   {}
-func (*GerritSourceContext_AliasContext) isGerritSourceContext_Revision() {}
-
-func (m *GerritSourceContext) GetRevision() isGerritSourceContext_Revision {
-	if m != nil {
-		return m.Revision
-	}
-	return nil
-}
-
 func (m *GerritSourceContext) GetHostUri() string {
 	if m != nil {
 		return m.HostUri
@@ -5554,6 +5567,29 @@ func (m *GerritSourceContext) GetGerritProject() string {
 		return m.GerritProject
 	}
 	return ""
+}
+
+type isGerritSourceContext_Revision interface {
+	isGerritSourceContext_Revision()
+}
+
+type GerritSourceContext_RevisionId struct {
+	RevisionId string `protobuf:"bytes,3,opt,name=revision_id,json=revisionId,proto3,oneof"`
+}
+
+type GerritSourceContext_AliasContext struct {
+	AliasContext *AliasContext `protobuf:"bytes,4,opt,name=alias_context,json=aliasContext,proto3,oneof"`
+}
+
+func (*GerritSourceContext_RevisionId) isGerritSourceContext_Revision() {}
+
+func (*GerritSourceContext_AliasContext) isGerritSourceContext_Revision() {}
+
+func (m *GerritSourceContext) GetRevision() isGerritSourceContext_Revision {
+	if m != nil {
+		return m.Revision
+	}
+	return nil
 }
 
 func (m *GerritSourceContext) GetRevisionId() string {
@@ -5644,10 +5680,10 @@ func _GerritSourceContext_OneofSizer(msg proto.Message) (n int) {
 // repository (e.g., GitHub).
 type GitSourceContext struct {
 	// Git repository URL.
-	Url string `protobuf:"bytes,1,opt,name=url" json:"url,omitempty"`
+	Url string `protobuf:"bytes,1,opt,name=url,proto3" json:"url,omitempty"`
 	// Required.
 	// Git commit hash.
-	RevisionId           string   `protobuf:"bytes,2,opt,name=revision_id,json=revisionId" json:"revision_id,omitempty"`
+	RevisionId           string   `protobuf:"bytes,2,opt,name=revision_id,json=revisionId,proto3" json:"revision_id,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -5734,14 +5770,16 @@ type isRepoId_Id interface {
 }
 
 type RepoId_ProjectRepoId struct {
-	ProjectRepoId *ProjectRepoId `protobuf:"bytes,1,opt,name=project_repo_id,json=projectRepoId,oneof"`
+	ProjectRepoId *ProjectRepoId `protobuf:"bytes,1,opt,name=project_repo_id,json=projectRepoId,proto3,oneof"`
 }
+
 type RepoId_Uid struct {
-	Uid string `protobuf:"bytes,2,opt,name=uid,oneof"`
+	Uid string `protobuf:"bytes,2,opt,name=uid,proto3,oneof"`
 }
 
 func (*RepoId_ProjectRepoId) isRepoId_Id() {}
-func (*RepoId_Uid) isRepoId_Id()           {}
+
+func (*RepoId_Uid) isRepoId_Id() {}
 
 func (m *RepoId) GetId() isRepoId_Id {
 	if m != nil {
@@ -5838,9 +5876,9 @@ func _RepoId_OneofSizer(msg proto.Message) (n int) {
 // winged-cargo-31) and a repo name within that project.
 type ProjectRepoId struct {
 	// The ID of the project.
-	ProjectId string `protobuf:"bytes,1,opt,name=project_id,json=projectId" json:"project_id,omitempty"`
+	ProjectId string `protobuf:"bytes,1,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
 	// The name of the repo. Leave empty for the default repo.
-	RepoName             string   `protobuf:"bytes,2,opt,name=repo_name,json=repoName" json:"repo_name,omitempty"`
+	RepoName             string   `protobuf:"bytes,2,opt,name=repo_name,json=repoName,proto3" json:"repo_name,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -5978,8 +6016,9 @@ var _ grpc.ClientConn
 // is compatible with the grpc package it is being compiled against.
 const _ = grpc.SupportPackageIsVersion4
 
-// Client API for Grafeas service
-
+// GrafeasClient is the client API for Grafeas service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type GrafeasClient interface {
 	// Returns the requested `Occurrence`.
 	GetOccurrence(ctx context.Context, in *GetOccurrenceRequest, opts ...grpc.CallOption) (*Occurrence, error)
@@ -6027,7 +6066,7 @@ func NewGrafeasClient(cc *grpc.ClientConn) GrafeasClient {
 
 func (c *grafeasClient) GetOccurrence(ctx context.Context, in *GetOccurrenceRequest, opts ...grpc.CallOption) (*Occurrence, error) {
 	out := new(Occurrence)
-	err := grpc.Invoke(ctx, "/grafeas.v1alpha1.api.Grafeas/GetOccurrence", in, out, c.cc, opts...)
+	err := c.cc.Invoke(ctx, "/grafeas.v1alpha1.api.Grafeas/GetOccurrence", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -6036,7 +6075,7 @@ func (c *grafeasClient) GetOccurrence(ctx context.Context, in *GetOccurrenceRequ
 
 func (c *grafeasClient) ListOccurrences(ctx context.Context, in *ListOccurrencesRequest, opts ...grpc.CallOption) (*ListOccurrencesResponse, error) {
 	out := new(ListOccurrencesResponse)
-	err := grpc.Invoke(ctx, "/grafeas.v1alpha1.api.Grafeas/ListOccurrences", in, out, c.cc, opts...)
+	err := c.cc.Invoke(ctx, "/grafeas.v1alpha1.api.Grafeas/ListOccurrences", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -6045,7 +6084,7 @@ func (c *grafeasClient) ListOccurrences(ctx context.Context, in *ListOccurrences
 
 func (c *grafeasClient) DeleteOccurrence(ctx context.Context, in *DeleteOccurrenceRequest, opts ...grpc.CallOption) (*empty.Empty, error) {
 	out := new(empty.Empty)
-	err := grpc.Invoke(ctx, "/grafeas.v1alpha1.api.Grafeas/DeleteOccurrence", in, out, c.cc, opts...)
+	err := c.cc.Invoke(ctx, "/grafeas.v1alpha1.api.Grafeas/DeleteOccurrence", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -6054,7 +6093,7 @@ func (c *grafeasClient) DeleteOccurrence(ctx context.Context, in *DeleteOccurren
 
 func (c *grafeasClient) CreateOccurrence(ctx context.Context, in *CreateOccurrenceRequest, opts ...grpc.CallOption) (*Occurrence, error) {
 	out := new(Occurrence)
-	err := grpc.Invoke(ctx, "/grafeas.v1alpha1.api.Grafeas/CreateOccurrence", in, out, c.cc, opts...)
+	err := c.cc.Invoke(ctx, "/grafeas.v1alpha1.api.Grafeas/CreateOccurrence", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -6063,7 +6102,7 @@ func (c *grafeasClient) CreateOccurrence(ctx context.Context, in *CreateOccurren
 
 func (c *grafeasClient) UpdateOccurrence(ctx context.Context, in *UpdateOccurrenceRequest, opts ...grpc.CallOption) (*Occurrence, error) {
 	out := new(Occurrence)
-	err := grpc.Invoke(ctx, "/grafeas.v1alpha1.api.Grafeas/UpdateOccurrence", in, out, c.cc, opts...)
+	err := c.cc.Invoke(ctx, "/grafeas.v1alpha1.api.Grafeas/UpdateOccurrence", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -6072,7 +6111,7 @@ func (c *grafeasClient) UpdateOccurrence(ctx context.Context, in *UpdateOccurren
 
 func (c *grafeasClient) GetOccurrenceNote(ctx context.Context, in *GetOccurrenceNoteRequest, opts ...grpc.CallOption) (*Note, error) {
 	out := new(Note)
-	err := grpc.Invoke(ctx, "/grafeas.v1alpha1.api.Grafeas/GetOccurrenceNote", in, out, c.cc, opts...)
+	err := c.cc.Invoke(ctx, "/grafeas.v1alpha1.api.Grafeas/GetOccurrenceNote", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -6081,7 +6120,7 @@ func (c *grafeasClient) GetOccurrenceNote(ctx context.Context, in *GetOccurrence
 
 func (c *grafeasClient) CreateOperation(ctx context.Context, in *CreateOperationRequest, opts ...grpc.CallOption) (*longrunning.Operation, error) {
 	out := new(longrunning.Operation)
-	err := grpc.Invoke(ctx, "/grafeas.v1alpha1.api.Grafeas/CreateOperation", in, out, c.cc, opts...)
+	err := c.cc.Invoke(ctx, "/grafeas.v1alpha1.api.Grafeas/CreateOperation", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -6090,7 +6129,7 @@ func (c *grafeasClient) CreateOperation(ctx context.Context, in *CreateOperation
 
 func (c *grafeasClient) UpdateOperation(ctx context.Context, in *UpdateOperationRequest, opts ...grpc.CallOption) (*longrunning.Operation, error) {
 	out := new(longrunning.Operation)
-	err := grpc.Invoke(ctx, "/grafeas.v1alpha1.api.Grafeas/UpdateOperation", in, out, c.cc, opts...)
+	err := c.cc.Invoke(ctx, "/grafeas.v1alpha1.api.Grafeas/UpdateOperation", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -6099,7 +6138,7 @@ func (c *grafeasClient) UpdateOperation(ctx context.Context, in *UpdateOperation
 
 func (c *grafeasClient) GetNote(ctx context.Context, in *GetNoteRequest, opts ...grpc.CallOption) (*Note, error) {
 	out := new(Note)
-	err := grpc.Invoke(ctx, "/grafeas.v1alpha1.api.Grafeas/GetNote", in, out, c.cc, opts...)
+	err := c.cc.Invoke(ctx, "/grafeas.v1alpha1.api.Grafeas/GetNote", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -6108,7 +6147,7 @@ func (c *grafeasClient) GetNote(ctx context.Context, in *GetNoteRequest, opts ..
 
 func (c *grafeasClient) ListNotes(ctx context.Context, in *ListNotesRequest, opts ...grpc.CallOption) (*ListNotesResponse, error) {
 	out := new(ListNotesResponse)
-	err := grpc.Invoke(ctx, "/grafeas.v1alpha1.api.Grafeas/ListNotes", in, out, c.cc, opts...)
+	err := c.cc.Invoke(ctx, "/grafeas.v1alpha1.api.Grafeas/ListNotes", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -6117,7 +6156,7 @@ func (c *grafeasClient) ListNotes(ctx context.Context, in *ListNotesRequest, opt
 
 func (c *grafeasClient) DeleteNote(ctx context.Context, in *DeleteNoteRequest, opts ...grpc.CallOption) (*empty.Empty, error) {
 	out := new(empty.Empty)
-	err := grpc.Invoke(ctx, "/grafeas.v1alpha1.api.Grafeas/DeleteNote", in, out, c.cc, opts...)
+	err := c.cc.Invoke(ctx, "/grafeas.v1alpha1.api.Grafeas/DeleteNote", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -6126,7 +6165,7 @@ func (c *grafeasClient) DeleteNote(ctx context.Context, in *DeleteNoteRequest, o
 
 func (c *grafeasClient) CreateNote(ctx context.Context, in *CreateNoteRequest, opts ...grpc.CallOption) (*Note, error) {
 	out := new(Note)
-	err := grpc.Invoke(ctx, "/grafeas.v1alpha1.api.Grafeas/CreateNote", in, out, c.cc, opts...)
+	err := c.cc.Invoke(ctx, "/grafeas.v1alpha1.api.Grafeas/CreateNote", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -6135,7 +6174,7 @@ func (c *grafeasClient) CreateNote(ctx context.Context, in *CreateNoteRequest, o
 
 func (c *grafeasClient) UpdateNote(ctx context.Context, in *UpdateNoteRequest, opts ...grpc.CallOption) (*Note, error) {
 	out := new(Note)
-	err := grpc.Invoke(ctx, "/grafeas.v1alpha1.api.Grafeas/UpdateNote", in, out, c.cc, opts...)
+	err := c.cc.Invoke(ctx, "/grafeas.v1alpha1.api.Grafeas/UpdateNote", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -6144,15 +6183,14 @@ func (c *grafeasClient) UpdateNote(ctx context.Context, in *UpdateNoteRequest, o
 
 func (c *grafeasClient) ListNoteOccurrences(ctx context.Context, in *ListNoteOccurrencesRequest, opts ...grpc.CallOption) (*ListNoteOccurrencesResponse, error) {
 	out := new(ListNoteOccurrencesResponse)
-	err := grpc.Invoke(ctx, "/grafeas.v1alpha1.api.Grafeas/ListNoteOccurrences", in, out, c.cc, opts...)
+	err := c.cc.Invoke(ctx, "/grafeas.v1alpha1.api.Grafeas/ListNoteOccurrences", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// Server API for Grafeas service
-
+// GrafeasServer is the server API for Grafeas service.
 type GrafeasServer interface {
 	// Returns the requested `Occurrence`.
 	GetOccurrence(context.Context, *GetOccurrenceRequest) (*Occurrence, error)
@@ -6511,8 +6549,9 @@ var _Grafeas_serviceDesc = grpc.ServiceDesc{
 	Metadata: "v1alpha1/proto/grafeas.proto",
 }
 
-// Client API for GrafeasProjects service
-
+// GrafeasProjectsClient is the client API for GrafeasProjects service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type GrafeasProjectsClient interface {
 	// Creates a new `Project`.
 	CreateProject(ctx context.Context, in *CreateProjectRequest, opts ...grpc.CallOption) (*empty.Empty, error)
@@ -6534,7 +6573,7 @@ func NewGrafeasProjectsClient(cc *grpc.ClientConn) GrafeasProjectsClient {
 
 func (c *grafeasProjectsClient) CreateProject(ctx context.Context, in *CreateProjectRequest, opts ...grpc.CallOption) (*empty.Empty, error) {
 	out := new(empty.Empty)
-	err := grpc.Invoke(ctx, "/grafeas.v1alpha1.api.GrafeasProjects/CreateProject", in, out, c.cc, opts...)
+	err := c.cc.Invoke(ctx, "/grafeas.v1alpha1.api.GrafeasProjects/CreateProject", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -6543,7 +6582,7 @@ func (c *grafeasProjectsClient) CreateProject(ctx context.Context, in *CreatePro
 
 func (c *grafeasProjectsClient) GetProject(ctx context.Context, in *GetProjectRequest, opts ...grpc.CallOption) (*Project, error) {
 	out := new(Project)
-	err := grpc.Invoke(ctx, "/grafeas.v1alpha1.api.GrafeasProjects/GetProject", in, out, c.cc, opts...)
+	err := c.cc.Invoke(ctx, "/grafeas.v1alpha1.api.GrafeasProjects/GetProject", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -6552,7 +6591,7 @@ func (c *grafeasProjectsClient) GetProject(ctx context.Context, in *GetProjectRe
 
 func (c *grafeasProjectsClient) ListProjects(ctx context.Context, in *ListProjectsRequest, opts ...grpc.CallOption) (*ListProjectsResponse, error) {
 	out := new(ListProjectsResponse)
-	err := grpc.Invoke(ctx, "/grafeas.v1alpha1.api.GrafeasProjects/ListProjects", in, out, c.cc, opts...)
+	err := c.cc.Invoke(ctx, "/grafeas.v1alpha1.api.GrafeasProjects/ListProjects", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -6561,15 +6600,14 @@ func (c *grafeasProjectsClient) ListProjects(ctx context.Context, in *ListProjec
 
 func (c *grafeasProjectsClient) DeleteProject(ctx context.Context, in *DeleteProjectRequest, opts ...grpc.CallOption) (*empty.Empty, error) {
 	out := new(empty.Empty)
-	err := grpc.Invoke(ctx, "/grafeas.v1alpha1.api.GrafeasProjects/DeleteProject", in, out, c.cc, opts...)
+	err := c.cc.Invoke(ctx, "/grafeas.v1alpha1.api.GrafeasProjects/DeleteProject", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// Server API for GrafeasProjects service
-
+// GrafeasProjectsServer is the server API for GrafeasProjects service.
 type GrafeasProjectsServer interface {
 	// Creates a new `Project`.
 	CreateProject(context.Context, *CreateProjectRequest) (*empty.Empty, error)
