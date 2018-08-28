@@ -19,7 +19,6 @@ package grafeas.v1beta1.build;
 option java_multiple_files = true;
 option java_package = "io.grafeas.v1beta1.build";
 option objc_class_prefix = "GRA";
-option py_api_version = 2;
 
 import "proto/v1beta1/provenance.proto";
 

@@ -19,7 +19,6 @@ package grafeas.v1beta1.project;
 option java_multiple_files = true;
 option java_package = "io.grafeas.v1beta1.project";
 option objc_class_prefix = "GRA";
-option py_api_version = 2;
 
 import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";

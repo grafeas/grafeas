@@ -19,7 +19,6 @@ package grafeas.v1beta1.discovery;
 option java_multiple_files = true;
 option java_package = "io.grafeas.v1beta1.discovery";
 option objc_class_prefix = "GRA";
-option py_api_version = 2;
 
 import "google/protobuf/timestamp.proto";
 import "google/rpc/status.proto";
