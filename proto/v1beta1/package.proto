@@ -102,7 +102,8 @@ message Version {
   // Used to correct mistakes in the version numbering scheme.
   int32 epoch = 1;
 
-  // Required. The main part of the version name.
+  // Required only when version kind is NORMAL. The main part of the version
+  // name.
   string name = 2;
 
   // The iteration of the package build from the above version.
@@ -112,17 +113,15 @@ message Version {
   enum VersionKind {
     // Unknown.
     VERSION_KIND_UNSPECIFIED = 0;
-    // A standard package version, defined by the other fields.
+    // A standard package version.
     NORMAL = 1;
-    // A special version representing negative infinity, other fields are
-    // ignored.
+    // A special version representing negative infinity.
     MINIMUM = 2;
-    // A special version representing positive infinity, other fields are
-    // ignored.
+    // A special version representing positive infinity.
     MAXIMUM = 3;
   };
 
-  // Required. Distinguish between sentinel MIN/MAX versions and normal
-  // versions. If kind is not NORMAL, then the other fields are ignored.
+  // Required. Distinguishes between sentinel MIN/MAX versions and normal
+  // versions.
   VersionKind kind = 4;
 }
