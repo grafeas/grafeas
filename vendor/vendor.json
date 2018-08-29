@@ -93,6 +93,30 @@
 			"revisionTime": "2018-05-18T02:49:05Z"
 		},
 		{
+			"checksumSHA1": "TAXd73uN0hLjwdGGGNgnmF6iC0k=",
+			"path": "github.com/google/go-cmp/cmp",
+			"revision": "2006917edc5a27cd174dbc4baba31a137d6cb9ff",
+			"revisionTime": "2018-08-23T18:22:46Z"
+		},
+		{
+			"checksumSHA1": "oLBV7th4sxzxzmf1b91NVVbdOfI=",
+			"path": "github.com/google/go-cmp/cmp/internal/diff",
+			"revision": "2006917edc5a27cd174dbc4baba31a137d6cb9ff",
+			"revisionTime": "2018-08-23T18:22:46Z"
+		},
+		{
+			"checksumSHA1": "kYtvRhMjM0X4bvEjR3pqEHLw1qo=",
+			"path": "github.com/google/go-cmp/cmp/internal/function",
+			"revision": "2006917edc5a27cd174dbc4baba31a137d6cb9ff",
+			"revisionTime": "2018-08-23T18:22:46Z"
+		},
+		{
+			"checksumSHA1": "OQQ56f38ikfmG2Zd3lUlk4LUBIw=",
+			"path": "github.com/google/go-cmp/cmp/internal/value",
+			"revision": "2006917edc5a27cd174dbc4baba31a137d6cb9ff",
+			"revisionTime": "2018-08-23T18:22:46Z"
+		},
+		{
 			"checksumSHA1": "UvGsb1sTcQO4x8liB/uUO/JzTW0=",
 			"path": "github.com/google/go-genproto/googleapis/longrunning",
 			"revision": "f676e0f3ac6395ff1a529ae59a6670878a8371a6",
@@ -423,5 +447,5 @@
 			"revisionTime": "2018-03-28T19:50:20Z"
 		}
 	],
-	"rootPath": "github.com/r2wend2/grafeas"
+	"rootPath": "github.com/grafeas/grafeas"
 }
