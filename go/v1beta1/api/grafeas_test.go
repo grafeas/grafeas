@@ -441,10 +441,6 @@ func (a *fakeAuth) PurgePolicy(ctx context.Context, projectID string, entityID s
 	return nil
 }
 
-func (a *fakeAuth) SetUpProjectIDClog(ctx context.Context, projectID string) context.Context {
-	return ctx
-}
-
 type fakeFilter struct {
 	// Whether filter calls return an error to exercise err code paths.
 	err bool
