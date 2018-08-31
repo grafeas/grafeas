@@ -22,6 +22,7 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/cockroachdb/cmux"
@@ -36,7 +37,7 @@ import (
 )
 
 type Config struct {
-	Address            string   `yaml:"address"`              // Endpoint address, e.g. localhost:8080
+	Address            string   `yaml:"address"`              // Endpoint address, e.g. localhost:8080 or unix:///var/run/grafeas.sock
 	CertFile           string   `yaml:"certfile"`             // A PEM eoncoded certificate file
 	KeyFile            string   `yaml:"keyfile"`              // A PEM encoded private key file
 	CAFile             string   `yaml:"cafile"`               // A PEM eoncoded CA's certificate file
@@ -45,11 +46,18 @@ type Config struct {
 
 // Run initializes grpc and grpc gateway api services on the same address
 func Run(config *Config, storage *server.Storager) {
-	l, err := net.Listen("tcp", config.Address)
+	network, address := "tcp", config.Address
+	if strings.HasPrefix(config.Address, "unix://") {
+		network = "unix"
+		address = strings.TrimPrefix(config.Address, "unix://")
+		// Remove existing socket if found
+		os.Remove(address)
+	}
+	l, err := net.Listen(network, address)
 	if err != nil {
 		log.Fatalln("could not listen to address", config.Address)
 	}
-	log.Printf("starting grpc server on %s", config.Address)
+	log.Printf("starting grpc server on %s", address)
 
 	var (
 		apiHandler  http.Handler
