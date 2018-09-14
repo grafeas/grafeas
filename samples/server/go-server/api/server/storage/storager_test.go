@@ -22,6 +22,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/golang/protobuf/proto"
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/name"
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/testing"
 	server "github.com/grafeas/grafeas/server-go"
@@ -92,7 +93,7 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 		}
 		if got, err := s.GetOccurrence(pID, oID); err != nil {
 			t.Fatalf("GetOccurrence got %v, want success", err)
-		} else if !reflect.DeepEqual(got, o) {
+		} else if !proto.Equal(got, o) {
 			t.Errorf("GetOccurrence got %v, want %v", got, o)
 		}
 	})
@@ -178,7 +179,7 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 		}
 		if got, err := s.GetOccurrence(pID, oID); err != nil {
 			t.Fatalf("GetOccurrence got %v, want success", err)
-		} else if !reflect.DeepEqual(got, o) {
+		} else if !proto.Equal(got, o) {
 			t.Errorf("GetOccurrence got %v, want %v", got, o)
 		}
 
@@ -190,7 +191,7 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 
 		if got, err := s.GetOccurrence(pID, oID); err != nil {
 			t.Fatalf("GetOccurrence got %v, want success", err)
-		} else if !reflect.DeepEqual(got, o2) {
+		} else if !proto.Equal(got, o2) {
 			t.Errorf("GetOccurrence got %v, want %v", got, o2)
 		}
 	})
@@ -235,7 +236,7 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 		}
 		if got, err := s.GetNote(pID, nID); err != nil {
 			t.Fatalf("GetNote got %v, want success", err)
-		} else if !reflect.DeepEqual(got, n) {
+		} else if !proto.Equal(got, n) {
 			t.Errorf("GetNote got %v, want %v", got, n)
 		}
 
@@ -247,7 +248,7 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 
 		if got, err := s.GetNote(pID, nID); err != nil {
 			t.Fatalf("GetNote got %v, want success", err)
-		} else if !reflect.DeepEqual(got, n2) {
+		} else if !proto.Equal(got, n2) {
 			t.Errorf("GetNote got %v, want %v", got, n2)
 		}
 	})
@@ -292,7 +293,7 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 		}
 		if got, err := s.GetOccurrence(pID, oID); err != nil {
 			t.Fatalf("GetOccurrence got %v, want success", err)
-		} else if !reflect.DeepEqual(got, o) {
+		} else if !proto.Equal(got, o) {
 			t.Errorf("GetOccurrence got %v, want %v", got, o)
 		}
 	})
@@ -315,7 +316,7 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 		}
 		if got, err := s.GetNote(pID, nID); err != nil {
 			t.Fatalf("GetNote got %v, want success", err)
-		} else if !reflect.DeepEqual(got, n) {
+		} else if !proto.Equal(got, n) {
 			t.Errorf("GetNote got %v, want %v", got, n)
 		}
 	})
@@ -342,7 +343,7 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 		}
 		if got, err := s.GetNoteByOccurrence(pID, oID); err != nil {
 			t.Fatalf("GetNoteByOccurrence got %v, want success", err)
-		} else if !reflect.DeepEqual(got, n) {
+		} else if !proto.Equal(got, n) {
 			t.Errorf("GetNoteByOccurrence got %v, want %v", got, n)
 		}
 	})
@@ -365,7 +366,7 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 		}
 		if got, err := s.GetOperation(pID, oID); err != nil {
 			t.Fatalf("GetOperation got %v, want success", err)
-		} else if !reflect.DeepEqual(got, o) {
+		} else if !proto.Equal(got, o) {
 			t.Errorf("GetOperation got %v, want %v", got, o)
 		}
 	})
@@ -414,7 +415,7 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 		}
 		if got, err := s.GetOperation(pID, oID); err != nil {
 			t.Fatalf("GetOperation got %v, want success", err)
-		} else if !reflect.DeepEqual(got, o) {
+		} else if !proto.Equal(got, o) {
 			t.Errorf("GetOperation got %v, want %v", got, o)
 		}
 
@@ -426,7 +427,7 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 
 		if got, err := s.GetOperation(pID, oID); err != nil {
 			t.Fatalf("GetOperation got %v, want success", err)
-		} else if !reflect.DeepEqual(got, o2) {
+		} else if !proto.Equal(got, o2) {
 			t.Errorf("GetOperation got %v, want %v", got, o2)
 		}
 	})
