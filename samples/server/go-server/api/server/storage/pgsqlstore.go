@@ -23,8 +23,9 @@ import (
 
 	"github.com/fernet/fernet-go"
 	"github.com/golang/protobuf/proto"
+	pb "github.com/grafeas/grafeas/proto/v1beta1/grafeas_go_proto"
+	prpb "github.com/grafeas/grafeas/proto/v1beta1/project_go_proto"
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/name"
-	pb "github.com/grafeas/grafeas/v1alpha1/proto"
 	"github.com/lib/pq"
 	opspb "google.golang.org/genproto/googleapis/longrunning"
 	"google.golang.org/grpc/codes"
@@ -119,7 +120,7 @@ func (pg *pgSQLStore) DeleteProject(pID string) error {
 }
 
 // GetProject returns the project with the given pID from the store
-func (pg *pgSQLStore) GetProject(pID string) (*pb.Project, error) {
+func (pg *pgSQLStore) GetProject(pID string) (*prpb.Project, error) {
 	pName := name.FormatProject(pID)
 	var exists bool
 	err := pg.DB.QueryRow(projectExists, pName).Scan(&exists)
@@ -129,12 +130,12 @@ func (pg *pgSQLStore) GetProject(pID string) (*pb.Project, error) {
 	if !exists {
 		return nil, status.Errorf(codes.NotFound, "Project with name %q does not Exist", pName)
 	}
-	return &pb.Project{Name: pName}, nil
+	return &prpb.Project{Name: pName}, nil
 }
 
 // ListProjects returns up to pageSize number of projects beginning at pageToken (or from
 // start if pageToken is the empty string).
-func (pg *pgSQLStore) ListProjects(filter string, pageSize int, pageToken string) ([]*pb.Project, string, error) {
+func (pg *pgSQLStore) ListProjects(filter string, pageSize int, pageToken string) ([]*prpb.Project, string, error) {
 	var rows *sql.Rows
 	id := decryptInt64(pageToken, pg.paginationKey, 0)
 	rows, err := pg.DB.Query(listProjects, id, pageSize)
@@ -145,7 +146,7 @@ func (pg *pgSQLStore) ListProjects(filter string, pageSize int, pageToken string
 	if err != nil {
 		return nil, "", status.Error(codes.Internal, "Failed to count Projects from database")
 	}
-	var projects []*pb.Project
+	var projects []*prpb.Project
 	var lastId int64
 	for rows.Next() {
 		var name string
@@ -153,7 +154,7 @@ func (pg *pgSQLStore) ListProjects(filter string, pageSize int, pageToken string
 		if err != nil {
 			return nil, "", status.Error(codes.Internal, "Failed to scan Project row")
 		}
-		projects = append(projects, &pb.Project{Name: name})
+		projects = append(projects, &prpb.Project{Name: name})
 	}
 	if count == lastId {
 		return projects, "", nil

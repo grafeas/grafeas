@@ -21,9 +21,10 @@ import (
 
 	"github.com/boltdb/bolt"
 	"github.com/golang/protobuf/proto"
+	pb "github.com/grafeas/grafeas/proto/v1beta1/grafeas_go_proto"
+	prpb "github.com/grafeas/grafeas/proto/v1beta1/project_go_proto"
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/name"
 	"github.com/grafeas/grafeas/server-go"
-	pb "github.com/grafeas/grafeas/v1alpha1/proto"
 	opspb "google.golang.org/genproto/googleapis/longrunning"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -84,7 +85,7 @@ func NewEmbeddedStore(config *EmbeddedStoreConfig) server.Storager {
 
 // CreateProject adds the specified project to the embedded store
 func (m *embeddedStore) CreateProject(pID string) error {
-	err := m.update(bucketProjects, pID, true, &pb.Project{Name: name.FormatProject(pID)})
+	err := m.update(bucketProjects, pID, true, &prpb.Project{Name: name.FormatProject(pID)})
 	if err == errKeyExists {
 		return status.Errorf(codes.AlreadyExists, "Project with name %q already exists", pID)
 	}
@@ -101,8 +102,8 @@ func (m *embeddedStore) DeleteProject(pID string) error {
 }
 
 // GetProject returns the project with the given pID from the embedded store
-func (m *embeddedStore) GetProject(pID string) (*pb.Project, error) {
-	var project pb.Project
+func (m *embeddedStore) GetProject(pID string) (*prpb.Project, error) {
+	var project prpb.Project
 	err := m.get(bucketProjects, pID, &project)
 	if err == errNoKey {
 		return nil, status.Errorf(codes.NotFound, "Project with name %q does not Exist", pID)
@@ -112,12 +113,12 @@ func (m *embeddedStore) GetProject(pID string) (*pb.Project, error) {
 
 // ListProjects returns up to pageSize number of projects beginning at pageToken (or from
 // start if pageToken is the empty string).
-func (m *embeddedStore) ListProjects(filter string, pageSize int, pageToken string) ([]*pb.Project, string, error) {
-	var projects []*pb.Project
+func (m *embeddedStore) ListProjects(filter string, pageSize int, pageToken string) ([]*prpb.Project, string, error) {
+	var projects []*prpb.Project
 	m.db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(bucketProjects))
 		err := b.ForEach(func(k, v []byte) error {
-			var project pb.Project
+			var project prpb.Project
 			if err := proto.Unmarshal(v, &project); err != nil {
 				return err
 			}

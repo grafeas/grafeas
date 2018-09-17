@@ -15,7 +15,8 @@
 package server
 
 import (
-	pb "github.com/grafeas/grafeas/v1alpha1/proto"
+	pb "github.com/grafeas/grafeas/proto/v1beta1/grafeas_go_proto"
+	prpb "github.com/grafeas/grafeas/proto/v1beta1/project_go_proto"
 	opspb "google.golang.org/genproto/googleapis/longrunning"
 )
 
@@ -46,7 +47,7 @@ type Storager interface {
 	DeleteOperation(pID, opID string) error
 
 	// GetProject returns the project with the given pID
-	GetProject(pID string) (*pb.Project, error)
+	GetProject(pID string) (*prpb.Project, error)
 
 	// GetNote returns the note with project (pID) and note ID (nID)
 	GetNote(pID, nID string) (*pb.Note, error)
@@ -62,7 +63,7 @@ type Storager interface {
 
 	// ListProjects returns up to pageSize number of projects beginning at pageToken (or from
 	// start if pageToken is the empty string).
-	ListProjects(filter string, pageSize int, pageToken string) ([]*pb.Project, string, error)
+	ListProjects(filter string, pageSize int, pageToken string) ([]*prpb.Project, string, error)
 
 	// ListNoteOccurrences returns up to pageSize number of occcurrences on the particular note (nID)
 	// for this project (pID) projects beginning at pageToken (or from start if pageToken is the empty string).
