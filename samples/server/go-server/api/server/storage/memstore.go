@@ -96,7 +96,7 @@ func (m *memStore) ListProjects(filter string, pageSize int, pageToken string) (
 	})
 	startPos := parsePageToken(pageToken, 0)
 	endPos := min(startPos+pageSize, len(projects))
-	return projects[startPos:endPos], strconv.Itoa(endPos), nil
+	return projects[startPos:endPos], nextPageToken(endPos, len(projects)), nil
 }
 
 // CreateOccurrence adds the specified occurrence to the mem store
@@ -162,7 +162,7 @@ func (m *memStore) ListOccurrences(pID, filters string, pageSize int, pageToken 
 	})
 	startPos := parsePageToken(pageToken, 0)
 	endPos := min(startPos+pageSize, len(os))
-	return os[startPos:endPos], strconv.Itoa(endPos), nil
+	return os[startPos:endPos], nextPageToken(endPos, len(os)), nil
 }
 
 // CreateNote adds the specified note to the mem store
@@ -244,7 +244,7 @@ func (m *memStore) ListNotes(pID, filters string, pageSize int, pageToken string
 	})
 	startPos := parsePageToken(pageToken, 0)
 	endPos := min(startPos+pageSize, len(ns))
-	return ns[startPos:endPos], strconv.Itoa(endPos), nil
+	return ns[startPos:endPos], nextPageToken(endPos, len(ns)), nil
 }
 
 // ListNoteOccurrences returns up to pageSize number of occcurrences on the particular note (nID)
@@ -269,7 +269,7 @@ func (m *memStore) ListNoteOccurrences(pID, nID, filters string, pageSize int, p
 	})
 	startPos := parsePageToken(pageToken, 0)
 	endPos := min(startPos+pageSize, len(os))
-	return os[startPos:endPos], strconv.Itoa(endPos), nil
+	return os[startPos:endPos], nextPageToken(endPos, len(os)), nil
 }
 
 // GetOperation returns the operation with pID and oID
@@ -335,7 +335,7 @@ func (m *memStore) ListOperations(pID, filters string, pageSize int, pageToken s
 	})
 	startPos := parsePageToken(pageToken, 0)
 	endPos := min(startPos+pageSize, len(ops))
-	return ops[startPos:endPos], strconv.Itoa(endPos), nil
+	return ops[startPos:endPos], nextPageToken(endPos, len(ops)), nil
 }
 
 // Parses the page token to an int. Returns defaultValue if parsing fails
@@ -357,4 +357,12 @@ func min(a, b int) int {
 	} else {
 		return b
 	}
+}
+
+// nextPageToken returns the next page token (the next item index or empty if not more items are left)
+func nextPageToken(lastPage, total int) string {
+	if lastPage == total {
+		return ""
+	}
+	return strconv.Itoa(lastPage)
 }

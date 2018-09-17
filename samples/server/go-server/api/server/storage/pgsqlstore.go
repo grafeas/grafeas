@@ -137,9 +137,13 @@ func (pg *pgSQLStore) GetProject(pID string) (*pb.Project, error) {
 func (pg *pgSQLStore) ListProjects(filter string, pageSize int, pageToken string) ([]*pb.Project, string, error) {
 	var rows *sql.Rows
 	id := decryptInt64(pageToken, pg.paginationKey, 0)
-	rows, err := pg.DB.Query(listProjects, pageSize, id)
+	rows, err := pg.DB.Query(listProjects, id, pageSize)
 	if err != nil {
 		return nil, "", status.Error(codes.Internal, "Failed to list Projects from database")
+	}
+	count, err := pg.count(projectCount)
+	if err != nil {
+		return nil, "", status.Error(codes.Internal, "Failed to count Projects from database")
 	}
 	var projects []*pb.Project
 	var lastId int64
@@ -150,6 +154,9 @@ func (pg *pgSQLStore) ListProjects(filter string, pageSize int, pageToken string
 			return nil, "", status.Error(codes.Internal, "Failed to scan Project row")
 		}
 		projects = append(projects, &pb.Project{Name: name})
+	}
+	if count == lastId {
+		return projects, "", nil
 	}
 	encryptedPage, err := encryptInt64(lastId, pg.paginationKey)
 	if err != nil {
@@ -238,11 +245,15 @@ func (pg *pgSQLStore) GetOccurrence(pID, oID string) (*pb.Occurrence, error) {
 func (pg *pgSQLStore) ListOccurrences(pID, filters string, pageSize int, pageToken string) ([]*pb.Occurrence, string, error) {
 	var rows *sql.Rows
 	id := decryptInt64(pageToken, pg.paginationKey, 0)
-	rows, err := pg.DB.Query(listOccurrences, pID, pageSize, id)
+	rows, err := pg.DB.Query(listOccurrences, pID, id, pageSize)
 	if err != nil {
 		return nil, "", status.Error(codes.Internal, "Failed to list Occurrences from database")
 	}
-	os := []*pb.Occurrence{}
+	count, err := pg.count(occurrenceCount, pID)
+	if err != nil {
+		return nil, "", status.Error(codes.Internal, "Failed to count Occurrences from database")
+	}
+	var os []*pb.Occurrence
 	var lastId int64
 	for rows.Next() {
 		var data string
@@ -256,6 +267,9 @@ func (pg *pgSQLStore) ListOccurrences(pID, filters string, pageSize int, pageTok
 			return nil, "", status.Error(codes.Internal, "Failed to unmarshal Occurrence from database")
 		}
 		os = append(os, &o)
+	}
+	if count == lastId {
+		return os, "", nil
 	}
 	encryptedPage, err := encryptInt64(lastId, pg.paginationKey)
 	if err != nil {
@@ -357,11 +371,15 @@ func (pg *pgSQLStore) GetNoteByOccurrence(pID, oID string) (*pb.Note, error) {
 func (pg *pgSQLStore) ListNotes(pID, filters string, pageSize int, pageToken string) ([]*pb.Note, string, error) {
 	var rows *sql.Rows
 	id := decryptInt64(pageToken, pg.paginationKey, 0)
-	rows, err := pg.DB.Query(listNotes, pID, pageSize, id)
+	rows, err := pg.DB.Query(listNotes, pID, id, pageSize)
 	if err != nil {
 		return nil, "", status.Error(codes.Internal, "Failed to list Notes from database")
 	}
-	ns := []*pb.Note{}
+	count, err := pg.count(noteCount, pID)
+	if err != nil {
+		return nil, "", status.Error(codes.Internal, "Failed to count Notes from database")
+	}
+	var ns []*pb.Note
 	var lastId int64
 	for rows.Next() {
 		var data string
@@ -375,6 +393,9 @@ func (pg *pgSQLStore) ListNotes(pID, filters string, pageSize int, pageToken str
 			return nil, "", status.Error(codes.Internal, "Failed to unmarshal Note from database")
 		}
 		ns = append(ns, &n)
+	}
+	if count == lastId {
+		return ns, "", nil
 	}
 	encryptedPage, err := encryptInt64(lastId, pg.paginationKey)
 	if err != nil {
@@ -392,11 +413,15 @@ func (pg *pgSQLStore) ListNoteOccurrences(pID, nID, filters string, pageSize int
 	}
 	var rows *sql.Rows
 	id := decryptInt64(pageToken, pg.paginationKey, 0)
-	rows, err := pg.DB.Query(listNoteOccurrences, pID, nID, pageSize, id)
+	rows, err := pg.DB.Query(listNoteOccurrences, pID, nID, id, pageSize)
 	if err != nil {
 		return nil, "", status.Error(codes.Internal, "Failed to list Occurrences from database")
 	}
-	os := []*pb.Occurrence{}
+	count, err := pg.count(noteOccurrencesCount, pID, nID)
+	if err != nil {
+		return nil, "", status.Error(codes.Internal, "Failed to count Occurrences from database")
+	}
+	var os []*pb.Occurrence
 	var lastId int64
 	for rows.Next() {
 		var data string
@@ -410,6 +435,9 @@ func (pg *pgSQLStore) ListNoteOccurrences(pID, nID, filters string, pageSize int
 			return nil, "", status.Error(codes.Internal, "Failed to unmarshal Occurrence from database")
 		}
 		os = append(os, &o)
+	}
+	if count == lastId {
+		return os, "", nil
 	}
 	encryptedPage, err := encryptInt64(lastId, pg.paginationKey)
 	if err != nil {
@@ -493,11 +521,12 @@ func (pg *pgSQLStore) UpdateOperation(pID, opID string, op *opspb.Operation) err
 func (pg *pgSQLStore) ListOperations(pID, filters string, pageSize int, pageToken string) ([]*opspb.Operation, string, error) {
 	var rows *sql.Rows
 	id := decryptInt64(pageToken, pg.paginationKey, 0)
-	rows, err := pg.DB.Query(listOperations, pID, pageSize, id)
+	rows, err := pg.DB.Query(listOperations, pID, id, pageSize)
 	if err != nil {
 		return nil, "", status.Error(codes.Internal, "Failed to list Operations from database")
 	}
-	ops := []*opspb.Operation{}
+	defer rows.Close()
+	var ops []*opspb.Operation
 	var lastId int64
 	for rows.Next() {
 		var data string
@@ -512,11 +541,27 @@ func (pg *pgSQLStore) ListOperations(pID, filters string, pageSize int, pageToke
 		}
 		ops = append(ops, &op)
 	}
+	if count, err := pg.count(operationsCnt, pID); err != nil {
+		return nil, "", status.Error(codes.Internal, "Failed to count Operations from database")
+	} else if count == lastId {
+		return ops, "", nil
+	}
 	encryptedPage, err := encryptInt64(lastId, pg.paginationKey)
 	if err != nil {
 		return nil, "", status.Error(codes.Internal, "Failed to paginate projects")
 	}
 	return ops, encryptedPage, nil
+}
+
+// count returns the total number of entries for the specified query (assuming SELECT(*) is used)
+func (pg *pgSQLStore) count(query string, args ...interface{}) (int64, error) {
+	row := pg.DB.QueryRow(query, args...)
+	var count int64
+	err := row.Scan(&count)
+	if err != nil {
+		return 0, err
+	}
+	return count, err
 }
 
 // Encrypt int64 using provided key

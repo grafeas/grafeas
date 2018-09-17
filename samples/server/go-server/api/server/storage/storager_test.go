@@ -444,9 +444,12 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 			wantProjectNames = append(wantProjectNames, name.FormatProject(pID))
 		}
 		filter := "filters_are_yet_to_be_implemented"
-		gotProjects, _, err := s.ListProjects(filter, 100, "")
+		gotProjects, pageToken, err := s.ListProjects(filter, 100, "")
 		if err != nil {
 			t.Fatalf("ListProjects got %v want success", err)
+		}
+		if pageToken != "" {
+			t.Errorf("Got %s want empty page token", pageToken)
 		}
 		if len(gotProjects) != 20 {
 			t.Errorf("ListProjects got %v projects, want 20", len(gotProjects))
@@ -481,9 +484,13 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 			}
 			ops = append(ops, *o)
 		}
-		gotOs, _, err := s.ListOperations(findProject, "", 100, "")
+		gotOs, pageToken, err := s.ListOperations(findProject, "", 100, "")
 		if err != nil {
 			t.Fatalf("ListOperations got %v want success", err)
+		}
+
+		if pageToken != "" {
+			t.Errorf("Got %s want empty page token", pageToken)
 		}
 
 		if len(gotOs) != 5 {
@@ -642,9 +649,12 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 			t.Fatalf("Got %s want %s", p.Name, name.FormatProject(pID2))
 		}
 		// Get projects again
-		gotProjects, _, err = s.ListProjects(filter, 100, lastPage)
+		gotProjects, pageToken, err := s.ListProjects(filter, 100, lastPage)
 		if err != nil {
 			t.Fatalf("ListProjects got %v want success", err)
+		}
+		if pageToken != "" {
+			t.Fatalf("Got %s want empty page token", pageToken)
 		}
 		if len(gotProjects) != 1 {
 			t.Errorf("ListProjects got %v projects, want 1", len(gotProjects))
@@ -692,9 +702,12 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 			t.Fatalf("Got %s want %s", p.Name, name.FormatNote(pID, nID2))
 		}
 		// Get occurrences again
-		gotNotes, _, err = s.ListNotes(pID, filter, 100, lastPage)
+		gotNotes, pageToken, err := s.ListNotes(pID, filter, 100, lastPage)
 		if err != nil {
 			t.Fatalf("ListNotes got %v want success", err)
+		}
+		if pageToken != "" {
+			t.Errorf("Got %s want empty page token", pageToken)
 		}
 		if len(gotNotes) != 1 {
 			t.Errorf("ListNotes got %v notes, want 1", len(gotNotes))
@@ -747,9 +760,12 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 			t.Fatalf("Got %s want %s", p.Name, name.FormatOccurrence(pID, oID2))
 		}
 		// Get occurrences again
-		gotOccurrences, _, err = s.ListOccurrences(pID, filter, 100, lastPage)
+		gotOccurrences, pageToken, err := s.ListOccurrences(pID, filter, 100, lastPage)
 		if err != nil {
 			t.Fatalf("ListOccurrences got %v want success", err)
+		}
+		if pageToken != "" {
+			t.Errorf("Got %s want empty page token", pageToken)
 		}
 		if len(gotOccurrences) != 1 {
 			t.Errorf("ListOccurrences got %v operations, want 1", len(gotOccurrences))
@@ -803,9 +819,12 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 			t.Fatalf("Got %s want %s", p.Name, name.FormatOccurrence(pID, oID2))
 		}
 		// Get occurrences again
-		gotOccurrences, _, err = s.ListNoteOccurrences(nPID, nID, filter, 100, lastPage)
+		gotOccurrences, pageToken, err := s.ListNoteOccurrences(nPID, nID, filter, 100, lastPage)
 		if err != nil {
 			t.Fatalf("ListNoteOccurrences got %v want success", err)
+		}
+		if pageToken != "" {
+			t.Fatalf("Got %s want empty page token", pageToken)
 		}
 		if len(gotOccurrences) != 1 {
 			t.Errorf("ListNoteOccurrences got %v operations, want 1", len(gotOccurrences))
@@ -853,9 +872,12 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 			t.Fatalf("Got %s want %s", p.Name, name.FormatOperation(pID, oID2))
 		}
 		// Get operations again
-		gotOperations, _, err = s.ListOperations(pID, filter, 100, lastPage)
+		gotOperations, pageToken, err := s.ListOperations(pID, filter, 100, lastPage)
 		if err != nil {
 			t.Fatalf("ListOperations got %v want success", err)
+		}
+		if pageToken != "" {
+			t.Errorf("Got %s want empty page token", pageToken)
 		}
 		if len(gotOperations) != 1 {
 			t.Errorf("ListOperations got %v operations, want 1", len(gotOperations))
