@@ -17,7 +17,6 @@ package storage
 import (
 	"fmt"
 	"sort"
-	"strconv"
 	"strings"
 
 	"github.com/boltdb/bolt"
@@ -132,7 +131,7 @@ func (m *embeddedStore) ListProjects(filter string, pageSize int, pageToken stri
 	})
 	startPos := parsePageToken(pageToken, 0)
 	endPos := min(startPos+pageSize, len(projects))
-	return projects[startPos:endPos], strconv.Itoa(endPos), nil
+	return projects[startPos:endPos], nextPageToken(endPos, len(projects)), nil
 }
 
 // CreateOccurrence adds the specified occurrence to the embedded store
@@ -199,7 +198,7 @@ func (m *embeddedStore) ListOccurrences(pID, filters string, pageSize int, pageT
 	})
 	startPos := parsePageToken(pageToken, 0)
 	endPos := min(startPos+pageSize, len(os))
-	return os[startPos:endPos], strconv.Itoa(endPos), nil
+	return os[startPos:endPos], nextPageToken(endPos, len(os)), nil
 }
 
 // CreateNote adds the specified note to the embedded store
@@ -279,7 +278,7 @@ func (m *embeddedStore) ListNotes(pID, filters string, pageSize int, pageToken s
 	})
 	startPos := parsePageToken(pageToken, 0)
 	endPos := min(startPos+pageSize, len(ns))
-	return ns[startPos:endPos], strconv.Itoa(endPos), nil
+	return ns[startPos:endPos], nextPageToken(endPos, len(ns)), nil
 }
 
 // ListNoteOccurrences returns up to pageSize number of occcurrences on the particular note (nID)
@@ -306,7 +305,7 @@ func (m *embeddedStore) ListNoteOccurrences(pID, nID, filters string, pageSize i
 	})
 	startPos := parsePageToken(pageToken, 0)
 	endPos := min(startPos+pageSize, len(os))
-	return os[startPos:endPos], strconv.Itoa(endPos), nil
+	return os[startPos:endPos], nextPageToken(endPos, len(os)), nil
 }
 
 // GetOperation returns the operation with pID and oID
@@ -372,7 +371,7 @@ func (m *embeddedStore) ListOperations(pID, filters string, pageSize int, pageTo
 	})
 	startPos := parsePageToken(pageToken, 0)
 	endPos := min(startPos+pageSize, len(os))
-	return os[startPos:endPos], strconv.Itoa(endPos), nil
+	return os[startPos:endPos], nextPageToken(endPos, len(os)), nil
 }
 
 func (m *embeddedStore) update(bucket string, key string, new bool, pb proto.Message) error {

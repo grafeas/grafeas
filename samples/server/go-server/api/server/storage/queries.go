@@ -46,30 +46,39 @@ const (
 	insertProject = `INSERT INTO projects(name) VALUES ($1)`
 	projectExists = `SELECT EXISTS (SELECT 1 FROM projects WHERE name = $1)`
 	deleteProject = `DELETE FROM projects WHERE name = $1`
-	listProjects  = `SELECT id, name FROM projects WHERE id > $2 LIMIT $1`
+	listProjects  = `SELECT id, name FROM projects WHERE id > $1 LIMIT $2`
+	projectCount  = `SELECT COUNT(*) FROM projects`
 
 	insertOccurrence = `INSERT INTO occurrences(project_name, occurrence_name, note_id, data)
                       VALUES ($1, $2, (SELECT id FROM notes WHERE project_name = $3 AND note_name = $4), $5)`
 	searchOccurrence = `SELECT data FROM occurrences WHERE project_name = $1 AND occurrence_name = $2`
 	updateOccurrence = `UPDATE occurrences SET data = $3 WHERE project_name = $1 AND occurrence_name = $2`
 	deleteOccurrence = `DELETE FROM occurrences WHERE project_name = $1 AND occurrence_name = $2`
-	listOccurrences  = `SELECT id, data FROM occurrences WHERE project_name = $1 AND id > $3 LIMIT $2`
+	listOccurrences  = `SELECT id, data FROM occurrences WHERE project_name = $1 AND id > $2 LIMIT $3`
+	occurrenceCount  = `SELECT COUNT(*) FROM occurrences WHERE project_name = $1`
 
 	insertNote          = `INSERT INTO notes(project_name, note_name, data) VALUES ($1, $2, $3)`
 	searchNote          = `SELECT data FROM notes WHERE project_name = $1 AND note_name = $2`
 	updateNote          = `UPDATE notes SET data = $3 WHERE project_name = $1 AND note_name = $2`
 	deleteNote          = `DELETE FROM notes WHERE project_name = $1 AND note_name = $2`
-	listNotes           = `SELECT id, data FROM notes WHERE project_name = $1 AND id > $3 LIMIT $2`
+	listNotes           = `SELECT id, data FROM notes WHERE project_name = $1 AND id > $2 LIMIT $3`
+	noteCount           = `SELECT COUNT(*) FROM notes WHERE project_name = $1`
 	listNoteOccurrences = `SELECT o.id, o.data FROM occurrences as o, notes as n
 	                         WHERE n.id = o.note_id
 	                           AND n.project_name = $1
 	                           AND n.note_name = $2
-	                           AND o.id > $4
-	                           LIMIT $3`
+	                           AND o.id > $3
+	                           LIMIT $4`
+
+	noteOccurrencesCount = `SELECT COUNT(*) FROM occurrences as o, notes as n
+	                         WHERE n.id = o.note_id
+	                           AND n.project_name = $1
+	                           AND n.note_name = $2`
 
 	insertOperation = `INSERT INTO operations(project_name, operation_name, data) VALUES ($1, $2, $3)`
 	searchOperation = `SELECT data FROM operations WHERE project_name = $1 AND operation_name = $2`
 	deleteOperation = `DELETE FROM operations WHERE project_name = $1 AND operation_name = $2`
 	updateOperation = `UPDATE operations SET data = $3 WHERE project_name = $1 AND operation_name = $2`
-	listOperations  = `SELECT id, data FROM operations WHERE project_name = $1 AND id > $3 LIMIT $2`
+	listOperations  = `SELECT id, data FROM operations WHERE project_name = $1 AND id > $2 LIMIT $3`
+	operationsCnt   = `SELECT COUNT(*) FROM operations WHERE project_name = $1`
 )
