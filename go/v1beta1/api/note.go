@@ -39,6 +39,9 @@ func (g *API) CreateNote(ctx context.Context, req *gpb.CreateNoteRequest, resp *
 		return err
 	}
 
+	if req.NoteId == "" {
+		return errors.Newf(codes.InvalidArgument, "a noteId must be specified")
+	}
 	if req.Note == nil {
 		return errors.Newf(codes.InvalidArgument, "a note must be specified")
 	}
