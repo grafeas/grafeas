@@ -183,6 +183,12 @@
 			"revisionTime": "2018-05-08T16:37:18Z"
 		},
 		{
+			"checksumSHA1": "444DLrDowrEzlH31AY4KumadXQE=",
+			"path": "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger/options",
+			"revision": "8077515eaf98524f4fcfbcc83f50b37730e08838",
+			"revisionTime": "2018-09-23T23:51:26Z"
+		},
+		{
 			"checksumSHA1": "13iJYYfihSUDMpAbUgCJHpRizuw=",
 			"path": "github.com/grpc-ecosystem/grpc-gateway/runtime",
 			"revision": "a53af079f669b6375dd96cdf5e98e67f886a8b4d",
