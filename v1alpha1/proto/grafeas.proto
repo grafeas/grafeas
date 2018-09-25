@@ -1,4 +1,4 @@
-// Copyright 2017 The Grafeas Authors. All rights reserved.
+// Copyright 2018 The Grafeas Authors. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,25 +14,25 @@
 
 syntax = "proto3";
 
-import "google/protobuf/empty.proto";
-import "google/api/annotations.proto";
-import "google/protobuf/field_mask.proto";
-import "google/protobuf/timestamp.proto";
-import "google/longrunning/operations.proto";
-
 package grafeas.v1alpha1.api;
+
 option go_package = "grafeas";
 
-// Request to insert a new Project.
+import "google/api/annotations.proto";
+import "google/longrunning/operations.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+// Request to create a new project.
 message CreateProjectRequest {
-  // The project to be inserted
+  // The project to create.
   Project project = 1;
 }
 
-// Request to get a Project.
+// Request to get a project.
 message GetProjectRequest {
-  // The name of the project of the form
-  // "projects/{project_id}"
+  // The name of the project in the form of `projects/{PROJECT_ID}`.
   string name = 1;
 }
 
@@ -48,14 +48,13 @@ message ListProjectsRequest {
   string page_token = 3;
 }
 
-// Request to delete a project
+// Request to delete a project.
 message DeleteProjectRequest {
-  // The name of the project of the form
-  // "projects/{project_id}"
+  // The name of the project in the form of `projects/{PROJECT_ID}`.
   string name = 1;
 }
 
-// Request to get a Occurrenceg.
+// Request to get an occurrence.
 message GetOccurrenceRequest {
   // The name of the occurrence of the form
   // "projects/{project_id}/occurrences/{OCCURRENCE_ID}"
@@ -77,7 +76,7 @@ message ListOccurrencesRequest {
   string page_token = 4;
 }
 
-// Request to delete a occurrence
+// Request to delete an occurrence.
 message DeleteOccurrenceRequest {
   // The name of the occurrence in the form of
   // "projects/{project_id}/occurrences/{OCCURRENCE_ID}"
@@ -89,11 +88,11 @@ message CreateOccurrenceRequest {
   // This field contains the project Id for example: "projects/{project_id}"
   string parent = 3;
 
-  // The occurrence to be inserted
+  // The occurrence to be inserted.
   Occurrence occurrence = 2;
 }
 
-// Request to update an existing occurrence
+// Request to update an existing occurrence.
 message UpdateOccurrenceRequest {
   // The name of the occurrence.
   // Should be of the form "projects/{project_id}/occurrences/{OCCURRENCE_ID}".
@@ -184,7 +183,7 @@ message ListNoteOccurrencesRequest {
   string page_token = 4;
 }
 
-// Response including listed projects
+// Response for listing projects.
 message ListProjectsResponse {
   // The projects requested.
   repeated Project projects = 1;
@@ -253,10 +252,9 @@ message CreateOperationRequest {
   google.longrunning.Operation operation = 3;
 }
 
-// Provides detailed description of a `Project`.
+// Describes a Grafeas project.
 message Project {
-  // The name of the project of the form
-  // "projects/{project_id}"
+  // The name of the project in the form of `projects/{PROJECT_ID}`.
   string name = 1;
 }
 
@@ -312,6 +310,7 @@ message AttestationAuthority {
     // The human readable name of this Attestation Authority, e.g. "qa".
     string human_readable_name = 1;
   }
+
   message AttestationDetails {
     // The signature, generally over the `resource_url`, that verifies this
     // attestation.  The semantics of the signature veracity are ultimately
@@ -678,12 +677,12 @@ message Hash {
 
 // Provides a detailed description of a `Note`.
 message Note {
-  // Metadata for any related URL information
+  // Metadata for any related URL information.
   message RelatedUrl {
-    // Specific URL to associate with the note
+    // Specific URL to associate with the note.
     string url = 1;
 
-    // Label to describe usage of the URL
+    // Label to describe usage of the URL.
     string label = 2;
   }
 
@@ -715,8 +714,7 @@ message Note {
     ATTESTATION_AUTHORITY = 8;
   }
 
-  // The name of the note in the form
-  // "providers/{provider_id}/notes/{NOTE_ID}"
+  // The name of the note in the form "projects/{PROJECT_ID}/notes/{NOTE_ID}".
   string name = 1;
 
   // A one sentence description of this `Note`.
@@ -748,9 +746,12 @@ message Note {
 
     // A note describing a provider/analysis type.
     Discovery discovery = 18;
+
+    // A note describing an attestation role.
+    AttestationAuthority attestation_authority = 20;
   }
 
-  // URLs associated with this note
+  // URLs associated with this note.
   repeated RelatedUrl related_url = 7;
 
   // Time of expiration for this note, null if note does not expire.
@@ -765,7 +766,7 @@ message Note {
   google.protobuf.Timestamp update_time = 12;
 
   // The name of the `Operation` in the form
-  // "projects/{project_id}/operation/{OPERATION_ID}"
+  // "projects/{PROJECT_ID}/operations/{OPERATION_ID}".
   string operation_name = 19;
 }
 
@@ -824,7 +825,7 @@ message Occurrence {
   google.protobuf.Timestamp update_time = 10;
 
   // The name of the `Operation` in the form
-  // "projects/{project_id}/operation/{OPERATION_ID}"
+  // "projects/{PROJECT_ID}/operations/{OPERATION_ID}"
   string operation_name = 19;
 
 }
@@ -1445,7 +1446,7 @@ service Grafeas {
 // Manages Grafeas `Projects`. `Projects` contain sets of other Grafeas
 // entities such as `Notes`, `Occurrences` and `Operations`.
 service GrafeasProjects {
-  // Creates a new `Project`.
+  // Creates a new project.
   rpc CreateProject(CreateProjectRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
       post: "/v1alpha1/projects"
@@ -1453,14 +1454,14 @@ service GrafeasProjects {
     };
   }
 
-  // Returns the requested `Project`.
+  // Gets the specified project.
   rpc GetProject(GetProjectRequest) returns (Project) {
     option (google.api.http) = {
       get: "/v1alpha1/{name=projects/*}"
     };
   }
 
-  // Lists `Projects`
+  // Lists projects.
   rpc ListProjects(ListProjectsRequest)
       returns (ListProjectsResponse) {
     option (google.api.http) = {
@@ -1468,7 +1469,7 @@ service GrafeasProjects {
     };
   }
 
-  // Deletes the given `Project` from the system.
+  // Deletes the specified project.
   rpc DeleteProject(DeleteProjectRequest)
       returns (google.protobuf.Empty) {
     option (google.api.http) = {

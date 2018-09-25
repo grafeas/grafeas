@@ -69,7 +69,7 @@
         "parameters": [
           {
             "name": "body",
-            "description": "The project to be inserted",
+            "description": "The project to create.",
             "in": "body",
             "required": true,
             "schema": {
@@ -97,7 +97,7 @@
         "parameters": [
           {
             "name": "name",
-            "description": "The name of the project of the form\n\"projects/{project_id}\"",
+            "description": "The name of the project in the form of `projects/{PROJECT_ID}`.",
             "in": "path",
             "required": true,
             "type": "string"
@@ -121,7 +121,7 @@
         "parameters": [
           {
             "name": "name",
-            "description": "The name of the project of the form\n\"projects/{project_id}\"",
+            "description": "The name of the project in the form of `projects/{PROJECT_ID}`.",
             "in": "path",
             "required": true,
             "type": "string"
@@ -388,7 +388,7 @@
           },
           {
             "name": "body",
-            "description": "The occurrence to be inserted",
+            "description": "The occurrence to be inserted.",
             "in": "body",
             "required": true,
             "schema": {
@@ -437,6 +437,15 @@
     }
   },
   "definitions": {
+    "AttestationAuthorityAttestationAuthorityHint": {
+      "type": "object",
+      "properties": {
+        "human_readable_name": {
+          "type": "string",
+          "description": "The human readable name of this Attestation Authority, e.g. \"qa\"."
+        }
+      }
+    },
     "AttestationAuthorityAttestationDetails": {
       "type": "object",
       "properties": {
@@ -631,14 +640,14 @@
       "properties": {
         "url": {
           "type": "string",
-          "title": "Specific URL to associate with the note"
+          "description": "Specific URL to associate with the note."
         },
         "label": {
           "type": "string",
-          "title": "Label to describe usage of the URL"
+          "description": "Label to describe usage of the URL."
         }
       },
-      "title": "Metadata for any related URL information"
+      "description": "Metadata for any related URL information."
     },
     "PackageManagerArchitecture": {
       "type": "string",
@@ -919,6 +928,15 @@
         }
       },
       "description": "Artifact describes a build product."
+    },
+    "apiAttestationAuthority": {
+      "type": "object",
+      "properties": {
+        "hint": {
+          "$ref": "#/definitions/AttestationAuthorityAttestationAuthorityHint"
+        }
+      },
+      "description": "Note kind that represents a logical attestation \"role\" or \"authority\".  For\nexample, an organization might have one AttestationAuthority for \"QA\" and one\nfor \"build\".  This Note is intended to act strictly as a grouping mechanism\nfor the attached Occurrences (Attestations).  This grouping mechanism also\nprovides a security boundary and provides a single point of lookup to find\nall attached Attestation Occurrences, even if they don't all live in the same\nproject."
     },
     "apiBuildDetails": {
       "type": "object",
@@ -1268,14 +1286,14 @@
           "description": "The next pagination token in the list response. It should be used as\n`page_token` for the following request. An empty value means no more\nresults."
         }
       },
-      "title": "Response including listed projects"
+      "description": "Response for listing projects."
     },
     "apiNote": {
       "type": "object",
       "properties": {
         "name": {
           "type": "string",
-          "title": "The name of the note in the form\n\"providers/{provider_id}/notes/{NOTE_ID}\""
+          "description": "The name of the note in the form \"projects/{PROJECT_ID}/notes/{NOTE_ID}\"."
         },
         "short_description": {
           "type": "string",
@@ -1313,12 +1331,16 @@
           "$ref": "#/definitions/apiDiscovery",
           "description": "A note describing a provider/analysis type."
         },
+        "attestation_authority": {
+          "$ref": "#/definitions/apiAttestationAuthority",
+          "description": "A note describing an attestation role."
+        },
         "related_url": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/NoteRelatedUrl"
           },
-          "title": "URLs associated with this note"
+          "description": "URLs associated with this note."
         },
         "expiration_time": {
           "type": "string",
@@ -1337,7 +1359,7 @@
         },
         "operation_name": {
           "type": "string",
-          "title": "The name of the `Operation` in the form\n\"projects/{project_id}/operation/{OPERATION_ID}\""
+          "description": "The name of the `Operation` in the form\n\"projects/{PROJECT_ID}/operations/{OPERATION_ID}\"."
         }
       },
       "description": "Provides a detailed description of a `Note`."
@@ -1420,7 +1442,7 @@
         },
         "operation_name": {
           "type": "string",
-          "title": "The name of the `Operation` in the form\n\"projects/{project_id}/operation/{OPERATION_ID}\""
+          "title": "The name of the `Operation` in the form\n\"projects/{PROJECT_ID}/operations/{OPERATION_ID}\""
         }
       },
       "description": "`Occurrence` includes information about analysis occurrences for an image."
@@ -1466,10 +1488,10 @@
       "properties": {
         "name": {
           "type": "string",
-          "title": "The name of the project of the form\n\"projects/{project_id}\""
+          "description": "The name of the project in the form of `projects/{PROJECT_ID}`."
         }
       },
-      "description": "Provides detailed description of a `Project`."
+      "description": "Describes a Grafeas project."
     },
     "apiProjectRepoId": {
       "type": "object",
