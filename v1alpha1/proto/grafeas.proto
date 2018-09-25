@@ -23,36 +23,14 @@ import "google/longrunning/operations.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/field_mask.proto";
 import "google/protobuf/timestamp.proto";
+import "protoc-gen-swagger/options/annotations.proto";
 
-// Request to create a new project.
-message CreateProjectRequest {
-  // The project to create.
-  Project project = 1;
-}
-
-// Request to get a project.
-message GetProjectRequest {
-  // The name of the project in the form of `projects/{PROJECT_ID}`.
-  string name = 1;
-}
-
-// Request to list projects.
-message ListProjectsRequest {
-  // The filter expression.
-  string filter = 1;
-
-  // Number of projects to return in the list.
-  int32 page_size = 2;
-
-  // Token to provide to skip to a particular spot in the list.
-  string page_token = 3;
-}
-
-// Request to delete a project.
-message DeleteProjectRequest {
-  // The name of the project in the form of `projects/{PROJECT_ID}`.
-  string name = 1;
-}
+option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
+  info: {
+    title: "An API to insert and retrieve metadata on cloud artifacts.";
+    version: "v1alpha1";
+  };
+};
 
 // Request to get an occurrence.
 message GetOccurrenceRequest {
@@ -105,7 +83,7 @@ message UpdateOccurrenceRequest {
   google.protobuf.FieldMask update_mask = 3;
 }
 
-// Request to get a Note.
+// Request to get a note.
 message GetNoteRequest {
   // The name of the note in the form of
   // "providers/{provider_id}/notes/{NOTE_ID}"
@@ -181,17 +159,6 @@ message ListNoteOccurrencesRequest {
 
   // Token to provide to skip to a particular spot in the list.
   string page_token = 4;
-}
-
-// Response for listing projects.
-message ListProjectsResponse {
-  // The projects requested.
-  repeated Project projects = 1;
-
-  // The next pagination token in the list response. It should be used as
-  // `page_token` for the following request. An empty value means no more
-  // results.
-  string next_page_token = 2;
 }
 
 // Response including listed occurrences for a note.
@@ -1476,4 +1443,45 @@ service GrafeasProjects {
       delete: "/v1alpha1/{name=projects/*}"
     };
   }
+}
+
+// Request to create a new project.
+message CreateProjectRequest {
+  // The project to create.
+  Project project = 1;
+}
+
+// Request to get a project.
+message GetProjectRequest {
+  // The name of the project in the form of `projects/{PROJECT_ID}`.
+  string name = 1;
+}
+
+// Request to list projects.
+message ListProjectsRequest {
+  // The filter expression.
+  string filter = 1;
+
+  // Number of projects to return in the list.
+  int32 page_size = 2;
+
+  // Token to provide to skip to a particular spot in the list.
+  string page_token = 3;
+}
+
+// Response for listing projects.
+message ListProjectsResponse {
+  // The projects requested.
+  repeated Project projects = 1;
+
+  // The next pagination token in the list response. It should be used as
+  // `page_token` for the following request. An empty value means no more
+  // results.
+  string next_page_token = 2;
+}
+
+// Request to delete a project.
+message DeleteProjectRequest {
+  // The name of the project in the form of `projects/{PROJECT_ID}`.
+  string name = 1;
 }
