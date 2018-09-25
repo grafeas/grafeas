@@ -72,6 +72,15 @@ func TestCreateNoteErrors(t *testing.T) {
 			wantErrStatus: codes.InvalidArgument,
 		},
 		{
+			desc: "empty note ID",
+			req: &gpb.CreateNoteRequest{
+				Parent: "projects/goog-vulnz",
+				NoteId: "",
+				Note:   vulnzNote(t),
+			},
+			wantErrStatus: codes.InvalidArgument,
+		},
+		{
 			desc: "nil note",
 			req: &gpb.CreateNoteRequest{
 				Parent: "projects/goog-vulnz",
