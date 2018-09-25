@@ -27,7 +27,7 @@ import "google/protobuf/empty.proto";
 // [Projects](grafeas.io) API.
 //
 // Manages Grafeas `Projects`. Projects contain sets of other Grafeas entities
-// such as `Notes`, `Occurrences`, and `Operations`.
+// such as `Notes` and `Occurrences`.
 service Projects {
   // Creates a new project.
   rpc CreateProject(CreateProjectRequest) returns (Project) {
