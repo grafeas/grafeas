@@ -64,7 +64,8 @@ func TestParseNote(t *testing.T) {
 		err  bool
 	}{{
 		name: "",
-		err:  true,
+		pID:  "",
+		nID:  "",
 	}, {
 		name: "asdf/bear-sheep",
 		err:  true,

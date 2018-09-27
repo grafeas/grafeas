@@ -41,6 +41,9 @@ func ParseProject(name string) (string, error) {
 
 // ParseNote parses the project ID and note ID from a note resource name.
 func ParseNote(name string) (string, string, error) {
+	if name == "" {
+		return "", "", nil
+	}
 	params := strings.Split(name, "/")
 	if len(params) != 4 {
 		return "", "", errors.Newf(codes.InvalidArgument, "name must be in the form 'projects/[PROJECT_ID]/notes/[NOTE_ID]', got %q", name)
