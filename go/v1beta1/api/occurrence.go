@@ -241,12 +241,14 @@ func (g *API) DeleteOccurrence(ctx context.Context, req *gpb.DeleteOccurrenceReq
 	if err != nil {
 		return err
 	}
-	notePID, nID, err := name.ParseNote(o.NoteName)
-	if err != nil {
-		return err
-	}
-	if err := g.Auth.CheckAccessAndProject(ctx, notePID, nID, NotesAttachOccurrence); err != nil {
-		return err
+	if o.NoteName != "" {
+		notePID, nID, err := name.ParseNote(o.NoteName)
+		if err != nil {
+			return err
+		}
+		if err := g.Auth.CheckAccessAndProject(ctx, notePID, nID, NotesAttachOccurrence); err != nil {
+			return err
+		}
 	}
 
 	if err := g.Storage.DeleteOccurrence(ctx, pID, oID); err != nil {
