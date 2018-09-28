@@ -31,6 +31,7 @@ grafeas_go_v1alpha1: .install.protoc-gen-go .install.grpc-gateway v1alpha1/proto
 	protoc \
 		-I ./ \
 		-I vendor/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
+		-I vendor/github.com/grpc-ecosystem/grpc-gateway \
 		-I vendor/github.com/googleapis/googleapis \
 		--go_out=plugins=grpc:. \
 		--grpc-gateway_out=logtostderr=true:. \
@@ -41,6 +42,7 @@ define gen_go_proto
 	protoc \
 		-I ./ \
 		-I vendor/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
+		-I vendor/github.com/grpc-ecosystem/grpc-gateway \
 		-I vendor/github.com/googleapis/googleapis \
 		--go_out=plugins=grpc,paths=source_relative:. \
 		--grpc-gateway_out=logtostderr=true,paths=source_relative:. \

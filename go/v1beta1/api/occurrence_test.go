@@ -580,27 +580,37 @@ func TestUpdateOccurrenceErrors(t *testing.T) {
 
 func TestDeleteOccurrence(t *testing.T) {
 	ctx := context.Background()
-	s := newFakeStorage()
-	g := &API{
-		Storage:           s,
-		Auth:              &fakeAuth{},
-		Filter:            &fakeFilter{},
-		Logger:            &fakeLogger{},
-		EnforceValidation: true,
+
+	tests := []struct {
+		noteName string
+	}{
+		{noteName: "projects/goog-vulnz/notes/CVE-UH-OH"},
+		{noteName: ""},
 	}
 
-	// Create the occurrence to delete.
-	o := vulnzOcc(t, "consumer1", "projects/goog-vulnz/notes/CVE-UH-OH", "debian")
-	createdOcc, err := s.CreateOccurrence(ctx, "consumer1", "", o)
-	if err != nil {
-		t.Fatalf("Failed to create occurrence %+v", o)
-	}
+	for _, tt := range tests {
+		s := newFakeStorage()
+		g := &API{
+			Storage:           s,
+			Auth:              &fakeAuth{},
+			Filter:            &fakeFilter{},
+			Logger:            &fakeLogger{},
+			EnforceValidation: true,
+		}
 
-	req := &gpb.DeleteOccurrenceRequest{
-		Name: createdOcc.Name,
-	}
-	if err := g.DeleteOccurrence(ctx, req, nil); err != nil {
-		t.Errorf("Got err %v, want success", err)
+		// Create the occurrence to delete.
+		o := vulnzOcc(t, "consumer1", tt.noteName, "debian")
+		createdOcc, err := s.CreateOccurrence(ctx, "consumer1", "", o)
+		if err != nil {
+			t.Fatalf("Failed to create occurrence %+v", o)
+		}
+
+		req := &gpb.DeleteOccurrenceRequest{
+			Name: createdOcc.Name,
+		}
+		if err := g.DeleteOccurrence(ctx, req, nil); err != nil {
+			t.Errorf("Got err %v, want success", err)
+		}
 	}
 }
 
