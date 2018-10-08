@@ -43,7 +43,7 @@ func (e *Errors) ReportError(s Source, l Location, format string, args ...interf
 
 // Return this list of observed errors.
 func (e *Errors) GetErrors() []Error {
-	return e.errors[:]
+	return e.errors
 }
 
 // Convert the error set to a newline delimited string.
