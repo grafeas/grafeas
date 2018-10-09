@@ -21,11 +21,11 @@ import (
 
 	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/google/uuid"
+	pb "github.com/grafeas/grafeas/proto/v1beta1/grafeas_go_proto"
+	prpb "github.com/grafeas/grafeas/proto/v1beta1/project_go_proto"
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/name"
-	server "github.com/grafeas/grafeas/server-go"
-	pb "github.com/grafeas/grafeas/v1alpha1/proto"
+	"github.com/grafeas/grafeas/server-go"
 	"golang.org/x/net/context"
-	opspb "google.golang.org/genproto/googleapis/longrunning"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -36,8 +36,20 @@ type Grafeas struct {
 	S server.Storager
 }
 
+func (g *Grafeas) BatchCreateNotes(ctx context.Context, in *pb.BatchCreateNotesRequest) (*pb.BatchCreateNotesResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "BatchCreateNotes is not yet implemented")
+}
+
+func (g *Grafeas) BatchCreateOccurrences(ctx context.Context, req *pb.BatchCreateOccurrencesRequest) (*pb.BatchCreateOccurrencesResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "BatchCreateOccurrences is not yet implemented")
+}
+
+func (g *Grafeas) GetVulnerabilityOccurrencesSummary(ctx context.Context, req *pb.GetVulnerabilityOccurrencesSummaryRequest) (*pb.VulnerabilityOccurrencesSummary, error) {
+	return nil, status.Error(codes.Unimplemented, "GetVulnerabilityOccurrencesSummary is not yet implemented")
+}
+
 // CreateProject validates that a project is valid and then creates a project in the backing datastore.
-func (g *Grafeas) CreateProject(ctx context.Context, req *pb.CreateProjectRequest) (*empty.Empty, error) {
+func (g *Grafeas) CreateProject(ctx context.Context, req *prpb.CreateProjectRequest) (*prpb.Project, error) {
 	p := req.Project
 	if req == nil {
 		log.Print("Project must not be empty.")
@@ -52,7 +64,7 @@ func (g *Grafeas) CreateProject(ctx context.Context, req *pb.CreateProjectReques
 		log.Printf("Invalid project name: %v", p.Name)
 		return nil, status.Error(codes.InvalidArgument, "Invalid project name")
 	}
-	return &empty.Empty{}, g.S.CreateProject(pID)
+	return p, g.S.CreateProject(pID)
 }
 
 // CreateNote validates that a note is valid and then creates a note in the backing datastore.
@@ -74,20 +86,6 @@ func (g *Grafeas) CreateNote(ctx context.Context, req *pb.CreateNoteRequest) (*p
 	if _, err = g.S.GetProject(pID); err != nil {
 		log.Printf("Unable to get project %v, err: %v", pID, err)
 		return nil, status.Error(codes.NotFound, fmt.Sprintf("Project %v not found", pID))
-	}
-
-	// Validate that operation exists if it is specified when get methods are implmented
-	if n.OperationName != "" {
-		pID, oID, err := name.ParseOperation(n.OperationName)
-		if err != nil {
-			log.Printf("Error parsing name: %v", n.OperationName)
-			return nil, status.Error(codes.InvalidArgument, "Invalid Operation name")
-
-		}
-		if _, err = g.S.GetOperation(pID, oID); err != nil {
-			log.Printf("Operation:%v for Note: %v not found in pID %v", oID, n.Name, pID)
-			return nil, status.Error(codes.NotFound, fmt.Sprintf("Operation:%v for Note: %v not found", oID, n.Name))
-		}
 	}
 	return n, g.S.CreateNote(n)
 }
@@ -117,19 +115,6 @@ func (g *Grafeas) CreateOccurrence(ctx context.Context, req *pb.CreateOccurrence
 		log.Printf("Unable to get project %v, err: %v", pID, err)
 		return nil, status.Errorf(codes.NotFound, "project %v not found", pID)
 	}
-	// Validate that operation exists if it is specified
-	if o.OperationName != "" {
-		opID, oID, err := name.ParseOperation(o.OperationName)
-		if err != nil {
-			log.Printf("Error parsing name: %v", o.OperationName)
-			return nil, status.Error(codes.InvalidArgument, "invalid operation name")
-
-		}
-		if _, err = g.S.GetOperation(opID, oID); err != nil {
-			log.Printf("Operation:%v for Project: %v not found", oID, opID)
-			return nil, status.Errorf(codes.NotFound, "operation: %v for project: %v not found", oID, opID)
-		}
-	}
 	randID, err := uuid.NewRandom()
 	if err != nil {
 		log.Printf("Error Generating Occurrence Name: %v", err)
@@ -139,23 +124,8 @@ func (g *Grafeas) CreateOccurrence(ctx context.Context, req *pb.CreateOccurrence
 	return o, g.S.CreateOccurrence(o)
 }
 
-// CreateOperation validates that a note is valid and then creates an operation note in the backing datastore.
-func (g *Grafeas) CreateOperation(ctx context.Context, req *pb.CreateOperationRequest) (*opspb.Operation, error) {
-	o := req.Operation
-	if o.Name == "" {
-		log.Printf("Invalid operation name: %v", o.Name)
-		return nil, status.Error(codes.InvalidArgument, "Invalid operation name")
-	}
-	pID, _, err := name.ParseOperation(o.Name)
-	if _, err = g.S.GetProject(pID); err != nil {
-		log.Printf("Unable to get project %v, err: %v", pID, err)
-		return nil, status.Error(codes.NotFound, fmt.Sprintf("Project %v not found", pID))
-	}
-	return o, g.S.CreateOperation(o)
-}
-
 // DeleteProject deletes a project from the datastore.
-func (g *Grafeas) DeleteProject(ctx context.Context, req *pb.DeleteProjectRequest) (*empty.Empty, error) {
+func (g *Grafeas) DeleteProject(ctx context.Context, req *prpb.DeleteProjectRequest) (*empty.Empty, error) {
 	pID, err := name.ParseProject(req.Name)
 	if err != nil {
 		log.Printf("Error parsing project name: %v", req.Name)
@@ -185,19 +155,8 @@ func (g *Grafeas) DeleteNote(ctx context.Context, req *pb.DeleteNoteRequest) (*e
 	return &empty.Empty{}, g.S.DeleteNote(pID, nID)
 }
 
-// DeleteOperation deletes an operation from the datastore.
-func (g *Grafeas) DeleteOperation(ctx context.Context, req *opspb.DeleteOperationRequest) (*empty.Empty, error) {
-	pID, oID, err := name.ParseOperation(req.Name)
-	if err != nil {
-		log.Printf("Error parsing name: %v", req.Name)
-		return nil, status.Error(codes.InvalidArgument, "Invalid Operation name")
-	}
-	// TODO: Check for occurrences and notes tied to this operation, and return an error if there are any before deletion.
-	return &empty.Empty{}, g.S.DeleteOperation(pID, oID)
-}
-
 // GetProject gets a project from the datastore.
-func (g *Grafeas) GetProject(ctx context.Context, req *pb.GetProjectRequest) (*pb.Project, error) {
+func (g *Grafeas) GetProject(ctx context.Context, req *prpb.GetProjectRequest) (*prpb.Project, error) {
 	pID, err := name.ParseProject(req.Name)
 	if err != nil {
 		log.Printf("Error parsing project name: %v", req.Name)
@@ -224,16 +183,6 @@ func (g *Grafeas) GetOccurrence(ctx context.Context, req *pb.GetOccurrenceReques
 		return nil, status.Error(codes.InvalidArgument, "Could note parse name")
 	}
 	return g.S.GetOccurrence(pID, oID)
-}
-
-// GetOperation gets a occurrence from the datastore.
-func (g *Grafeas) GetOperation(ctx context.Context, req *opspb.GetOperationRequest) (*opspb.Operation, error) {
-	pID, oID, err := name.ParseOperation(req.Name)
-	if err != nil {
-		log.Printf("Error parsing name: %v", req.Name)
-		return nil, status.Error(codes.InvalidArgument, "Invalid Operation name")
-	}
-	return g.S.GetOperation(pID, oID)
 }
 
 // GetOccurrenceNote gets a the note for the provided occurrence from the datastore.
@@ -316,40 +265,8 @@ func (g *Grafeas) UpdateOccurrence(ctx context.Context, req *pb.UpdateOccurrence
 	return g.S.GetOccurrence(pID, oID)
 }
 
-func (g *Grafeas) UpdateOperation(ctx context.Context, req *pb.UpdateOperationRequest) (*opspb.Operation, error) {
-	pID, oID, err := name.ParseOperation(req.Name)
-	if err != nil {
-		log.Printf("Error parsing name: %v", req.Name)
-		return nil, status.Error(codes.InvalidArgument, "Invalid Operation name")
-	}
-	// get existing operation
-	existing, gErr := g.S.GetOperation(pID, oID)
-	if gErr != nil {
-		return nil, gErr
-	}
-
-	// verify that operation isn't marked done
-	if req.Operation.Done != existing.Done && existing.Done {
-		log.Printf("Trying to update a done operation")
-		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("Cannot update operation in status done: %v", req.Name))
-	}
-
-	// verify that name didnt change
-	if req.Operation.Name != existing.Name {
-		log.Printf("Cannot change operation name: %v", req.Operation.Name)
-		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("Cannot change operation name: %v", req.Name))
-	}
-
-	// update operation
-	if gErr = g.S.UpdateOperation(pID, oID, req.Operation); gErr != nil {
-		log.Printf("Cannot update operation : %v", req.Operation.Name)
-		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("Cannot update Opreation: %v", req.Operation.Name))
-	}
-	return g.S.GetOperation(pID, oID)
-}
-
 // ListProjects returns the project id for all projects in the backing datastore.
-func (g *Grafeas) ListProjects(ctx context.Context, req *pb.ListProjectsRequest) (*pb.ListProjectsResponse, error) {
+func (g *Grafeas) ListProjects(ctx context.Context, req *prpb.ListProjectsRequest) (*prpb.ListProjectsResponse, error) {
 	// TODO: support filters
 	if req.PageSize == 0 {
 		req.PageSize = 100
@@ -358,28 +275,8 @@ func (g *Grafeas) ListProjects(ctx context.Context, req *pb.ListProjectsRequest)
 	if err != nil {
 		return nil, status.Error(codes.Unknown, "Failed to list projects")
 	}
-	return &pb.ListProjectsResponse{
+	return &prpb.ListProjectsResponse{
 		Projects:      ps,
-		NextPageToken: nextToken,
-	}, nil
-}
-
-func (g *Grafeas) ListOperations(ctx context.Context, req *opspb.ListOperationsRequest) (*opspb.ListOperationsResponse, error) {
-	pID, err := name.ParseProject(req.Name)
-	if err != nil {
-		log.Printf("Error parsing name: %v", req.Name)
-		return nil, status.Error(codes.InvalidArgument, "Invalid Project name")
-	}
-	// TODO: support filters
-	if req.PageSize == 0 {
-		req.PageSize = 100
-	}
-	ops, nextToken, err := g.S.ListOperations(pID, req.Filter, int(req.PageSize), req.PageToken)
-	if err != nil {
-		return nil, status.Error(codes.Unknown, "Failed to list operations")
-	}
-	return &opspb.ListOperationsResponse{
-		Operations:    ops,
 		NextPageToken: nextToken,
 	}, nil
 }
@@ -442,8 +339,4 @@ func (g *Grafeas) ListNoteOccurrences(ctx context.Context, req *pb.ListNoteOccur
 		Occurrences:   os,
 		NextPageToken: nextToken,
 	}, nil
-}
-
-func (g *Grafeas) CancelOperation(context.Context, *opspb.CancelOperationRequest) (*empty.Empty, error) {
-	return nil, status.Error(codes.Unimplemented, "Currently Unimplemented")
 }

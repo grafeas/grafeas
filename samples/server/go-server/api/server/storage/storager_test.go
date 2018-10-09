@@ -23,10 +23,10 @@ import (
 	"testing"
 
 	"github.com/golang/protobuf/proto"
+	pb "github.com/grafeas/grafeas/proto/v1beta1/grafeas_go_proto"
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/name"
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/testing"
-	server "github.com/grafeas/grafeas/server-go"
-	pb "github.com/grafeas/grafeas/v1alpha1/proto"
+	"github.com/grafeas/grafeas/server-go"
 	opspb "google.golang.org/genproto/googleapis/longrunning"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -184,7 +184,7 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 		}
 
 		o2 := o
-		o2.GetVulnerabilityDetails().CvssScore = 1.0
+		o2.GetVulnerability().CvssScore = 1.0
 		if err := s.UpdateOccurrence(pID, oID, o2); err != nil {
 			t.Fatalf("UpdateOccurrence got %v want success", err)
 		}
@@ -241,7 +241,7 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 		}
 
 		n2 := n
-		n2.GetVulnerabilityType().CvssScore = 1.0
+		n2.GetVulnerability().CvssScore = 1.0
 		if err := s.UpdateNote(pID, nID, n2); err != nil {
 			t.Fatalf("UpdateNote got %v want success", err)
 		}

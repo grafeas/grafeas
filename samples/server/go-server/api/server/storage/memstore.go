@@ -21,9 +21,10 @@ import (
 	"strings"
 	"sync"
 
+	pb "github.com/grafeas/grafeas/proto/v1beta1/grafeas_go_proto"
+	prpb "github.com/grafeas/grafeas/proto/v1beta1/project_go_proto"
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/name"
 	"github.com/grafeas/grafeas/server-go"
-	pb "github.com/grafeas/grafeas/v1alpha1/proto"
 	opspb "google.golang.org/genproto/googleapis/longrunning"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -71,24 +72,24 @@ func (m *memStore) DeleteProject(pID string) error {
 }
 
 // GetProject returns the project with the given pID from the mem store
-func (m *memStore) GetProject(pID string) (*pb.Project, error) {
+func (m *memStore) GetProject(pID string) (*prpb.Project, error) {
 	m.RLock()
 	defer m.RUnlock()
 	if _, ok := m.projects[pID]; !ok {
 		return nil, status.Errorf(codes.NotFound, "Project with name %q does not Exist", pID)
 	}
-	return &pb.Project{Name: name.FormatProject(pID)}, nil
+	return &prpb.Project{Name: name.FormatProject(pID)}, nil
 }
 
 // ListProjects returns up to pageSize number of projects beginning at pageToken (or from
 // start if pageToken is the empty string).
-func (m *memStore) ListProjects(filter string, pageSize int, pageToken string) ([]*pb.Project, string, error) {
+func (m *memStore) ListProjects(filter string, pageSize int, pageToken string) ([]*prpb.Project, string, error) {
 	m.RLock()
 	defer m.RUnlock()
-	projects := make([]*pb.Project, len(m.projects))
+	projects := make([]*prpb.Project, len(m.projects))
 	i := 0
 	for k := range m.projects {
-		projects[i] = &pb.Project{Name: name.FormatProject(k)}
+		projects[i] = &prpb.Project{Name: name.FormatProject(k)}
 		i++
 	}
 	sort.Slice(projects, func(i, j int) bool {
