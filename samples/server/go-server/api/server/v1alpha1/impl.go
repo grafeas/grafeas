@@ -36,16 +36,45 @@ type Grafeas struct {
 	S server.Storager
 }
 
-func (g *Grafeas) BatchCreateNotes(ctx context.Context, in *pb.BatchCreateNotesRequest) (*pb.BatchCreateNotesResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "BatchCreateNotes is not yet implemented")
-}
-
-func (g *Grafeas) BatchCreateOccurrences(ctx context.Context, req *pb.BatchCreateOccurrencesRequest) (*pb.BatchCreateOccurrencesResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "BatchCreateOccurrences is not yet implemented")
-}
+// maxBatch is the maximum data size in the batch API according to the protocol specification
+const maxBatch = 1000
 
 func (g *Grafeas) GetVulnerabilityOccurrencesSummary(ctx context.Context, req *pb.GetVulnerabilityOccurrencesSummaryRequest) (*pb.VulnerabilityOccurrencesSummary, error) {
 	return nil, status.Error(codes.Unimplemented, "GetVulnerabilityOccurrencesSummary is not yet implemented")
+}
+
+// BatchCreateNotes validates that all notes are valid and then add them to the backing datastore.
+func (g *Grafeas) BatchCreateNotes(ctx context.Context, in *pb.BatchCreateNotesRequest) (*pb.BatchCreateNotesResponse, error) {
+	if len(in.Notes) > maxBatch {
+		log.Printf("Too many notes in batch %d", len(in.Notes))
+		return nil, status.Error(codes.InvalidArgument, "Too many notes")
+	}
+	var resp pb.BatchCreateNotesResponse
+	for _, n := range in.Notes {
+		note, err := g.createNote(ctx, n)
+		if err != nil {
+			return nil, err
+		}
+		resp.Notes = append(resp.Notes, note)
+	}
+	return &resp, nil
+}
+
+// BatchCreateOccurrences validates that all notes are valid and then creates an associated occurrence per note in the backing datastore.
+func (g *Grafeas) BatchCreateOccurrences(ctx context.Context, req *pb.BatchCreateOccurrencesRequest) (*pb.BatchCreateOccurrencesResponse, error) {
+	if len(req.Occurrences) > maxBatch {
+		log.Printf("Too many occurences in batch %d", len(req.Occurrences))
+		return nil, status.Error(codes.InvalidArgument, "Too many occurrences")
+	}
+	var resp pb.BatchCreateOccurrencesResponse
+	for _, o := range req.Occurrences {
+		occ, err := g.createOccurrence(ctx, o, req.Parent)
+		if err != nil {
+			return nil, err
+		}
+		resp.Occurrences = append(resp.Occurrences, occ)
+	}
+	return &resp, nil
 }
 
 // CreateProject validates that a project is valid and then creates a project in the backing datastore.
@@ -69,59 +98,12 @@ func (g *Grafeas) CreateProject(ctx context.Context, req *prpb.CreateProjectRequ
 
 // CreateNote validates that a note is valid and then creates a note in the backing datastore.
 func (g *Grafeas) CreateNote(ctx context.Context, req *pb.CreateNoteRequest) (*pb.Note, error) {
-	n := req.Note
-	if req == nil {
-		log.Print("Note must not be empty.")
-		return nil, status.Error(codes.InvalidArgument, "Note must not be empty")
-	}
-	if n.Name == "" {
-		log.Printf("Note name must not be empty: %v", n.Name)
-		return nil, status.Error(codes.InvalidArgument, "Note name must not be empty")
-	}
-	pID, _, err := name.ParseNote(n.Name)
-	if err != nil {
-		log.Printf("Invalid note name: %v", n.Name)
-		return nil, status.Error(codes.InvalidArgument, "Invalid note name")
-	}
-	if _, err = g.S.GetProject(pID); err != nil {
-		log.Printf("Unable to get project %v, err: %v", pID, err)
-		return nil, status.Error(codes.NotFound, fmt.Sprintf("Project %v not found", pID))
-	}
-	return n, g.S.CreateNote(n)
+	return g.createNote(ctx, req.Note)
 }
 
 // CreateOccurrence validates that a note is valid and then creates an occurrence in the backing datastore.
 func (g *Grafeas) CreateOccurrence(ctx context.Context, req *pb.CreateOccurrenceRequest) (*pb.Occurrence, error) {
-	o := req.Occurrence
-	if req == nil {
-		log.Print("Occurrence must not be empty.")
-		return nil, status.Error(codes.InvalidArgument, "occurrence must not be empty")
-	}
-	npID, nID, err := name.ParseNote(o.NoteName)
-	if err != nil {
-		log.Printf("Invalid note name: %v", o.NoteName)
-		return nil, status.Error(codes.InvalidArgument, "invalid note name")
-	}
-	if n, err := g.S.GetNote(npID, nID); n == nil || err != nil {
-		log.Printf("Unable to getnote %v, err: %v", n, err)
-		return nil, status.Errorf(codes.NotFound, "note %v not found", o.NoteName)
-	}
-	pID, err := name.ParseProject(req.Parent)
-	if err != nil {
-		log.Printf("Invalid project name: %v", req.Parent)
-		return nil, status.Error(codes.InvalidArgument, "invalid project name")
-	}
-	if _, err := g.S.GetProject(pID); err != nil {
-		log.Printf("Unable to get project %v, err: %v", pID, err)
-		return nil, status.Errorf(codes.NotFound, "project %v not found", pID)
-	}
-	randID, err := uuid.NewRandom()
-	if err != nil {
-		log.Printf("Error Generating Occurrence Name: %v", err)
-		return nil, status.Error(codes.Internal, "could not generate occurrence name")
-	}
-	o.Name = name.OccurrenceName(pID, randID.String())
-	return o, g.S.CreateOccurrence(o)
+	return g.createOccurrence(ctx, req.Occurrence, req.Parent)
 }
 
 // DeleteProject deletes a project from the datastore.
@@ -241,7 +223,7 @@ func (g *Grafeas) UpdateOccurrence(ctx context.Context, req *pb.UpdateOccurrence
 		return nil, gErr
 	}
 
-	// verify that name didnt change
+	// verify that name did not change
 	if req.Name != existing.Name {
 		log.Printf("Cannot change occurrence name: %v", req.Occurrence.Name)
 		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("Cannot change occurrence name: %v", req.Occurrence.Name))
@@ -339,4 +321,59 @@ func (g *Grafeas) ListNoteOccurrences(ctx context.Context, req *pb.ListNoteOccur
 		Occurrences:   os,
 		NextPageToken: nextToken,
 	}, nil
+}
+
+// createOccurrence validates that a note is valid and then creates an occurrence in the backing datastore.
+func (g *Grafeas) createOccurrence(ctx context.Context, o *pb.Occurrence, project string) (*pb.Occurrence, error) {
+	if o == nil {
+		log.Print("Occurrence must not be empty.")
+		return nil, status.Error(codes.InvalidArgument, "occurrence must not be empty")
+	}
+	npID, nID, err := name.ParseNote(o.NoteName)
+	if err != nil {
+		log.Printf("Invalid note name: %v", o.NoteName)
+		return nil, status.Error(codes.InvalidArgument, "invalid note name")
+	}
+	if n, err := g.S.GetNote(npID, nID); n == nil || err != nil {
+		log.Printf("Unable to getnote %v, err: %v", n, err)
+		return nil, status.Errorf(codes.NotFound, "note %v not found", o.NoteName)
+	}
+	pID, err := name.ParseProject(project)
+	if err != nil {
+		log.Printf("Invalid project name: %v", project)
+		return nil, status.Error(codes.InvalidArgument, "invalid project name")
+	}
+	if _, err := g.S.GetProject(pID); err != nil {
+		log.Printf("Unable to get project %v, err: %v", pID, err)
+		return nil, status.Errorf(codes.NotFound, "project %v not found", pID)
+	}
+	randID, err := uuid.NewRandom()
+	if err != nil {
+		log.Printf("Error Generating Occurrence Name: %v", err)
+		return nil, status.Error(codes.Internal, "could not generate occurrence name")
+	}
+	o.Name = name.OccurrenceName(pID, randID.String())
+	return o, g.S.CreateOccurrence(o)
+}
+
+// createNote validates that a note is valid and then creates a note in the backing datastore.
+func (g *Grafeas) createNote(ctx context.Context, n *pb.Note) (*pb.Note, error) {
+	if n == nil {
+		log.Print("Note must not be empty.")
+		return nil, status.Error(codes.InvalidArgument, "Note must not be empty")
+	}
+	if n.Name == "" {
+		log.Printf("Note name must not be empty: %v", n.Name)
+		return nil, status.Error(codes.InvalidArgument, "Note name must not be empty")
+	}
+	pID, _, err := name.ParseNote(n.Name)
+	if err != nil {
+		log.Printf("Invalid note name: %v", n.Name)
+		return nil, status.Error(codes.InvalidArgument, "Invalid note name")
+	}
+	if _, err = g.S.GetProject(pID); err != nil {
+		log.Printf("Unable to get project %v, err: %v", pID, err)
+		return nil, status.Error(codes.NotFound, fmt.Sprintf("Project %v not found", pID))
+	}
+	return n, g.S.CreateNote(n)
 }

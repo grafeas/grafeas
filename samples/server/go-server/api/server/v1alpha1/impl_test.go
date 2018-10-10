@@ -17,6 +17,7 @@ package v1alpha1
 import (
 	"fmt"
 	"reflect"
+	"strconv"
 	"testing"
 
 	"golang.org/x/net/context"
@@ -94,6 +95,52 @@ func TestCreateOccurrence(t *testing.T) {
 	}
 }
 
+func TestBatchCreateOccurrences(t *testing.T) {
+	ctx := context.Background()
+	g := Grafeas{storage.NewMemStore()}
+	pID := "vulnerability-scanner-a"
+	n := testutil.Note(pID)
+	parent := name.FormatProject(pID)
+	createProject(t, pID, ctx, g)
+	req := &pb.CreateNoteRequest{Parent: parent, Note: n}
+	if _, err := g.CreateNote(ctx, req); err != nil {
+		t.Fatalf("CreateNote(%v) got %v, want success", req, err)
+	}
+	oReq := &pb.BatchCreateOccurrencesRequest{Parent: parent, Occurrences: []*pb.Occurrence{{}}}
+	if _, err := g.BatchCreateOccurrences(ctx, oReq); err == nil {
+		t.Error("BatchCreateOccurrencesRequest(empty occ): got success, want error")
+	} else if s, _ := status.FromError(err); s.Code() != codes.InvalidArgument {
+		t.Errorf("BatchCreateOccurrencesRequest(empty occ): got %v, want InvalidArgument)", err)
+	}
+	pID = "occurrence-project"
+	o1 := testutil.Occurrence(pID, n.Name)
+	o2 := testutil.Occurrence(pID, n.Name)
+	o3 := testutil.Occurrence(pID, n.Name)
+	parent = name.FormatProject(pID)
+	oReq = &pb.BatchCreateOccurrencesRequest{Parent: parent, Occurrences: []*pb.Occurrence{o1, o2, o3}}
+	createProject(t, pID, ctx, g)
+	resp, err := g.BatchCreateOccurrences(ctx, oReq)
+	if err != nil {
+		t.Errorf("BatchCreateOccurrencesRequest(%v) got %v, want success", oReq, err)
+	}
+	if len(resp.Occurrences) != len(oReq.Occurrences) {
+		t.Errorf("BatchCreateOccurrences got %d occurrences, want %d", len(resp.Occurrences), len(oReq.Occurrences))
+	}
+	for _, o := range resp.Occurrences {
+		if o.Name == "" {
+			t.Errorf("BatchCreateOccurrencesRequest got empty name")
+		}
+	}
+	for i := 0; i < maxBatch; i++ {
+		oReq.Occurrences = append(oReq.Occurrences, testutil.Occurrence(pID, n.Name))
+	}
+	if _, err := g.BatchCreateOccurrences(ctx, oReq); err == nil {
+		t.Error("BatchCreateOccurrences: got success, want error")
+	} else if s, _ := status.FromError(err); s.Code() != codes.InvalidArgument {
+		t.Errorf("BatchCreateOccurrences: got %v, want invalid InvalidArgument)", err)
+	}
+}
+
 func TestCreateNote(t *testing.T) {
 	ctx := context.Background()
 	g := Grafeas{storage.NewMemStore()}
@@ -105,7 +152,7 @@ func TestCreateNote(t *testing.T) {
 	} else if s, _ := status.FromError(err); s.Code() != codes.InvalidArgument {
 		t.Errorf("CreateNote(empty note): got %v, want %v", err, codes.InvalidArgument)
 	}
-	// Try to insert an onccurrence without first creating its project, expect failure
+	// Try to insert an occurrence without first creating its project, expect failure
 	pID := "vulnerability-scanner-a"
 	n = testutil.Note(pID)
 	parent := name.FormatProject(pID)
@@ -118,6 +165,51 @@ func TestCreateNote(t *testing.T) {
 	createProject(t, pID, ctx, g)
 	if _, err := g.CreateNote(ctx, req); err != nil {
 		t.Errorf("CreateNote(%v) got %v, want success", n, err)
+	}
+}
+
+func TestBatchCreateNote(t *testing.T) {
+	ctx := context.Background()
+	g := Grafeas{storage.NewMemStore()}
+	n := &pb.Note{}
+	req := &pb.BatchCreateNotesRequest{Parent: "projects/foo", Notes: map[string]*pb.Note{"": n}}
+	// Try to insert an empty note, expect failure
+	if _, err := g.BatchCreateNotes(ctx, req); err == nil {
+		t.Error("BatchCreateNotes(empty note): got success, want error")
+	} else if s, _ := status.FromError(err); s.Code() != codes.InvalidArgument {
+		t.Errorf("BatchCreateNotes(empty note): got %v, want %v", err, codes.InvalidArgument)
+	}
+	pID := "vulnerability-scanner-a"
+	createNote := func(name string) *pb.Note {
+		n := testutil.Note(pID)
+		n.Name = name
+		return n
+	}
+	n1 := createNote(fmt.Sprintf("projects/%s/notes/CVE-2014-0160", pID))
+	n2 := createNote(fmt.Sprintf("projects/%s/notes/CVE-2014-3566", pID))
+	parent := name.FormatProject(pID)
+	// Try to insert an occurrence without first creating its project, expect failure
+	req = &pb.BatchCreateNotesRequest{Parent: parent, Notes: map[string]*pb.Note{"n1": n1, "n2": n2}}
+	if _, err := g.BatchCreateNotes(ctx, req); err == nil {
+		t.Error("BatchCreateNotes: got success, want error")
+	} else if s, _ := status.FromError(err); s.Code() != codes.NotFound {
+		t.Errorf("BatchCreateNotes: got %v, want NotFound)", err)
+	}
+	createProject(t, pID, ctx, g)
+	resp, err := g.BatchCreateNotes(ctx, req)
+	if err != nil {
+		t.Errorf("BatchCreateNotes(%v) got %v, want success", n, err)
+	}
+	if len(resp.Notes) != len(req.Notes) {
+		t.Errorf("BatchCreateNotes got %d notes, want %d", len(resp.Notes), len(req.Notes))
+	}
+	for i := 0; i < maxBatch; i++ {
+		req.Notes[strconv.Itoa(i)] = createNote(strconv.Itoa(i))
+	}
+	if _, err := g.BatchCreateNotes(ctx, req); err == nil {
+		t.Error("BatchCreateNotes: got success, want error")
+	} else if s, _ := status.FromError(err); s.Code() != codes.InvalidArgument {
+		t.Errorf("BatchCreateNotes: got %v, want invalid InvalidArgument)", err)
 	}
 }
 

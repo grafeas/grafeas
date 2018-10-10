@@ -40,7 +40,7 @@ func Occurrence(pID, noteName string) *pb.Occurrence {
 				Severity:  vpb.Severity_HIGH,
 				CvssScore: 7.5,
 				PackageIssue: []*vpb.PackageIssue{
-					&vpb.PackageIssue{
+					{
 						SeverityName: "HIGH",
 						AffectedLocation: &vpb.VulnerabilityLocation{
 							CpeUri:  "cpe:/o:debian:debian_linux:8",
