@@ -21,9 +21,10 @@ import (
 	"strings"
 	"sync"
 
+	pb "github.com/grafeas/grafeas/proto/v1beta1/grafeas_go_proto"
+	prpb "github.com/grafeas/grafeas/proto/v1beta1/project_go_proto"
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/name"
 	"github.com/grafeas/grafeas/server-go"
-	pb "github.com/grafeas/grafeas/v1alpha1/proto"
 	opspb "google.golang.org/genproto/googleapis/longrunning"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -53,7 +54,7 @@ func (m *memStore) CreateProject(pID string) error {
 	m.Lock()
 	defer m.Unlock()
 	if _, ok := m.projects[pID]; ok {
-		return status.Error(codes.AlreadyExists, fmt.Sprintf("Project with name %q already exists", pID))
+		return status.Errorf(codes.AlreadyExists, "Project with name %q already exists", pID)
 	}
 	m.projects[pID] = true
 	return nil
@@ -64,31 +65,31 @@ func (m *memStore) DeleteProject(pID string) error {
 	m.Lock()
 	defer m.Unlock()
 	if _, ok := m.projects[pID]; !ok {
-		return status.Error(codes.NotFound, fmt.Sprintf("Project with name %q does not Exist", pID))
+		return status.Errorf(codes.NotFound, "Project with name %q does not Exist", pID)
 	}
 	delete(m.projects, pID)
 	return nil
 }
 
 // GetProject returns the project with the given pID from the mem store
-func (m *memStore) GetProject(pID string) (*pb.Project, error) {
+func (m *memStore) GetProject(pID string) (*prpb.Project, error) {
 	m.RLock()
 	defer m.RUnlock()
 	if _, ok := m.projects[pID]; !ok {
-		return nil, status.Error(codes.NotFound, fmt.Sprintf("Project with name %q does not Exist", pID))
+		return nil, status.Errorf(codes.NotFound, "Project with name %q does not Exist", pID)
 	}
-	return &pb.Project{Name: name.FormatProject(pID)}, nil
+	return &prpb.Project{Name: name.FormatProject(pID)}, nil
 }
 
 // ListProjects returns up to pageSize number of projects beginning at pageToken (or from
 // start if pageToken is the empty string).
-func (m *memStore) ListProjects(filter string, pageSize int, pageToken string) ([]*pb.Project, string, error) {
+func (m *memStore) ListProjects(filter string, pageSize int, pageToken string) ([]*prpb.Project, string, error) {
 	m.RLock()
 	defer m.RUnlock()
-	projects := make([]*pb.Project, len(m.projects))
+	projects := make([]*prpb.Project, len(m.projects))
 	i := 0
 	for k := range m.projects {
-		projects[i] = &pb.Project{Name: name.FormatProject(k)}
+		projects[i] = &prpb.Project{Name: name.FormatProject(k)}
 		i++
 	}
 	sort.Slice(projects, func(i, j int) bool {
@@ -96,7 +97,7 @@ func (m *memStore) ListProjects(filter string, pageSize int, pageToken string) (
 	})
 	startPos := parsePageToken(pageToken, 0)
 	endPos := min(startPos+pageSize, len(projects))
-	return projects[startPos:endPos], strconv.Itoa(endPos), nil
+	return projects[startPos:endPos], nextPageToken(endPos, len(projects)), nil
 }
 
 // CreateOccurrence adds the specified occurrence to the mem store
@@ -104,7 +105,7 @@ func (m *memStore) CreateOccurrence(o *pb.Occurrence) error {
 	m.Lock()
 	defer m.Unlock()
 	if _, ok := m.occurrencesByID[o.Name]; ok {
-		return status.Error(codes.AlreadyExists, fmt.Sprintf("Occurrence with name %q already exists", o.Name))
+		return status.Errorf(codes.AlreadyExists, "Occurrence with name %q already exists", o.Name)
 	}
 	m.occurrencesByID[o.Name] = o
 	return nil
@@ -116,7 +117,7 @@ func (m *memStore) DeleteOccurrence(pID, oID string) error {
 	m.Lock()
 	defer m.Unlock()
 	if _, ok := m.occurrencesByID[oName]; !ok {
-		return status.Error(codes.NotFound, fmt.Sprintf("Occurrence with oName %q does not Exist", oName))
+		return status.Errorf(codes.NotFound, "Occurrence with name %q does not Exist", oName)
 	}
 	delete(m.occurrencesByID, oName)
 	return nil
@@ -128,7 +129,7 @@ func (m *memStore) UpdateOccurrence(pID, oID string, o *pb.Occurrence) error {
 	m.Lock()
 	defer m.Unlock()
 	if _, ok := m.occurrencesByID[oName]; !ok {
-		return status.Error(codes.NotFound, fmt.Sprintf("Occurrence with oName %q does not Exist", oName))
+		return status.Errorf(codes.NotFound, "Occurrence with name %q does not Exist", oName)
 	}
 	m.occurrencesByID[oName] = o
 	return nil
@@ -141,7 +142,7 @@ func (m *memStore) GetOccurrence(pID, oID string) (*pb.Occurrence, error) {
 	defer m.RUnlock()
 	o, ok := m.occurrencesByID[oName]
 	if !ok {
-		return nil, status.Error(codes.NotFound, fmt.Sprintf("Occurrence with name %q does not Exist", oName))
+		return nil, status.Errorf(codes.NotFound, "Occurrence with name %q does not Exist", oName)
 	}
 	return o, nil
 }
@@ -162,7 +163,7 @@ func (m *memStore) ListOccurrences(pID, filters string, pageSize int, pageToken 
 	})
 	startPos := parsePageToken(pageToken, 0)
 	endPos := min(startPos+pageSize, len(os))
-	return os[startPos:endPos], strconv.Itoa(endPos), nil
+	return os[startPos:endPos], nextPageToken(endPos, len(os)), nil
 }
 
 // CreateNote adds the specified note to the mem store
@@ -170,7 +171,7 @@ func (m *memStore) CreateNote(n *pb.Note) error {
 	m.Lock()
 	defer m.Unlock()
 	if _, ok := m.notesByID[n.Name]; ok {
-		return status.Error(codes.AlreadyExists, fmt.Sprintf("Note with name %q already exists", n.Name))
+		return status.Errorf(codes.AlreadyExists, "Note with name %q already exists", n.Name)
 	}
 	m.notesByID[n.Name] = n
 	return nil
@@ -182,7 +183,7 @@ func (m *memStore) DeleteNote(pID, nID string) error {
 	m.Lock()
 	defer m.Unlock()
 	if _, ok := m.notesByID[nName]; !ok {
-		return status.Error(codes.NotFound, fmt.Sprintf("Note with name %q does not Exist", nName))
+		return status.Errorf(codes.NotFound, "Note with name %q does not Exist", nName)
 	}
 	delete(m.notesByID, nName)
 	return nil
@@ -194,7 +195,7 @@ func (m *memStore) UpdateNote(pID, nID string, n *pb.Note) error {
 	m.Lock()
 	defer m.Unlock()
 	if _, ok := m.notesByID[nName]; !ok {
-		return status.Error(codes.NotFound, fmt.Sprintf("Note with name %q does not Exist", nName))
+		return status.Errorf(codes.NotFound, "Note with name %q does not Exist", nName)
 	}
 	m.notesByID[nName] = n
 	return nil
@@ -207,7 +208,7 @@ func (m *memStore) GetNote(pID, nID string) (*pb.Note, error) {
 	defer m.RUnlock()
 	n, ok := m.notesByID[nName]
 	if !ok {
-		return nil, status.Error(codes.NotFound, fmt.Sprintf("Note with name %q does not Exist", nName))
+		return nil, status.Errorf(codes.NotFound, "Note with name %q does not Exist", nName)
 	}
 	return n, nil
 }
@@ -219,11 +220,11 @@ func (m *memStore) GetNoteByOccurrence(pID, oID string) (*pb.Note, error) {
 	defer m.RUnlock()
 	o, ok := m.occurrencesByID[oName]
 	if !ok {
-		return nil, status.Error(codes.NotFound, fmt.Sprintf("Occurrence with name %q does not Exist", oName))
+		return nil, status.Errorf(codes.NotFound, "Occurrence with name %q does not Exist", oName)
 	}
 	n, ok := m.notesByID[o.NoteName]
 	if !ok {
-		return nil, status.Error(codes.NotFound, fmt.Sprintf("Note with name %q does not Exist", o.NoteName))
+		return nil, status.Errorf(codes.NotFound, "Note with name %q does not Exist", o.NoteName)
 	}
 	return n, nil
 }
@@ -244,7 +245,7 @@ func (m *memStore) ListNotes(pID, filters string, pageSize int, pageToken string
 	})
 	startPos := parsePageToken(pageToken, 0)
 	endPos := min(startPos+pageSize, len(ns))
-	return ns[startPos:endPos], strconv.Itoa(endPos), nil
+	return ns[startPos:endPos], nextPageToken(endPos, len(ns)), nil
 }
 
 // ListNoteOccurrences returns up to pageSize number of occcurrences on the particular note (nID)
@@ -269,7 +270,7 @@ func (m *memStore) ListNoteOccurrences(pID, nID, filters string, pageSize int, p
 	})
 	startPos := parsePageToken(pageToken, 0)
 	endPos := min(startPos+pageSize, len(os))
-	return os[startPos:endPos], strconv.Itoa(endPos), nil
+	return os[startPos:endPos], nextPageToken(endPos, len(os)), nil
 }
 
 // GetOperation returns the operation with pID and oID
@@ -279,7 +280,7 @@ func (m *memStore) GetOperation(pID, opID string) (*opspb.Operation, error) {
 	defer m.RUnlock()
 	o, ok := m.opsByID[oName]
 	if !ok {
-		return nil, status.Error(codes.NotFound, fmt.Sprintf("Operation with name %q does not Exist", oName))
+		return nil, status.Errorf(codes.NotFound, "Operation with name %q does not Exist", oName)
 	}
 	return o, nil
 }
@@ -289,7 +290,7 @@ func (m *memStore) CreateOperation(o *opspb.Operation) error {
 	m.Lock()
 	defer m.Unlock()
 	if _, ok := m.opsByID[o.Name]; ok {
-		return status.Error(codes.AlreadyExists, fmt.Sprintf("Operation with name %q already exists", o.Name))
+		return status.Errorf(codes.AlreadyExists, "Operation with name %q already exists", o.Name)
 	}
 	m.opsByID[o.Name] = o
 	return nil
@@ -301,7 +302,7 @@ func (m *memStore) DeleteOperation(pID, opID string) error {
 	m.Lock()
 	defer m.Unlock()
 	if _, ok := m.opsByID[opName]; !ok {
-		return status.Error(codes.NotFound, fmt.Sprintf("Operation with name %q does not Exist", opName))
+		return status.Errorf(codes.NotFound, "Operation with name %q does not Exist", opName)
 	}
 	delete(m.opsByID, opName)
 	return nil
@@ -313,7 +314,7 @@ func (m *memStore) UpdateOperation(pID, opID string, op *opspb.Operation) error 
 	m.Lock()
 	defer m.Unlock()
 	if _, ok := m.opsByID[opName]; !ok {
-		return status.Error(codes.NotFound, fmt.Sprintf("Operation with name %q does not Exist", opName))
+		return status.Errorf(codes.NotFound, "Operation with name %q does not Exist", opName)
 	}
 	m.opsByID[opName] = op
 	return nil
@@ -335,7 +336,7 @@ func (m *memStore) ListOperations(pID, filters string, pageSize int, pageToken s
 	})
 	startPos := parsePageToken(pageToken, 0)
 	endPos := min(startPos+pageSize, len(ops))
-	return ops[startPos:endPos], strconv.Itoa(endPos), nil
+	return ops[startPos:endPos], nextPageToken(endPos, len(ops)), nil
 }
 
 // Parses the page token to an int. Returns defaultValue if parsing fails
@@ -357,4 +358,12 @@ func min(a, b int) int {
 	} else {
 		return b
 	}
+}
+
+// nextPageToken returns the next page token (the next item index or empty if not more items are left)
+func nextPageToken(lastPage, total int) string {
+	if lastPage == total {
+		return ""
+	}
+	return strconv.Itoa(lastPage)
 }

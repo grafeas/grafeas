@@ -32,9 +32,10 @@ type file struct {
 
 // Config is the global configuration for an instance of Grafeas.
 type config struct {
-	API         *api.Config          `yaml:"api"`
-	StorageType string               `yaml:"storage_type"` // Supported storage types are "memstore" and "postgres"
-	PgSQLConfig *storage.PgSQLConfig `yaml:"postgres"`
+	API            *api.Config                  `yaml:"api"`
+	StorageType    string                       `yaml:"storage_type"` // Supported storage types are "memstore", "postgres" and "embedded"
+	PgSQLConfig    *storage.PgSQLConfig         `yaml:"postgres"`
+	EmbeddedConfig *storage.EmbeddedStoreConfig `yaml:"embedded"` // EmbeddedConfig is the embedded store config
 }
 
 // DefaultConfig is a configuration that can be used as a fallback value.

@@ -3,6 +3,12 @@
 	"ignore": "test",
 	"package": [
 		{
+			"checksumSHA1": "Jj3gpCfsay5+MF3Kchto21PWdnI=",
+			"path": "github.com/boltdb/bolt",
+			"revision": "fa5367d20c994db73282594be0146ab221657943",
+			"revisionTime": "2017-09-07T20:20:52Z"
+		},
+		{
 			"checksumSHA1": "HlDspvrfA33+zVOgm5mvoiWvRhg=",
 			"path": "github.com/cockroachdb/cmux",
 			"revision": "30d10be492927e2dcae0089c374c455d42414fcb",
@@ -175,6 +181,12 @@
 			"path": "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/httprule",
 			"revision": "a53af079f669b6375dd96cdf5e98e67f886a8b4d",
 			"revisionTime": "2018-05-08T16:37:18Z"
+		},
+		{
+			"checksumSHA1": "444DLrDowrEzlH31AY4KumadXQE=",
+			"path": "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger/options",
+			"revision": "8077515eaf98524f4fcfbcc83f50b37730e08838",
+			"revisionTime": "2018-09-23T23:51:26Z"
 		},
 		{
 			"checksumSHA1": "13iJYYfihSUDMpAbUgCJHpRizuw=",

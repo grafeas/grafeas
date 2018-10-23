@@ -16,40 +16,44 @@ package testutil
 
 import (
 	"fmt"
-	"log"
-
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes"
 	"github.com/golang/protobuf/ptypes/any"
-	pb "github.com/grafeas/grafeas/v1alpha1/proto"
+	"log"
+
+	cpb "github.com/grafeas/grafeas/proto/v1beta1/common_go_proto"
+	pb "github.com/grafeas/grafeas/proto/v1beta1/grafeas_go_proto"
+	pkgpb "github.com/grafeas/grafeas/proto/v1beta1/package_go_proto"
+	vpb "github.com/grafeas/grafeas/proto/v1beta1/vulnerability_go_proto"
+	v1pb "github.com/grafeas/grafeas/v1alpha1/proto"
 	opspb "google.golang.org/genproto/googleapis/longrunning"
 )
 
 func Occurrence(pID, noteName string) *pb.Occurrence {
 	return &pb.Occurrence{
-		Name:        fmt.Sprintf("projects/%s/occurrences/134", pID),
-		ResourceUrl: "gcr.io/foo/bar",
-		NoteName:    noteName,
-		Kind:        pb.Note_PACKAGE_VULNERABILITY,
-		Details: &pb.Occurrence_VulnerabilityDetails{
-			VulnerabilityDetails: &pb.VulnerabilityType_VulnerabilityDetails{
-				Severity:  pb.VulnerabilityType_HIGH,
+		Name:     fmt.Sprintf("projects/%s/occurrences/134", pID),
+		Resource: &pb.Resource{Uri: "gcr.io/foo/bar"},
+		NoteName: noteName,
+		Kind:     cpb.NoteKind_VULNERABILITY,
+		Details: &pb.Occurrence_Vulnerability{
+			Vulnerability: &vpb.Details{
+				Severity:  vpb.Severity_HIGH,
 				CvssScore: 7.5,
-				PackageIssue: []*pb.VulnerabilityType_PackageIssue{
-					&pb.VulnerabilityType_PackageIssue{
+				PackageIssue: []*vpb.PackageIssue{
+					{
 						SeverityName: "HIGH",
-						AffectedLocation: &pb.VulnerabilityType_VulnerabilityLocation{
+						AffectedLocation: &vpb.VulnerabilityLocation{
 							CpeUri:  "cpe:/o:debian:debian_linux:8",
 							Package: "icu",
-							Version: &pb.VulnerabilityType_Version{
+							Version: &pkgpb.Version{
 								Name:     "52.1",
 								Revision: "8+deb8u3",
 							},
 						},
-						FixedLocation: &pb.VulnerabilityType_VulnerabilityLocation{
+						FixedLocation: &vpb.VulnerabilityLocation{
 							CpeUri:  "cpe:/o:debian:debian_linux:8",
 							Package: "icu",
-							Version: &pb.VulnerabilityType_Version{
+							Version: &pkgpb.Version{
 								Name:     "52.1",
 								Revision: "8+deb8u4",
 							},
@@ -66,100 +70,100 @@ func Note(pID string) *pb.Note {
 		Name:             fmt.Sprintf("projects/%s/notes/CVE-1999-0710", pID),
 		ShortDescription: "CVE-2014-9911",
 		LongDescription:  "NIST vectors: AV:N/AC:L/Au:N/C:P/I:P",
-		Kind:             pb.Note_PACKAGE_VULNERABILITY,
-		NoteType: &pb.Note_VulnerabilityType{
-			&pb.VulnerabilityType{
+		Kind:             cpb.NoteKind_VULNERABILITY,
+		Type: &pb.Note_Vulnerability{
+			&vpb.Vulnerability{
 				CvssScore: 7.5,
-				Severity:  pb.VulnerabilityType_HIGH,
-				Details: []*pb.VulnerabilityType_Detail{
-					&pb.VulnerabilityType_Detail{
+				Severity:  vpb.Severity_HIGH,
+				Details: []*vpb.Vulnerability_Detail{
+					{
 						CpeUri:  "cpe:/o:debian:debian_linux:7",
 						Package: "icu",
 						Description: "Stack-based buffer overflow in the ures_getByKeyWithFallback function in " +
 							"common/uresbund.cpp in International Components for Unicode (ICU) before 54.1 for C/C++ allows " +
 							"remote attackers to cause a denial of service or possibly have unspecified other impact via a crafted uloc_getDisplayName call.",
-						MinAffectedVersion: &pb.VulnerabilityType_Version{
-							Kind: pb.VulnerabilityType_Version_MINIMUM,
+						MinAffectedVersion: &pkgpb.Version{
+							Kind: pkgpb.Version_MINIMUM,
 						},
 						SeverityName: "HIGH",
 
-						FixedLocation: &pb.VulnerabilityType_VulnerabilityLocation{
+						FixedLocation: &vpb.VulnerabilityLocation{
 							CpeUri:  "cpe:/o:debian:debian_linux:7",
 							Package: "icu",
-							Version: &pb.VulnerabilityType_Version{
+							Version: &pkgpb.Version{
 								Name:     "4.8.1.1",
 								Revision: "12+deb7u6",
 							},
 						},
 					},
-					&pb.VulnerabilityType_Detail{
+					{
 						CpeUri:  "cpe:/o:debian:debian_linux:8",
 						Package: "icu",
 						Description: "Stack-based buffer overflow in the ures_getByKeyWithFallback function in " +
 							"common/uresbund.cpp in International Components for Unicode (ICU) before 54.1 for C/C++ allows " +
 							"remote attackers to cause a denial of service or possibly have unspecified other impact via a crafted uloc_getDisplayName call.",
-						MinAffectedVersion: &pb.VulnerabilityType_Version{
-							Kind: pb.VulnerabilityType_Version_MINIMUM,
+						MinAffectedVersion: &pkgpb.Version{
+							Kind: pkgpb.Version_MINIMUM,
 						},
 						SeverityName: "HIGH",
 
-						FixedLocation: &pb.VulnerabilityType_VulnerabilityLocation{
+						FixedLocation: &vpb.VulnerabilityLocation{
 							CpeUri:  "cpe:/o:debian:debian_linux:8",
 							Package: "icu",
-							Version: &pb.VulnerabilityType_Version{
+							Version: &pkgpb.Version{
 								Name:     "52.1",
 								Revision: "8+deb8u4",
 							},
 						},
 					},
-					&pb.VulnerabilityType_Detail{
+					{
 						CpeUri:  "cpe:/o:debian:debian_linux:9",
 						Package: "icu",
 						Description: "Stack-based buffer overflow in the ures_getByKeyWithFallback function in " +
 							"common/uresbund.cpp in International Components for Unicode (ICU) before 54.1 for C/C++ allows " +
 							"remote attackers to cause a denial of service or possibly have unspecified other impact via a crafted uloc_getDisplayName call.",
-						MinAffectedVersion: &pb.VulnerabilityType_Version{
-							Kind: pb.VulnerabilityType_Version_MINIMUM,
+						MinAffectedVersion: &pkgpb.Version{
+							Kind: pkgpb.Version_MINIMUM,
 						},
 						SeverityName: "HIGH",
 
-						FixedLocation: &pb.VulnerabilityType_VulnerabilityLocation{
+						FixedLocation: &vpb.VulnerabilityLocation{
 							CpeUri:  "cpe:/o:debian:debian_linux:9",
 							Package: "icu",
-							Version: &pb.VulnerabilityType_Version{
+							Version: &pkgpb.Version{
 								Name:     "55.1",
 								Revision: "3",
 							},
 						},
 					},
-					&pb.VulnerabilityType_Detail{
+					{
 						CpeUri:  "cpe:/o:canonical:ubuntu_linux:14.04",
 						Package: "android",
 						Description: "Stack-based buffer overflow in the ures_getByKeyWithFallback function in " +
 							"common/uresbund.cpp in International Components for Unicode (ICU) before 54.1 for C/C++ allows " +
 							"remote attackers to cause a denial of service or possibly have unspecified other impact via a crafted uloc_getDisplayName call.",
-						MinAffectedVersion: &pb.VulnerabilityType_Version{
-							Kind: pb.VulnerabilityType_Version_MINIMUM,
+						MinAffectedVersion: &pkgpb.Version{
+							Kind: pkgpb.Version_MINIMUM,
 						},
 						SeverityName: "MEDIUM",
 
-						FixedLocation: &pb.VulnerabilityType_VulnerabilityLocation{
+						FixedLocation: &vpb.VulnerabilityLocation{
 							CpeUri:  "cpe:/o:canonical:ubuntu_linux:14.04",
 							Package: "android",
-							Version: &pb.VulnerabilityType_Version{
-								Kind: pb.VulnerabilityType_Version_MAXIMUM,
+							Version: &pkgpb.Version{
+								Kind: pkgpb.Version_MINIMUM,
 							},
 						},
 					},
 				},
 			},
 		},
-		RelatedUrl: []*pb.Note_RelatedUrl{
-			&pb.Note_RelatedUrl{
+		RelatedUrl: []*cpb.RelatedUrl{
+			{
 				Url:   "https://security-tracker.debian.org/tracker/CVE-2014-9911",
 				Label: "More Info",
 			},
-			&pb.Note_RelatedUrl{
+			{
 				Url:   "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2014-9911",
 				Label: "More Info",
 			},
@@ -168,7 +172,7 @@ func Note(pID string) *pb.Note {
 }
 
 func Operation(pID string) *opspb.Operation {
-	md := &pb.OperationMetadata{CreateTime: ptypes.TimestampNow()}
+	md := &v1pb.OperationMetadata{CreateTime: ptypes.TimestampNow()}
 	bytes, err := proto.Marshal(md)
 	if err != nil {
 		log.Printf("Error parsing bytes: %v", err)

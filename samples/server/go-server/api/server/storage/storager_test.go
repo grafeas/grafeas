@@ -22,10 +22,11 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/golang/protobuf/proto"
+	pb "github.com/grafeas/grafeas/proto/v1beta1/grafeas_go_proto"
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/name"
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/testing"
-	server "github.com/grafeas/grafeas/server-go"
-	pb "github.com/grafeas/grafeas/v1alpha1/proto"
+	"github.com/grafeas/grafeas/server-go"
 	opspb "google.golang.org/genproto/googleapis/longrunning"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -92,7 +93,7 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 		}
 		if got, err := s.GetOccurrence(pID, oID); err != nil {
 			t.Fatalf("GetOccurrence got %v, want success", err)
-		} else if !reflect.DeepEqual(got, o) {
+		} else if !proto.Equal(got, o) {
 			t.Errorf("GetOccurrence got %v, want %v", got, o)
 		}
 	})
@@ -178,19 +179,19 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 		}
 		if got, err := s.GetOccurrence(pID, oID); err != nil {
 			t.Fatalf("GetOccurrence got %v, want success", err)
-		} else if !reflect.DeepEqual(got, o) {
+		} else if !proto.Equal(got, o) {
 			t.Errorf("GetOccurrence got %v, want %v", got, o)
 		}
 
 		o2 := o
-		o2.GetVulnerabilityDetails().CvssScore = 1.0
+		o2.GetVulnerability().CvssScore = 1.0
 		if err := s.UpdateOccurrence(pID, oID, o2); err != nil {
 			t.Fatalf("UpdateOccurrence got %v want success", err)
 		}
 
 		if got, err := s.GetOccurrence(pID, oID); err != nil {
 			t.Fatalf("GetOccurrence got %v, want success", err)
-		} else if !reflect.DeepEqual(got, o2) {
+		} else if !proto.Equal(got, o2) {
 			t.Errorf("GetOccurrence got %v, want %v", got, o2)
 		}
 	})
@@ -235,19 +236,19 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 		}
 		if got, err := s.GetNote(pID, nID); err != nil {
 			t.Fatalf("GetNote got %v, want success", err)
-		} else if !reflect.DeepEqual(got, n) {
+		} else if !proto.Equal(got, n) {
 			t.Errorf("GetNote got %v, want %v", got, n)
 		}
 
 		n2 := n
-		n2.GetVulnerabilityType().CvssScore = 1.0
+		n2.GetVulnerability().CvssScore = 1.0
 		if err := s.UpdateNote(pID, nID, n2); err != nil {
 			t.Fatalf("UpdateNote got %v want success", err)
 		}
 
 		if got, err := s.GetNote(pID, nID); err != nil {
 			t.Fatalf("GetNote got %v, want success", err)
-		} else if !reflect.DeepEqual(got, n2) {
+		} else if !proto.Equal(got, n2) {
 			t.Errorf("GetNote got %v, want %v", got, n2)
 		}
 	})
@@ -292,7 +293,7 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 		}
 		if got, err := s.GetOccurrence(pID, oID); err != nil {
 			t.Fatalf("GetOccurrence got %v, want success", err)
-		} else if !reflect.DeepEqual(got, o) {
+		} else if !proto.Equal(got, o) {
 			t.Errorf("GetOccurrence got %v, want %v", got, o)
 		}
 	})
@@ -315,7 +316,7 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 		}
 		if got, err := s.GetNote(pID, nID); err != nil {
 			t.Fatalf("GetNote got %v, want success", err)
-		} else if !reflect.DeepEqual(got, n) {
+		} else if !proto.Equal(got, n) {
 			t.Errorf("GetNote got %v, want %v", got, n)
 		}
 	})
@@ -342,7 +343,7 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 		}
 		if got, err := s.GetNoteByOccurrence(pID, oID); err != nil {
 			t.Fatalf("GetNoteByOccurrence got %v, want success", err)
-		} else if !reflect.DeepEqual(got, n) {
+		} else if !proto.Equal(got, n) {
 			t.Errorf("GetNoteByOccurrence got %v, want %v", got, n)
 		}
 	})
@@ -365,7 +366,7 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 		}
 		if got, err := s.GetOperation(pID, oID); err != nil {
 			t.Fatalf("GetOperation got %v, want success", err)
-		} else if !reflect.DeepEqual(got, o) {
+		} else if !proto.Equal(got, o) {
 			t.Errorf("GetOperation got %v, want %v", got, o)
 		}
 	})
@@ -414,7 +415,7 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 		}
 		if got, err := s.GetOperation(pID, oID); err != nil {
 			t.Fatalf("GetOperation got %v, want success", err)
-		} else if !reflect.DeepEqual(got, o) {
+		} else if !proto.Equal(got, o) {
 			t.Errorf("GetOperation got %v, want %v", got, o)
 		}
 
@@ -426,7 +427,7 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 
 		if got, err := s.GetOperation(pID, oID); err != nil {
 			t.Fatalf("GetOperation got %v, want success", err)
-		} else if !reflect.DeepEqual(got, o2) {
+		} else if !proto.Equal(got, o2) {
 			t.Errorf("GetOperation got %v, want %v", got, o2)
 		}
 	})
@@ -443,9 +444,12 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 			wantProjectNames = append(wantProjectNames, name.FormatProject(pID))
 		}
 		filter := "filters_are_yet_to_be_implemented"
-		gotProjects, _, err := s.ListProjects(filter, 100, "")
+		gotProjects, pageToken, err := s.ListProjects(filter, 100, "")
 		if err != nil {
 			t.Fatalf("ListProjects got %v want success", err)
+		}
+		if pageToken != "" {
+			t.Errorf("Got %s want empty page token", pageToken)
 		}
 		if len(gotProjects) != 20 {
 			t.Errorf("ListProjects got %v projects, want 20", len(gotProjects))
@@ -480,9 +484,13 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 			}
 			ops = append(ops, *o)
 		}
-		gotOs, _, err := s.ListOperations(findProject, "", 100, "")
+		gotOs, pageToken, err := s.ListOperations(findProject, "", 100, "")
 		if err != nil {
 			t.Fatalf("ListOperations got %v want success", err)
+		}
+
+		if pageToken != "" {
+			t.Errorf("Got %s want empty page token", pageToken)
 		}
 
 		if len(gotOs) != 5 {
@@ -641,9 +649,12 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 			t.Fatalf("Got %s want %s", p.Name, name.FormatProject(pID2))
 		}
 		// Get projects again
-		gotProjects, _, err = s.ListProjects(filter, 100, lastPage)
+		gotProjects, pageToken, err := s.ListProjects(filter, 100, lastPage)
 		if err != nil {
 			t.Fatalf("ListProjects got %v want success", err)
+		}
+		if pageToken != "" {
+			t.Fatalf("Got %s want empty page token", pageToken)
 		}
 		if len(gotProjects) != 1 {
 			t.Errorf("ListProjects got %v projects, want 1", len(gotProjects))
@@ -691,9 +702,12 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 			t.Fatalf("Got %s want %s", p.Name, name.FormatNote(pID, nID2))
 		}
 		// Get occurrences again
-		gotNotes, _, err = s.ListNotes(pID, filter, 100, lastPage)
+		gotNotes, pageToken, err := s.ListNotes(pID, filter, 100, lastPage)
 		if err != nil {
 			t.Fatalf("ListNotes got %v want success", err)
+		}
+		if pageToken != "" {
+			t.Errorf("Got %s want empty page token", pageToken)
 		}
 		if len(gotNotes) != 1 {
 			t.Errorf("ListNotes got %v notes, want 1", len(gotNotes))
@@ -746,9 +760,12 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 			t.Fatalf("Got %s want %s", p.Name, name.FormatOccurrence(pID, oID2))
 		}
 		// Get occurrences again
-		gotOccurrences, _, err = s.ListOccurrences(pID, filter, 100, lastPage)
+		gotOccurrences, pageToken, err := s.ListOccurrences(pID, filter, 100, lastPage)
 		if err != nil {
 			t.Fatalf("ListOccurrences got %v want success", err)
+		}
+		if pageToken != "" {
+			t.Errorf("Got %s want empty page token", pageToken)
 		}
 		if len(gotOccurrences) != 1 {
 			t.Errorf("ListOccurrences got %v operations, want 1", len(gotOccurrences))
@@ -802,9 +819,12 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 			t.Fatalf("Got %s want %s", p.Name, name.FormatOccurrence(pID, oID2))
 		}
 		// Get occurrences again
-		gotOccurrences, _, err = s.ListNoteOccurrences(nPID, nID, filter, 100, lastPage)
+		gotOccurrences, pageToken, err := s.ListNoteOccurrences(nPID, nID, filter, 100, lastPage)
 		if err != nil {
 			t.Fatalf("ListNoteOccurrences got %v want success", err)
+		}
+		if pageToken != "" {
+			t.Fatalf("Got %s want empty page token", pageToken)
 		}
 		if len(gotOccurrences) != 1 {
 			t.Errorf("ListNoteOccurrences got %v operations, want 1", len(gotOccurrences))
@@ -852,9 +872,12 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 			t.Fatalf("Got %s want %s", p.Name, name.FormatOperation(pID, oID2))
 		}
 		// Get operations again
-		gotOperations, _, err = s.ListOperations(pID, filter, 100, lastPage)
+		gotOperations, pageToken, err := s.ListOperations(pID, filter, 100, lastPage)
 		if err != nil {
 			t.Fatalf("ListOperations got %v want success", err)
+		}
+		if pageToken != "" {
+			t.Errorf("Got %s want empty page token", pageToken)
 		}
 		if len(gotOperations) != 1 {
 			t.Errorf("ListOperations got %v operations, want 1", len(gotOperations))

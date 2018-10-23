@@ -34,19 +34,16 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to load config file: %s", err)
 	}
-	storage := createStorage(config.StorageType, config.PgSQLConfig)
-	api.Run(config.API, &storage)
-}
-
-func createStorage(storageType string, pgSQLConfig *storage.PgSQLConfig) server.Storager {
-	switch storageType {
+	var storager server.Storager
+	switch config.StorageType {
 	case "memstore":
-		return storage.NewMemStore()
+		storager = storage.NewMemStore()
 	case "postgres":
-		return storage.NewPgSQLStore(pgSQLConfig)
+		storager = storage.NewPgSQLStore(config.PgSQLConfig)
+	case "embedded":
+		storager = storage.NewEmbeddedStore(config.EmbeddedConfig)
 	default:
-		log.Fatalf("Storage type unsupported: %s", storageType)
+		log.Fatalf("Storage type unsupported: %s", config.StorageType)
 	}
-
-	return nil
+	api.Run(config.API, &storager)
 }

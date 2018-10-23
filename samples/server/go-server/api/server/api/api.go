@@ -26,12 +26,12 @@ import (
 	"strings"
 
 	"github.com/cockroachdb/cmux"
+	pb "github.com/grafeas/grafeas/proto/v1beta1/grafeas_go_proto"
+	prpb "github.com/grafeas/grafeas/proto/v1beta1/project_go_proto"
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/v1alpha1"
-	server "github.com/grafeas/grafeas/server-go"
-	pb "github.com/grafeas/grafeas/v1alpha1/proto"
+	"github.com/grafeas/grafeas/server-go"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/rs/cors"
-	opspb "google.golang.org/genproto/googleapis/longrunning"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 )
@@ -141,9 +141,8 @@ func newGrpcServer(tlsConfig *tls.Config, storage *server.Storager) *grpc.Server
 
 	grpcServer := grpc.NewServer(grpcOpts...)
 	g := v1alpha1.Grafeas{S: *storage}
-	pb.RegisterGrafeasServer(grpcServer, &g)
-	pb.RegisterGrafeasProjectsServer(grpcServer, &g)
-	opspb.RegisterOperationsServer(grpcServer, &g)
+	pb.RegisterGrafeasV1Beta1Server(grpcServer, &g)
+	prpb.RegisterProjectsServer(grpcServer, &g)
 
 	return grpcServer
 }
@@ -170,12 +169,12 @@ func newGrpcGatewayServer(ctx context.Context, listenerAddr string, tlsConfig *t
 	if err != nil {
 		log.Fatal("could not initialize grpc gateway connection")
 	}
-	err = pb.RegisterGrafeasHandler(ctx, gwmux, conn)
+	err = pb.RegisterGrafeasV1Beta1Handler(ctx, gwmux, conn)
 	if err != nil {
 		log.Fatal("could not initialize ancestry grpc gateway")
 	}
 
-	err = pb.RegisterGrafeasProjectsHandler(ctx, gwmux, conn)
+	err = prpb.RegisterProjectsHandler(ctx, gwmux, conn)
 	if err != nil {
 		log.Fatal("could not initialize notification grpc gateway")
 	}
