@@ -1,6 +1,6 @@
 # Grafeas: A Component Metadata API
 
-![Grafeas logo](logo/grafeas-logo-blue.png)
+![Grafeas logo](logo/grafeas-logo-128.png)
 
 Grafeas defines an API spec for managing metadata about software resources, such
 as container images, Virtual Machine (VM) images, JAR files, and scripts. You
