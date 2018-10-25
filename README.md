@@ -26,6 +26,17 @@ creating notes and occurrences in Grafeas. There are client libraries available 
 * The authoritative API for grafeas is the [protobuf
 files](https://github.com/Grafeas/Grafeas/tree/master/proto/v1beta1).
 
+## Support
+
+If you have questions, reach out to us on
+[grafeas-users](https://groups.google.com/forum/#!forum/grafeas-users). For
+questions about contributing, please see the [section](#contributing) below or
+use [grafeas-dev](https://groups.google.com/forum/#!forum/grafeas-dev).
+
+Grafeas announcements will be posted to its
+[@grafeasio](https://twitter.com/Grafeasio) Twitter account and to
+[grafeas-users](https://groups.google.com/forum/#!forum/grafeas-users).
+
 ## Contributing
 
 See [CONTRIBUTING](CONTRIBUTING.md) for details on how you can contribute.
