@@ -12,7 +12,7 @@ This will start the Grafeas gRPC and REST API:s on `localhost:8080`. To start gr
 
 Grafeas provides both a REST API and a gRPC API. Here is an example of using the REST API to list projects in Grafeas.
 
-`curl http://localhost:8080/v1alpha1/projects`
+`curl http://localhost:8080/v1beta1/projects`
 
 ### Access gRPC API with a go client
 
@@ -90,7 +90,7 @@ Add the following to your config file
 
 When using curl with a self signed certificate you need to add `-k/--insecure` and specify the client certificate.
 
-`curl -k --cert path/to/client.pem https://localhost:8080/v1alpha1/projects`
+`curl -k --cert path/to/client.pem http://localhost:8080/v1beta1/projects`
 
 ### Access gRPC with a go client
 
