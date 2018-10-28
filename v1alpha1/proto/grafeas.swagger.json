@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "title": "An API to insert and retrieve metadata on cloud artifacts.",
-    "version": "v1alpha1"
+    "version": "v1beta1"
   },
   "schemes": [
     "http",
@@ -15,7 +15,7 @@
     "application/json"
   ],
   "paths": {
-    "/v1alpha1/projects": {
+    "/v1beta1/projects": {
       "get": {
         "summary": "Deletes the given `Occurrence` from the system. Use this when\nan `Occurrence` is no longer applicable for the given resource.",
         "operationId": "ListProjects",
@@ -82,7 +82,7 @@
         ]
       }
     },
-    "/v1alpha1/{name}": {
+    "/v1beta1/{name}": {
       "get": {
         "summary": "Lists active `Occurrences` for a given project matching the filters.",
         "operationId": "GetProject",
@@ -165,7 +165,7 @@
         ]
       }
     },
-    "/v1alpha1/{name}/notes": {
+    "/v1beta1/{name}/notes": {
       "get": {
         "summary": "Gets the `Note` attached to the given `Occurrence`.",
         "operationId": "GetOccurrenceNote",
@@ -191,7 +191,7 @@
         ]
       }
     },
-    "/v1alpha1/{name}/occurrences": {
+    "/v1beta1/{name}/occurrences": {
       "get": {
         "summary": "Lists `Occurrences` referencing the specified `Note`. Use this method to\nget all occurrences referencing your `Note` across all your customer\nprojects.",
         "operationId": "ListNoteOccurrences",
@@ -239,7 +239,7 @@
         ]
       }
     },
-    "/v1alpha1/{parent}/notes": {
+    "/v1beta1/{parent}/notes": {
       "get": {
         "summary": "Lists all `Notes` for a given project.",
         "operationId": "ListNotes",
@@ -320,7 +320,7 @@
         ]
       }
     },
-    "/v1alpha1/{parent}/occurrences": {
+    "/v1beta1/{parent}/occurrences": {
       "get": {
         "summary": "Lists active `Occurrences` for a given project matching the filters.",
         "operationId": "ListOccurrences",
@@ -401,7 +401,7 @@
         ]
       }
     },
-    "/v1alpha1/{parent}/operations": {
+    "/v1beta1/{parent}/operations": {
       "post": {
         "summary": "Creates a new `Operation`.",
         "operationId": "CreateOperation",
@@ -909,7 +909,7 @@
       "properties": {
         "name": {
           "type": "string",
-          "description": "Name of the artifact. This may be the path to a binary or jar file, or in\nthe case of a container build, the name used to push the container image to\nGoogle Container Registry, as presented to `docker push`.\n\nThis field is deprecated in favor of the plural `names` field; it continues\nto exist here to allow existing BuildProvenance serialized to json in\ngoogle.devtools.containeranalysis.v1alpha1.BuildDetails.provenance_bytes to\ndeserialize back into proto."
+          "description": "Name of the artifact. This may be the path to a binary or jar file, or in\nthe case of a container build, the name used to push the container image to\nGoogle Container Registry, as presented to `docker push`.\n\nThis field is deprecated in favor of the plural `names` field; it continues\nto exist here to allow existing BuildProvenance serialized to json in\ngoogle.devtools.containeranalysis.v1beta1.BuildDetails.provenance_bytes to\ndeserialize back into proto."
         },
         "checksum": {
           "type": "string",

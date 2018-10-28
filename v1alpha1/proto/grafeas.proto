@@ -28,7 +28,7 @@ import "protoc-gen-swagger/options/annotations.proto";
 option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
   info: {
     title: "An API to insert and retrieve metadata on cloud artifacts.";
-    version: "v1alpha1";
+    version: "v1beta1";
   };
 };
 
