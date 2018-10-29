@@ -48,8 +48,8 @@ timestamp. Where possible, use content-addressable resource URLs.
 The following table provides examples of possible resource URLs for several
 component types:
 
-Component Type | Identifier                               | Example
--------------- | ---------------------------------------- | -------
+Component Type | Identifier                                 | Example
+:---           | :---                                       | :---
 Debian         | `deb://dist(optional):arch:name:version`   | `deb://lucid:i386:acl:2.2.49-2`
 Docker         | `https://Namespace/name@sha256:<Checksum>` | `https://gcr.io/scanning-customer/dockerimage@sha256:244fd47e07d1004f0aed9c156aa09083c82bf8944eceb67c946ff7430510a77b`
 Generic file   | `file://sha256:<Checksum>:name`            | `file://sha256:244fd47e07d1004f0aed9c156aa09083c82bf8944eceb67c946ff7430510a77b:foo.jar`
