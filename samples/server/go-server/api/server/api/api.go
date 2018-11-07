@@ -68,7 +68,7 @@ func Run(config *Config, storage *server.Storager) {
 		tcpMux      = cmux.New(l)
 	)
 
-	tlsConfig, err := tlsClientConfig(config.CertFile)
+	tlsConfig, err := tlsClientConfig(config.CAFile)
 	if err != nil {
 		log.Fatal("Failed to create tls config", err)
 	}
