@@ -1,7 +1,8 @@
 # How to Contribute
 
 We'd love to accept your patches and contributions to this project. There are
-just a few small guidelines you need to follow.
+just a few small guidelines you need to follow. If you're looking to start
+contributing, see the [New Contributors](#new-contributors) section below.
 
 ## Contributor License Agreement
 
@@ -26,6 +27,15 @@ A member of the Grafeas core team may reach out to you to schedule a meeting to
 discuss the PR, before a formal review takes place. This meeting will be
 announced on [grafeas-dev](https://groups.google.com/forum/#!forum/grafeas-dev)
 as well, once the date and time have been set.
+
+### New Contributors
+
+If you're enthusiastic about contributing to Grafeas and are looking for ideas,
+please check out the issues marked with [`good first
+issue`](https://github.com/grafeas/grafeas/labels/good%20first%20issue). Make
+sure you join the
+[grafeas-dev](https://groups.google.com/forum/#!forum/grafeas-dev) group to stay
+up-to-date on the developer community news!
 
 ## Code reviews
 
