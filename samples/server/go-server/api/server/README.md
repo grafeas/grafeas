@@ -15,7 +15,7 @@ to:
 To run the server, follow these simple steps from the root directory:
 
 ```shell
-cd samples/server/go-server/api/server/main
+cd samples/server/go-server/api/server
 go run main/main.go
 ```
 
