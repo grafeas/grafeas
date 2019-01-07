@@ -27,7 +27,7 @@ To start grafeas with a custom configuration use the `-config` flag (e.g. `-conf
 
 Grafeas provides both a REST API and a gRPC API. Here is an example of using the REST API to list projects in Grafeas.
 
-`curl http://localhost:8080/v1alpha1/projects`
+`curl http://localhost:8080/v1beta1/projects`
 
 ### Access gRPC API with a go client
 
