@@ -2,53 +2,8 @@
 
 ## Start Grafeas
 
-To start the server go to `samples/server/go-server/api/server/main` and execute
-
-    go run main.go
-
-This will start the Grafeas gRPC and REST API:s on `localhost:8080`. To start grafeas with a custom configuration use the `-config` flag (e.g. `-config config.yaml`). The root directory includes a `config.yaml.sample` that can be used as a starting point when creating your own config file.
-
-### Access REST API with curl
-
-Grafeas provides both a REST API and a gRPC API. Here is an example of using the REST API to list projects in Grafeas.
-
-`curl http://localhost:8080/v1alpha1/projects`
-
-### Access gRPC API with a go client
-
-Below is a small example of a go client that connects to grafeas and outputs any notes in `myproject`
-
-```
-package main
-
-import (
-	"context"
-	"log"
-
-	pb "github.com/grafeas/grafeas/v1alpha1/proto"
-	"google.golang.org/grpc"
-)
-
-func main() {
-	conn, err := grpc.Dial("localhost:8080", grpc.WithInsecure())
-	defer conn.Close()
-	client := pb.NewGrafeasClient(conn)
-	// List notes
-	resp, err := client.ListNotes(context.Background(),
-		&pb.ListNotesRequest{
-			Parent: "projects/myproject",
-		})
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	if len(resp.Notes) != 0 {
-		log.Println(resp.Notes)
-	} else {
-		log.Println("Project does not contain any notes")
-	}
-}
-```
+To start the server, follow the instructions on [running the
+server](https://github.com/grafeas/grafeas/tree/master/samples/server/go-server/api/server/README.md).
 
 ## Use Grafeas with self-signed certificate
 
