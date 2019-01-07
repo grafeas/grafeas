@@ -22,9 +22,19 @@ If you would like to make a large change, please start with a proposal issue tha
 * Why you'd like to make this change
 * A design overview
 
+A member of the Grafeas core team may reach out to you to schedule a meeting to
+discuss the PR, before a formal review takes place. This meeting will be
+announced on [grafeas-dev](https://groups.google.com/forum/#!forum/grafeas-dev)
+as well, once the date and time have been set.
+
 ## Code reviews
 
 All submissions, including submissions by project members, require review. We
 use GitHub pull requests for this purpose. Consult
 [GitHub Help](https://help.github.com/articles/about-pull-requests/) for more
 information on using pull requests.
+
+## Community Guidelines
+
+This project follows [Google's Open Source Community
+Guidelines](https://opensource.google.com/conduct/).
