@@ -3,7 +3,7 @@
 ## Start Grafeas
 
 To start the sample server, follow the instructions on [running the
-server](https://github.com/grafeas/grafeas/tree/master/).
+server](https://github.com/grafeas/grafeas/tree/master/samples/server/go-server/api/server#running-the-server).
 
 ## Use Grafeas with self-signed certificate
 
@@ -39,9 +39,9 @@ This is basically following https://gist.github.com/mtigas/952344 with some twea
 Add the following to your `config.yaml` file:
 
 ```
-    cafile: ca.crt
-    keyfile: ca.key
-    certfile: ca.crt
+cafile: ca.crt
+keyfile: ca.key
+certfile: ca.crt
 ```
 
 ### Access REST API with curl
@@ -52,12 +52,7 @@ When using curl with a self signed certificate you need to add `-k/--insecure` a
 
 ### Access gRPC with a go client
 
-When using a go client to access Grafeas with a self signed certificate you need to specify the client certificate, client key and the CA certificate. See [main/client\_cert.go](main/client_cert.go) for an example.
-
-```
-package main
-
-```
+When using a go client to access Grafeas with a self signed certificate you need to specify the client certificate, client key and the CA certificate. See [client\_cert.go](https://github.com/grafeas/grafeas/blob/master/samples/server/go-server/api/server/main/client_cert.go) for an example.
 
 ## Enable [CORS](https://enable-cors.org/) on the sample server
 
@@ -66,7 +61,7 @@ package main
 Add the following to your config file below the `api` key:
 
 ```
-    cors_allowed_origins:
-       - "https://some.example.tld"
-       - "https://*.example.net"
+cors_allowed_origins:
+   - "https://some.example.tld"
+   - "https://*.example.net"
 ```
