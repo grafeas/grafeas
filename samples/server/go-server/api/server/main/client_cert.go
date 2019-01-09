@@ -42,6 +42,7 @@ func main() {
 	tlsConfig.BuildNameToCertificate()
 	creds := credentials.NewTLS(tlsConfig)
 	conn, err := grpc.Dial("localhost:8080", grpc.WithTransportCredentials(creds))
+	defer conn.Close()
 	client := pb.NewGrafeasV1Beta1Client(conn)
 
 	// List notes
