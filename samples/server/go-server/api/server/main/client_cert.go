@@ -12,7 +12,7 @@ import (
 	"google.golang.org/grpc/credentials"
 )
 
-var (
+const (
 	// TODO: Update the paths below.
 	certFile = "/path/to/client.crt"
 	keyFile  = "/path/to/client.key"
