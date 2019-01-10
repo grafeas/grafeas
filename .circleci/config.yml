@@ -24,3 +24,18 @@ jobs:
       - checkout
       # specify any bash command here prefixed with `run: `
       - run: make build; make test
+workflows:
+  version: 2
+  commit:
+    jobs:
+      - build
+  nightly:
+    triggers:
+      - schedule:
+          cron: "0 0 * * *"
+          filters:
+            branches:
+              only:
+                - master
+    jobs:
+      - build
