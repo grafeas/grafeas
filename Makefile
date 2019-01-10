@@ -27,8 +27,15 @@ test:
 vet:
 	@go tool vet ${SRC}
 
-grafeas_go_v1alpha1: .install.protoc-gen-go .install.grpc-gateway v1alpha1/proto/grafeas.proto
-	protoc \
+protoc/bin/protoc:
+	mkdir -p protoc
+	curl https://github.com/google/protobuf/releases/download/v3.3.0/protoc-3.3.0-linux-x86_64.zip -o protoc/protoc.zip -L
+	unzip protoc/protoc -d protoc
+
+CLEAN += protoc
+
+grafeas_go_v1alpha1: .install.protoc-gen-go .install.grpc-gateway v1alpha1/proto/grafeas.proto protoc/bin/protoc
+	protoc/bin/protoc \
 		-I ./ \
 		-I vendor/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
 		-I vendor/github.com/grpc-ecosystem/grpc-gateway \
@@ -39,7 +46,7 @@ grafeas_go_v1alpha1: .install.protoc-gen-go .install.grpc-gateway v1alpha1/proto
 		v1alpha1/proto/grafeas.proto
 
 define gen_go_proto
-	protoc \
+	protoc/bin/protoc \
 		-I ./ \
 		-I vendor/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
 		-I vendor/github.com/grpc-ecosystem/grpc-gateway \
@@ -52,13 +59,13 @@ define gen_go_proto
 	mv proto/v1beta1/$(1).swagger.json proto/v1beta1/swagger
 endef
 
-attestation_go_v1beta1: .install.protoc-gen-go .install.grpc-gateway proto/v1beta1/attestation.proto proto/v1beta1/attestation_go_proto proto/v1beta1/swagger
+attestation_go_v1beta1: .install.protoc-gen-go .install.grpc-gateway proto/v1beta1/attestation.proto proto/v1beta1/attestation_go_proto proto/v1beta1/swagger protoc/bin/protoc
 	$(call gen_go_proto,attestation)
 
-build_go_v1beta1: .install.protoc-gen-go .install.grpc-gateway proto/v1beta1/build.proto proto/v1beta1/build_go_proto proto/v1beta1/swagger
+build_go_v1beta1: .install.protoc-gen-go .install.grpc-gateway proto/v1beta1/build.proto proto/v1beta1/build_go_proto proto/v1beta1/swagger protoc/bin/protoc
 	$(call gen_go_proto,build)
 
-common_go_v1beta1: .install.protoc-gen-go .install.grpc-gateway proto/v1beta1/common.proto proto/v1beta1/common_go_proto proto/v1beta1/swagger
+common_go_v1beta1: .install.protoc-gen-go .install.grpc-gateway proto/v1beta1/common.proto proto/v1beta1/common_go_proto proto/v1beta1/swagger protoc/bin/protoc
 	$(call gen_go_proto,common)
 
 deployment_go_v1beta1: .install.protoc-gen-go .install.grpc-gateway proto/v1beta1/deployment.proto proto/v1beta1/deployment_go_proto proto/v1beta1/swagger
@@ -92,4 +99,4 @@ vulnerability_go_v1beta1: .install.protoc-gen-go .install.grpc-gateway proto/v1b
 
 clean:
 	go clean ./...
-	rm -f $(CLEAN)
+	rm -rf $(CLEAN)

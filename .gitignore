@@ -1,2 +1,3 @@
 .install.grpc-gateway
 .install.protoc-gen-go
+protoc
