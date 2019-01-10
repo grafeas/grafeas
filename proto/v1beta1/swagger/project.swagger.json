@@ -21,7 +21,7 @@
         "operationId": "ListProjects",
         "responses": {
           "200": {
-            "description": "A successful response.",
+            "description": "",
             "schema": {
               "$ref": "#/definitions/projectListProjectsResponse"
             }
@@ -60,7 +60,7 @@
         "operationId": "CreateProject",
         "responses": {
           "200": {
-            "description": "A successful response.",
+            "description": "",
             "schema": {
               "$ref": "#/definitions/projectProject"
             }
@@ -82,13 +82,13 @@
         ]
       }
     },
-    "/v1beta1/{name=projects/*}": {
+    "/v1beta1/{name}": {
       "get": {
         "summary": "Gets the specified project.",
         "operationId": "GetProject",
         "responses": {
           "200": {
-            "description": "A successful response.",
+            "description": "",
             "schema": {
               "$ref": "#/definitions/projectProject"
             }
@@ -112,9 +112,9 @@
         "operationId": "DeleteProject",
         "responses": {
           "200": {
-            "description": "A successful response.",
+            "description": "",
             "schema": {
-              "properties": {}
+              "$ref": "#/definitions/protobufEmpty"
             }
           }
         },
@@ -160,6 +160,11 @@
         }
       },
       "description": "Describes a Grafeas project."
+    },
+    "protobufEmpty": {
+      "type": "object",
+      "description": "service Foo {\n      rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty);\n    }\n\nThe JSON representation for `Empty` is empty JSON object `{}`.",
+      "title": "A generic empty message that you can re-use to avoid defining duplicated\nempty messages in your APIs. A typical example is to use it as the request\nor the response type of an API method. For instance:"
     }
   }
 }
