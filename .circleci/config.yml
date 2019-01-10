@@ -32,6 +32,7 @@ workflows:
   nightly:
     triggers:
       - schedule:
+          # Every day at midnight.
           cron: "0 0 * * *"
           filters:
             branches:
