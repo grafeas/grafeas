@@ -19,7 +19,8 @@ const (
 	caFile   = "/path/to/ca.crt"
 )
 
-func main() {
+// TODO: rename the below to main() to run with `go run`
+func client_cert() {
 	// Load client cert
 	cert, err := tls.LoadX509KeyPair(certFile, keyFile)
 	if err != nil {

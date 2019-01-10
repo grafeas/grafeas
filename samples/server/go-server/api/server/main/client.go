@@ -8,7 +8,8 @@ import (
 	"google.golang.org/grpc"
 )
 
-func main() {
+// TODO: rename the below to main() to run with `go run`
+func client() {
 	conn, err := grpc.Dial("localhost:8080", grpc.WithInsecure())
 	defer conn.Close()
 	client := pb.NewGrafeasV1Beta1Client(conn)
