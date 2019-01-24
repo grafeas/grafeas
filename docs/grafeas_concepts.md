@@ -1,5 +1,13 @@
 # Grafeas Concepts
 
+Grafeas divides the metadata information into [_notes_](#notes) and
+[_occurrences_](#occurrences). Notes are high-level descriptions of particular
+types of metadata. Occurrences are instantiations of notes, which describe how
+and when a given note occurs on the resource associated with the occurrence.
+This division allows third-party metadata providers to create and manage
+metadata on behalf of many customers. It also allows for fine-grained access
+control of different types of metadata.
+
 ## Notes
 
 A _note_ describes a high-level piece of metadata. For example, you could create

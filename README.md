@@ -2,10 +2,8 @@
 
 ![Grafeas logo](logo/grafeas-logo-128.png)
 
-Grafeas defines an API spec for managing metadata about software resources, such
-as container images, Virtual Machine (VM) images, JAR files, and scripts. You
-can use Grafeas to define and aggregate information about your project's
-components.
+Grafeas ("scribe" in Greek) is an open-source artifact metadata API that provides a uniform way to audit and govern your software supply chain. Grafeas defines an API spec for managing metadata about software resources, such
+as container images, Virtual Machine (VM) images, JAR files, and scripts. You can use Grafeas to define and aggregate information about your project's components. Grafeas provides organizations with a central source of truth for tracking and enforcing policies across an ever growing set of software development teams and pipelines. Build, auditing, and compliance tools can use the Grafeas API to store, query, and retrieve comprehensive metadata on software components of all kinds.
 
 Grafeas divides the metadata information into [_notes_](docs/grafeas_concepts.md#notes) and
 [_occurrences_](docs/grafeas_concepts.md#occurrences). Notes are high-level descriptions of particular
@@ -17,7 +15,9 @@ control of different types of metadata.
 
 ## Getting Started
 
-* Learn the [Grafeas concepts](docs/grafeas_concepts.md)
+* Read the Grafeas [announcement](https://grafeas.io/blog/introducing-grafeas)
+* Learn the [Grafeas concepts](docs/grafeas_concepts.md) and [core design
+  principles](docs/design_principles.md)
 * Run Grafeas locally following [these
 instructions](docs/running_grafeas.md)
 * Once you have a running server, you can
