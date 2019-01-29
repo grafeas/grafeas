@@ -23,7 +23,7 @@ import (
 
 	pb "github.com/golang/protobuf/proto"
 	expr "github.com/google/cel-spec/proto/v1"
-	"github.com/grafeas/grafeas/server-go/filtering/common"
+	"github.com/grafeas/grafeas/go/filtering/common"
 )
 
 const (
