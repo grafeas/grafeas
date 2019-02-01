@@ -17,8 +17,8 @@ package build
 import (
 	"testing"
 
-	bpb "github.com/grafeas/grafeas/proto/v1beta1/build_go_proto"
-	ppb "github.com/grafeas/grafeas/proto/v1beta1/provenance_go_proto"
+	bpb "github.com/grafeas/grafeas/proto/v1/build_go_proto"
+	ppb "github.com/grafeas/grafeas/proto/v1/provenance_go_proto"
 )
 
 func TestValidateBuild(t *testing.T) {

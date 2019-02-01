@@ -17,8 +17,8 @@ package discovery
 import (
 	"testing"
 
-	cpb "github.com/grafeas/grafeas/proto/v1beta1/common_go_proto"
-	dpb "github.com/grafeas/grafeas/proto/v1beta1/discovery_go_proto"
+	cpb "github.com/grafeas/grafeas/proto/v1/common_go_proto"
+	dpb "github.com/grafeas/grafeas/proto/v1/discovery_go_proto"
 )
 
 func TestValidateDiscovery(t *testing.T) {

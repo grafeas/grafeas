@@ -20,7 +20,7 @@ import (
 	"errors"
 	"fmt"
 
-	apb "github.com/grafeas/grafeas/proto/v1beta1/attestation_go_proto"
+	apb "github.com/grafeas/grafeas/proto/v1/attestation_go_proto"
 )
 
 // ValidateAuthority validates that an authority has all its required fields filled in.

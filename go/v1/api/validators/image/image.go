@@ -20,7 +20,7 @@ import (
 	"errors"
 	"fmt"
 
-	ipb "github.com/grafeas/grafeas/proto/v1beta1/image_go_proto"
+	ipb "github.com/grafeas/grafeas/proto/v1/image_go_proto"
 )
 
 // ValidateBasis validates that an image basis has all its required fields filled in.

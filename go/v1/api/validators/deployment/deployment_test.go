@@ -18,7 +18,7 @@ import (
 	"testing"
 
 	tpb "github.com/golang/protobuf/ptypes/timestamp"
-	dpb "github.com/grafeas/grafeas/proto/v1beta1/deployment_go_proto"
+	dpb "github.com/grafeas/grafeas/proto/v1/deployment_go_proto"
 )
 
 func TestValidateDeployable(t *testing.T) {

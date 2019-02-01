@@ -18,7 +18,7 @@ package grafeas
 import (
 	"github.com/grafeas/grafeas/go/errors"
 	"github.com/grafeas/grafeas/go/iam"
-	gpb "github.com/grafeas/grafeas/proto/v1beta1/grafeas_go_proto"
+	gpb "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto"
 	"golang.org/x/net/context"
 	fieldmaskpb "google.golang.org/genproto/protobuf/field_mask"
 	"google.golang.org/grpc/codes"

@@ -21,7 +21,7 @@ import (
 	"fmt"
 
 	"github.com/grafeas/grafeas/go/v1/api/validators/provenance"
-	bpb "github.com/grafeas/grafeas/proto/v1beta1/build_go_proto"
+	bpb "github.com/grafeas/grafeas/proto/v1/build_go_proto"
 )
 
 // ValidateBuild validates that a build has all its required fields filled in.

@@ -17,7 +17,7 @@ package attestation
 import (
 	"testing"
 
-	apb "github.com/grafeas/grafeas/proto/v1beta1/attestation_go_proto"
+	apb "github.com/grafeas/grafeas/proto/v1/attestation_go_proto"
 )
 
 func TestValidateAuthority(t *testing.T) {

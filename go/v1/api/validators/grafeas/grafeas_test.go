@@ -17,14 +17,14 @@ package grafeas
 import (
 	"testing"
 
-	apb "github.com/grafeas/grafeas/proto/v1beta1/attestation_go_proto"
-	bpb "github.com/grafeas/grafeas/proto/v1beta1/build_go_proto"
-	deploymentpb "github.com/grafeas/grafeas/proto/v1beta1/deployment_go_proto"
-	discoverypb "github.com/grafeas/grafeas/proto/v1beta1/discovery_go_proto"
-	gpb "github.com/grafeas/grafeas/proto/v1beta1/grafeas_go_proto"
-	ipb "github.com/grafeas/grafeas/proto/v1beta1/image_go_proto"
-	ppb "github.com/grafeas/grafeas/proto/v1beta1/package_go_proto"
-	vpb "github.com/grafeas/grafeas/proto/v1beta1/vulnerability_go_proto"
+	apb "github.com/grafeas/grafeas/proto/v1/attestation_go_proto"
+	bpb "github.com/grafeas/grafeas/proto/v1/build_go_proto"
+	deploymentpb "github.com/grafeas/grafeas/proto/v1/deployment_go_proto"
+	discoverypb "github.com/grafeas/grafeas/proto/v1/discovery_go_proto"
+	gpb "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto"
+	ipb "github.com/grafeas/grafeas/proto/v1/image_go_proto"
+	ppb "github.com/grafeas/grafeas/proto/v1/package_go_proto"
+	vpb "github.com/grafeas/grafeas/proto/v1/vulnerability_go_proto"
 )
 
 func TestValidateNote(t *testing.T) {

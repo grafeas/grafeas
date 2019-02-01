@@ -17,7 +17,7 @@ package image
 import (
 	"testing"
 
-	ipb "github.com/grafeas/grafeas/proto/v1beta1/image_go_proto"
+	ipb "github.com/grafeas/grafeas/proto/v1/image_go_proto"
 )
 
 func TestValidateBasis(t *testing.T) {

@@ -20,7 +20,7 @@ import (
 	"errors"
 	"fmt"
 
-	ppb "github.com/grafeas/grafeas/proto/v1beta1/package_go_proto"
+	ppb "github.com/grafeas/grafeas/proto/v1/package_go_proto"
 )
 
 // ValidatePackage validates that a package has all its required fields filled in.

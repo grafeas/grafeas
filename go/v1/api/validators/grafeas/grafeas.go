@@ -28,7 +28,7 @@ import (
 	"github.com/grafeas/grafeas/go/v1/api/validators/image"
 	"github.com/grafeas/grafeas/go/v1/api/validators/package"
 	"github.com/grafeas/grafeas/go/v1/api/validators/vulnerability"
-	gpb "github.com/grafeas/grafeas/proto/v1beta1/grafeas_go_proto"
+	gpb "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto"
 	"google.golang.org/grpc/codes"
 )
 

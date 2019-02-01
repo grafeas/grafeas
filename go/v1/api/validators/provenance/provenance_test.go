@@ -17,7 +17,7 @@ package provenance
 import (
 	"testing"
 
-	ppb "github.com/grafeas/grafeas/proto/v1beta1/provenance_go_proto"
+	ppb "github.com/grafeas/grafeas/proto/v1/provenance_go_proto"
 )
 
 func TestValidateBuildProvenance(t *testing.T) {

@@ -19,8 +19,8 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
-	gpb "github.com/grafeas/grafeas/proto/v1beta1/grafeas_go_proto"
-	vpb "github.com/grafeas/grafeas/proto/v1beta1/vulnerability_go_proto"
+	gpb "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto"
+	vpb "github.com/grafeas/grafeas/proto/v1/vulnerability_go_proto"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

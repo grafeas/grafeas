@@ -20,8 +20,8 @@ import (
 	"errors"
 	"fmt"
 
-	cpb "github.com/grafeas/grafeas/proto/v1beta1/common_go_proto"
-	dpb "github.com/grafeas/grafeas/proto/v1beta1/discovery_go_proto"
+	cpb "github.com/grafeas/grafeas/proto/v1/common_go_proto"
+	dpb "github.com/grafeas/grafeas/proto/v1/discovery_go_proto"
 )
 
 // ValidateDiscovery validates that a discovery has all its required fields filled in.

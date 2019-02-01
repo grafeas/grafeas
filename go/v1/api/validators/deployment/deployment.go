@@ -20,7 +20,7 @@ import (
 	"errors"
 	"fmt"
 
-	dpb "github.com/grafeas/grafeas/proto/v1beta1/deployment_go_proto"
+	dpb "github.com/grafeas/grafeas/proto/v1/deployment_go_proto"
 )
 
 // ValidateDeployable validates that a deployable has all its required fields filled in.

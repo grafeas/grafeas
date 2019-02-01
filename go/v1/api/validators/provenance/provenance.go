@@ -20,7 +20,7 @@ import (
 	"errors"
 	"fmt"
 
-	ppb "github.com/grafeas/grafeas/proto/v1beta1/provenance_go_proto"
+	ppb "github.com/grafeas/grafeas/proto/v1/provenance_go_proto"
 )
 
 // ValidateBuildProvenance validates that a build provenance has all its required fields filled in.

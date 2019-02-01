@@ -17,7 +17,7 @@ package pkg
 import (
 	"testing"
 
-	ppb "github.com/grafeas/grafeas/proto/v1beta1/package_go_proto"
+	ppb "github.com/grafeas/grafeas/proto/v1/package_go_proto"
 )
 
 func TestValidatePackage(t *testing.T) {
