@@ -20,7 +20,7 @@ import (
 	emptypb "github.com/golang/protobuf/ptypes/empty"
 	"github.com/grafeas/grafeas/go/errors"
 	"github.com/grafeas/grafeas/go/name"
-	"github.com/grafeas/grafeas/go/v1beta1/api/validators/grafeas"
+	"github.com/grafeas/grafeas/go/v1/api/validators/grafeas"
 	gpb "github.com/grafeas/grafeas/proto/v1beta1/grafeas_go_proto"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc/codes"

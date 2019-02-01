@@ -20,7 +20,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/grafeas/grafeas/go/v1beta1/api/validators/provenance"
+	"github.com/grafeas/grafeas/go/v1/api/validators/provenance"
 	bpb "github.com/grafeas/grafeas/proto/v1beta1/build_go_proto"
 )
 
