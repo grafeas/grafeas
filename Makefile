@@ -34,9 +34,6 @@ protoc/bin/protoc:
 
 CLEAN += protoc
 
-
-PROTOS := $(patsubst %.proto,%_go_proto,$(wildcard *.proto))
-# go_protos: $(PROTOS)
 go_protos: grafeas_go_v1alpha1 proto/v1beta1/*_go_proto proto/v1/*_go_proto
 
 grafeas_go_v1alpha1: .install.protoc-gen-go .install.grpc-gateway v1alpha1/proto/grafeas.proto protoc/bin/protoc
