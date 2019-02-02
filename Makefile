@@ -14,7 +14,7 @@ CLEAN += .install.protoc-gen-go .install.grpc-gateway
 .install.grpc-gateway:
 	go get -u -v github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger && touch $@
 
-build: fmt go_protos
+build: vet fmt go_protos
 	go build -v ./...
 
 # http://golang.org/cmd/go/#hdr-Run_gofmt_on_package_sources
@@ -34,6 +34,9 @@ protoc/bin/protoc:
 
 CLEAN += protoc
 
+
+PROTOS := $(patsubst %.proto,%_go_proto,$(wildcard *.proto))
+# go_protos: $(PROTOS)
 go_protos: grafeas_go_v1alpha1 proto/v1beta1/*_go_proto proto/v1/*_go_proto
 
 grafeas_go_v1alpha1: .install.protoc-gen-go .install.grpc-gateway v1alpha1/proto/grafeas.proto protoc/bin/protoc
@@ -48,7 +51,6 @@ grafeas_go_v1alpha1: .install.protoc-gen-go .install.grpc-gateway v1alpha1/proto
 		v1alpha1/proto/grafeas.proto
 
 %_go_proto: %.proto protoc/bin/protoc install.tools
-	mkdir -p $@
 	protoc/bin/protoc -I ./ \
 		-I vendor/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
 		-I vendor/github.com/grpc-ecosystem/grpc-gateway \
@@ -60,6 +62,8 @@ grafeas_go_v1alpha1: .install.protoc-gen-go .install.grpc-gateway v1alpha1/proto
 	mv $*.pb.go $@
 	if [ -f $*.pb.gw.go ]; then mv $*.pb.gw.go $@; fi
 	mv $*.swagger.json $(<D)/swagger
+
+
 
 clean:
 	go clean ./...
