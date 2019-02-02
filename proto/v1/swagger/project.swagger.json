@@ -1,0 +1,165 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "proto/v1/project.proto",
+    "version": "version not set"
+  },
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/projects": {
+      "get": {
+        "summary": "Lists projects.",
+        "operationId": "ListProjects",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/projectListProjectsResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "filter",
+            "description": "The filter expression.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "page_size",
+            "description": "Number of projects to return in the list.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "page_token",
+            "description": "Token to provide to skip to a particular spot in the list.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Projects"
+        ]
+      },
+      "post": {
+        "summary": "Creates a new project.",
+        "operationId": "CreateProject",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/projectProject"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": "The project to create.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/projectProject"
+            }
+          }
+        ],
+        "tags": [
+          "Projects"
+        ]
+      }
+    },
+    "/v1/{name=projects/*}": {
+      "get": {
+        "summary": "Gets the specified project.",
+        "operationId": "GetProject",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/projectProject"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "name",
+            "description": "The name of the project in the form of `projects/{PROJECT_ID}`.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Projects"
+        ]
+      },
+      "delete": {
+        "summary": "Deletes the specified project.",
+        "operationId": "DeleteProject",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "properties": {}
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "name",
+            "description": "The name of the project in the form of `projects/{PROJECT_ID}`.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Projects"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "projectListProjectsResponse": {
+      "type": "object",
+      "properties": {
+        "projects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/projectProject"
+          },
+          "description": "The projects requested."
+        },
+        "next_page_token": {
+          "type": "string",
+          "description": "The next pagination token in the list response. It should be used as\n`page_token` for the following request. An empty value means no more\nresults."
+        }
+      },
+      "description": "Response for listing projects."
+    },
+    "projectProject": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the project in the form of `projects/{PROJECT_ID}`."
+        }
+      },
+      "description": "Describes a Grafeas project."
+    }
+  }
+}
