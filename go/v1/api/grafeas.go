@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Package grafeas is an implementation of the v1beta1 https://github.com/grafeas/grafeas/ API.
+// Package grafeas is an implementation of the v1 https://github.com/grafeas/grafeas/ API.
 package grafeas
 
 import (
@@ -131,7 +131,7 @@ type Logger interface {
 	Errorf(ctx context.Context, format string, args ...interface{})
 }
 
-// API implements the methods in the v1beta1 Grafeas API.
+// API implements the methods in the v1 Grafeas API.
 type API struct {
 	Storage           Storage
 	Auth              Auth

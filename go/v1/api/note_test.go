@@ -842,7 +842,7 @@ func TestGetOccurrenceNoteErrors(t *testing.T) {
 	}
 }
 
-// vulnzNote returns a fake v1beta1 valid vulnerability note for testing.
+// vulnzNote returns a fake v1 valid vulnerability note for testing.
 func vulnzNote(t *testing.T) *gpb.Note {
 	t.Helper()
 	return &gpb.Note{
@@ -861,7 +861,7 @@ func vulnzNote(t *testing.T) *gpb.Note {
 	}
 }
 
-// invalidVulnzNote returns a fake v1beta1 invalid vulnerability note for testing. Note has an empty
+// invalidVulnzNote returns a fake v1 invalid vulnerability note for testing. Note has an empty
 // detail.
 func invalidVulnzNote(t *testing.T) *gpb.Note {
 	t.Helper()
@@ -877,7 +877,7 @@ func invalidVulnzNote(t *testing.T) *gpb.Note {
 	}
 }
 
-// vulnzNotes creates the specified number of fake v1beta1 valid vulnerability notes for testing.
+// vulnzNotes creates the specified number of fake v1 valid vulnerability notes for testing.
 func vulnzNotes(t *testing.T, num int) map[string]*gpb.Note {
 	t.Helper()
 	notes := map[string]*gpb.Note{}

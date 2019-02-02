@@ -892,7 +892,7 @@ func TestGetVulnerabilityOccurrencesSummaryErrors(t *testing.T) {
 	}
 }
 
-// vulnzOcc returns a fake v1beta1 valid vulnerability occurrence for testing.
+// vulnzOcc returns a fake v1 valid vulnerability occurrence for testing.
 func vulnzOcc(t *testing.T, pID, noteName, imageName string) *gpb.Occurrence {
 	t.Helper()
 	return &gpb.Occurrence{
@@ -919,7 +919,7 @@ func vulnzOcc(t *testing.T, pID, noteName, imageName string) *gpb.Occurrence {
 	}
 }
 
-// invalidVulnzOcc returns a fake v1beta1 invalid vulnerability occurrence for testing. Occurrence
+// invalidVulnzOcc returns a fake v1 invalid vulnerability occurrence for testing. Occurrence
 // is missing resource.
 func invalidVulnzOcc(t *testing.T, pID, noteName string) *gpb.Occurrence {
 	t.Helper()
@@ -944,7 +944,7 @@ func invalidVulnzOcc(t *testing.T, pID, noteName string) *gpb.Occurrence {
 	}
 }
 
-// vulnzOccs creates the specified number of fake v1beta1 valid vulnerability occurrences for
+// vulnzOccs creates the specified number of fake v1 valid vulnerability occurrences for
 // testing.
 func vulnzOccs(t *testing.T, pID, noteName, imageNamePrefix string, num int) []*gpb.Occurrence {
 	t.Helper()
