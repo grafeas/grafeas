@@ -48,7 +48,11 @@ grafeas_go_v1alpha1: .install.protoc-gen-go .install.grpc-gateway v1alpha1/proto
 		--swagger_out=logtostderr=true:. \
 		v1alpha1/proto/grafeas.proto
 
-# Builds go proto packages (e.g. grafeas_go_proto/grafeas.pb.go and grafeas_go_proto/grafeas.pb.gw.go)
+# Builds go proto packages from protos
+# Example:
+# 	$ make proto/v1/grafeas_go_proto
+# 	Builds: proto/v1/grafeas_go_proto/grafeas.pb.go and proto/v1/grafeas_go_proto/grafeas.pb.gw.go 
+# 	Using: proto/v1/grafeas.proto
 %_go_proto: %.proto protoc/bin/protoc install.tools
 	$(PROTOC_CMD) \
 		--go_out=plugins=grpc,paths=source_relative:. \
