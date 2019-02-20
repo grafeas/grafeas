@@ -621,7 +621,7 @@
           "description": "The total number of vulnerabilities associated with this resource."
         }
       },
-      "description": "Per resource and severity counts of fixable and total vulnerabilites."
+      "description": "Per resource and severity counts of fixable and total vulnerabilities."
     },
     "attestationAttestation": {
       "type": "object",
