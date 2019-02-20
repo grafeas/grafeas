@@ -495,7 +495,7 @@ message VulnerabilityOccurrencesSummary {
   // A listing by resource of the number of fixable and total vulnerabilities.
   repeated FixableTotalByDigest counts = 1;
 
-  // Per resource and severity counts of fixable and total vulnerabilites.
+  // Per resource and severity counts of fixable and total vulnerabilities.
   message FixableTotalByDigest {
     // The affected resource.
     Resource resource = 1;
