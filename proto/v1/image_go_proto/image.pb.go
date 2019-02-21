@@ -26,39 +26,39 @@ type Layer_Directive int32
 const (
 	// Default value for unsupported/missing directive.
 	Layer_DIRECTIVE_UNSPECIFIED Layer_Directive = 0
-	// https://docs.docker.com/reference/builder/#maintainer
+	// https://docs.docker.com/engine/reference/builder/
 	Layer_MAINTAINER Layer_Directive = 1
-	// https://docs.docker.com/reference/builder/#run
+	// https://docs.docker.com/engine/reference/builder/
 	Layer_RUN Layer_Directive = 2
-	// https://docs.docker.com/reference/builder/#cmd
+	// https://docs.docker.com/engine/reference/builder/
 	Layer_CMD Layer_Directive = 3
-	// https://docs.docker.com/reference/builder/#label
+	// https://docs.docker.com/engine/reference/builder/
 	Layer_LABEL Layer_Directive = 4
-	// https://docs.docker.com/reference/builder/#expose
+	// https://docs.docker.com/engine/reference/builder/
 	Layer_EXPOSE Layer_Directive = 5
-	// https://docs.docker.com/reference/builder/#env
+	// https://docs.docker.com/engine/reference/builder/
 	Layer_ENV Layer_Directive = 6
-	// https://docs.docker.com/reference/builder/#add
+	// https://docs.docker.com/engine/reference/builder/
 	Layer_ADD Layer_Directive = 7
-	// https://docs.docker.com/reference/builder/#copy
+	// https://docs.docker.com/engine/reference/builder/
 	Layer_COPY Layer_Directive = 8
-	// https://docs.docker.com/reference/builder/#entrypoint
+	// https://docs.docker.com/engine/reference/builder/
 	Layer_ENTRYPOINT Layer_Directive = 9
-	// https://docs.docker.com/reference/builder/#volume
+	// https://docs.docker.com/engine/reference/builder/
 	Layer_VOLUME Layer_Directive = 10
-	// https://docs.docker.com/reference/builder/#user
+	// https://docs.docker.com/engine/reference/builder/
 	Layer_USER Layer_Directive = 11
-	// https://docs.docker.com/reference/builder/#workdir
+	// https://docs.docker.com/engine/reference/builder/
 	Layer_WORKDIR Layer_Directive = 12
-	// https://docs.docker.com/reference/builder/#arg
+	// https://docs.docker.com/engine/reference/builder/
 	Layer_ARG Layer_Directive = 13
-	// https://docs.docker.com/reference/builder/#onbuild
+	// https://docs.docker.com/engine/reference/builder/
 	Layer_ONBUILD Layer_Directive = 14
-	// https://docs.docker.com/reference/builder/#stopsignal
+	// https://docs.docker.com/engine/reference/builder/
 	Layer_STOPSIGNAL Layer_Directive = 15
-	// https://docs.docker.com/reference/builder/#healthcheck
+	// https://docs.docker.com/engine/reference/builder/
 	Layer_HEALTHCHECK Layer_Directive = 16
-	// https://docs.docker.com/reference/builder/#shell
+	// https://docs.docker.com/engine/reference/builder/
 	Layer_SHELL Layer_Directive = 17
 )
 
