@@ -1648,7 +1648,7 @@ func (m *VulnerabilityOccurrencesSummary) GetCounts() []*VulnerabilityOccurrence
 	return nil
 }
 
-// Per resource and severity counts of fixable and total vulnerabilites.
+// Per resource and severity counts of fixable and total vulnerabilities.
 type VulnerabilityOccurrencesSummary_FixableTotalByDigest struct {
 	// The affected resource.
 	Resource *Resource `protobuf:"bytes,1,opt,name=resource,proto3" json:"resource,omitempty"`
