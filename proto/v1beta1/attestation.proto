@@ -21,6 +21,8 @@ option java_multiple_files = true;
 option java_package = "io.grafeas.v1beta1.attestation";
 option objc_class_prefix = "GRA";
 
+import "proto/v1beta1/common.proto";
+
 // An attestation wrapper with a PGP-compatible signature. This message only
 // supports `ATTACHED` signatures, where the payload that is signed is included
 // alongside the signature itself in the same file.
@@ -82,6 +84,40 @@ message PgpSignedAttestation {
   }
 }
 
+// An attestation wrapper that uses the Grafeas `Signature` message.
+// This attestation must define the `plaintext` that the `signatures` verify
+// and any metadata necessary to interpret that plaintext.  The signatures
+// should always be over the `plaintext` bytestring.
+message GenericSignedAttestation {
+  // Type of the attestation plaintext that was signed.
+  enum ContentType {
+    // `ContentType` is not set.
+    CONTENT_TYPE_UNSPECIFIED = 0;
+    // Atomic format attestation signature. See
+    // https://github.com/containers/image/blob/8a5d2f82a6e3263290c8e0276c3e0f64e77723e7/docs/atomic-signature.md
+    // The payload extracted in `plaintext` is a JSON blob conforming to the
+    // linked schema.
+    SIMPLE_SIGNING_JSON = 1;
+  }
+
+  // Type (for example schema) of the attestation payload that was signed.
+  // The verifier must ensure that the provided type is one that the verifier
+  // supports, and that the attestation payload is a valid instantiation of that
+  // type (for example by validating a JSON schema).
+  ContentType content_type = 1;
+
+  // The serialized payload that is verified by one or more `signatures`.
+  // The encoding and semantic meaning of this payload must match what is set in
+  // `content_type`.
+  bytes serialized_payload = 2;
+
+  // One or more signatures over `serialized_payload`.  Verifier implementations
+  // should consider this attestation message verified if at least one
+  // `signature` verifies `serialized_payload`.  See `Signature` in common.proto
+  // for more details on signature structure and verification.
+  repeated Signature signatures = 3;
+}
+
 // Note kind that represents a logical attestation "role" or "authority". For
 // example, an organization might have one `Authority` for "QA" and one for
 // "build". This note is intended to act strictly as a grouping mechanism for
@@ -129,5 +165,10 @@ message Attestation {
   oneof signature {
     // A PGP signed attestation.
     PgpSignedAttestation pgp_signed_attestation = 1;
+    // An attestation that supports multiple `Signature`s
+    // over the same attestation payload. The signatures
+    // (defined in common.proto) support a superset of
+    // public key types and IDs compared to PgpSignedAttestation.
+    GenericSignedAttestation generic_signed_attestation = 2;
   }
 }
