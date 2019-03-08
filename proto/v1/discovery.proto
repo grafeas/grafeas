@@ -45,6 +45,8 @@ message Details {
 
 // Provides information about the analysis status of a discovered resource.
 message Discovered {
+  reserved 2;
+
   // Whether the resource is continuously analyzed.
   enum ContinuousAnalysis {
     // Unknown.
