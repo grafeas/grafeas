@@ -58,10 +58,6 @@ message Discovered {
   // Whether the resource is continuously analyzed.
   ContinuousAnalysis continuous_analysis = 1;
 
-  // The last time continuous analysis was done for this resource.
-  // Deprecated, do not use.
-  google.protobuf.Timestamp last_analysis_time = 2;
-
   // Analysis status for a resource. Currently for initial analysis only (not
   // updated in continuous analysis).
   enum AnalysisStatus {
@@ -81,10 +77,10 @@ message Discovered {
   }
 
   // The status of discovery for the resource.
-  AnalysisStatus analysis_status = 3;
+  AnalysisStatus analysis_status = 2;
 
   // When an error is encountered this will contain a LocalizedMessage under
   // details to show to the user. The LocalizedMessage is output only and
   // populated by the API.
-  google.rpc.Status analysis_status_error = 4;
+  google.rpc.Status analysis_status_error = 3;
 }
