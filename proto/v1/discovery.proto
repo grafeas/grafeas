@@ -45,8 +45,6 @@ message Details {
 
 // Provides information about the analysis status of a discovered resource.
 message Discovered {
-  reserved 2;
-
   // Whether the resource is continuously analyzed.
   enum ContinuousAnalysis {
     // Unknown.
@@ -79,10 +77,10 @@ message Discovered {
   }
 
   // The status of discovery for the resource.
-  AnalysisStatus analysis_status = 3;
+  AnalysisStatus analysis_status = 2;
 
   // When an error is encountered this will contain a LocalizedMessage under
   // details to show to the user. The LocalizedMessage is output only and
   // populated by the API.
-  google.rpc.Status analysis_status_error = 4;
+  google.rpc.Status analysis_status_error = 3;
 }
