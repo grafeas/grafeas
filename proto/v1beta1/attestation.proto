@@ -85,9 +85,9 @@ message PgpSignedAttestation {
 }
 
 // An attestation wrapper that uses the Grafeas `Signature` message.
-// This attestation must define the `plaintext` that the `signatures` verify
+// This attestation must define the `serialized_payload` that the `signatures` verify
 // and any metadata necessary to interpret that plaintext.  The signatures
-// should always be over the `plaintext` bytestring.
+// should always be over the `serialized_payload` bytestring.
 message GenericSignedAttestation {
   // Type of the attestation plaintext that was signed.
   enum ContentType {
