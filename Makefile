@@ -1,4 +1,4 @@
-.PHONY: build fmt test vet clean go_protos grafeas_go_v1alpha1 swagger_docs 
+.PHONY: build fmt test vet clean go_protos grafeas_go_v1alpha1 swagger_docs
 
 SRC = $(shell find . -type f -name '*.go' -not -path "./vendor/*")
 CLEAN := *~
@@ -22,10 +22,10 @@ fmt:
 	@gofmt -l -w $(SRC)
 
 test:
-	@go test -v ./... 
+	@go test -v ./...
 
 vet:
-	@go tool vet ${SRC}
+	@go vet ./...
 
 protoc/bin/protoc:
 	mkdir -p protoc
@@ -51,7 +51,7 @@ grafeas_go_v1alpha1: .install.protoc-gen-go .install.grpc-gateway v1alpha1/proto
 # Builds go proto packages from protos
 # Example:
 # 	$ make proto/v1/grafeas_go_proto
-# 	Builds: proto/v1/grafeas_go_proto/grafeas.pb.go and proto/v1/grafeas_go_proto/grafeas.pb.gw.go 
+# 	Builds: proto/v1/grafeas_go_proto/grafeas.pb.go and proto/v1/grafeas_go_proto/grafeas.pb.gw.go
 # 	Using: proto/v1/grafeas.proto
 %_go_proto: %.proto protoc/bin/protoc install.tools
 	$(PROTOC_CMD) \
