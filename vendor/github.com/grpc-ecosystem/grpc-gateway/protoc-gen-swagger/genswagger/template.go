@@ -1,7 +1,6 @@
 package genswagger
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
 	"reflect"
@@ -211,8 +210,10 @@ func findNestedMessagesAndEnumerations(message *descriptor.Message, reg *descrip
 }
 
 func skipRenderingRef(refName string) bool {
-	_, ok := wktSchemas[refName]
-	return ok
+	if _, ok := wktSchemas[refName]; ok {
+		return true
+	}
+	return false
 }
 
 func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject, reg *descriptor.Registry, customRefs refMap) {
@@ -264,9 +265,6 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 			}
 			if protoSchema.Description != "" {
 				schema.Description = protoSchema.Description
-			}
-			if protoSchema.Example != nil {
-				schema.Example = protoSchema.Example
 			}
 		}
 
@@ -1455,10 +1453,6 @@ func swaggerSchemaFromProtoSchema(s *swagger_options.Schema, reg *descriptor.Reg
 
 	ret.schemaCore = protoJSONSchemaToSwaggerSchemaCore(s.GetJsonSchema(), reg, refs)
 	updateSwaggerObjectFromJSONSchema(&ret, s.GetJsonSchema())
-
-	if s != nil && s.Example != nil {
-		ret.Example = json.RawMessage(s.Example.Value)
-	}
 
 	return ret
 }
