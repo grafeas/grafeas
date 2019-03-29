@@ -1395,9 +1395,6 @@
   "definitions": {
     "ABitOfEverythingNested": {
       "type": "object",
-      "example": {
-        "ok": "TRUE"
-      },
       "properties": {
         "name": {
           "type": "string",
@@ -1432,9 +1429,6 @@
     },
     "examplepbABitOfEverything": {
       "type": "object",
-      "example": {
-        "uuid": "0cf361e1-4b44-483d-a159-54dabdf7e814"
-      },
       "properties": {
         "single_nested": {
           "$ref": "#/definitions/ABitOfEverythingNested"
@@ -1575,19 +1569,6 @@
     },
     "examplepbABitOfEverythingRepeated": {
       "type": "object",
-      "example": {
-        "path_repeated_bool_value": [
-          true,
-          true,
-          false,
-          true
-        ],
-        "path_repeated_int32_value": [
-          1,
-          2,
-          3
-        ]
-      },
       "properties": {
         "path_repeated_float_value": {
           "type": "array",
