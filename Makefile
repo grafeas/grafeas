@@ -1,3 +1,11 @@
+## The lines below can be uncommented for debugging the make rules
+#
+# OLD_SHELL := $(SHELL)
+# SHELL = $(warning Building $@$(if $<, (from $<))$(if $?, ($? newer)))$(OLD_SHELL)
+#
+# print-%:
+# 	@echo $* = $($*)
+
 .PHONY: build fmt test vet clean go_protos grafeas_go_v1alpha1 swagger_docs
 
 SRC = $(shell find . -type f -name '*.go' -not -path "./vendor/*")
@@ -5,7 +13,8 @@ CLEAN := *~
 
 default: build
 
-install.tools: .install.protoc-gen-go .install.grpc-gateway
+.install.tools: .install.protoc-gen-go .install.grpc-gateway protoc/bin/protoc
+	@touch $@
 
 CLEAN += .install.protoc-gen-go .install.grpc-gateway
 .install.protoc-gen-go:
@@ -21,10 +30,10 @@ build: vet fmt go_protos swagger_docs
 fmt:
 	@gofmt -l -w $(SRC)
 
-test:
+test: go_protos
 	@go test -v ./...
 
-vet:
+vet: go_protos
 	@go vet -composites=false ./...
 
 protoc/bin/protoc:
@@ -32,16 +41,18 @@ protoc/bin/protoc:
 	curl https://github.com/google/protobuf/releases/download/v3.3.0/protoc-3.3.0-linux-x86_64.zip -o protoc/protoc.zip -L
 	unzip protoc/protoc -d protoc
 
-CLEAN += protoc
+CLEAN += protoc proto/*/*_go_proto
 
-go_protos: grafeas_go_v1alpha1 proto/v1beta1/*_go_proto proto/v1/*_go_proto
+GO_PROTO_DIRS := $(patsubst %.proto,%_go_proto/.done,$(wildcard proto/*/*.proto))
+
+go_protos: v1alpha1/proto/grafeas.pb.go $(GO_PROTO_DIRS)
 
 PROTOC_CMD=protoc/bin/protoc -I ./ \
 	-I vendor/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
 	-I vendor/github.com/grpc-ecosystem/grpc-gateway \
 	-I vendor/github.com/googleapis/googleapis
 
-grafeas_go_v1alpha1: .install.protoc-gen-go .install.grpc-gateway v1alpha1/proto/grafeas.proto protoc/bin/protoc
+v1alpha1/proto/grafeas.pb.go: v1alpha1/proto/grafeas.proto .install.tools
 	$(PROTOC_CMD) \
 		--go_out=plugins=grpc:. \
 		--grpc-gateway_out=logtostderr=true:. \
@@ -53,17 +64,19 @@ grafeas_go_v1alpha1: .install.protoc-gen-go .install.grpc-gateway v1alpha1/proto
 # 	$ make proto/v1/grafeas_go_proto
 # 	Builds: proto/v1/grafeas_go_proto/grafeas.pb.go and proto/v1/grafeas_go_proto/grafeas.pb.gw.go
 # 	Using: proto/v1/grafeas.proto
-%_go_proto: %.proto protoc/bin/protoc install.tools
+%_go_proto/.done: %.proto .install.tools
 	$(PROTOC_CMD) \
 		--go_out=plugins=grpc,paths=source_relative:. \
 		--grpc-gateway_out=logtostderr=true,paths=source_relative:. \
 		$<
-	mv $*.pb.go $@
-	if [ -f $*.pb.gw.go ]; then mv $*.pb.gw.go $@; fi
+	@mkdir -p $(@D)
+	mv $*.pb.go $(@D)
+	if [ -f $*.pb.gw.go ]; then mv $*.pb.gw.go $(@D); fi
+	@touch $@
 
 swagger_docs: proto/v1beta1/swagger/*.swagger.json
 
-proto/v1beta1/swagger/%.swagger.json: proto/v1beta1/%.proto protoc/bin/protoc install.tools
+proto/v1beta1/swagger/%.swagger.json: proto/v1beta1/%.proto protoc/bin/protoc .install.tools
 	$(PROTOC_CMD) --swagger_out=logtostderr=true:. $<
 	mv $(<D)/*.swagger.json $@
 
