@@ -45,6 +45,8 @@ CLEAN += protoc proto/*/*_go_proto
 
 GO_PROTO_DIRS := $(patsubst %.proto,%_go_proto/.done,$(wildcard proto/*/*.proto))
 
+# v1alpha1 has a different codebase structure than v1beta1 and v1,
+# so it's generated separately
 go_protos: v1alpha1/proto/grafeas.pb.go $(GO_PROTO_DIRS)
 
 PROTOC_CMD=protoc/bin/protoc -I ./ \
