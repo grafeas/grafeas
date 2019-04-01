@@ -33,16 +33,16 @@ type Operation struct {
 	// The server-assigned name, which is only unique within the same service that
 	// originally returns it. If you use the default HTTP mapping, the
 	// `name` should have the format of `operations/some/unique/name`.
-	Name string `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	// Service-specific metadata associated with the operation.  It typically
 	// contains progress information and common metadata such as create time.
 	// Some services might not provide such metadata.  Any method that returns a
 	// long-running operation should document the metadata type, if any.
-	Metadata *any.Any `protobuf:"bytes,2,opt,name=metadata" json:"metadata,omitempty"`
+	Metadata *any.Any `protobuf:"bytes,2,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// If the value is `false`, it means the operation is still in progress.
 	// If true, the operation is completed, and either `error` or `response` is
 	// available.
-	Done bool `protobuf:"varint,3,opt,name=done" json:"done,omitempty"`
+	Done bool `protobuf:"varint,3,opt,name=done,proto3" json:"done,omitempty"`
 	// The operation result, which can be either an `error` or a valid `response`.
 	// If `done` == `false`, neither `error` nor `response` is set.
 	// If `done` == `true`, exactly one of `error` or `response` is set.
@@ -60,7 +60,7 @@ func (m *Operation) Reset()         { *m = Operation{} }
 func (m *Operation) String() string { return proto.CompactTextString(m) }
 func (*Operation) ProtoMessage()    {}
 func (*Operation) Descriptor() ([]byte, []int) {
-	return fileDescriptor_operations_0c6406358b950625, []int{0}
+	return fileDescriptor_operations_6e3ea16d34200c2d, []int{0}
 }
 func (m *Operation) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Operation.Unmarshal(m, b)
@@ -79,27 +79,6 @@ func (m *Operation) XXX_DiscardUnknown() {
 }
 
 var xxx_messageInfo_Operation proto.InternalMessageInfo
-
-type isOperation_Result interface {
-	isOperation_Result()
-}
-
-type Operation_Error struct {
-	Error *status.Status `protobuf:"bytes,4,opt,name=error,oneof"`
-}
-type Operation_Response struct {
-	Response *any.Any `protobuf:"bytes,5,opt,name=response,oneof"`
-}
-
-func (*Operation_Error) isOperation_Result()    {}
-func (*Operation_Response) isOperation_Result() {}
-
-func (m *Operation) GetResult() isOperation_Result {
-	if m != nil {
-		return m.Result
-	}
-	return nil
-}
 
 func (m *Operation) GetName() string {
 	if m != nil {
@@ -120,6 +99,29 @@ func (m *Operation) GetDone() bool {
 		return m.Done
 	}
 	return false
+}
+
+type isOperation_Result interface {
+	isOperation_Result()
+}
+
+type Operation_Error struct {
+	Error *status.Status `protobuf:"bytes,4,opt,name=error,proto3,oneof"`
+}
+
+type Operation_Response struct {
+	Response *any.Any `protobuf:"bytes,5,opt,name=response,proto3,oneof"`
+}
+
+func (*Operation_Error) isOperation_Result() {}
+
+func (*Operation_Response) isOperation_Result() {}
+
+func (m *Operation) GetResult() isOperation_Result {
+	if m != nil {
+		return m.Result
+	}
+	return nil
 }
 
 func (m *Operation) GetError() *status.Status {
@@ -213,7 +215,7 @@ func _Operation_OneofSizer(msg proto.Message) (n int) {
 // The request message for [Operations.GetOperation][google.longrunning.Operations.GetOperation].
 type GetOperationRequest struct {
 	// The name of the operation resource.
-	Name                 string   `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
+	Name                 string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -223,7 +225,7 @@ func (m *GetOperationRequest) Reset()         { *m = GetOperationRequest{} }
 func (m *GetOperationRequest) String() string { return proto.CompactTextString(m) }
 func (*GetOperationRequest) ProtoMessage()    {}
 func (*GetOperationRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_operations_0c6406358b950625, []int{1}
+	return fileDescriptor_operations_6e3ea16d34200c2d, []int{1}
 }
 func (m *GetOperationRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GetOperationRequest.Unmarshal(m, b)
@@ -253,13 +255,13 @@ func (m *GetOperationRequest) GetName() string {
 // The request message for [Operations.ListOperations][google.longrunning.Operations.ListOperations].
 type ListOperationsRequest struct {
 	// The name of the operation collection.
-	Name string `protobuf:"bytes,4,opt,name=name" json:"name,omitempty"`
+	Name string `protobuf:"bytes,4,opt,name=name,proto3" json:"name,omitempty"`
 	// The standard list filter.
-	Filter string `protobuf:"bytes,1,opt,name=filter" json:"filter,omitempty"`
+	Filter string `protobuf:"bytes,1,opt,name=filter,proto3" json:"filter,omitempty"`
 	// The standard list page size.
-	PageSize int32 `protobuf:"varint,2,opt,name=page_size,json=pageSize" json:"page_size,omitempty"`
+	PageSize int32 `protobuf:"varint,2,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
 	// The standard list page token.
-	PageToken            string   `protobuf:"bytes,3,opt,name=page_token,json=pageToken" json:"page_token,omitempty"`
+	PageToken            string   `protobuf:"bytes,3,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -269,7 +271,7 @@ func (m *ListOperationsRequest) Reset()         { *m = ListOperationsRequest{} }
 func (m *ListOperationsRequest) String() string { return proto.CompactTextString(m) }
 func (*ListOperationsRequest) ProtoMessage()    {}
 func (*ListOperationsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_operations_0c6406358b950625, []int{2}
+	return fileDescriptor_operations_6e3ea16d34200c2d, []int{2}
 }
 func (m *ListOperationsRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ListOperationsRequest.Unmarshal(m, b)
@@ -320,9 +322,9 @@ func (m *ListOperationsRequest) GetPageToken() string {
 // The response message for [Operations.ListOperations][google.longrunning.Operations.ListOperations].
 type ListOperationsResponse struct {
 	// A list of operations that matches the specified filter in the request.
-	Operations []*Operation `protobuf:"bytes,1,rep,name=operations" json:"operations,omitempty"`
+	Operations []*Operation `protobuf:"bytes,1,rep,name=operations,proto3" json:"operations,omitempty"`
 	// The standard List next-page token.
-	NextPageToken        string   `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken" json:"next_page_token,omitempty"`
+	NextPageToken        string   `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken,proto3" json:"next_page_token,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -332,7 +334,7 @@ func (m *ListOperationsResponse) Reset()         { *m = ListOperationsResponse{}
 func (m *ListOperationsResponse) String() string { return proto.CompactTextString(m) }
 func (*ListOperationsResponse) ProtoMessage()    {}
 func (*ListOperationsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_operations_0c6406358b950625, []int{3}
+	return fileDescriptor_operations_6e3ea16d34200c2d, []int{3}
 }
 func (m *ListOperationsResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ListOperationsResponse.Unmarshal(m, b)
@@ -369,7 +371,7 @@ func (m *ListOperationsResponse) GetNextPageToken() string {
 // The request message for [Operations.CancelOperation][google.longrunning.Operations.CancelOperation].
 type CancelOperationRequest struct {
 	// The name of the operation resource to be cancelled.
-	Name                 string   `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
+	Name                 string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -379,7 +381,7 @@ func (m *CancelOperationRequest) Reset()         { *m = CancelOperationRequest{}
 func (m *CancelOperationRequest) String() string { return proto.CompactTextString(m) }
 func (*CancelOperationRequest) ProtoMessage()    {}
 func (*CancelOperationRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_operations_0c6406358b950625, []int{4}
+	return fileDescriptor_operations_6e3ea16d34200c2d, []int{4}
 }
 func (m *CancelOperationRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CancelOperationRequest.Unmarshal(m, b)
@@ -409,7 +411,7 @@ func (m *CancelOperationRequest) GetName() string {
 // The request message for [Operations.DeleteOperation][google.longrunning.Operations.DeleteOperation].
 type DeleteOperationRequest struct {
 	// The name of the operation resource to be deleted.
-	Name                 string   `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
+	Name                 string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -419,7 +421,7 @@ func (m *DeleteOperationRequest) Reset()         { *m = DeleteOperationRequest{}
 func (m *DeleteOperationRequest) String() string { return proto.CompactTextString(m) }
 func (*DeleteOperationRequest) ProtoMessage()    {}
 func (*DeleteOperationRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_operations_0c6406358b950625, []int{5}
+	return fileDescriptor_operations_6e3ea16d34200c2d, []int{5}
 }
 func (m *DeleteOperationRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DeleteOperationRequest.Unmarshal(m, b)
@@ -539,8 +541,7 @@ func (c *operationsClient) CancelOperation(ctx context.Context, in *CancelOperat
 	return out, nil
 }
 
-// Server API for Operations service
-
+// OperationsServer is the server API for Operations service.
 type OperationsServer interface {
 	// Lists operations that match the specified filter in the request. If the
 	// server doesn't support this method, it returns `UNIMPLEMENTED`.
@@ -672,10 +673,10 @@ var _Operations_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("google/longrunning/operations.proto", fileDescriptor_operations_0c6406358b950625)
+	proto.RegisterFile("google/longrunning/operations.proto", fileDescriptor_operations_6e3ea16d34200c2d)
 }
 
-var fileDescriptor_operations_0c6406358b950625 = []byte{
+var fileDescriptor_operations_6e3ea16d34200c2d = []byte{
 	// 597 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x54, 0xc1, 0x6e, 0xd3, 0x4c,
 	0x10, 0xae, 0xd3, 0xb4, 0x4a, 0xa6, 0xff, 0x4f, 0xa4, 0x85, 0xba, 0xc6, 0x25, 0x22, 0x32, 0x08,

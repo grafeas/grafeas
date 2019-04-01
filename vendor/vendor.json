@@ -27,76 +27,139 @@
 			"revisionTime": "2016-01-25T20:49:56Z"
 		},
 		{
-			"checksumSHA1": "NPefLsS2pv0+YlXAuJJvkNOMgyE=",
+			"checksumSHA1": "imGler0jsxiEtbFuAOKcS2wfukE=",
+			"origin": "github.com/grafeas/grafeas/vendor/github.com/golang/protobuf/conformance",
+			"path": "github.com/golang/protobuf/conformance",
+			"revision": "347cf4a86c1cb8d262994d8ef5924d4576c5b331",
+			"revisionTime": "2019-01-09T07:22:47Z"
+		},
+		{
+			"checksumSHA1": "lsT/UEJM2/UlIm/0navFncRNz9o=",
+			"origin": "github.com/grafeas/grafeas/vendor/github.com/golang/protobuf/conformance/internal/conformance_proto",
+			"path": "github.com/golang/protobuf/conformance/internal/conformance_proto",
+			"revision": "347cf4a86c1cb8d262994d8ef5924d4576c5b331",
+			"revisionTime": "2019-01-09T07:22:47Z"
+		},
+		{
+			"checksumSHA1": "t/sQ9OAykIvWiNL6sL994a2uEYo=",
+			"origin": "github.com/grafeas/grafeas/vendor/github.com/golang/protobuf/descriptor",
+			"path": "github.com/golang/protobuf/descriptor",
+			"revision": "347cf4a86c1cb8d262994d8ef5924d4576c5b331",
+			"revisionTime": "2019-01-09T07:22:47Z"
+		},
+		{
+			"checksumSHA1": "BP2buXHHOKxI5eYS2xELVng2kf4=",
 			"path": "github.com/golang/protobuf/jsonpb",
-			"revision": "668a607657a5d387d6333648a2d9c749761fdc69",
-			"revisionTime": "2018-05-18T02:49:05Z"
+			"revision": "347cf4a86c1cb8d262994d8ef5924d4576c5b331",
+			"revisionTime": "2019-01-09T07:22:47Z"
 		},
 		{
-			"checksumSHA1": "3Xl2eFF4Q+bZkX2RIrIZUkYDRdk=",
+			"checksumSHA1": "78dam9bgu36kpCiQPsy5ni3s1cs=",
+			"origin": "github.com/grafeas/grafeas/vendor/github.com/golang/protobuf/jsonpb/jsonpb_test_proto",
+			"path": "github.com/golang/protobuf/jsonpb/jsonpb_test_proto",
+			"revision": "347cf4a86c1cb8d262994d8ef5924d4576c5b331",
+			"revisionTime": "2019-01-09T07:22:47Z"
+		},
+		{
+			"checksumSHA1": "Y2MOwzNZfl4NRNDbLCZa6sgx7O0=",
 			"path": "github.com/golang/protobuf/proto",
-			"revision": "668a607657a5d387d6333648a2d9c749761fdc69",
-			"revisionTime": "2018-05-18T02:49:05Z"
+			"revision": "347cf4a86c1cb8d262994d8ef5924d4576c5b331",
+			"revisionTime": "2019-01-09T07:22:47Z"
 		},
 		{
-			"checksumSHA1": "DA2cyOt1W92RTyXAqKQ4JWKGR8U=",
+			"checksumSHA1": "cQvjaQ6YsQ2s/QOmJeSGMjbyLhU=",
+			"origin": "github.com/grafeas/grafeas/vendor/github.com/golang/protobuf/proto/proto3_proto",
+			"path": "github.com/golang/protobuf/proto/proto3_proto",
+			"revision": "347cf4a86c1cb8d262994d8ef5924d4576c5b331",
+			"revisionTime": "2019-01-09T07:22:47Z"
+		},
+		{
+			"checksumSHA1": "Ap3fxoENMwxwOM77e56TlCVt+7o=",
+			"origin": "github.com/grafeas/grafeas/vendor/github.com/golang/protobuf/proto/test_proto",
+			"path": "github.com/golang/protobuf/proto/test_proto",
+			"revision": "347cf4a86c1cb8d262994d8ef5924d4576c5b331",
+			"revisionTime": "2019-01-09T07:22:47Z"
+		},
+		{
+			"checksumSHA1": "iqWBA0GWNr+cwAdF2KVy1eq9mlU=",
+			"origin": "github.com/grafeas/grafeas/vendor/github.com/golang/protobuf/protoc-gen-go",
+			"path": "github.com/golang/protobuf/protoc-gen-go",
+			"revision": "347cf4a86c1cb8d262994d8ef5924d4576c5b331",
+			"revisionTime": "2019-01-09T07:22:47Z"
+		},
+		{
+			"checksumSHA1": "WOkXetG3AqJnfVVuqTJvdukcHps=",
 			"path": "github.com/golang/protobuf/protoc-gen-go/descriptor",
-			"revision": "668a607657a5d387d6333648a2d9c749761fdc69",
-			"revisionTime": "2018-05-18T02:49:05Z"
+			"revision": "347cf4a86c1cb8d262994d8ef5924d4576c5b331",
+			"revisionTime": "2019-01-09T07:22:47Z"
 		},
 		{
-			"checksumSHA1": "DifSE44TpfgLs4XBFJHiPy1YBoM=",
+			"checksumSHA1": "dqkZJ8o1Hj3gbN30RyZ7G3CxhfU=",
 			"path": "github.com/golang/protobuf/protoc-gen-go/generator",
-			"revision": "668a607657a5d387d6333648a2d9c749761fdc69",
-			"revisionTime": "2018-05-18T02:49:05Z"
+			"revision": "347cf4a86c1cb8d262994d8ef5924d4576c5b331",
+			"revisionTime": "2019-01-09T07:22:47Z"
 		},
 		{
 			"checksumSHA1": "uY4dEtqaAe5gsU8gbpCI1JgEIII=",
 			"path": "github.com/golang/protobuf/protoc-gen-go/generator/internal/remap",
-			"revision": "668a607657a5d387d6333648a2d9c749761fdc69",
-			"revisionTime": "2018-05-18T02:49:05Z"
+			"revision": "347cf4a86c1cb8d262994d8ef5924d4576c5b331",
+			"revisionTime": "2019-01-09T07:22:47Z"
+		},
+		{
+			"checksumSHA1": "DA3AcJi6V9L2lwNg3n2ajPeSHAw=",
+			"origin": "github.com/grafeas/grafeas/vendor/github.com/golang/protobuf/protoc-gen-go/grpc",
+			"path": "github.com/golang/protobuf/protoc-gen-go/grpc",
+			"revision": "347cf4a86c1cb8d262994d8ef5924d4576c5b331",
+			"revisionTime": "2019-01-09T07:22:47Z"
 		},
 		{
 			"checksumSHA1": "h4PLbJDYnRmcUuf56USJ5K3xJOg=",
 			"path": "github.com/golang/protobuf/protoc-gen-go/plugin",
-			"revision": "668a607657a5d387d6333648a2d9c749761fdc69",
-			"revisionTime": "2018-05-18T02:49:05Z"
+			"revision": "347cf4a86c1cb8d262994d8ef5924d4576c5b331",
+			"revisionTime": "2019-01-09T07:22:47Z"
 		},
 		{
 			"checksumSHA1": "tkJPssYejSjuAwE2tdEnoEIj93Q=",
 			"path": "github.com/golang/protobuf/ptypes",
-			"revision": "668a607657a5d387d6333648a2d9c749761fdc69",
-			"revisionTime": "2018-05-18T02:49:05Z"
+			"revision": "347cf4a86c1cb8d262994d8ef5924d4576c5b331",
+			"revisionTime": "2019-01-09T07:22:47Z"
 		},
 		{
-			"checksumSHA1": "3eqU9o+NMZSLM/coY5WDq7C1uKg=",
+			"checksumSHA1": "2/Xg4L9IVGQRJB8zCELZx7/Z4HU=",
 			"path": "github.com/golang/protobuf/ptypes/any",
-			"revision": "668a607657a5d387d6333648a2d9c749761fdc69",
-			"revisionTime": "2018-05-18T02:49:05Z"
+			"revision": "347cf4a86c1cb8d262994d8ef5924d4576c5b331",
+			"revisionTime": "2019-01-09T07:22:47Z"
 		},
 		{
-			"checksumSHA1": "ZIF0rnVzNLluFPqUebtJrVonMr4=",
+			"checksumSHA1": "RE9rLveNHapyMKQC8p10tbkUE9w=",
 			"path": "github.com/golang/protobuf/ptypes/duration",
-			"revision": "668a607657a5d387d6333648a2d9c749761fdc69",
-			"revisionTime": "2018-05-18T02:49:05Z"
+			"revision": "347cf4a86c1cb8d262994d8ef5924d4576c5b331",
+			"revisionTime": "2019-01-09T07:22:47Z"
 		},
 		{
-			"checksumSHA1": "7Az4Zl9T11I+xOfjgs/3/YMJ24I=",
+			"checksumSHA1": "cX6yDXJruFt102YDAPW4luFdmg4=",
 			"path": "github.com/golang/protobuf/ptypes/empty",
-			"revision": "668a607657a5d387d6333648a2d9c749761fdc69",
-			"revisionTime": "2018-05-18T02:49:05Z"
+			"revision": "347cf4a86c1cb8d262994d8ef5924d4576c5b331",
+			"revisionTime": "2019-01-09T07:22:47Z"
 		},
 		{
-			"checksumSHA1": "QwgMLtaLi/6xHaNiDFwHN844AkI=",
+			"checksumSHA1": "RT/PGRMtH/yBCbIJfZftaz5yc3M=",
 			"path": "github.com/golang/protobuf/ptypes/struct",
-			"revision": "668a607657a5d387d6333648a2d9c749761fdc69",
-			"revisionTime": "2018-05-18T02:49:05Z"
+			"revision": "347cf4a86c1cb8d262994d8ef5924d4576c5b331",
+			"revisionTime": "2019-01-09T07:22:47Z"
 		},
 		{
-			"checksumSHA1": "1FJvuT0UllZaaS43kmPlx8oNiCs=",
+			"checksumSHA1": "seEwY2xETpK9yHJ9+bHqkLZ0VMU=",
 			"path": "github.com/golang/protobuf/ptypes/timestamp",
-			"revision": "668a607657a5d387d6333648a2d9c749761fdc69",
-			"revisionTime": "2018-05-18T02:49:05Z"
+			"revision": "347cf4a86c1cb8d262994d8ef5924d4576c5b331",
+			"revisionTime": "2019-01-09T07:22:47Z"
+		},
+		{
+			"checksumSHA1": "KlQCb83HC090bojw4ofNDxn2nho=",
+			"origin": "github.com/grafeas/grafeas/vendor/github.com/golang/protobuf/ptypes/wrappers",
+			"path": "github.com/golang/protobuf/ptypes/wrappers",
+			"revision": "347cf4a86c1cb8d262994d8ef5924d4576c5b331",
+			"revisionTime": "2019-01-09T07:22:47Z"
 		},
 		{
 			"checksumSHA1": "TAXd73uN0hLjwdGGGNgnmF6iC0k=",
@@ -153,58 +216,177 @@
 			"revisionTime": "2017-09-05T17:10:44Z"
 		},
 		{
-			"checksumSHA1": "sYy8LklxIUHSBH2k2xv3bSQcazM=",
+			"checksumSHA1": "g8GfBzErtBxem92llisO4nRC+xk=",
+			"origin": "github.com/grafeas/grafeas/vendor/github.com/grpc-ecosystem/grpc-gateway/codegenerator",
+			"path": "github.com/grpc-ecosystem/grpc-gateway/codegenerator",
+			"revision": "9ae946519c22ae092c39e7c79b29ba90252a2570",
+			"revisionTime": "2019-01-09T11:03:27Z"
+		},
+		{
+			"checksumSHA1": "LJFUIZ+8O3334fvYi5L61h4iYvk=",
+			"origin": "github.com/grafeas/grafeas/vendor/github.com/grpc-ecosystem/grpc-gateway/examples/clients/abe",
+			"path": "github.com/grpc-ecosystem/grpc-gateway/examples/clients/abe",
+			"revision": "9ae946519c22ae092c39e7c79b29ba90252a2570",
+			"revisionTime": "2019-01-09T11:03:27Z"
+		},
+		{
+			"checksumSHA1": "UhJWTH8rgpFr3O+DJ51yrz5+zbw=",
+			"origin": "github.com/grafeas/grafeas/vendor/github.com/grpc-ecosystem/grpc-gateway/examples/clients/echo",
+			"path": "github.com/grpc-ecosystem/grpc-gateway/examples/clients/echo",
+			"revision": "9ae946519c22ae092c39e7c79b29ba90252a2570",
+			"revisionTime": "2019-01-09T11:03:27Z"
+		},
+		{
+			"checksumSHA1": "aZZgElCm/qprkTBL4JQ5KkgWxtY=",
+			"origin": "github.com/grafeas/grafeas/vendor/github.com/grpc-ecosystem/grpc-gateway/examples/clients/responsebody",
+			"path": "github.com/grpc-ecosystem/grpc-gateway/examples/clients/responsebody",
+			"revision": "9ae946519c22ae092c39e7c79b29ba90252a2570",
+			"revisionTime": "2019-01-09T11:03:27Z"
+		},
+		{
+			"checksumSHA1": "NDUGzSFC2seZWLggV1Lcj8FNlCA=",
+			"origin": "github.com/grafeas/grafeas/vendor/github.com/grpc-ecosystem/grpc-gateway/examples/clients/unannotatedecho",
+			"path": "github.com/grpc-ecosystem/grpc-gateway/examples/clients/unannotatedecho",
+			"revision": "9ae946519c22ae092c39e7c79b29ba90252a2570",
+			"revisionTime": "2019-01-09T11:03:27Z"
+		},
+		{
+			"checksumSHA1": "0ATywo+HBAB0j+4ih6Rn1ALntDs=",
+			"origin": "github.com/grafeas/grafeas/vendor/github.com/grpc-ecosystem/grpc-gateway/examples/cmd/example-gateway-server",
+			"path": "github.com/grpc-ecosystem/grpc-gateway/examples/cmd/example-gateway-server",
+			"revision": "9ae946519c22ae092c39e7c79b29ba90252a2570",
+			"revisionTime": "2019-01-09T11:03:27Z"
+		},
+		{
+			"checksumSHA1": "Emmzjt/+bdrpRZtLpM5lXpGZkQU=",
+			"origin": "github.com/grafeas/grafeas/vendor/github.com/grpc-ecosystem/grpc-gateway/examples/cmd/example-grpc-server",
+			"path": "github.com/grpc-ecosystem/grpc-gateway/examples/cmd/example-grpc-server",
+			"revision": "9ae946519c22ae092c39e7c79b29ba90252a2570",
+			"revisionTime": "2019-01-09T11:03:27Z"
+		},
+		{
+			"checksumSHA1": "JoCPbT185eQwKbvkn8NoeKv82Wk=",
+			"origin": "github.com/grafeas/grafeas/vendor/github.com/grpc-ecosystem/grpc-gateway/examples/gateway",
+			"path": "github.com/grpc-ecosystem/grpc-gateway/examples/gateway",
+			"revision": "9ae946519c22ae092c39e7c79b29ba90252a2570",
+			"revisionTime": "2019-01-09T11:03:27Z"
+		},
+		{
+			"checksumSHA1": "OCaBiQazbu8omyjA26pS5jTqglY=",
+			"origin": "github.com/grafeas/grafeas/vendor/github.com/grpc-ecosystem/grpc-gateway/examples/integration",
+			"path": "github.com/grpc-ecosystem/grpc-gateway/examples/integration",
+			"revision": "9ae946519c22ae092c39e7c79b29ba90252a2570",
+			"revisionTime": "2019-01-09T11:03:27Z"
+		},
+		{
+			"checksumSHA1": "hYMmKmcLb8o3ZrlnkNDh/qnPnRo=",
+			"origin": "github.com/grafeas/grafeas/vendor/github.com/grpc-ecosystem/grpc-gateway/examples/pbwrappers/helloworld",
+			"path": "github.com/grpc-ecosystem/grpc-gateway/examples/pbwrappers/helloworld",
+			"revision": "9ae946519c22ae092c39e7c79b29ba90252a2570",
+			"revisionTime": "2019-01-09T11:03:27Z"
+		},
+		{
+			"checksumSHA1": "9udSNTkCyuHXjTTrRYNLdV5Ipus=",
+			"origin": "github.com/grafeas/grafeas/vendor/github.com/grpc-ecosystem/grpc-gateway/examples/proto/examplepb",
+			"path": "github.com/grpc-ecosystem/grpc-gateway/examples/proto/examplepb",
+			"revision": "9ae946519c22ae092c39e7c79b29ba90252a2570",
+			"revisionTime": "2019-01-09T11:03:27Z"
+		},
+		{
+			"checksumSHA1": "8WuTrZnZYzf07kCINKoVcV9NOTs=",
+			"origin": "github.com/grafeas/grafeas/vendor/github.com/grpc-ecosystem/grpc-gateway/examples/proto/pathenum",
+			"path": "github.com/grpc-ecosystem/grpc-gateway/examples/proto/pathenum",
+			"revision": "9ae946519c22ae092c39e7c79b29ba90252a2570",
+			"revisionTime": "2019-01-09T11:03:27Z"
+		},
+		{
+			"checksumSHA1": "7frRIOU/m+bzhKT7Eqtr3G3UTMw=",
+			"origin": "github.com/grafeas/grafeas/vendor/github.com/grpc-ecosystem/grpc-gateway/examples/proto/sub",
+			"path": "github.com/grpc-ecosystem/grpc-gateway/examples/proto/sub",
+			"revision": "9ae946519c22ae092c39e7c79b29ba90252a2570",
+			"revisionTime": "2019-01-09T11:03:27Z"
+		},
+		{
+			"checksumSHA1": "7LW4xQvd6jBz+WflXCTn9q8+cFg=",
+			"origin": "github.com/grafeas/grafeas/vendor/github.com/grpc-ecosystem/grpc-gateway/examples/proto/sub2",
+			"path": "github.com/grpc-ecosystem/grpc-gateway/examples/proto/sub2",
+			"revision": "9ae946519c22ae092c39e7c79b29ba90252a2570",
+			"revisionTime": "2019-01-09T11:03:27Z"
+		},
+		{
+			"checksumSHA1": "szsxwm84rislpBlXqKGLEac491c=",
+			"origin": "github.com/grafeas/grafeas/vendor/github.com/grpc-ecosystem/grpc-gateway/examples/server",
+			"path": "github.com/grpc-ecosystem/grpc-gateway/examples/server",
+			"revision": "9ae946519c22ae092c39e7c79b29ba90252a2570",
+			"revisionTime": "2019-01-09T11:03:27Z"
+		},
+		{
+			"checksumSHA1": "+vs97yR5UE9SUoT1hHpq8B73Zfg=",
 			"path": "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway",
-			"revision": "a53af079f669b6375dd96cdf5e98e67f886a8b4d",
-			"revisionTime": "2018-05-08T16:37:18Z"
+			"revision": "9ae946519c22ae092c39e7c79b29ba90252a2570",
+			"revisionTime": "2019-01-09T11:03:27Z"
 		},
 		{
-			"checksumSHA1": "pnf75ALEtAjx0nuNYibFp5jz+e8=",
+			"checksumSHA1": "4XpGL39XHDQ1DiGURP4wWyB0aIA=",
 			"path": "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/descriptor",
-			"revision": "a53af079f669b6375dd96cdf5e98e67f886a8b4d",
-			"revisionTime": "2018-05-08T16:37:18Z"
+			"revision": "9ae946519c22ae092c39e7c79b29ba90252a2570",
+			"revisionTime": "2019-01-09T11:03:27Z"
 		},
 		{
-			"checksumSHA1": "ltTkMhAvwMtcXlCtBZlmYyTrdeY=",
+			"checksumSHA1": "4XZ3E3inyD2mdKQpB/7GL01o7ps=",
 			"path": "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/generator",
-			"revision": "a53af079f669b6375dd96cdf5e98e67f886a8b4d",
-			"revisionTime": "2018-05-08T16:37:18Z"
+			"revision": "9ae946519c22ae092c39e7c79b29ba90252a2570",
+			"revisionTime": "2019-01-09T11:03:27Z"
 		},
 		{
-			"checksumSHA1": "cUftA+7zKo3XmgME+yIToc32VBQ=",
+			"checksumSHA1": "7B7rswwAZJNgGCdXXib+8eYqwYk=",
 			"path": "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/gengateway",
-			"revision": "a53af079f669b6375dd96cdf5e98e67f886a8b4d",
-			"revisionTime": "2018-05-08T16:37:18Z"
+			"revision": "9ae946519c22ae092c39e7c79b29ba90252a2570",
+			"revisionTime": "2019-01-09T11:03:27Z"
 		},
 		{
 			"checksumSHA1": "zmXTSyHiq5RyfB+HyK1p+bCPSek=",
 			"path": "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/httprule",
-			"revision": "a53af079f669b6375dd96cdf5e98e67f886a8b4d",
-			"revisionTime": "2018-05-08T16:37:18Z"
+			"revision": "9ae946519c22ae092c39e7c79b29ba90252a2570",
+			"revisionTime": "2019-01-09T11:03:27Z"
 		},
 		{
-			"checksumSHA1": "444DLrDowrEzlH31AY4KumadXQE=",
+			"checksumSHA1": "QgaKbA+dEZtVBuSy55qikJ74W74=",
+			"origin": "github.com/grafeas/grafeas/vendor/github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger",
+			"path": "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger",
+			"revision": "9ae946519c22ae092c39e7c79b29ba90252a2570",
+			"revisionTime": "2019-01-09T11:03:27Z"
+		},
+		{
+			"checksumSHA1": "1H7f1q0pzUiWd/J0Nl8c+1FONqc=",
+			"origin": "github.com/grafeas/grafeas/vendor/github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger/genswagger",
+			"path": "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger/genswagger",
+			"revision": "9ae946519c22ae092c39e7c79b29ba90252a2570",
+			"revisionTime": "2019-01-09T11:03:27Z"
+		},
+		{
+			"checksumSHA1": "MVZr/ZmIoT78YzJcJjaO16FH9JA=",
 			"path": "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger/options",
-			"revision": "8077515eaf98524f4fcfbcc83f50b37730e08838",
-			"revisionTime": "2018-09-23T23:51:26Z"
+			"revision": "9ae946519c22ae092c39e7c79b29ba90252a2570",
+			"revisionTime": "2019-01-09T11:03:27Z"
 		},
 		{
-			"checksumSHA1": "13iJYYfihSUDMpAbUgCJHpRizuw=",
+			"checksumSHA1": "3wzsPPMqn5TgyqyPBQ/G0sOa414=",
 			"path": "github.com/grpc-ecosystem/grpc-gateway/runtime",
-			"revision": "a53af079f669b6375dd96cdf5e98e67f886a8b4d",
-			"revisionTime": "2018-05-08T16:37:18Z"
+			"revision": "9ae946519c22ae092c39e7c79b29ba90252a2570",
+			"revisionTime": "2019-01-09T11:03:27Z"
 		},
 		{
-			"checksumSHA1": "HV5bBOOPCOhO6SUMFIGW/M6vi+I=",
+			"checksumSHA1": "dKdNxuf5/Z1Oiz+7tXTeuyXqHgE=",
 			"path": "github.com/grpc-ecosystem/grpc-gateway/runtime/internal",
-			"revision": "a53af079f669b6375dd96cdf5e98e67f886a8b4d",
-			"revisionTime": "2018-05-08T16:37:18Z"
+			"revision": "9ae946519c22ae092c39e7c79b29ba90252a2570",
+			"revisionTime": "2019-01-09T11:03:27Z"
 		},
 		{
-			"checksumSHA1": "QuHQq2+nPPMMJ3qoJxlQ8ZCVEfk=",
+			"checksumSHA1": "yUJS5jJyNTvxHCUUXiK3xnKfN14=",
 			"path": "github.com/grpc-ecosystem/grpc-gateway/utilities",
-			"revision": "a53af079f669b6375dd96cdf5e98e67f886a8b4d",
-			"revisionTime": "2018-05-08T16:37:18Z"
+			"revision": "9ae946519c22ae092c39e7c79b29ba90252a2570",
+			"revisionTime": "2019-01-09T11:03:27Z"
 		},
 		{
 			"checksumSHA1": "IfZcD4U1dtllJKlPNeD2aU4Jn98=",
@@ -291,34 +473,34 @@
 			"revisionTime": "2017-12-24T20:31:28Z"
 		},
 		{
-			"checksumSHA1": "m1d4DsEkn6fuFF4b4O1ALS65yrk=",
+			"checksumSHA1": "YNqziavfZHurG6wrwR5Uf9SnI4s=",
 			"path": "google.golang.org/genproto/googleapis/api/annotations",
-			"revision": "11a468237815f3a3ddf9f7c6e8b6b3b382a24d15",
-			"revisionTime": "2018-05-18T17:53:38Z"
+			"revision": "ae2f86662275e140f395167f1dab7081a5bd5fa8",
+			"revisionTime": "2019-01-08T16:14:40Z"
 		},
 		{
-			"checksumSHA1": "SUV+Aa5EBmSnwr2drmAPolUmT+w=",
+			"checksumSHA1": "puk8fv+jfqs3ZkoI1bji6TTcWOk=",
 			"path": "google.golang.org/genproto/googleapis/devtools/source/v1",
-			"revision": "11a468237815f3a3ddf9f7c6e8b6b3b382a24d15",
-			"revisionTime": "2018-05-18T17:53:38Z"
+			"revision": "ae2f86662275e140f395167f1dab7081a5bd5fa8",
+			"revisionTime": "2019-01-08T16:14:40Z"
 		},
 		{
-			"checksumSHA1": "IAWAoGXd/pzCn4kk/VP0DgrFGvk=",
+			"checksumSHA1": "cOyfDpon7EwyJusIBRLg7SeP3iY=",
 			"path": "google.golang.org/genproto/googleapis/longrunning",
-			"revision": "11a468237815f3a3ddf9f7c6e8b6b3b382a24d15",
-			"revisionTime": "2018-05-18T17:53:38Z"
+			"revision": "ae2f86662275e140f395167f1dab7081a5bd5fa8",
+			"revisionTime": "2019-01-08T16:14:40Z"
 		},
 		{
-			"checksumSHA1": "2iGEpqdA3KpuCNSWW6KPCIhpXl4=",
+			"checksumSHA1": "oUD15OBRSXt0t4P0s6HMjH/+iQo=",
 			"path": "google.golang.org/genproto/googleapis/rpc/status",
-			"revision": "11a468237815f3a3ddf9f7c6e8b6b3b382a24d15",
-			"revisionTime": "2018-05-18T17:53:38Z"
+			"revision": "ae2f86662275e140f395167f1dab7081a5bd5fa8",
+			"revisionTime": "2019-01-08T16:14:40Z"
 		},
 		{
-			"checksumSHA1": "6g4hBlu3y4+LLRfenbLrx2K+VG0=",
+			"checksumSHA1": "nqnnm6YjyqMt33FmtYC9GbOaHiA=",
 			"path": "google.golang.org/genproto/protobuf/field_mask",
-			"revision": "11a468237815f3a3ddf9f7c6e8b6b3b382a24d15",
-			"revisionTime": "2018-05-18T17:53:38Z"
+			"revision": "ae2f86662275e140f395167f1dab7081a5bd5fa8",
+			"revisionTime": "2019-01-08T16:14:40Z"
 		},
 		{
 			"checksumSHA1": "aPV66krnT1KnXfYSLpX8iSa2VbY=",
@@ -453,10 +635,10 @@
 			"revisionTime": "2018-01-04T23:44:29Z"
 		},
 		{
-			"checksumSHA1": "ZSWoOPUNRr5+3dhkLK3C4cZAQPk=",
+			"checksumSHA1": "QqDq2x8XOU7IoOR98Cx1eiV5QY8=",
 			"path": "gopkg.in/yaml.v2",
-			"revision": "5420a8b6744d3b0345ab293f6fcba19c978f1183",
-			"revisionTime": "2018-03-28T19:50:20Z"
+			"revision": "51d6538a90f86fe93ac480b35f37b2be17fef232",
+			"revisionTime": "2018-11-15T11:05:04Z"
 		}
 	],
 	"rootPath": "github.com/grafeas/grafeas"
