@@ -17,11 +17,11 @@
   "paths": {
     "/v1alpha1/projects": {
       "get": {
-        "summary": "Deletes the given `Occurrence` from the system. Use this when\nan `Occurrence` is no longer applicable for the given resource.",
+        "summary": "Lists projects.",
         "operationId": "ListProjects",
         "responses": {
           "200": {
-            "description": "",
+            "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/apiListProjectsResponse"
             }
@@ -56,13 +56,13 @@
         ]
       },
       "post": {
-        "summary": "Returns the requested `Occurrence`.",
+        "summary": "Creates a new project.",
         "operationId": "CreateProject",
         "responses": {
           "200": {
-            "description": "",
+            "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/protobufEmpty"
+              "properties": {}
             }
           }
         },
@@ -82,53 +82,53 @@
         ]
       }
     },
-    "/v1alpha1/{name}": {
+    "/v1alpha1/{name=projects/*/notes/*}": {
       "get": {
-        "summary": "Lists active `Occurrences` for a given project matching the filters.",
-        "operationId": "GetProject",
+        "summary": "Returns the requested `Note`.",
+        "operationId": "GetNote",
         "responses": {
           "200": {
-            "description": "",
+            "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/apiProject"
+              "$ref": "#/definitions/apiNote"
             }
           }
         },
         "parameters": [
           {
             "name": "name",
-            "description": "The name of the project in the form of `projects/{PROJECT_ID}`.",
+            "description": "The name of the note in the form of\n\"providers/{provider_id}/notes/{NOTE_ID}\"",
             "in": "path",
             "required": true,
             "type": "string"
           }
         ],
         "tags": [
-          "GrafeasProjects"
+          "Grafeas"
         ]
       },
       "delete": {
-        "summary": "Creates a new `Occurrence`. Use this method to create `Occurrences`\nfor a resource.",
-        "operationId": "DeleteProject",
+        "summary": "Deletes the given `Note` from the system.",
+        "operationId": "DeleteNote",
         "responses": {
           "200": {
-            "description": "",
+            "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/protobufEmpty"
+              "properties": {}
             }
           }
         },
         "parameters": [
           {
             "name": "name",
-            "description": "The name of the project in the form of `projects/{PROJECT_ID}`.",
+            "description": "The name of the note in the form of\n\"providers/{provider_id}/notes/{NOTE_ID}\"",
             "in": "path",
             "required": true,
             "type": "string"
           }
         ],
         "tags": [
-          "GrafeasProjects"
+          "Grafeas"
         ]
       },
       "patch": {
@@ -136,7 +136,7 @@
         "operationId": "UpdateNote",
         "responses": {
           "200": {
-            "description": "",
+            "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/apiNote"
             }
@@ -165,39 +165,13 @@
         ]
       }
     },
-    "/v1alpha1/{name}/notes": {
-      "get": {
-        "summary": "Gets the `Note` attached to the given `Occurrence`.",
-        "operationId": "GetOccurrenceNote",
-        "responses": {
-          "200": {
-            "description": "",
-            "schema": {
-              "$ref": "#/definitions/apiNote"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "name",
-            "description": "The name of the occurrence in the form\n\"projects/{project_id}/occurrences/{OCCURRENCE_ID}\"",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "Grafeas"
-        ]
-      }
-    },
-    "/v1alpha1/{name}/occurrences": {
+    "/v1alpha1/{name=projects/*/notes/*}/occurrences": {
       "get": {
         "summary": "Lists `Occurrences` referencing the specified `Note`. Use this method to\nget all occurrences referencing your `Note` across all your customer\nprojects.",
         "operationId": "ListNoteOccurrences",
         "responses": {
           "200": {
-            "description": "",
+            "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/apiListNoteOccurrencesResponse"
             }
@@ -239,13 +213,206 @@
         ]
       }
     },
-    "/v1alpha1/{parent}/notes": {
+    "/v1alpha1/{name=projects/*/occurrences/*}": {
+      "get": {
+        "summary": "Returns the requested `Occurrence`.",
+        "operationId": "GetOccurrence",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiOccurrence"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "name",
+            "description": "The name of the occurrence of the form\n\"projects/{project_id}/occurrences/{OCCURRENCE_ID}\"",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Grafeas"
+        ]
+      },
+      "delete": {
+        "summary": "Deletes the given `Occurrence` from the system. Use this when\nan `Occurrence` is no longer applicable for the given resource.",
+        "operationId": "DeleteOccurrence",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "properties": {}
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "name",
+            "description": "The name of the occurrence in the form of\n\"projects/{project_id}/occurrences/{OCCURRENCE_ID}\"",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Grafeas"
+        ]
+      },
+      "patch": {
+        "summary": "Updates an existing occurrence.",
+        "operationId": "UpdateOccurrence",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiOccurrence"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "name",
+            "description": "The name of the occurrence.\nShould be of the form \"projects/{project_id}/occurrences/{OCCURRENCE_ID}\".",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "description": "The updated occurrence.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/apiOccurrence"
+            }
+          }
+        ],
+        "tags": [
+          "Grafeas"
+        ]
+      }
+    },
+    "/v1alpha1/{name=projects/*/occurrences/*}/notes": {
+      "get": {
+        "summary": "Gets the `Note` attached to the given `Occurrence`.",
+        "operationId": "GetOccurrenceNote",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiNote"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "name",
+            "description": "The name of the occurrence in the form\n\"projects/{project_id}/occurrences/{OCCURRENCE_ID}\"",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Grafeas"
+        ]
+      }
+    },
+    "/v1alpha1/{name=projects/*/operations/*}": {
+      "patch": {
+        "summary": "Updates an existing operation returns an error if operation\n does not exist. The only valid operations are to update mark the done bit\nchange the result.",
+        "operationId": "UpdateOperation",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/googlelongrunningOperation"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "name",
+            "description": "The name of the Operation.\nShould be of the form \"projects/{provider_id}/operations/{operation_id}\".",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/apiUpdateOperationRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Grafeas"
+        ]
+      }
+    },
+    "/v1alpha1/{name=projects/*}": {
+      "get": {
+        "summary": "Gets the specified project.",
+        "operationId": "GetProject",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiProject"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "name",
+            "description": "The name of the project in the form of `projects/{PROJECT_ID}`.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "GrafeasProjects"
+        ]
+      },
+      "delete": {
+        "summary": "Deletes the specified project.",
+        "operationId": "DeleteProject",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "properties": {}
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "name",
+            "description": "The name of the project in the form of `projects/{PROJECT_ID}`.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "GrafeasProjects"
+        ]
+      }
+    },
+    "/v1alpha1/{parent=projects/*}/notes": {
       "get": {
         "summary": "Lists all `Notes` for a given project.",
         "operationId": "ListNotes",
         "responses": {
           "200": {
-            "description": "",
+            "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/apiListNotesResponse"
             }
@@ -291,7 +458,7 @@
         "operationId": "CreateNote",
         "responses": {
           "200": {
-            "description": "",
+            "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/apiNote"
             }
@@ -320,13 +487,13 @@
         ]
       }
     },
-    "/v1alpha1/{parent}/occurrences": {
+    "/v1alpha1/{parent=projects/*}/occurrences": {
       "get": {
         "summary": "Lists active `Occurrences` for a given project matching the filters.",
         "operationId": "ListOccurrences",
         "responses": {
           "200": {
-            "description": "",
+            "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/apiListOccurrencesResponse"
             }
@@ -372,7 +539,7 @@
         "operationId": "CreateOccurrence",
         "responses": {
           "200": {
-            "description": "",
+            "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/apiOccurrence"
             }
@@ -401,13 +568,13 @@
         ]
       }
     },
-    "/v1alpha1/{parent}/operations": {
+    "/v1alpha1/{parent=projects/*}/operations": {
       "post": {
         "summary": "Creates a new `Operation`.",
         "operationId": "CreateOperation",
         "responses": {
           "200": {
-            "description": "",
+            "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/googlelongrunningOperation"
             }
@@ -495,7 +662,8 @@
           "items": {
             "type": "string"
           },
-          "description": "Output only. Resource URI for the artifact being deployed taken from the\ndeployable field with the same name."
+          "description": "Output only. Resource URI for the artifact being deployed taken from the\ndeployable field with the same name.",
+          "readOnly": true
         },
         "platform": {
           "$ref": "#/definitions/DeploymentDetailsPlatform",
@@ -520,7 +688,8 @@
       "properties": {
         "operation": {
           "$ref": "#/definitions/googlelongrunningOperation",
-          "description": "Output only. An operation that indicates the status of the current scan."
+          "description": "Output only. An operation that indicates the status of the current scan.",
+          "readOnly": true
         }
       },
       "description": "Provides information about the scan status of a discovered resource."
@@ -549,7 +718,8 @@
         "distance": {
           "type": "integer",
           "format": "int64",
-          "description": "Output only. The number of layers by which this image differs from\nthe associated image basis."
+          "description": "Output only. The number of layers by which this image differs from\nthe associated image basis.",
+          "readOnly": true
         },
         "layer_info": {
           "type": "array",
@@ -560,7 +730,8 @@
         },
         "base_resource_url": {
           "type": "string",
-          "title": "Output only.This contains the base image url for the derived image\nOccurrence"
+          "title": "Output only.This contains the base image url for the derived image\nOccurrence",
+          "readOnly": true
         }
       },
       "description": "Derived describes the derived image portion (Occurrence) of the\nDockerImage relationship.  This image would be produced from a Dockerfile\nwith FROM \u003cDockerImage.Basis in attached Note\u003e."
@@ -581,7 +752,8 @@
         },
         "v2_name": {
           "type": "string",
-          "description": "Output only. The name of the image's v2 blobs computed via:\n  [bottom] := v2_blob[bottom]\n  [N] := sha256(v2_blob[N] + \" \" + v2_name[N+1])\nOnly the name of the final blob is kept.\nThis field can be used as a filter in list requests."
+          "description": "Output only. The name of the image's v2 blobs computed via:\n  [bottom] := v2_blob[bottom]\n  [N] := sha256(v2_blob[N] + \" \" + v2_name[N+1])\nOnly the name of the final blob is kept.\nThis field can be used as a filter in list requests.",
+          "readOnly": true
         }
       },
       "description": "A set of properties that uniquely identify a given Docker image."
@@ -694,7 +866,8 @@
       "properties": {
         "name": {
           "type": "string",
-          "description": "Output only. The name of the installed package."
+          "description": "Output only. The name of the installed package.",
+          "readOnly": true
         },
         "location": {
           "type": "array",
@@ -844,12 +1017,14 @@
         },
         "severity": {
           "$ref": "#/definitions/VulnerabilityTypeSeverity",
-          "description": "Output only. The note provider assigned Severity of the vulnerability."
+          "description": "Output only. The note provider assigned Severity of the vulnerability.",
+          "readOnly": true
         },
         "cvss_score": {
           "type": "number",
           "format": "float",
-          "description": "Output only. The CVSS score of this vulnerability. CVSS score is on a\nscale of 0-10 where 0 indicates low severity and 10 indicates high\nseverity."
+          "description": "Output only. The CVSS score of this vulnerability. CVSS score is on a\nscale of 0-10 where 0 indicates low severity and 10 indicates high\nseverity.",
+          "readOnly": true
         },
         "package_issue": {
           "type": "array",
@@ -1305,7 +1480,8 @@
         },
         "kind": {
           "$ref": "#/definitions/apiNoteKind",
-          "description": "Output only. This explicitly denotes which kind of note is specified. This\nfield can be used as a filter in list requests."
+          "description": "Output only. This explicitly denotes which kind of note is specified. This\nfield can be used as a filter in list requests.",
+          "readOnly": true
         },
         "vulnerability_type": {
           "$ref": "#/definitions/apiVulnerabilityType",
@@ -1350,12 +1526,14 @@
         "create_time": {
           "type": "string",
           "format": "date-time",
-          "description": "Output only. The time this note was created. This field can be used as a\nfilter in list requests."
+          "description": "Output only. The time this note was created. This field can be used as a\nfilter in list requests.",
+          "readOnly": true
         },
         "update_time": {
           "type": "string",
           "format": "date-time",
-          "description": "Output only. The time this note was last updated. This field can be used as\na filter in list requests."
+          "description": "Output only. The time this note was last updated. This field can be used as\na filter in list requests.",
+          "readOnly": true
         },
         "operation_name": {
           "type": "string",
@@ -1384,7 +1562,8 @@
       "properties": {
         "name": {
           "type": "string",
-          "title": "Output only. The name of the `Occurrence` in the form\n\"projects/{project_id}/occurrences/{OCCURRENCE_ID}\""
+          "title": "Output only. The name of the `Occurrence` in the form\n\"projects/{project_id}/occurrences/{OCCURRENCE_ID}\"",
+          "readOnly": true
         },
         "resource_url": {
           "type": "string",
@@ -1396,7 +1575,8 @@
         },
         "kind": {
           "$ref": "#/definitions/apiNoteKind",
-          "description": "Output only. This explicitly denotes which of the `Occurrence` details are\nspecified. This field can be used as a filter in list requests."
+          "description": "Output only. This explicitly denotes which of the `Occurrence` details are\nspecified. This field can be used as a filter in list requests.",
+          "readOnly": true
         },
         "vulnerability_details": {
           "$ref": "#/definitions/VulnerabilityTypeVulnerabilityDetails",
@@ -1433,12 +1613,14 @@
         "create_time": {
           "type": "string",
           "format": "date-time",
-          "description": "Output only. The time this `Occurrence` was created."
+          "description": "Output only. The time this `Occurrence` was created.",
+          "readOnly": true
         },
         "update_time": {
           "type": "string",
           "format": "date-time",
-          "description": "Output only. The time this `Occurrence` was last updated."
+          "description": "Output only. The time this `Occurrence` was last updated.",
+          "readOnly": true
         },
         "operation_name": {
           "type": "string",
@@ -1695,7 +1877,7 @@
       "properties": {
         "type_url": {
           "type": "string",
-          "description": "A URL/resource name that uniquely identifies the type of the serialized\nprotocol buffer message. The last segment of the URL's path must represent\nthe fully qualified name of the type (as in\n`path/google.protobuf.Duration`). The name should be in a canonical form\n(e.g., leading \".\" is not accepted).\n\nIn practice, teams usually precompile into the binary all types that they\nexpect it to use in the context of Any. However, for URLs which use the\nscheme `http`, `https`, or no scheme, one can optionally set up a type\nserver that maps type URLs to message definitions as follows:\n\n* If no scheme is provided, `https` is assumed.\n* An HTTP GET on the URL must yield a [google.protobuf.Type][]\n  value in binary format, or produce an error.\n* Applications are allowed to cache lookup results based on the\n  URL, or have them precompiled into a binary to avoid any\n  lookup. Therefore, binary compatibility needs to be preserved\n  on changes to types. (Use versioned type names to manage\n  breaking changes.)\n\nNote: this functionality is not currently available in the official\nprotobuf release, and it is not used for type URLs beginning with\ntype.googleapis.com.\n\nSchemes other than `http`, `https` (or the empty scheme) might be\nused with implementation specific semantics."
+          "description": "A URL/resource name whose content describes the type of the\nserialized protocol buffer message.\n\nFor URLs which use the scheme `http`, `https`, or no scheme, the\nfollowing restrictions and interpretations apply:\n\n* If no scheme is provided, `https` is assumed.\n* The last segment of the URL's path must represent the fully\n  qualified name of the type (as in `path/google.protobuf.Duration`).\n  The name should be in a canonical form (e.g., leading \".\" is\n  not accepted).\n* An HTTP GET on the URL must yield a [google.protobuf.Type][]\n  value in binary format, or produce an error.\n* Applications are allowed to cache lookup results based on the\n  URL, or have them precompiled into a binary to avoid any\n  lookup. Therefore, binary compatibility needs to be preserved\n  on changes to types. (Use versioned type names to manage\n  breaking changes.)\n\nSchemes other than `http`, `https` (or the empty scheme) might be\nused with implementation specific semantics."
         },
         "value": {
           "type": "string",
@@ -1703,12 +1885,7 @@
           "description": "Must be a valid serialized protocol buffer of the above specified type."
         }
       },
-      "description": "`Any` contains an arbitrary serialized protocol buffer message along with a\nURL that describes the type of the serialized message.\n\nProtobuf library provides support to pack/unpack Any values in the form\nof utility functions or additional generated methods of the Any type.\n\nExample 1: Pack and unpack a message in C++.\n\n    Foo foo = ...;\n    Any any;\n    any.PackFrom(foo);\n    ...\n    if (any.UnpackTo(\u0026foo)) {\n      ...\n    }\n\nExample 2: Pack and unpack a message in Java.\n\n    Foo foo = ...;\n    Any any = Any.pack(foo);\n    ...\n    if (any.is(Foo.class)) {\n      foo = any.unpack(Foo.class);\n    }\n\n Example 3: Pack and unpack a message in Python.\n\n    foo = Foo(...)\n    any = Any()\n    any.Pack(foo)\n    ...\n    if any.Is(Foo.DESCRIPTOR):\n      any.Unpack(foo)\n      ...\n\n Example 4: Pack and unpack a message in Go\n\n     foo := \u0026pb.Foo{...}\n     any, err := ptypes.MarshalAny(foo)\n     ...\n     foo := \u0026pb.Foo{}\n     if err := ptypes.UnmarshalAny(any, foo); err != nil {\n       ...\n     }\n\nThe pack methods provided by protobuf library will by default use\n'type.googleapis.com/full.type.name' as the type URL and the unpack\nmethods only use the fully qualified type name after the last '/'\nin the type URL, for example \"foo.bar.com/x/y.z\" will yield type\nname \"y.z\".\n\n\nJSON\n====\nThe JSON representation of an `Any` value uses the regular\nrepresentation of the deserialized, embedded message, with an\nadditional field `@type` which contains the type URL. Example:\n\n    package google.profile;\n    message Person {\n      string first_name = 1;\n      string last_name = 2;\n    }\n\n    {\n      \"@type\": \"type.googleapis.com/google.profile.Person\",\n      \"firstName\": \u003cstring\u003e,\n      \"lastName\": \u003cstring\u003e\n    }\n\nIf the embedded message type is well-known and has a custom JSON\nrepresentation, that representation will be embedded adding a field\n`value` which holds the custom JSON in addition to the `@type`\nfield. Example (for message [google.protobuf.Duration][]):\n\n    {\n      \"@type\": \"type.googleapis.com/google.protobuf.Duration\",\n      \"value\": \"1.212s\"\n    }"
-    },
-    "protobufEmpty": {
-      "type": "object",
-      "description": "service Foo {\n      rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty);\n    }\n\nThe JSON representation for `Empty` is empty JSON object `{}`.",
-      "title": "A generic empty message that you can re-use to avoid defining duplicated\nempty messages in your APIs. A typical example is to use it as the request\nor the response type of an API method. For instance:"
+      "description": "`Any` contains an arbitrary serialized protocol buffer message along with a\nURL that describes the type of the serialized message.\n\nProtobuf library provides support to pack/unpack Any values in the form\nof utility functions or additional generated methods of the Any type.\n\nExample 1: Pack and unpack a message in C++.\n\n    Foo foo = ...;\n    Any any;\n    any.PackFrom(foo);\n    ...\n    if (any.UnpackTo(\u0026foo)) {\n      ...\n    }\n\nExample 2: Pack and unpack a message in Java.\n\n    Foo foo = ...;\n    Any any = Any.pack(foo);\n    ...\n    if (any.is(Foo.class)) {\n      foo = any.unpack(Foo.class);\n    }\n\n Example 3: Pack and unpack a message in Python.\n\n    foo = Foo(...)\n    any = Any()\n    any.Pack(foo)\n    ...\n    if any.Is(Foo.DESCRIPTOR):\n      any.Unpack(foo)\n      ...\n\nThe pack methods provided by protobuf library will by default use\n'type.googleapis.com/full.type.name' as the type URL and the unpack\nmethods only use the fully qualified type name after the last '/'\nin the type URL, for example \"foo.bar.com/x/y.z\" will yield type\nname \"y.z\".\n\n\nJSON\n====\nThe JSON representation of an `Any` value uses the regular\nrepresentation of the deserialized, embedded message, with an\nadditional field `@type` which contains the type URL. Example:\n\n    package google.profile;\n    message Person {\n      string first_name = 1;\n      string last_name = 2;\n    }\n\n    {\n      \"@type\": \"type.googleapis.com/google.profile.Person\",\n      \"firstName\": \u003cstring\u003e,\n      \"lastName\": \u003cstring\u003e\n    }\n\nIf the embedded message type is well-known and has a custom JSON\nrepresentation, that representation will be embedded adding a field\n`value` which holds the custom JSON in addition to the `@type`\nfield. Example (for message [google.protobuf.Duration][]):\n\n    {\n      \"@type\": \"type.googleapis.com/google.protobuf.Duration\",\n      \"value\": \"1.212s\"\n    }"
     },
     "protobufFieldMask": {
       "type": "object",
@@ -1721,7 +1898,7 @@
           "description": "The set of field mask paths."
         }
       },
-      "description": "paths: \"f.a\"\n    paths: \"f.b.d\"\n\nHere `f` represents a field in some root message, `a` and `b`\nfields in the message found in `f`, and `d` a field found in the\nmessage in `f.b`.\n\nField masks are used to specify a subset of fields that should be\nreturned by a get operation or modified by an update operation.\nField masks also have a custom JSON encoding (see below).\n\n# Field Masks in Projections\n\nWhen used in the context of a projection, a response message or\nsub-message is filtered by the API to only contain those fields as\nspecified in the mask. For example, if the mask in the previous\nexample is applied to a response message as follows:\n\n    f {\n      a : 22\n      b {\n        d : 1\n        x : 2\n      }\n      y : 13\n    }\n    z: 8\n\nThe result will not contain specific values for fields x,y and z\n(their value will be set to the default, and omitted in proto text\noutput):\n\n\n    f {\n      a : 22\n      b {\n        d : 1\n      }\n    }\n\nA repeated field is not allowed except at the last position of a\npaths string.\n\nIf a FieldMask object is not present in a get operation, the\noperation applies to all fields (as if a FieldMask of all fields\nhad been specified).\n\nNote that a field mask does not necessarily apply to the\ntop-level response message. In case of a REST get operation, the\nfield mask applies directly to the response, but in case of a REST\nlist operation, the mask instead applies to each individual message\nin the returned resource list. In case of a REST custom method,\nother definitions may be used. Where the mask applies will be\nclearly documented together with its declaration in the API.  In\nany case, the effect on the returned resource/resources is required\nbehavior for APIs.\n\n# Field Masks in Update Operations\n\nA field mask in update operations specifies which fields of the\ntargeted resource are going to be updated. The API is required\nto only change the values of the fields as specified in the mask\nand leave the others untouched. If a resource is passed in to\ndescribe the updated values, the API ignores the values of all\nfields not covered by the mask.\n\nIf a repeated field is specified for an update operation, the existing\nrepeated values in the target resource will be overwritten by the new values.\nNote that a repeated field is only allowed in the last position of a `paths`\nstring.\n\nIf a sub-message is specified in the last position of the field mask for an\nupdate operation, then the existing sub-message in the target resource is\noverwritten. Given the target message:\n\n    f {\n      b {\n        d : 1\n        x : 2\n      }\n      c : 1\n    }\n\nAnd an update message:\n\n    f {\n      b {\n        d : 10\n      }\n    }\n\nthen if the field mask is:\n\n paths: \"f.b\"\n\nthen the result will be:\n\n    f {\n      b {\n        d : 10\n      }\n      c : 1\n    }\n\nHowever, if the update mask was:\n\n paths: \"f.b.d\"\n\nthen the result would be:\n\n    f {\n      b {\n        d : 10\n        x : 2\n      }\n      c : 1\n    }\n\nIn order to reset a field's value to the default, the field must\nbe in the mask and set to the default value in the provided resource.\nHence, in order to reset all fields of a resource, provide a default\ninstance of the resource and set all fields in the mask, or do\nnot provide a mask as described below.\n\nIf a field mask is not present on update, the operation applies to\nall fields (as if a field mask of all fields has been specified).\nNote that in the presence of schema evolution, this may mean that\nfields the client does not know and has therefore not filled into\nthe request will be reset to their default. If this is unwanted\nbehavior, a specific service may require a client to always specify\na field mask, producing an error if not.\n\nAs with get operations, the location of the resource which\ndescribes the updated values in the request message depends on the\noperation kind. In any case, the effect of the field mask is\nrequired to be honored by the API.\n\n## Considerations for HTTP REST\n\nThe HTTP kind of an update operation which uses a field mask must\nbe set to PATCH instead of PUT in order to satisfy HTTP semantics\n(PUT must only be used for full updates).\n\n# JSON Encoding of Field Masks\n\nIn JSON, a field mask is encoded as a single string where paths are\nseparated by a comma. Fields name in each path are converted\nto/from lower-camel naming conventions.\n\nAs an example, consider the following message declarations:\n\n    message Profile {\n      User user = 1;\n      Photo photo = 2;\n    }\n    message User {\n      string display_name = 1;\n      string address = 2;\n    }\n\nIn proto a field mask for `Profile` may look as such:\n\n    mask {\n      paths: \"user.display_name\"\n      paths: \"photo\"\n    }\n\nIn JSON, the same mask is represented as below:\n\n    {\n      mask: \"user.displayName,photo\"\n    }\n\n# Field Masks and Oneof Fields\n\nField masks treat fields in oneofs just as regular fields. Consider the\nfollowing message:\n\n    message SampleMessage {\n      oneof test_oneof {\n        string name = 4;\n        SubMessage sub_message = 9;\n      }\n    }\n\nThe field mask can be:\n\n    mask {\n      paths: \"name\"\n    }\n\nOr:\n\n    mask {\n      paths: \"sub_message\"\n    }\n\nNote that oneof type names (\"test_oneof\" in this case) cannot be used in\npaths.\n\n## Field Mask Verification\n\nThe implementation of any API method which has a FieldMask type field in the\nrequest should verify the included field paths, and return an\n`INVALID_ARGUMENT` error if any path is duplicated or unmappable.",
+      "description": "paths: \"f.a\"\n    paths: \"f.b.d\"\n\nHere `f` represents a field in some root message, `a` and `b`\nfields in the message found in `f`, and `d` a field found in the\nmessage in `f.b`.\n\nField masks are used to specify a subset of fields that should be\nreturned by a get operation or modified by an update operation.\nField masks also have a custom JSON encoding (see below).\n\n# Field Masks in Projections\n\nWhen used in the context of a projection, a response message or\nsub-message is filtered by the API to only contain those fields as\nspecified in the mask. For example, if the mask in the previous\nexample is applied to a response message as follows:\n\n    f {\n      a : 22\n      b {\n        d : 1\n        x : 2\n      }\n      y : 13\n    }\n    z: 8\n\nThe result will not contain specific values for fields x,y and z\n(their value will be set to the default, and omitted in proto text\noutput):\n\n\n    f {\n      a : 22\n      b {\n        d : 1\n      }\n    }\n\nA repeated field is not allowed except at the last position of a\npaths string.\n\nIf a FieldMask object is not present in a get operation, the\noperation applies to all fields (as if a FieldMask of all fields\nhad been specified).\n\nNote that a field mask does not necessarily apply to the\ntop-level response message. In case of a REST get operation, the\nfield mask applies directly to the response, but in case of a REST\nlist operation, the mask instead applies to each individual message\nin the returned resource list. In case of a REST custom method,\nother definitions may be used. Where the mask applies will be\nclearly documented together with its declaration in the API.  In\nany case, the effect on the returned resource/resources is required\nbehavior for APIs.\n\n# Field Masks in Update Operations\n\nA field mask in update operations specifies which fields of the\ntargeted resource are going to be updated. The API is required\nto only change the values of the fields as specified in the mask\nand leave the others untouched. If a resource is passed in to\ndescribe the updated values, the API ignores the values of all\nfields not covered by the mask.\n\nIf a repeated field is specified for an update operation, the existing\nrepeated values in the target resource will be overwritten by the new values.\nNote that a repeated field is only allowed in the last position of a `paths`\nstring.\n\nIf a sub-message is specified in the last position of the field mask for an\nupdate operation, then the existing sub-message in the target resource is\noverwritten. Given the target message:\n\n    f {\n      b {\n        d : 1\n        x : 2\n      }\n      c : 1\n    }\n\nAnd an update message:\n\n    f {\n      b {\n        d : 10\n      }\n    }\n\nthen if the field mask is:\n\n paths: \"f.b\"\n\nthen the result will be:\n\n    f {\n      b {\n        d : 10\n      }\n      c : 1\n    }\n\nHowever, if the update mask was:\n\n paths: \"f.b.d\"\n\nthen the result would be:\n\n    f {\n      b {\n        d : 10\n        x : 2\n      }\n      c : 1\n    }\n\nIn order to reset a field's value to the default, the field must\nbe in the mask and set to the default value in the provided resource.\nHence, in order to reset all fields of a resource, provide a default\ninstance of the resource and set all fields in the mask, or do\nnot provide a mask as described below.\n\nIf a field mask is not present on update, the operation applies to\nall fields (as if a field mask of all fields has been specified).\nNote that in the presence of schema evolution, this may mean that\nfields the client does not know and has therefore not filled into\nthe request will be reset to their default. If this is unwanted\nbehavior, a specific service may require a client to always specify\na field mask, producing an error if not.\n\nAs with get operations, the location of the resource which\ndescribes the updated values in the request message depends on the\noperation kind. In any case, the effect of the field mask is\nrequired to be honored by the API.\n\n## Considerations for HTTP REST\n\nThe HTTP kind of an update operation which uses a field mask must\nbe set to PATCH instead of PUT in order to satisfy HTTP semantics\n(PUT must only be used for full updates).\n\n# JSON Encoding of Field Masks\n\nIn JSON, a field mask is encoded as a single string where paths are\nseparated by a comma. Fields name in each path are converted\nto/from lower-camel naming conventions.\n\nAs an example, consider the following message declarations:\n\n    message Profile {\n      User user = 1;\n      Photo photo = 2;\n    }\n    message User {\n      string display_name = 1;\n      string address = 2;\n    }\n\nIn proto a field mask for `Profile` may look as such:\n\n    mask {\n      paths: \"user.display_name\"\n      paths: \"photo\"\n    }\n\nIn JSON, the same mask is represented as below:\n\n    {\n      mask: \"user.displayName,photo\"\n    }\n\n# Field Masks and Oneof Fields\n\nField masks treat fields in oneofs just as regular fields. Consider the\nfollowing message:\n\n    message SampleMessage {\n      oneof test_oneof {\n        string name = 4;\n        SubMessage sub_message = 9;\n      }\n    }\n\nThe field mask can be:\n\n    mask {\n      paths: \"name\"\n    }\n\nOr:\n\n    mask {\n      paths: \"sub_message\"\n    }\n\nNote that oneof type names (\"test_oneof\" in this case) cannot be used in\npaths.",
       "title": "`FieldMask` represents a set of symbolic field paths, for example:"
     },
     "rpcStatus": {
