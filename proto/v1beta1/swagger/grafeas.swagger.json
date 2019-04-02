@@ -911,6 +911,50 @@
       },
       "description": "Message encapsulating the signature of the verified build."
     },
+    "cvssCVSSv3": {
+      "type": "object",
+      "properties": {
+        "base_score": {
+          "type": "number",
+          "format": "float",
+          "description": "The base score is a function of the base metric scores."
+        },
+        "exploitability_score": {
+          "type": "number",
+          "format": "float"
+        },
+        "impact_score": {
+          "type": "number",
+          "format": "float"
+        },
+        "attack_vector": {
+          "$ref": "#/definitions/CVSSv3AttackVector",
+          "description": "Base Metrics\nRepresents the intrinsic characteristics of a vulnerability that are\nconstant over time and across user environments."
+        },
+        "attack_complexity": {
+          "$ref": "#/definitions/CVSSv3AttackComplexity"
+        },
+        "privileges_required": {
+          "$ref": "#/definitions/CVSSv3PrivilegesRequired"
+        },
+        "user_interaction": {
+          "$ref": "#/definitions/CVSSv3UserInteraction"
+        },
+        "scope": {
+          "$ref": "#/definitions/CVSSv3Scope"
+        },
+        "confidentiality_impact": {
+          "$ref": "#/definitions/CVSSv3Impact"
+        },
+        "integrity_impact": {
+          "$ref": "#/definitions/CVSSv3Impact"
+        },
+        "availability_impact": {
+          "$ref": "#/definitions/CVSSv3Impact"
+        }
+      },
+      "title": "Common Vulnerability Scoring System version 3.\nFor details, see https://www.first.org/cvss/specification-document"
+    },
     "deploymentDeployable": {
       "type": "object",
       "properties": {
@@ -2001,50 +2045,6 @@
       },
       "description": "Details of a vulnerability Occurrence."
     },
-    "vulnerabilityCVSSv3": {
-      "type": "object",
-      "properties": {
-        "base_score": {
-          "type": "number",
-          "format": "float",
-          "description": "The base score is a function of the base metric scores."
-        },
-        "exploitability_score": {
-          "type": "number",
-          "format": "float"
-        },
-        "impact_score": {
-          "type": "number",
-          "format": "float"
-        },
-        "attack_vector": {
-          "$ref": "#/definitions/CVSSv3AttackVector",
-          "description": "Base Metrics\nRepresents the intrinsic characteristics of a vulnerability that are\nconstant over time and across user environments."
-        },
-        "attack_complexity": {
-          "$ref": "#/definitions/CVSSv3AttackComplexity"
-        },
-        "privileges_required": {
-          "$ref": "#/definitions/CVSSv3PrivilegesRequired"
-        },
-        "user_interaction": {
-          "$ref": "#/definitions/CVSSv3UserInteraction"
-        },
-        "scope": {
-          "$ref": "#/definitions/CVSSv3Scope"
-        },
-        "confidentiality_impact": {
-          "$ref": "#/definitions/CVSSv3Impact"
-        },
-        "integrity_impact": {
-          "$ref": "#/definitions/CVSSv3Impact"
-        },
-        "availability_impact": {
-          "$ref": "#/definitions/CVSSv3Impact"
-        }
-      },
-      "title": "Common Vulnerability Scoring System version 3.\nFor details, see https://www.first.org/cvss/specification-document"
-    },
     "vulnerabilityPackageIssue": {
       "type": "object",
       "properties": {
@@ -2096,7 +2096,7 @@
           "description": "All information about the package to specifically identify this\nvulnerability. One entry per (version range and cpe_uri) the package\nvulnerability has manifested in."
         },
         "cvss_v3": {
-          "$ref": "#/definitions/vulnerabilityCVSSv3",
+          "$ref": "#/definitions/cvssCVSSv3",
           "description": "The full description of the CVSSv3."
         },
         "windows_details": {
