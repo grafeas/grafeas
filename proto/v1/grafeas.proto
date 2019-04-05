@@ -52,7 +52,7 @@ import "proto/v1/vulnerability.proto";
 // For example, an SSL vulnerability could affect multiple images. In this case,
 // there would be one note for the vulnerability and an occurrence for each
 // image with the vulnerability referring to that note.
-service GrafeasV1 {
+service Grafeas {
   // Gets the specified occurrence.
   rpc GetOccurrence(GetOccurrenceRequest) returns (Occurrence) {
     option (google.api.http) = {
