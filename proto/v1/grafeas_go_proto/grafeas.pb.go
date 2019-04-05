@@ -21,8 +21,6 @@ import (
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	field_mask "google.golang.org/genproto/protobuf/field_mask"
 	grpc "google.golang.org/grpc"
-	codes "google.golang.org/grpc/codes"
-	status "google.golang.org/grpc/status"
 	math "math"
 )
 
@@ -2103,56 +2101,6 @@ type GrafeasV1Server interface {
 	ListNoteOccurrences(context.Context, *ListNoteOccurrencesRequest) (*ListNoteOccurrencesResponse, error)
 	// Gets a summary of the number and severity of occurrences.
 	GetVulnerabilityOccurrencesSummary(context.Context, *GetVulnerabilityOccurrencesSummaryRequest) (*VulnerabilityOccurrencesSummary, error)
-}
-
-// UnimplementedGrafeasV1Server can be embedded to have forward compatible implementations.
-type UnimplementedGrafeasV1Server struct {
-}
-
-func (*UnimplementedGrafeasV1Server) GetOccurrence(ctx context.Context, req *GetOccurrenceRequest) (*Occurrence, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetOccurrence not implemented")
-}
-func (*UnimplementedGrafeasV1Server) ListOccurrences(ctx context.Context, req *ListOccurrencesRequest) (*ListOccurrencesResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListOccurrences not implemented")
-}
-func (*UnimplementedGrafeasV1Server) DeleteOccurrence(ctx context.Context, req *DeleteOccurrenceRequest) (*empty.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteOccurrence not implemented")
-}
-func (*UnimplementedGrafeasV1Server) CreateOccurrence(ctx context.Context, req *CreateOccurrenceRequest) (*Occurrence, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateOccurrence not implemented")
-}
-func (*UnimplementedGrafeasV1Server) BatchCreateOccurrences(ctx context.Context, req *BatchCreateOccurrencesRequest) (*BatchCreateOccurrencesResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method BatchCreateOccurrences not implemented")
-}
-func (*UnimplementedGrafeasV1Server) UpdateOccurrence(ctx context.Context, req *UpdateOccurrenceRequest) (*Occurrence, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateOccurrence not implemented")
-}
-func (*UnimplementedGrafeasV1Server) GetOccurrenceNote(ctx context.Context, req *GetOccurrenceNoteRequest) (*Note, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetOccurrenceNote not implemented")
-}
-func (*UnimplementedGrafeasV1Server) GetNote(ctx context.Context, req *GetNoteRequest) (*Note, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetNote not implemented")
-}
-func (*UnimplementedGrafeasV1Server) ListNotes(ctx context.Context, req *ListNotesRequest) (*ListNotesResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListNotes not implemented")
-}
-func (*UnimplementedGrafeasV1Server) DeleteNote(ctx context.Context, req *DeleteNoteRequest) (*empty.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteNote not implemented")
-}
-func (*UnimplementedGrafeasV1Server) CreateNote(ctx context.Context, req *CreateNoteRequest) (*Note, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateNote not implemented")
-}
-func (*UnimplementedGrafeasV1Server) BatchCreateNotes(ctx context.Context, req *BatchCreateNotesRequest) (*BatchCreateNotesResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method BatchCreateNotes not implemented")
-}
-func (*UnimplementedGrafeasV1Server) UpdateNote(ctx context.Context, req *UpdateNoteRequest) (*Note, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateNote not implemented")
-}
-func (*UnimplementedGrafeasV1Server) ListNoteOccurrences(ctx context.Context, req *ListNoteOccurrencesRequest) (*ListNoteOccurrencesResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListNoteOccurrences not implemented")
-}
-func (*UnimplementedGrafeasV1Server) GetVulnerabilityOccurrencesSummary(ctx context.Context, req *GetVulnerabilityOccurrencesSummaryRequest) (*VulnerabilityOccurrencesSummary, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetVulnerabilityOccurrencesSummary not implemented")
 }
 
 func RegisterGrafeasV1Server(s *grpc.Server, srv GrafeasV1Server) {
