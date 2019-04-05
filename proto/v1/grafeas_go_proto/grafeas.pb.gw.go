@@ -9,13 +9,13 @@ It translates gRPC into RESTful JSON APIs.
 package grafeas_go_proto
 
 import (
-	"context"
 	"io"
 	"net/http"
 
 	"github.com/golang/protobuf/proto"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/grpc-ecosystem/grpc-gateway/utilities"
+	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/grpclog"
@@ -28,7 +28,7 @@ var _ status.Status
 var _ = runtime.String
 var _ = utilities.NewDoubleArray
 
-func request_GrafeasV1_GetOccurrence_0(ctx context.Context, marshaler runtime.Marshaler, client GrafeasV1Client, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_Grafeas_GetOccurrence_0(ctx context.Context, marshaler runtime.Marshaler, client GrafeasClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq GetOccurrenceRequest
 	var metadata runtime.ServerMetadata
 
@@ -56,10 +56,10 @@ func request_GrafeasV1_GetOccurrence_0(ctx context.Context, marshaler runtime.Ma
 }
 
 var (
-	filter_GrafeasV1_ListOccurrences_0 = &utilities.DoubleArray{Encoding: map[string]int{"parent": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
+	filter_Grafeas_ListOccurrences_0 = &utilities.DoubleArray{Encoding: map[string]int{"parent": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 )
 
-func request_GrafeasV1_ListOccurrences_0(ctx context.Context, marshaler runtime.Marshaler, client GrafeasV1Client, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_Grafeas_ListOccurrences_0(ctx context.Context, marshaler runtime.Marshaler, client GrafeasClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ListOccurrencesRequest
 	var metadata runtime.ServerMetadata
 
@@ -81,7 +81,7 @@ func request_GrafeasV1_ListOccurrences_0(ctx context.Context, marshaler runtime.
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "parent", err)
 	}
 
-	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_GrafeasV1_ListOccurrences_0); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_Grafeas_ListOccurrences_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -90,7 +90,7 @@ func request_GrafeasV1_ListOccurrences_0(ctx context.Context, marshaler runtime.
 
 }
 
-func request_GrafeasV1_DeleteOccurrence_0(ctx context.Context, marshaler runtime.Marshaler, client GrafeasV1Client, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_Grafeas_DeleteOccurrence_0(ctx context.Context, marshaler runtime.Marshaler, client GrafeasClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq DeleteOccurrenceRequest
 	var metadata runtime.ServerMetadata
 
@@ -117,7 +117,7 @@ func request_GrafeasV1_DeleteOccurrence_0(ctx context.Context, marshaler runtime
 
 }
 
-func request_GrafeasV1_CreateOccurrence_0(ctx context.Context, marshaler runtime.Marshaler, client GrafeasV1Client, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_Grafeas_CreateOccurrence_0(ctx context.Context, marshaler runtime.Marshaler, client GrafeasClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq CreateOccurrenceRequest
 	var metadata runtime.ServerMetadata
 
@@ -152,7 +152,7 @@ func request_GrafeasV1_CreateOccurrence_0(ctx context.Context, marshaler runtime
 
 }
 
-func request_GrafeasV1_BatchCreateOccurrences_0(ctx context.Context, marshaler runtime.Marshaler, client GrafeasV1Client, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_Grafeas_BatchCreateOccurrences_0(ctx context.Context, marshaler runtime.Marshaler, client GrafeasClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq BatchCreateOccurrencesRequest
 	var metadata runtime.ServerMetadata
 
@@ -188,10 +188,10 @@ func request_GrafeasV1_BatchCreateOccurrences_0(ctx context.Context, marshaler r
 }
 
 var (
-	filter_GrafeasV1_UpdateOccurrence_0 = &utilities.DoubleArray{Encoding: map[string]int{"occurrence": 0, "name": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
+	filter_Grafeas_UpdateOccurrence_0 = &utilities.DoubleArray{Encoding: map[string]int{"occurrence": 0, "name": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
 )
 
-func request_GrafeasV1_UpdateOccurrence_0(ctx context.Context, marshaler runtime.Marshaler, client GrafeasV1Client, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_Grafeas_UpdateOccurrence_0(ctx context.Context, marshaler runtime.Marshaler, client GrafeasClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq UpdateOccurrenceRequest
 	var metadata runtime.ServerMetadata
 
@@ -230,7 +230,7 @@ func request_GrafeasV1_UpdateOccurrence_0(ctx context.Context, marshaler runtime
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "name", err)
 	}
 
-	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_GrafeasV1_UpdateOccurrence_0); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_Grafeas_UpdateOccurrence_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -239,7 +239,7 @@ func request_GrafeasV1_UpdateOccurrence_0(ctx context.Context, marshaler runtime
 
 }
 
-func request_GrafeasV1_GetOccurrenceNote_0(ctx context.Context, marshaler runtime.Marshaler, client GrafeasV1Client, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_Grafeas_GetOccurrenceNote_0(ctx context.Context, marshaler runtime.Marshaler, client GrafeasClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq GetOccurrenceNoteRequest
 	var metadata runtime.ServerMetadata
 
@@ -266,7 +266,7 @@ func request_GrafeasV1_GetOccurrenceNote_0(ctx context.Context, marshaler runtim
 
 }
 
-func request_GrafeasV1_GetNote_0(ctx context.Context, marshaler runtime.Marshaler, client GrafeasV1Client, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_Grafeas_GetNote_0(ctx context.Context, marshaler runtime.Marshaler, client GrafeasClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq GetNoteRequest
 	var metadata runtime.ServerMetadata
 
@@ -294,10 +294,10 @@ func request_GrafeasV1_GetNote_0(ctx context.Context, marshaler runtime.Marshale
 }
 
 var (
-	filter_GrafeasV1_ListNotes_0 = &utilities.DoubleArray{Encoding: map[string]int{"parent": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
+	filter_Grafeas_ListNotes_0 = &utilities.DoubleArray{Encoding: map[string]int{"parent": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 )
 
-func request_GrafeasV1_ListNotes_0(ctx context.Context, marshaler runtime.Marshaler, client GrafeasV1Client, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_Grafeas_ListNotes_0(ctx context.Context, marshaler runtime.Marshaler, client GrafeasClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ListNotesRequest
 	var metadata runtime.ServerMetadata
 
@@ -319,7 +319,7 @@ func request_GrafeasV1_ListNotes_0(ctx context.Context, marshaler runtime.Marsha
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "parent", err)
 	}
 
-	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_GrafeasV1_ListNotes_0); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_Grafeas_ListNotes_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -328,7 +328,7 @@ func request_GrafeasV1_ListNotes_0(ctx context.Context, marshaler runtime.Marsha
 
 }
 
-func request_GrafeasV1_DeleteNote_0(ctx context.Context, marshaler runtime.Marshaler, client GrafeasV1Client, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_Grafeas_DeleteNote_0(ctx context.Context, marshaler runtime.Marshaler, client GrafeasClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq DeleteNoteRequest
 	var metadata runtime.ServerMetadata
 
@@ -356,10 +356,10 @@ func request_GrafeasV1_DeleteNote_0(ctx context.Context, marshaler runtime.Marsh
 }
 
 var (
-	filter_GrafeasV1_CreateNote_0 = &utilities.DoubleArray{Encoding: map[string]int{"note": 0, "parent": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
+	filter_Grafeas_CreateNote_0 = &utilities.DoubleArray{Encoding: map[string]int{"note": 0, "parent": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
 )
 
-func request_GrafeasV1_CreateNote_0(ctx context.Context, marshaler runtime.Marshaler, client GrafeasV1Client, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_Grafeas_CreateNote_0(ctx context.Context, marshaler runtime.Marshaler, client GrafeasClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq CreateNoteRequest
 	var metadata runtime.ServerMetadata
 
@@ -389,7 +389,7 @@ func request_GrafeasV1_CreateNote_0(ctx context.Context, marshaler runtime.Marsh
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "parent", err)
 	}
 
-	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_GrafeasV1_CreateNote_0); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_Grafeas_CreateNote_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -398,7 +398,7 @@ func request_GrafeasV1_CreateNote_0(ctx context.Context, marshaler runtime.Marsh
 
 }
 
-func request_GrafeasV1_BatchCreateNotes_0(ctx context.Context, marshaler runtime.Marshaler, client GrafeasV1Client, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_Grafeas_BatchCreateNotes_0(ctx context.Context, marshaler runtime.Marshaler, client GrafeasClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq BatchCreateNotesRequest
 	var metadata runtime.ServerMetadata
 
@@ -434,10 +434,10 @@ func request_GrafeasV1_BatchCreateNotes_0(ctx context.Context, marshaler runtime
 }
 
 var (
-	filter_GrafeasV1_UpdateNote_0 = &utilities.DoubleArray{Encoding: map[string]int{"note": 0, "name": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
+	filter_Grafeas_UpdateNote_0 = &utilities.DoubleArray{Encoding: map[string]int{"note": 0, "name": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
 )
 
-func request_GrafeasV1_UpdateNote_0(ctx context.Context, marshaler runtime.Marshaler, client GrafeasV1Client, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_Grafeas_UpdateNote_0(ctx context.Context, marshaler runtime.Marshaler, client GrafeasClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq UpdateNoteRequest
 	var metadata runtime.ServerMetadata
 
@@ -476,7 +476,7 @@ func request_GrafeasV1_UpdateNote_0(ctx context.Context, marshaler runtime.Marsh
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "name", err)
 	}
 
-	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_GrafeasV1_UpdateNote_0); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_Grafeas_UpdateNote_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -486,10 +486,10 @@ func request_GrafeasV1_UpdateNote_0(ctx context.Context, marshaler runtime.Marsh
 }
 
 var (
-	filter_GrafeasV1_ListNoteOccurrences_0 = &utilities.DoubleArray{Encoding: map[string]int{"name": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
+	filter_Grafeas_ListNoteOccurrences_0 = &utilities.DoubleArray{Encoding: map[string]int{"name": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 )
 
-func request_GrafeasV1_ListNoteOccurrences_0(ctx context.Context, marshaler runtime.Marshaler, client GrafeasV1Client, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_Grafeas_ListNoteOccurrences_0(ctx context.Context, marshaler runtime.Marshaler, client GrafeasClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ListNoteOccurrencesRequest
 	var metadata runtime.ServerMetadata
 
@@ -511,7 +511,7 @@ func request_GrafeasV1_ListNoteOccurrences_0(ctx context.Context, marshaler runt
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "name", err)
 	}
 
-	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_GrafeasV1_ListNoteOccurrences_0); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_Grafeas_ListNoteOccurrences_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -521,10 +521,10 @@ func request_GrafeasV1_ListNoteOccurrences_0(ctx context.Context, marshaler runt
 }
 
 var (
-	filter_GrafeasV1_GetVulnerabilityOccurrencesSummary_0 = &utilities.DoubleArray{Encoding: map[string]int{"parent": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
+	filter_Grafeas_GetVulnerabilityOccurrencesSummary_0 = &utilities.DoubleArray{Encoding: map[string]int{"parent": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 )
 
-func request_GrafeasV1_GetVulnerabilityOccurrencesSummary_0(ctx context.Context, marshaler runtime.Marshaler, client GrafeasV1Client, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_Grafeas_GetVulnerabilityOccurrencesSummary_0(ctx context.Context, marshaler runtime.Marshaler, client GrafeasClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq GetVulnerabilityOccurrencesSummaryRequest
 	var metadata runtime.ServerMetadata
 
@@ -546,7 +546,7 @@ func request_GrafeasV1_GetVulnerabilityOccurrencesSummary_0(ctx context.Context,
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "parent", err)
 	}
 
-	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_GrafeasV1_GetVulnerabilityOccurrencesSummary_0); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_Grafeas_GetVulnerabilityOccurrencesSummary_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -555,9 +555,9 @@ func request_GrafeasV1_GetVulnerabilityOccurrencesSummary_0(ctx context.Context,
 
 }
 
-// RegisterGrafeasV1HandlerFromEndpoint is same as RegisterGrafeasV1Handler but
+// RegisterGrafeasHandlerFromEndpoint is same as RegisterGrafeasHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
-func RegisterGrafeasV1HandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
+func RegisterGrafeasHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
 	conn, err := grpc.Dial(endpoint, opts...)
 	if err != nil {
 		return err
@@ -577,23 +577,23 @@ func RegisterGrafeasV1HandlerFromEndpoint(ctx context.Context, mux *runtime.Serv
 		}()
 	}()
 
-	return RegisterGrafeasV1Handler(ctx, mux, conn)
+	return RegisterGrafeasHandler(ctx, mux, conn)
 }
 
-// RegisterGrafeasV1Handler registers the http handlers for service GrafeasV1 to "mux".
+// RegisterGrafeasHandler registers the http handlers for service Grafeas to "mux".
 // The handlers forward requests to the grpc endpoint over "conn".
-func RegisterGrafeasV1Handler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
-	return RegisterGrafeasV1HandlerClient(ctx, mux, NewGrafeasV1Client(conn))
+func RegisterGrafeasHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
+	return RegisterGrafeasHandlerClient(ctx, mux, NewGrafeasClient(conn))
 }
 
-// RegisterGrafeasV1HandlerClient registers the http handlers for service GrafeasV1
-// to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "GrafeasV1Client".
-// Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "GrafeasV1Client"
+// RegisterGrafeasHandlerClient registers the http handlers for service Grafeas
+// to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "GrafeasClient".
+// Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "GrafeasClient"
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
-// "GrafeasV1Client" to call the correct interceptors.
-func RegisterGrafeasV1HandlerClient(ctx context.Context, mux *runtime.ServeMux, client GrafeasV1Client) error {
+// "GrafeasClient" to call the correct interceptors.
+func RegisterGrafeasHandlerClient(ctx context.Context, mux *runtime.ServeMux, client GrafeasClient) error {
 
-	mux.Handle("GET", pattern_GrafeasV1_GetOccurrence_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_Grafeas_GetOccurrence_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
@@ -602,18 +602,18 @@ func RegisterGrafeasV1HandlerClient(ctx context.Context, mux *runtime.ServeMux, 
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_GrafeasV1_GetOccurrence_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_Grafeas_GetOccurrence_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_GrafeasV1_GetOccurrence_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_Grafeas_GetOccurrence_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("GET", pattern_GrafeasV1_ListOccurrences_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_Grafeas_ListOccurrences_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
@@ -622,18 +622,18 @@ func RegisterGrafeasV1HandlerClient(ctx context.Context, mux *runtime.ServeMux, 
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_GrafeasV1_ListOccurrences_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_Grafeas_ListOccurrences_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_GrafeasV1_ListOccurrences_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_Grafeas_ListOccurrences_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("DELETE", pattern_GrafeasV1_DeleteOccurrence_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("DELETE", pattern_Grafeas_DeleteOccurrence_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
@@ -642,18 +642,18 @@ func RegisterGrafeasV1HandlerClient(ctx context.Context, mux *runtime.ServeMux, 
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_GrafeasV1_DeleteOccurrence_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_Grafeas_DeleteOccurrence_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_GrafeasV1_DeleteOccurrence_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_Grafeas_DeleteOccurrence_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_GrafeasV1_CreateOccurrence_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_Grafeas_CreateOccurrence_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
@@ -662,18 +662,18 @@ func RegisterGrafeasV1HandlerClient(ctx context.Context, mux *runtime.ServeMux, 
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_GrafeasV1_CreateOccurrence_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_Grafeas_CreateOccurrence_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_GrafeasV1_CreateOccurrence_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_Grafeas_CreateOccurrence_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_GrafeasV1_BatchCreateOccurrences_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_Grafeas_BatchCreateOccurrences_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
@@ -682,18 +682,18 @@ func RegisterGrafeasV1HandlerClient(ctx context.Context, mux *runtime.ServeMux, 
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_GrafeasV1_BatchCreateOccurrences_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_Grafeas_BatchCreateOccurrences_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_GrafeasV1_BatchCreateOccurrences_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_Grafeas_BatchCreateOccurrences_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("PATCH", pattern_GrafeasV1_UpdateOccurrence_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("PATCH", pattern_Grafeas_UpdateOccurrence_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
@@ -702,18 +702,18 @@ func RegisterGrafeasV1HandlerClient(ctx context.Context, mux *runtime.ServeMux, 
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_GrafeasV1_UpdateOccurrence_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_Grafeas_UpdateOccurrence_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_GrafeasV1_UpdateOccurrence_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_Grafeas_UpdateOccurrence_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("GET", pattern_GrafeasV1_GetOccurrenceNote_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_Grafeas_GetOccurrenceNote_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
@@ -722,18 +722,18 @@ func RegisterGrafeasV1HandlerClient(ctx context.Context, mux *runtime.ServeMux, 
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_GrafeasV1_GetOccurrenceNote_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_Grafeas_GetOccurrenceNote_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_GrafeasV1_GetOccurrenceNote_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_Grafeas_GetOccurrenceNote_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("GET", pattern_GrafeasV1_GetNote_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_Grafeas_GetNote_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
@@ -742,18 +742,18 @@ func RegisterGrafeasV1HandlerClient(ctx context.Context, mux *runtime.ServeMux, 
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_GrafeasV1_GetNote_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_Grafeas_GetNote_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_GrafeasV1_GetNote_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_Grafeas_GetNote_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("GET", pattern_GrafeasV1_ListNotes_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_Grafeas_ListNotes_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
@@ -762,18 +762,18 @@ func RegisterGrafeasV1HandlerClient(ctx context.Context, mux *runtime.ServeMux, 
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_GrafeasV1_ListNotes_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_Grafeas_ListNotes_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_GrafeasV1_ListNotes_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_Grafeas_ListNotes_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("DELETE", pattern_GrafeasV1_DeleteNote_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("DELETE", pattern_Grafeas_DeleteNote_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
@@ -782,18 +782,18 @@ func RegisterGrafeasV1HandlerClient(ctx context.Context, mux *runtime.ServeMux, 
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_GrafeasV1_DeleteNote_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_Grafeas_DeleteNote_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_GrafeasV1_DeleteNote_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_Grafeas_DeleteNote_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_GrafeasV1_CreateNote_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_Grafeas_CreateNote_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
@@ -802,18 +802,18 @@ func RegisterGrafeasV1HandlerClient(ctx context.Context, mux *runtime.ServeMux, 
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_GrafeasV1_CreateNote_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_Grafeas_CreateNote_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_GrafeasV1_CreateNote_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_Grafeas_CreateNote_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_GrafeasV1_BatchCreateNotes_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_Grafeas_BatchCreateNotes_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
@@ -822,18 +822,18 @@ func RegisterGrafeasV1HandlerClient(ctx context.Context, mux *runtime.ServeMux, 
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_GrafeasV1_BatchCreateNotes_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_Grafeas_BatchCreateNotes_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_GrafeasV1_BatchCreateNotes_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_Grafeas_BatchCreateNotes_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("PATCH", pattern_GrafeasV1_UpdateNote_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("PATCH", pattern_Grafeas_UpdateNote_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
@@ -842,18 +842,18 @@ func RegisterGrafeasV1HandlerClient(ctx context.Context, mux *runtime.ServeMux, 
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_GrafeasV1_UpdateNote_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_Grafeas_UpdateNote_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_GrafeasV1_UpdateNote_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_Grafeas_UpdateNote_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("GET", pattern_GrafeasV1_ListNoteOccurrences_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_Grafeas_ListNoteOccurrences_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
@@ -862,18 +862,18 @@ func RegisterGrafeasV1HandlerClient(ctx context.Context, mux *runtime.ServeMux, 
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_GrafeasV1_ListNoteOccurrences_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_Grafeas_ListNoteOccurrences_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_GrafeasV1_ListNoteOccurrences_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_Grafeas_ListNoteOccurrences_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("GET", pattern_GrafeasV1_GetVulnerabilityOccurrencesSummary_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_Grafeas_GetVulnerabilityOccurrencesSummary_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
@@ -882,14 +882,14 @@ func RegisterGrafeasV1HandlerClient(ctx context.Context, mux *runtime.ServeMux, 
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_GrafeasV1_GetVulnerabilityOccurrencesSummary_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_Grafeas_GetVulnerabilityOccurrencesSummary_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_GrafeasV1_GetVulnerabilityOccurrencesSummary_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_Grafeas_GetVulnerabilityOccurrencesSummary_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -897,65 +897,65 @@ func RegisterGrafeasV1HandlerClient(ctx context.Context, mux *runtime.ServeMux, 
 }
 
 var (
-	pattern_GrafeasV1_GetOccurrence_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 2, 2, 1, 0, 4, 4, 5, 3}, []string{"v1", "projects", "occurrences", "name"}, ""))
+	pattern_Grafeas_GetOccurrence_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 2, 2, 1, 0, 4, 4, 5, 3}, []string{"v1", "projects", "occurrences", "name"}, ""))
 
-	pattern_GrafeasV1_ListOccurrences_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 2, 5, 2, 2, 3}, []string{"v1", "projects", "parent", "occurrences"}, ""))
+	pattern_Grafeas_ListOccurrences_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 2, 5, 2, 2, 3}, []string{"v1", "projects", "parent", "occurrences"}, ""))
 
-	pattern_GrafeasV1_DeleteOccurrence_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 2, 2, 1, 0, 4, 4, 5, 3}, []string{"v1", "projects", "occurrences", "name"}, ""))
+	pattern_Grafeas_DeleteOccurrence_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 2, 2, 1, 0, 4, 4, 5, 3}, []string{"v1", "projects", "occurrences", "name"}, ""))
 
-	pattern_GrafeasV1_CreateOccurrence_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 2, 5, 2, 2, 3}, []string{"v1", "projects", "parent", "occurrences"}, ""))
+	pattern_Grafeas_CreateOccurrence_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 2, 5, 2, 2, 3}, []string{"v1", "projects", "parent", "occurrences"}, ""))
 
-	pattern_GrafeasV1_BatchCreateOccurrences_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 2, 5, 2, 2, 3}, []string{"v1", "projects", "parent", "occurrences"}, "batchCreate"))
+	pattern_Grafeas_BatchCreateOccurrences_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 2, 5, 2, 2, 3}, []string{"v1", "projects", "parent", "occurrences"}, "batchCreate"))
 
-	pattern_GrafeasV1_UpdateOccurrence_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 2, 2, 1, 0, 4, 4, 5, 3}, []string{"v1", "projects", "occurrences", "name"}, ""))
+	pattern_Grafeas_UpdateOccurrence_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 2, 2, 1, 0, 4, 4, 5, 3}, []string{"v1", "projects", "occurrences", "name"}, ""))
 
-	pattern_GrafeasV1_GetOccurrenceNote_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 2, 2, 1, 0, 4, 4, 5, 3, 2, 4}, []string{"v1", "projects", "occurrences", "name", "notes"}, ""))
+	pattern_Grafeas_GetOccurrenceNote_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 2, 2, 1, 0, 4, 4, 5, 3, 2, 4}, []string{"v1", "projects", "occurrences", "name", "notes"}, ""))
 
-	pattern_GrafeasV1_GetNote_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 2, 2, 1, 0, 4, 4, 5, 3}, []string{"v1", "projects", "notes", "name"}, ""))
+	pattern_Grafeas_GetNote_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 2, 2, 1, 0, 4, 4, 5, 3}, []string{"v1", "projects", "notes", "name"}, ""))
 
-	pattern_GrafeasV1_ListNotes_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 2, 5, 2, 2, 3}, []string{"v1", "projects", "parent", "notes"}, ""))
+	pattern_Grafeas_ListNotes_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 2, 5, 2, 2, 3}, []string{"v1", "projects", "parent", "notes"}, ""))
 
-	pattern_GrafeasV1_DeleteNote_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 2, 2, 1, 0, 4, 4, 5, 3}, []string{"v1", "projects", "notes", "name"}, ""))
+	pattern_Grafeas_DeleteNote_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 2, 2, 1, 0, 4, 4, 5, 3}, []string{"v1", "projects", "notes", "name"}, ""))
 
-	pattern_GrafeasV1_CreateNote_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 2, 5, 2, 2, 3}, []string{"v1", "projects", "parent", "notes"}, ""))
+	pattern_Grafeas_CreateNote_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 2, 5, 2, 2, 3}, []string{"v1", "projects", "parent", "notes"}, ""))
 
-	pattern_GrafeasV1_BatchCreateNotes_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 2, 5, 2, 2, 3}, []string{"v1", "projects", "parent", "notes"}, "batchCreate"))
+	pattern_Grafeas_BatchCreateNotes_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 2, 5, 2, 2, 3}, []string{"v1", "projects", "parent", "notes"}, "batchCreate"))
 
-	pattern_GrafeasV1_UpdateNote_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 2, 2, 1, 0, 4, 4, 5, 3}, []string{"v1", "projects", "notes", "name"}, ""))
+	pattern_Grafeas_UpdateNote_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 2, 2, 1, 0, 4, 4, 5, 3}, []string{"v1", "projects", "notes", "name"}, ""))
 
-	pattern_GrafeasV1_ListNoteOccurrences_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 2, 2, 1, 0, 4, 4, 5, 3, 2, 4}, []string{"v1", "projects", "notes", "name", "occurrences"}, ""))
+	pattern_Grafeas_ListNoteOccurrences_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 2, 2, 1, 0, 4, 4, 5, 3, 2, 4}, []string{"v1", "projects", "notes", "name", "occurrences"}, ""))
 
-	pattern_GrafeasV1_GetVulnerabilityOccurrencesSummary_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 2, 5, 2, 2, 3}, []string{"v1", "projects", "parent", "occurrences"}, "vulnerabilitySummary"))
+	pattern_Grafeas_GetVulnerabilityOccurrencesSummary_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 2, 5, 2, 2, 3}, []string{"v1", "projects", "parent", "occurrences"}, "vulnerabilitySummary"))
 )
 
 var (
-	forward_GrafeasV1_GetOccurrence_0 = runtime.ForwardResponseMessage
+	forward_Grafeas_GetOccurrence_0 = runtime.ForwardResponseMessage
 
-	forward_GrafeasV1_ListOccurrences_0 = runtime.ForwardResponseMessage
+	forward_Grafeas_ListOccurrences_0 = runtime.ForwardResponseMessage
 
-	forward_GrafeasV1_DeleteOccurrence_0 = runtime.ForwardResponseMessage
+	forward_Grafeas_DeleteOccurrence_0 = runtime.ForwardResponseMessage
 
-	forward_GrafeasV1_CreateOccurrence_0 = runtime.ForwardResponseMessage
+	forward_Grafeas_CreateOccurrence_0 = runtime.ForwardResponseMessage
 
-	forward_GrafeasV1_BatchCreateOccurrences_0 = runtime.ForwardResponseMessage
+	forward_Grafeas_BatchCreateOccurrences_0 = runtime.ForwardResponseMessage
 
-	forward_GrafeasV1_UpdateOccurrence_0 = runtime.ForwardResponseMessage
+	forward_Grafeas_UpdateOccurrence_0 = runtime.ForwardResponseMessage
 
-	forward_GrafeasV1_GetOccurrenceNote_0 = runtime.ForwardResponseMessage
+	forward_Grafeas_GetOccurrenceNote_0 = runtime.ForwardResponseMessage
 
-	forward_GrafeasV1_GetNote_0 = runtime.ForwardResponseMessage
+	forward_Grafeas_GetNote_0 = runtime.ForwardResponseMessage
 
-	forward_GrafeasV1_ListNotes_0 = runtime.ForwardResponseMessage
+	forward_Grafeas_ListNotes_0 = runtime.ForwardResponseMessage
 
-	forward_GrafeasV1_DeleteNote_0 = runtime.ForwardResponseMessage
+	forward_Grafeas_DeleteNote_0 = runtime.ForwardResponseMessage
 
-	forward_GrafeasV1_CreateNote_0 = runtime.ForwardResponseMessage
+	forward_Grafeas_CreateNote_0 = runtime.ForwardResponseMessage
 
-	forward_GrafeasV1_BatchCreateNotes_0 = runtime.ForwardResponseMessage
+	forward_Grafeas_BatchCreateNotes_0 = runtime.ForwardResponseMessage
 
-	forward_GrafeasV1_UpdateNote_0 = runtime.ForwardResponseMessage
+	forward_Grafeas_UpdateNote_0 = runtime.ForwardResponseMessage
 
-	forward_GrafeasV1_ListNoteOccurrences_0 = runtime.ForwardResponseMessage
+	forward_Grafeas_ListNoteOccurrences_0 = runtime.ForwardResponseMessage
 
-	forward_GrafeasV1_GetVulnerabilityOccurrencesSummary_0 = runtime.ForwardResponseMessage
+	forward_Grafeas_GetVulnerabilityOccurrencesSummary_0 = runtime.ForwardResponseMessage
 )
