@@ -127,4 +127,8 @@ message Version {
   // Required. Distinguishes between sentinel MIN/MAX versions and normal
   // versions.
   VersionKind kind = 4;
+
+  // Human readable version string. This string is of the form
+  // <epoch>:<name>-<revision> and is only set when kind is NORMAL.
+  string full_name = 5;
 }
