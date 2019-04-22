@@ -10,8 +10,6 @@ import (
 	empty "github.com/golang/protobuf/ptypes/empty"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	grpc "google.golang.org/grpc"
-	codes "google.golang.org/grpc/codes"
-	status "google.golang.org/grpc/status"
 	math "math"
 )
 
@@ -422,23 +420,6 @@ type ProjectsServer interface {
 	ListProjects(context.Context, *ListProjectsRequest) (*ListProjectsResponse, error)
 	// Deletes the specified project.
 	DeleteProject(context.Context, *DeleteProjectRequest) (*empty.Empty, error)
-}
-
-// UnimplementedProjectsServer can be embedded to have forward compatible implementations.
-type UnimplementedProjectsServer struct {
-}
-
-func (*UnimplementedProjectsServer) CreateProject(ctx context.Context, req *CreateProjectRequest) (*Project, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateProject not implemented")
-}
-func (*UnimplementedProjectsServer) GetProject(ctx context.Context, req *GetProjectRequest) (*Project, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetProject not implemented")
-}
-func (*UnimplementedProjectsServer) ListProjects(ctx context.Context, req *ListProjectsRequest) (*ListProjectsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListProjects not implemented")
-}
-func (*UnimplementedProjectsServer) DeleteProject(ctx context.Context, req *DeleteProjectRequest) (*empty.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteProject not implemented")
 }
 
 func RegisterProjectsServer(s *grpc.Server, srv ProjectsServer) {
