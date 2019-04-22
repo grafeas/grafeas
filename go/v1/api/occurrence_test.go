@@ -909,13 +909,13 @@ func vulnzOcc(t *testing.T, pID, noteName, imageName string) *gpb.Occurrence {
 						AffectedVersion: &pkgpb.Version{
 							Name: "0.2.0",
 							Kind: pkgpb.Version_NORMAL,
-					        },
-                                                FixedCpeUri:  "cpe:/o:debian:debian_linux:8",
+						},
+						FixedCpeUri:  "cpe:/o:debian:debian_linux:8",
 						FixedPackage: "abc",
 						FixedVersion: &pkgpb.Version{
 							Name: "0.2.0",
 							Kind: pkgpb.Version_NORMAL,
-					        },
+						},
 					},
 				},
 			},
@@ -938,13 +938,13 @@ func invalidVulnzOcc(t *testing.T, pID, noteName string) *gpb.Occurrence {
 						AffectedVersion: &pkgpb.Version{
 							Name: "0.2.0",
 							Kind: pkgpb.Version_NORMAL,
-					        },
-                                                FixedCpeUri:  "cpe:/o:debian:debian_linux:8",
+						},
+						FixedCpeUri:  "cpe:/o:debian:debian_linux:8",
 						FixedPackage: "abc",
 						FixedVersion: &pkgpb.Version{
 							Name: "0.2.0",
 							Kind: pkgpb.Version_NORMAL,
-					        },
+						},
 					},
 				},
 			},
