@@ -21,6 +21,8 @@ option java_multiple_files = true;
 option java_package = "io.grafeas.v1.attestation";
 option objc_class_prefix = "GRA";
 
+import "proto/v1/common.proto";
+
 // An attestation wrapper with a PGP-compatible signature. This message only
 // supports `ATTACHED` signatures, where the payload that is signed is included
 // alongside the signature itself in the same file.
@@ -66,6 +68,11 @@ message Details {
 // verified) and intent (for which authority this attestation was intended to
 // sign.
 message Attestation {
+  // The serialized payload that is verified by one or more `signatures`.
   bytes serialized_payload = 1;
+  // One or more signatures over `serialized_payload`.  Verifier implementations
+  // should consider this attestation message verified if at least one
+  // `signature` verifies `serialized_payload`.  See `Signature` in common.proto
+  // for more details on signature structure and verification.
   repeated Signature signatures = 2;
 }
