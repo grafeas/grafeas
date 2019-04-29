@@ -18,6 +18,7 @@ import (
 	"testing"
 
 	apb "github.com/grafeas/grafeas/proto/v1/attestation_go_proto"
+	cpb "github.com/grafeas/grafeas/proto/v1/common_go_proto"
 )
 
 func TestValidateAuthority(t *testing.T) {
@@ -110,9 +111,11 @@ func TestValidateDetails(t *testing.T) {
 			desc: "valid details, want success",
 			d: &apb.Details{
 				Attestation: &apb.Attestation{
-					Signature: &apb.Attestation_PgpSignedAttestation{
-						PgpSignedAttestation: &apb.PgpSignedAttestation{
-							Signature: "-----BEGIN PGP SIGNATURE-----\n\nxA0DARh\n-----END PGP SIGNATURE-----",
+					SerializedPayload: []byte("bar"),
+					Signatures: []*cpb.Signature{
+						{
+							Signature:   []byte("foo"),
+							PublicKeyId: "public-key",
 						},
 					},
 				},
@@ -140,15 +143,46 @@ func TestValidateAttestation(t *testing.T) {
 		wantErrs bool
 	}{
 		{
-			desc:     "missing signature, want error(s)",
+			desc:     "missing serialized payload, want error(s)",
 			a:        &apb.Attestation{},
 			wantErrs: true,
 		},
 		{
-			desc: "invalid PGP signed attestation, want error(s)",
+			desc: "missing public key ID in signature, want error(s)",
 			a: &apb.Attestation{
-				Signature: &apb.Attestation_PgpSignedAttestation{
-					PgpSignedAttestation: &apb.PgpSignedAttestation{},
+				SerializedPayload: []byte("bar"),
+				Signatures: []*cpb.Signature{
+					{
+						Signature: []byte("foo"),
+					},
+				},
+			},
+			wantErrs: true,
+		},
+		{
+			desc: "missing signature, want error(s)",
+			a: &apb.Attestation{
+				SerializedPayload: []byte("bar"),
+				Signatures: []*cpb.Signature{
+					{
+						PublicKeyId: "public-key",
+					},
+				},
+			},
+			wantErrs: true,
+		},
+		{
+			desc: "one invalid signature in attestation, want error(s)",
+			a: &apb.Attestation{
+				SerializedPayload: []byte("bar"),
+				Signatures: []*cpb.Signature{
+					{
+						Signature:   []byte("foo"),
+						PublicKeyId: "public-key",
+					},
+					{
+						Signature: []byte("foo"),
+					},
 				},
 			},
 			wantErrs: true,
@@ -156,9 +190,11 @@ func TestValidateAttestation(t *testing.T) {
 		{
 			desc: "valid attestation, want success",
 			a: &apb.Attestation{
-				Signature: &apb.Attestation_PgpSignedAttestation{
-					PgpSignedAttestation: &apb.PgpSignedAttestation{
-						Signature: "-----BEGIN PGP SIGNATURE-----\n\nxA0DARh\n-----END PGP SIGNATURE-----",
+				SerializedPayload: []byte("bar"),
+				Signatures: []*cpb.Signature{
+					{
+						Signature:   []byte("foo"),
+						PublicKeyId: "public-key",
 					},
 				},
 			},
@@ -174,38 +210,6 @@ func TestValidateAttestation(t *testing.T) {
 		}
 		if len(errs) > 0 && !tt.wantErrs {
 			t.Errorf("%q: validateAttestation(%+v): got error(s) %v, want success", tt.desc, tt.a, errs)
-		}
-	}
-}
-
-func TestValidatePgpSignedAttestation(t *testing.T) {
-	tests := []struct {
-		desc     string
-		p        *apb.PgpSignedAttestation
-		wantErrs bool
-	}{
-		{
-			desc:     "missing signature, want error(s)",
-			p:        &apb.PgpSignedAttestation{},
-			wantErrs: true,
-		},
-		{
-			desc: "valid PGP signed attestation, want success",
-			p: &apb.PgpSignedAttestation{
-				Signature: "-----BEGIN PGP SIGNATURE-----\n\nxA0DARh\n-----END PGP SIGNATURE-----",
-			},
-			wantErrs: false,
-		},
-	}
-
-	for _, tt := range tests {
-		errs := validatePgpSignedAttestation(tt.p)
-		t.Logf("%q: error(s): %v", tt.desc, errs)
-		if len(errs) == 0 && tt.wantErrs {
-			t.Errorf("%q: validatePgpSignedAttestation(%+v): got success, want error(s)", tt.desc, tt.p)
-		}
-		if len(errs) > 0 && !tt.wantErrs {
-			t.Errorf("%q: validatePgpSignedAttestation(%+v): got error(s) %v, want success", tt.desc, tt.p, errs)
 		}
 	}
 }

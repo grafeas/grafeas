@@ -68,7 +68,7 @@ message Details {
 // verified) and intent (for which authority this attestation was intended to
 // sign.
 message Attestation {
-  // The serialized payload that is verified by one or more `signatures`.
+  // Required. The serialized payload that is verified by one or more `signatures`.
   bytes serialized_payload = 1;
   // One or more signatures over `serialized_payload`.  Verifier implementations
   // should consider this attestation message verified if at least one
