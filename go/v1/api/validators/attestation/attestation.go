@@ -21,6 +21,7 @@ import (
 	"fmt"
 
 	apb "github.com/grafeas/grafeas/proto/v1/attestation_go_proto"
+	cpb "github.com/grafeas/grafeas/proto/v1/common_go_proto"
 )
 
 // ValidateAuthority validates that an authority has all its required fields filled in.
@@ -64,24 +65,29 @@ func ValidateDetails(d *apb.Details) []error {
 func validateAttestation(a *apb.Attestation) []error {
 	errs := []error{}
 
-	if s := a.GetSignature(); s == nil {
-		errs = append(errs, errors.New("signature is required"))
+	if sp := a.GetSerializedPayload(); sp == nil {
+		errs = append(errs, errors.New("serialized payload is required"))
 	}
 
-	if p := a.GetPgpSignedAttestation(); p != nil {
-		for _, err := range validatePgpSignedAttestation(p) {
-			errs = append(errs, fmt.Errorf("pgp_signed_attestation.%s", err))
+	if s := a.GetSignatures(); s != nil {
+		for _, err := range validateSignatures(s) {
+			errs = append(errs, fmt.Errorf("signatures.%s", err))
 		}
 	}
 
 	return errs
 }
 
-func validatePgpSignedAttestation(p *apb.PgpSignedAttestation) []error {
+func validateSignatures(signatures []*cpb.Signature) []error {
 	errs := []error{}
 
-	if p.GetSignature() == "" {
-		errs = append(errs, errors.New("signature is required"))
+	for _, s := range signatures {
+		if s.GetPublicKeyId() == "" {
+			errs = append(errs, errors.New("public key ID is required"))
+		}
+		if s.GetSignature() == nil {
+			errs = append(errs, errors.New("signature is required"))
+		}
 	}
 
 	return errs
