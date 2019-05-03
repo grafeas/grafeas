@@ -208,20 +208,20 @@ message Occurrence {
   // resource.
   oneof details {
     // Describes a security vulnerability.
-    grafeas.v1.vulnerability.Details vulnerability = 8;
+    grafeas.v1.VulnerabilityOccurrence vulnerability = 8;
     // Describes a verifiable build.
-    grafeas.v1.build.Details build = 9;
+    grafeas.v1.BuildOccurrence build = 9;
     // Describes how this resource derives from the basis in the associated
     // note.
-    grafeas.v1.image.Details derived_image = 10;
+    grafeas.v1.ImageOccurrence derived_image = 10;
     // Describes the installation of a package on the linked resource.
-    grafeas.v1.package.Details installation = 11;
+    grafeas.v1.PackageOccurrence installation = 11;
     // Describes the deployment of an artifact on a runtime.
-    grafeas.v1.deployment.Details deployment = 12;
+    grafeas.v1.DeploymentOccurrence deployment = 12;
     // Describes when a resource was discovered.
-    grafeas.v1.discovery.Details discovered = 13;
+    grafeas.v1.DiscoveryOccurrence discovered = 13;
     // Describes an attestation of an artifact.
-    grafeas.v1.attestation.Details attestation = 14;
+    grafeas.v1.AttestationOccurrence attestation = 14;
   }
 
   // next_id = 15;
@@ -238,7 +238,7 @@ message Resource {
   string uri = 2;
 
   // The hash of the resource content. For example, the Docker digest.
-  grafeas.v1.provenance.Hash content_hash = 3;
+  grafeas.v1.Hash content_hash = 3;
 
   // next_id = 4;
 }
@@ -279,19 +279,19 @@ message Note {
   // Required. Immutable. The type of analysis this note represents.
   oneof type {
     // A note describing a package vulnerability.
-    grafeas.v1.vulnerability.Vulnerability vulnerability = 10;
+    grafeas.v1.VulnerabilityNote vulnerability = 10;
     // A note describing build provenance for a verifiable build.
-    grafeas.v1.build.Build build = 11;
+    grafeas.v1.BuildNote build = 11;
     // A note describing a base image.
-    grafeas.v1.image.Basis base_image = 12;
+    grafeas.v1.ImageNote base_image = 12;
     // A note describing a package hosted by various package managers.
-    grafeas.v1.package.Package package = 13;
+    grafeas.v1.PackageNote package = 13;
     // A note describing something that can be deployed.
-    grafeas.v1.deployment.Deployable deployable = 14;
+    grafeas.v1.DeploymentNote deployable = 14;
     // A note describing the initial analysis of a resource.
-    grafeas.v1.discovery.Discovery discovery = 15;
+    grafeas.v1.DiscoveryNote discovery = 15;
     // A note describing an attestation role.
-    grafeas.v1.attestation.Authority attestation_authority = 16;
+    grafeas.v1.AttestationNote attestation_authority = 16;
   }
 
   // next_id = 17;
@@ -504,7 +504,7 @@ message VulnerabilityOccurrencesSummary {
     Resource resource = 1;
     // The severity for this count. SEVERITY_UNSPECIFIED indicates total across
     // all severities.
-    grafeas.v1.vulnerability.Severity severity = 2;
+    grafeas.v1.Severity severity = 2;
     // The number of fixable vulnerabilities associated with this resource.
     int64 fixable_count = 3;
     // The total number of vulnerabilities associated with this resource.

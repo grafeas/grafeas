@@ -14,11 +14,11 @@
 
 syntax = "proto3";
 
-package grafeas.v1.build;
+package grafeas.v1;
 
-option go_package = "github.com/grafeas/grafeas/proto/v1/build_go_proto";
+option go_package = "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto";
 option java_multiple_files = true;
-option java_package = "io.grafeas.v1.build";
+option java_package = "io.grafeas.v1";
 option objc_class_prefix = "GRA";
 
 import "proto/v1/provenance.proto";
@@ -28,7 +28,7 @@ import "proto/v1/provenance.proto";
 //
 // Note holding the version of the provider's builder and the signature of the
 // provenance message in the build details occurrence.
-message Build {
+message BuildNote {
   // Required. Immutable. Version of the builder which produced this build.
   string builder_version = 1;
 
@@ -80,9 +80,9 @@ message BuildSignature {
 }
 
 // Details of a build occurrence.
-message Details {
+message BuildOccurrence {
   // Required. The actual provenance for the build.
-  grafeas.v1.provenance.BuildProvenance provenance = 1;
+  grafeas.v1.BuildProvenance provenance = 1;
 
   // Serialized JSON representation of the provenance, used in generating the
   // build signature in the corresponding build note. After verifying the

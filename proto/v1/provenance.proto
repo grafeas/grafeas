@@ -14,11 +14,11 @@
 
 syntax = "proto3";
 
-package grafeas.v1.provenance;
+package grafeas.v1;
 
-option go_package = "github.com/grafeas/grafeas/proto/v1/provenance_go_proto";
+option go_package = "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto";
 option java_multiple_files = true;
-option java_package = "io.grafeas.v1.provenance";
+option java_package = "io.grafeas.v1";
 option objc_class_prefix = "GRA";
 
 import "google/protobuf/timestamp.proto";
@@ -92,13 +92,13 @@ message Source {
   map<string, FileHashes> file_hashes = 2;
 
   // If provided, the source code used for the build came from this location.
-  grafeas.v1.source.SourceContext context = 3;
+  grafeas.v1.SourceContext context = 3;
 
   // If provided, some of the source code used for the build may be found in
   // these locations, in the case where the source repository had multiple
   // remotes or submodules. This list will not include the context specified in
   // the context field.
-  repeated grafeas.v1.source.SourceContext additional_contexts = 4;
+  repeated grafeas.v1.SourceContext additional_contexts = 4;
 }
 
 // Container message for hashes of byte content of files, used in source
