@@ -14,11 +14,11 @@
 
 syntax = "proto3";
 
-package grafeas.v1.attestation;
+package grafeas.v1;
 
-option go_package = "github.com/grafeas/grafeas/proto/v1/attestation_go_proto";
+option go_package = "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto";
 option java_multiple_files = true;
-option java_package = "io.grafeas.v1.attestation";
+option java_package = "io.grafeas.v1";
 option objc_class_prefix = "GRA";
 
 import "proto/v1/common.proto";
@@ -35,7 +35,7 @@ import "proto/v1/common.proto";
 // to attach an occurrence to a given note. It also provides a single point of
 // lookup to find all attached attestation occurrences, even if they don't all
 // live in the same project.
-message Authority {
+message AttestationNote {
   // This submessage provides human-readable hints about the purpose of the
   // authority. Because the name of a note acts as its resource reference, it is
   // important to disambiguate the canonical name of the Note (which might be a
@@ -53,12 +53,6 @@ message Authority {
   Hint hint = 1;
 }
 
-// Details of an attestation occurrence.
-message Details {
-  // Required. Attestation for the resource.
-  Attestation attestation = 1;
-}
-
 // Occurrence that represents a single "attestation". The authenticity of an
 // attestation can be verified using the attached signature. If the verifier
 // trusts the public key of the signer, then verifying the signature is
@@ -67,7 +61,7 @@ message Details {
 // this attestation if you already know the authority and artifact to be
 // verified) and intent (for which authority this attestation was intended to
 // sign.
-message Attestation {
+message AttestationOccurrence {
   // Required. The serialized payload that is verified by one or more `signatures`.
   bytes serialized_payload = 1;
   // One or more signatures over `serialized_payload`.  Verifier implementations

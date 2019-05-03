@@ -14,11 +14,11 @@
 
 syntax = "proto3";
 
-package grafeas.v1.image;
+package grafeas.v1;
 
-option go_package = "github.com/grafeas/grafeas/proto/v1/image_go_proto";
+option go_package = "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto";
 option java_multiple_files = true;
-option java_package = "io.grafeas.v1.image";
+option java_package = "io.grafeas.v1";
 option objc_class_prefix = "GRA";
 
 // DO NOT USE: UNDER HEAVY DEVELOPMENT.
@@ -111,7 +111,7 @@ message Fingerprint {
 // equivalent image via:
 //   FROM <Basis.resource_url>
 // Or an equivalent reference, e.g. a tag of the resource_url.
-message Basis {
+message ImageNote {
   // Required. Immutable. The resource_url for the resource representing the
   // basis of associated occurrence images.
   string resource_url = 1;
@@ -121,7 +121,7 @@ message Basis {
 }
 
 // Details of an image occurrence.
-message Details {
+message ImageOccurrence {
   // Required. Immutable. The child image derived from the base image.
   Derived derived_image = 1;
 }

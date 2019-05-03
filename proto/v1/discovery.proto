@@ -14,11 +14,11 @@
 
 syntax = "proto3";
 
-package grafeas.v1.discovery;
+package grafeas.v1;
 
-option go_package = "github.com/grafeas/grafeas/proto/v1/discovery_go_proto";
+option go_package = "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto";
 option java_multiple_files = true;
-option java_package = "io.grafeas.v1.discovery";
+option java_package = "io.grafeas.v1";
 option objc_class_prefix = "GRA";
 
 import "google/protobuf/timestamp.proto";
@@ -31,20 +31,14 @@ import "proto/v1/common.proto";
 // A note that indicates a type of analysis a provider would perform. This note
 // exists in a provider's project. A `Discovery` occurrence is created in a
 // consumer's project at the start of analysis.
-message Discovery {
+message DiscoveryNote {
   // Required. Immutable. The kind of analysis that is handled by this
   // discovery.
   grafeas.v1.NoteKind analysis_kind = 1;
 }
 
-// Details of a discovery occurrence.
-message Details {
-  // Required. Analysis status for the discovered resource.
-  Discovered discovered = 1;
-}
-
 // Provides information about the analysis status of a discovered resource.
-message Discovered {
+message DiscoveryOccurrence {
   // Whether the resource is continuously analyzed.
   enum ContinuousAnalysis {
     // Unknown.

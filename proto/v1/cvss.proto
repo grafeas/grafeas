@@ -14,11 +14,11 @@
 
 syntax = "proto3";
 
-package grafeas.v1.vulnerability;
+package grafeas.v1;
 
-option go_package = "github.com/grafeas/grafeas/proto/v1/cvss_go_proto";
+option go_package = "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto";
 option java_multiple_files = true;
-option java_package = "io.grafeas.v1.vulnerability";
+option java_package = "io.grafeas.v1";
 option objc_class_prefix = "GRA";
 
 // Common Vulnerability Scoring System version 3.
