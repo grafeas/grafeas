@@ -23,8 +23,8 @@ import (
 	gpb "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto"
 )
 
-// ValidateBasis validates that an image basis has all its required fields filled in.
-func ValidateBasis(b *gpb.ImageNote) []error {
+// ValidateNote validates that an image basis has all its required fields filled in.
+func ValidateNote(b *gpb.ImageNote) []error {
 	errs := []error{}
 
 	if b.GetResourceUrl() == "" {
@@ -64,8 +64,8 @@ func validateFingerprint(f *gpb.Fingerprint) []error {
 	return errs
 }
 
-// ValidateDetails validates that a details has all its required fields filled in.
-func ValidateDetails(d *gpb.ImageOccurrence) []error {
+// ValidateOccurrence validates that a details has all its required fields filled in.
+func ValidateOccurrence(d *gpb.ImageOccurrence) []error {
 	errs := []error{}
 
 	if d := d.GetDerivedImage(); d == nil {

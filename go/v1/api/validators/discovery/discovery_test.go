@@ -20,7 +20,7 @@ import (
 	gpb "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto"
 )
 
-func TestValidateDiscovery(t *testing.T) {
+func TestValidateNote(t *testing.T) {
 	tests := []struct {
 		desc     string
 		d        *gpb.DiscoveryNote
@@ -41,18 +41,18 @@ func TestValidateDiscovery(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		errs := ValidateDiscovery(tt.d)
+		errs := ValidateNote(tt.d)
 		t.Logf("%q: error(s): %v", tt.desc, errs)
 		if len(errs) == 0 && tt.wantErrs {
-			t.Errorf("%q: ValidateDiscovery(%+v): got success, want error(s)", tt.desc, tt.d)
+			t.Errorf("%q: ValidateNote(%+v): got success, want error(s)", tt.desc, tt.d)
 		}
 		if len(errs) > 0 && !tt.wantErrs {
-			t.Errorf("%q: ValidateDiscovery(%+v): got error(s) %v, want success", tt.desc, tt.d, errs)
+			t.Errorf("%q: ValidateNote(%+v): got error(s) %v, want success", tt.desc, tt.d, errs)
 		}
 	}
 }
 
-func TestValidateDetails(t *testing.T) {
+func TestValidateOccurrence(t *testing.T) {
 	tests := []struct {
 		desc     string
 		d        *gpb.DiscoveryOccurrence
@@ -66,7 +66,7 @@ func TestValidateDetails(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		errs := ValidateDetails(tt.d)
+		errs := ValidateOccurrence(tt.d)
 		t.Logf("%q: error(s): %v", tt.desc, errs)
 		if len(errs) == 0 && tt.wantErrs {
 			t.Errorf("%q: validateDiscovered(%+v): got success, want error(s)", tt.desc, tt.d)
