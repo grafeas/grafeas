@@ -43,11 +43,11 @@ protoc/bin/protoc:
 
 CLEAN += protoc proto/*/*_go_proto
 
-GO_PROTO_DIRS := $(patsubst %.proto,%_go_proto/.done,$(wildcard proto/*/*.proto))
+GO_PROTO_DIRS_V1BETA1 := $(patsubst %.proto,%_go_proto/.done,$(wildcard proto/v1beta1/*.proto))
 
 # v1alpha1 has a different codebase structure than v1beta1 and v1,
 # so it's generated separately
-go_protos: v1alpha1/proto/grafeas.pb.go $(GO_PROTO_DIRS)
+go_protos: v1alpha1/proto/grafeas.pb.go $(GO_PROTO_DIRS_V1BETA1)
 
 PROTOC_CMD=protoc/bin/protoc -I ./ \
 	-I vendor/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
@@ -63,17 +63,17 @@ v1alpha1/proto/grafeas.pb.go: v1alpha1/proto/grafeas.proto .install.tools
 
 # Builds go proto packages from protos
 # Example:
-# 	$ make proto/v1/grafeas_go_proto
-# 	Builds: proto/v1/grafeas_go_proto/grafeas.pb.go and proto/v1/grafeas_go_proto/grafeas.pb.gw.go
-# 	Using: proto/v1/grafeas.proto
-%_go_proto/.done: %.proto .install.tools
+#      $ make proto/v1beta1/grafeas_go_proto/.done
+#      Builds: proto/v1beta1/grafeas_go_proto/grafeas.pb.go and proto/v1beta1/grafeas_go_proto/grafeas.pb.gw.go
+#      Using: proto/v1beta1/grafeas.proto
+proto/v1beta1/%_go_proto/.done: proto/v1beta1/%.proto .install.tools
 	$(PROTOC_CMD) \
 		--go_out=plugins=grpc,paths=source_relative:. \
 		--grpc-gateway_out=logtostderr=true,paths=source_relative:. \
 		$<
 	@mkdir -p $(@D)
-	mv $*.pb.go $(@D)
-	if [ -f $*.pb.gw.go ]; then mv $*.pb.gw.go $(@D); fi
+	mv proto/v1beta1/$*.pb.go $(@D)
+	if [ -f proto/v1beta1/$*.pb.gw.go ]; then mv proto/v1beta1/$*.pb.gw.go $(@D); fi
 	@touch $@
 
 swagger_docs: proto/v1beta1/swagger/*.swagger.json
