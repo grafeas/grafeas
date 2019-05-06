@@ -17,34 +17,33 @@ package build
 import (
 	"testing"
 
-	bpb "github.com/grafeas/grafeas/proto/v1/build_go_proto"
-	ppb "github.com/grafeas/grafeas/proto/v1/provenance_go_proto"
+	gpb "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto"
 )
 
 func TestValidateBuild(t *testing.T) {
 	tests := []struct {
 		desc     string
-		b        *bpb.Build
+		b        *gpb.BuildNote
 		wantErrs bool
 	}{
 		{
 			desc:     "missing builder version, want error(s)",
-			b:        &bpb.Build{},
+			b:        &gpb.BuildNote{},
 			wantErrs: true,
 		},
 		{
 			desc: "invalid signature, want error(s)",
-			b: &bpb.Build{
+			b: &gpb.BuildNote{
 				BuilderVersion: "1.1.1",
-				Signature:      &bpb.BuildSignature{},
+				Signature:      &gpb.BuildSignature{},
 			},
 			wantErrs: true,
 		},
 		{
 			desc: "valid signature, want success",
-			b: &bpb.Build{
+			b: &gpb.BuildNote{
 				BuilderVersion: "1.1.1",
-				Signature: &bpb.BuildSignature{
+				Signature: &gpb.BuildSignature{
 					Signature: []byte("YmVhciByYXdyIHJhd3I="),
 				},
 			},
@@ -67,17 +66,17 @@ func TestValidateBuild(t *testing.T) {
 func TestValidateSignature(t *testing.T) {
 	tests := []struct {
 		desc     string
-		s        *bpb.BuildSignature
+		s        *gpb.BuildSignature
 		wantErrs bool
 	}{
 		{
 			desc:     "missing signature, want error(s)",
-			s:        &bpb.BuildSignature{},
+			s:        &gpb.BuildSignature{},
 			wantErrs: true,
 		},
 		{
 			desc: "valid signature, want success",
-			s: &bpb.BuildSignature{
+			s: &gpb.BuildSignature{
 				Signature: []byte("YmVhciByYXdyIHJhd3I="),
 			},
 			wantErrs: false,
@@ -99,18 +98,18 @@ func TestValidateSignature(t *testing.T) {
 func TestValidateDetails(t *testing.T) {
 	tests := []struct {
 		desc     string
-		d        *bpb.Details
+		d        *gpb.BuildOccurrence
 		wantErrs bool
 	}{
 		{
 			desc:     "missing provenance, want error(s)",
-			d:        &bpb.Details{},
+			d:        &gpb.BuildOccurrence{},
 			wantErrs: true,
 		},
 		{
 			desc: "valid details, want success",
-			d: &bpb.Details{
-				Provenance: &ppb.BuildProvenance{
+			d: &gpb.BuildOccurrence{
+				Provenance: &gpb.BuildProvenance{
 					Id: "8c0b1847-f78b-4bf7-8b2e-38e1bb48b125",
 				},
 			},

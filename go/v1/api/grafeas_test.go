@@ -23,8 +23,6 @@ import (
 	"github.com/grafeas/grafeas/go/iam"
 	"github.com/grafeas/grafeas/go/name"
 	gpb "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto"
-	provpb "github.com/grafeas/grafeas/proto/v1/provenance_go_proto"
-	vulnpb "github.com/grafeas/grafeas/proto/v1/vulnerability_go_proto"
 	"golang.org/x/net/context"
 	fieldmaskpb "google.golang.org/genproto/protobuf/field_mask"
 	"google.golang.org/grpc/codes"
@@ -389,12 +387,12 @@ func (s *fakeStorage) GetVulnerabilityOccurrencesSummary(ctx context.Context, pr
 				Resource: &gpb.Resource{
 					Name: "debian9",
 					Uri:  "https://eu.gcr.io/consumer1/debian9@sha256:dbc96ed51bc598faeec0901bad307ebb5d1d7259b33e2d7d7296c28f439dc777",
-					ContentHash: &provpb.Hash{
-						Type:  provpb.Hash_SHA256,
+					ContentHash: &gpb.Hash{
+						Type:  gpb.Hash_SHA256,
 						Value: []byte("dbc96ed51bc598faeec0901bad307ebb5d1d7259b33e2d7d7296c28f439dc777"),
 					},
 				},
-				Severity:     vulnpb.Severity_CRITICAL,
+				Severity:     gpb.Severity_CRITICAL,
 				FixableCount: 1,
 				TotalCount:   3,
 			},
@@ -402,12 +400,12 @@ func (s *fakeStorage) GetVulnerabilityOccurrencesSummary(ctx context.Context, pr
 				Resource: &gpb.Resource{
 					Name: "debian9",
 					Uri:  "https://eu.gcr.io/consumer1/debian9@sha256:dbc96ed51bc598faeec0901bad307ebb5d1d7259b33e2d7d7296c28f439dc777",
-					ContentHash: &provpb.Hash{
-						Type:  provpb.Hash_SHA256,
+					ContentHash: &gpb.Hash{
+						Type:  gpb.Hash_SHA256,
 						Value: []byte("dbc96ed51bc598faeec0901bad307ebb5d1d7259b33e2d7d7296c28f439dc777"),
 					},
 				},
-				Severity:     vulnpb.Severity_LOW,
+				Severity:     gpb.Severity_LOW,
 				FixableCount: 4,
 				TotalCount:   10,
 			},

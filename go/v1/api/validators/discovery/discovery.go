@@ -18,17 +18,15 @@ package discovery
 
 import (
 	"errors"
-	"fmt"
 
-	cpb "github.com/grafeas/grafeas/proto/v1/common_go_proto"
-	dpb "github.com/grafeas/grafeas/proto/v1/discovery_go_proto"
+	gpb "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto"
 )
 
 // ValidateDiscovery validates that a discovery has all its required fields filled in.
-func ValidateDiscovery(d *dpb.Discovery) []error {
+func ValidateDiscovery(d *gpb.DiscoveryNote) []error {
 	errs := []error{}
 
-	if d.GetAnalysisKind() == cpb.NoteKind_NOTE_KIND_UNSPECIFIED {
+	if d.GetAnalysisKind() == gpb.NoteKind_NOTE_KIND_UNSPECIFIED {
 		errs = append(errs, errors.New("analysis_kind is required"))
 	}
 
@@ -36,21 +34,7 @@ func ValidateDiscovery(d *dpb.Discovery) []error {
 }
 
 // ValidateDetails validates that a details has all its required fields filled in.
-func ValidateDetails(d *dpb.Details) []error {
-	errs := []error{}
-
-	if di := d.GetDiscovered(); di == nil {
-		errs = append(errs, errors.New("discovered is required"))
-	} else {
-		for _, err := range validateDiscovered(di) {
-			errs = append(errs, fmt.Errorf("discovered.%s", err))
-		}
-	}
-
-	return errs
-}
-
-func validateDiscovered(d *dpb.Discovered) []error {
+func ValidateDetails(d *gpb.DiscoveryOccurrence) []error {
 	errs := []error{}
 	return errs
 }

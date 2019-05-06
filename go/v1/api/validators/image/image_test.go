@@ -17,40 +17,40 @@ package image
 import (
 	"testing"
 
-	ipb "github.com/grafeas/grafeas/proto/v1/image_go_proto"
+	gpb "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto"
 )
 
 func TestValidateBasis(t *testing.T) {
 	tests := []struct {
 		desc     string
-		b        *ipb.Basis
+		b        *gpb.ImageNote
 		wantErrs bool
 	}{
 		{
 			desc:     "missing resource URL, want error(s)",
-			b:        &ipb.Basis{},
+			b:        &gpb.ImageNote{},
 			wantErrs: true,
 		},
 		{
 			desc: "nil fingerprint, want error(s)",
-			b: &ipb.Basis{
+			b: &gpb.ImageNote{
 				ResourceUrl: "https://www.google.com",
 			},
 			wantErrs: true,
 		},
 		{
 			desc: "invalid fingerprint, want error(s)",
-			b: &ipb.Basis{
+			b: &gpb.ImageNote{
 				ResourceUrl: "https://www.google.com",
-				Fingerprint: &ipb.Fingerprint{},
+				Fingerprint: &gpb.Fingerprint{},
 			},
 			wantErrs: true,
 		},
 		{
 			desc: "valid fingerprint, want success",
-			b: &ipb.Basis{
+			b: &gpb.ImageNote{
 				ResourceUrl: "https://www.google.com",
-				Fingerprint: &ipb.Fingerprint{
+				Fingerprint: &gpb.Fingerprint{
 					V1Name: "foo",
 					V2Blob: []string{"bar"},
 				},
@@ -74,24 +74,24 @@ func TestValidateBasis(t *testing.T) {
 func TestValidateFingerprint(t *testing.T) {
 	tests := []struct {
 		desc     string
-		f        *ipb.Fingerprint
+		f        *gpb.Fingerprint
 		wantErrs bool
 	}{
 		{
 			desc:     "missing V1 name, want error(s)",
-			f:        &ipb.Fingerprint{},
+			f:        &gpb.Fingerprint{},
 			wantErrs: true,
 		},
 		{
 			desc: "missing V2 blob, want error(s)",
-			f: &ipb.Fingerprint{
+			f: &gpb.Fingerprint{
 				V1Name: "foo",
 			},
 			wantErrs: true,
 		},
 		{
 			desc: "empty V2 blob, want error(s)",
-			f: &ipb.Fingerprint{
+			f: &gpb.Fingerprint{
 				V1Name: "foo",
 				V2Blob: []string{},
 			},
@@ -99,7 +99,7 @@ func TestValidateFingerprint(t *testing.T) {
 		},
 		{
 			desc: "invalid V2 blob, want error(s)",
-			f: &ipb.Fingerprint{
+			f: &gpb.Fingerprint{
 				V1Name: "foo",
 				V2Blob: []string{""},
 			},
@@ -107,7 +107,7 @@ func TestValidateFingerprint(t *testing.T) {
 		},
 		{
 			desc: "valid fingerprint, want success",
-			f: &ipb.Fingerprint{
+			f: &gpb.Fingerprint{
 				V1Name: "foo",
 				V2Blob: []string{"bar"},
 			},
@@ -130,26 +130,26 @@ func TestValidateFingerprint(t *testing.T) {
 func TestValidateDetails(t *testing.T) {
 	tests := []struct {
 		desc     string
-		d        *ipb.Details
+		d        *gpb.ImageOccurrence
 		wantErrs bool
 	}{
 		{
 			desc:     "missing derived image, want error(s)",
-			d:        &ipb.Details{},
+			d:        &gpb.ImageOccurrence{},
 			wantErrs: true,
 		},
 		{
 			desc: "invalid derived image, want error(s)",
-			d: &ipb.Details{
-				DerivedImage: &ipb.Derived{},
+			d: &gpb.ImageOccurrence{
+				DerivedImage: &gpb.Derived{},
 			},
 			wantErrs: true,
 		},
 		{
 			desc: "valid derived image, want success",
-			d: &ipb.Details{
-				DerivedImage: &ipb.Derived{
-					Fingerprint: &ipb.Fingerprint{
+			d: &gpb.ImageOccurrence{
+				DerivedImage: &gpb.Derived{
+					Fingerprint: &gpb.Fingerprint{
 						V1Name: "foo",
 						V2Blob: []string{"bar"},
 					},
@@ -174,40 +174,40 @@ func TestValidateDetails(t *testing.T) {
 func TestValidateDerived(t *testing.T) {
 	tests := []struct {
 		desc     string
-		d        *ipb.Derived
+		d        *gpb.Derived
 		wantErrs bool
 	}{
 		{
 			desc:     "missing fingerprint, want error(s)",
-			d:        &ipb.Derived{},
+			d:        &gpb.Derived{},
 			wantErrs: true,
 		},
 		{
 			desc: "invalid fingerprint, want error(s)",
-			d: &ipb.Derived{
-				Fingerprint: &ipb.Fingerprint{},
+			d: &gpb.Derived{
+				Fingerprint: &gpb.Fingerprint{},
 			},
 			wantErrs: true,
 		},
 		{
 			desc: "nil layer, want error(s)",
-			d: &ipb.Derived{
-				Fingerprint: &ipb.Fingerprint{
+			d: &gpb.Derived{
+				Fingerprint: &gpb.Fingerprint{
 					V1Name: "foo",
 					V2Blob: []string{"bar"},
 				},
-				LayerInfo: []*ipb.Layer{nil},
+				LayerInfo: []*gpb.Layer{nil},
 			},
 			wantErrs: true,
 		},
 		{
 			desc: "invalid layer, want error(s)",
-			d: &ipb.Derived{
-				Fingerprint: &ipb.Fingerprint{
+			d: &gpb.Derived{
+				Fingerprint: &gpb.Fingerprint{
 					V1Name: "foo",
 					V2Blob: []string{"bar"},
 				},
-				LayerInfo: []*ipb.Layer{
+				LayerInfo: []*gpb.Layer{
 					{},
 				},
 			},
@@ -215,8 +215,8 @@ func TestValidateDerived(t *testing.T) {
 		},
 		{
 			desc: "valid derived, want success",
-			d: &ipb.Derived{
-				Fingerprint: &ipb.Fingerprint{
+			d: &gpb.Derived{
+				Fingerprint: &gpb.Fingerprint{
 					V1Name: "foo",
 					V2Blob: []string{"bar"},
 				},
@@ -240,18 +240,18 @@ func TestValidateDerived(t *testing.T) {
 func TestValidateLayer(t *testing.T) {
 	tests := []struct {
 		desc     string
-		l        *ipb.Layer
+		l        *gpb.Layer
 		wantErrs bool
 	}{
 		{
 			desc:     "missing directive, want error(s)",
-			l:        &ipb.Layer{},
+			l:        &gpb.Layer{},
 			wantErrs: true,
 		},
 		{
 			desc: "valid layer, want success",
-			l: &ipb.Layer{
-				Directive: ipb.Layer_ADD,
+			l: &gpb.Layer{
+				Directive: gpb.Layer_ADD,
 			},
 			wantErrs: false,
 		},

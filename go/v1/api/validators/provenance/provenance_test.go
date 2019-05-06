@@ -17,33 +17,33 @@ package provenance
 import (
 	"testing"
 
-	ppb "github.com/grafeas/grafeas/proto/v1/provenance_go_proto"
+	gpb "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto"
 )
 
 func TestValidateBuildProvenance(t *testing.T) {
 	tests := []struct {
 		desc     string
-		p        *ppb.BuildProvenance
+		p        *gpb.BuildProvenance
 		wantErrs bool
 	}{
 		{
 			desc:     "missing ID, want error(s)",
-			p:        &ppb.BuildProvenance{},
+			p:        &gpb.BuildProvenance{},
 			wantErrs: true,
 		},
 		{
 			desc: "nil command, want error(s)",
-			p: &ppb.BuildProvenance{
+			p: &gpb.BuildProvenance{
 				Id:       "8c0b1847-f78b-4bf7-8b2e-38e1bb48b125",
-				Commands: []*ppb.Command{nil},
+				Commands: []*gpb.Command{nil},
 			},
 			wantErrs: true,
 		},
 		{
 			desc: "invalid command, want error(s)",
-			p: &ppb.BuildProvenance{
+			p: &gpb.BuildProvenance{
 				Id: "8c0b1847-f78b-4bf7-8b2e-38e1bb48b125",
-				Commands: []*ppb.Command{
+				Commands: []*gpb.Command{
 					{},
 				},
 			},
@@ -51,25 +51,25 @@ func TestValidateBuildProvenance(t *testing.T) {
 		},
 		{
 			desc: "nil built artifact, want error(s)",
-			p: &ppb.BuildProvenance{
+			p: &gpb.BuildProvenance{
 				Id:             "8c0b1847-f78b-4bf7-8b2e-38e1bb48b125",
-				BuiltArtifacts: []*ppb.Artifact{nil},
+				BuiltArtifacts: []*gpb.Artifact{nil},
 			},
 			wantErrs: true,
 		},
 		{
 			desc: "invalid source provenance, want error(s)",
-			p: &ppb.BuildProvenance{
+			p: &gpb.BuildProvenance{
 				Id: "8c0b1847-f78b-4bf7-8b2e-38e1bb48b125",
-				SourceProvenance: &ppb.Source{
-					FileHashes: map[string]*ppb.FileHashes{"foo/bar": nil},
+				SourceProvenance: &gpb.Source{
+					FileHashes: map[string]*gpb.FileHashes{"foo/bar": nil},
 				},
 			},
 			wantErrs: true,
 		},
 		{
 			desc: "valid build provenance, want success",
-			p: &ppb.BuildProvenance{
+			p: &gpb.BuildProvenance{
 				Id: "8c0b1847-f78b-4bf7-8b2e-38e1bb48b125",
 			},
 			wantErrs: false,
@@ -91,17 +91,17 @@ func TestValidateBuildProvenance(t *testing.T) {
 func TestValidateCommand(t *testing.T) {
 	tests := []struct {
 		desc     string
-		c        *ppb.Command
+		c        *gpb.Command
 		wantErrs bool
 	}{
 		{
 			desc:     "missing name, want error(s)",
-			c:        &ppb.Command{},
+			c:        &gpb.Command{},
 			wantErrs: true,
 		},
 		{
 			desc: "valid command, want success",
-			c: &ppb.Command{
+			c: &gpb.Command{
 				Name: "wc",
 			},
 			wantErrs: false,
@@ -123,12 +123,12 @@ func TestValidateCommand(t *testing.T) {
 func TestValidateArtifact(t *testing.T) {
 	tests := []struct {
 		desc     string
-		a        *ppb.Artifact
+		a        *gpb.Artifact
 		wantErrs bool
 	}{
 		{
 			desc:     "valid artifact, want success",
-			a:        &ppb.Artifact{},
+			a:        &gpb.Artifact{},
 			wantErrs: false,
 		},
 	}
@@ -148,28 +148,28 @@ func TestValidateArtifact(t *testing.T) {
 func TestValidateSource(t *testing.T) {
 	tests := []struct {
 		desc     string
-		s        *ppb.Source
+		s        *gpb.Source
 		wantErrs bool
 	}{
 		{
 			desc: "nil file hashes, want error(s)",
-			s: &ppb.Source{
-				FileHashes: map[string]*ppb.FileHashes{"foo/bar": nil},
+			s: &gpb.Source{
+				FileHashes: map[string]*gpb.FileHashes{"foo/bar": nil},
 			},
 			wantErrs: true,
 		},
 		{
 			desc: "invalid file hashes, want error(s)",
-			s: &ppb.Source{
-				FileHashes: map[string]*ppb.FileHashes{
-					"foo/bar": &ppb.FileHashes{},
+			s: &gpb.Source{
+				FileHashes: map[string]*gpb.FileHashes{
+					"foo/bar": &gpb.FileHashes{},
 				},
 			},
 			wantErrs: true,
 		},
 		{
 			desc:     "valid source, want success",
-			s:        &ppb.Source{},
+			s:        &gpb.Source{},
 			wantErrs: false,
 		},
 	}
@@ -189,32 +189,32 @@ func TestValidateSource(t *testing.T) {
 func TestValidateFileHashes(t *testing.T) {
 	tests := []struct {
 		desc     string
-		f        *ppb.FileHashes
+		f        *gpb.FileHashes
 		wantErrs bool
 	}{
 		{
 			desc:     "missing file hash, want error(s)",
-			f:        &ppb.FileHashes{},
+			f:        &gpb.FileHashes{},
 			wantErrs: true,
 		},
 		{
 			desc: "empty file hash, want error(s)",
-			f: &ppb.FileHashes{
-				FileHash: []*ppb.Hash{},
+			f: &gpb.FileHashes{
+				FileHash: []*gpb.Hash{},
 			},
 			wantErrs: true,
 		},
 		{
 			desc: "nil file hash element, want error(s)",
-			f: &ppb.FileHashes{
-				FileHash: []*ppb.Hash{nil},
+			f: &gpb.FileHashes{
+				FileHash: []*gpb.Hash{nil},
 			},
 			wantErrs: true,
 		},
 		{
 			desc: "invalid file hash element, want error(s)",
-			f: &ppb.FileHashes{
-				FileHash: []*ppb.Hash{
+			f: &gpb.FileHashes{
+				FileHash: []*gpb.Hash{
 					{},
 				},
 			},
@@ -222,10 +222,10 @@ func TestValidateFileHashes(t *testing.T) {
 		},
 		{
 			desc: "valid file hashes, want success",
-			f: &ppb.FileHashes{
-				FileHash: []*ppb.Hash{
+			f: &gpb.FileHashes{
+				FileHash: []*gpb.Hash{
 					{
-						Type:  ppb.Hash_SHA256,
+						Type:  gpb.Hash_SHA256,
 						Value: []byte("foobar"),
 					},
 				},
@@ -249,25 +249,25 @@ func TestValidateFileHashes(t *testing.T) {
 func TestValidateHash(t *testing.T) {
 	tests := []struct {
 		desc     string
-		h        *ppb.Hash
+		h        *gpb.Hash
 		wantErrs bool
 	}{
 		{
 			desc:     "missing type, want error(s)",
-			h:        &ppb.Hash{},
+			h:        &gpb.Hash{},
 			wantErrs: true,
 		},
 		{
 			desc: "missing value, want error(s)",
-			h: &ppb.Hash{
-				Type: ppb.Hash_SHA256,
+			h: &gpb.Hash{
+				Type: gpb.Hash_SHA256,
 			},
 			wantErrs: true,
 		},
 		{
 			desc: "valid hash, want success",
-			h: &ppb.Hash{
-				Type:  ppb.Hash_SHA256,
+			h: &gpb.Hash{
+				Type:  gpb.Hash_SHA256,
 				Value: []byte("foobar"),
 			},
 			wantErrs: false,

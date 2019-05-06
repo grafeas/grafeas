@@ -20,11 +20,11 @@ import (
 	"errors"
 	"fmt"
 
-	ppb "github.com/grafeas/grafeas/proto/v1/provenance_go_proto"
+	gpb "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto"
 )
 
 // ValidateBuildProvenance validates that a build provenance has all its required fields filled in.
-func ValidateBuildProvenance(p *ppb.BuildProvenance) []error {
+func ValidateBuildProvenance(p *gpb.BuildProvenance) []error {
 	errs := []error{}
 
 	if p.GetId() == "" {
@@ -60,7 +60,7 @@ func ValidateBuildProvenance(p *ppb.BuildProvenance) []error {
 	return errs
 }
 
-func validateCommand(c *ppb.Command) []error {
+func validateCommand(c *gpb.Command) []error {
 	errs := []error{}
 
 	if c.GetName() == "" {
@@ -70,12 +70,12 @@ func validateCommand(c *ppb.Command) []error {
 	return errs
 }
 
-func validateArtifact(a *ppb.Artifact) []error {
+func validateArtifact(a *gpb.Artifact) []error {
 	errs := []error{}
 	return errs
 }
 
-func validateSource(s *ppb.Source) []error {
+func validateSource(s *gpb.Source) []error {
 	errs := []error{}
 
 	for filePath, fileHashes := range s.GetFileHashes() {
@@ -91,7 +91,7 @@ func validateSource(s *ppb.Source) []error {
 	return errs
 }
 
-func validateFileHashes(fileHashes *ppb.FileHashes) []error {
+func validateFileHashes(fileHashes *gpb.FileHashes) []error {
 	errs := []error{}
 
 	if fileHash := fileHashes.GetFileHash(); fileHash == nil {
@@ -113,10 +113,10 @@ func validateFileHashes(fileHashes *ppb.FileHashes) []error {
 	return errs
 }
 
-func validateHash(h *ppb.Hash) []error {
+func validateHash(h *gpb.Hash) []error {
 	errs := []error{}
 
-	if h.GetType() == ppb.Hash_HASH_TYPE_UNSPECIFIED {
+	if h.GetType() == gpb.Hash_HASH_TYPE_UNSPECIFIED {
 		errs = append(errs, errors.New("type is required"))
 	}
 
