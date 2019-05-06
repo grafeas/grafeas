@@ -26,7 +26,7 @@ import (
 	"github.com/grafeas/grafeas/go/v1/api/validators/deployment"
 	"github.com/grafeas/grafeas/go/v1/api/validators/discovery"
 	"github.com/grafeas/grafeas/go/v1/api/validators/image"
-	"github.com/grafeas/grafeas/go/v1/api/validators/package"
+	pkg "github.com/grafeas/grafeas/go/v1/api/validators/package"
 	"github.com/grafeas/grafeas/go/v1/api/validators/vulnerability"
 	gpb "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto"
 	"google.golang.org/grpc/codes"
@@ -52,7 +52,7 @@ func ValidateNote(n *gpb.Note) error {
 		}
 	}
 
-	if b := n.GetBaseImage(); b != nil {
+	if b := n.GetImage(); b != nil {
 		for _, err := range image.ValidateBasis(b) {
 			errs = append(errs, fmt.Errorf("base_image.%s", err))
 		}
@@ -64,7 +64,7 @@ func ValidateNote(n *gpb.Note) error {
 		}
 	}
 
-	if d := n.GetDeployable(); d != nil {
+	if d := n.GetDeployment(); d != nil {
 		for _, err := range deployment.ValidateDeployable(d) {
 			errs = append(errs, fmt.Errorf("deplyable.%s", err))
 		}
@@ -76,7 +76,7 @@ func ValidateNote(n *gpb.Note) error {
 		}
 	}
 
-	if a := n.GetAttestationAuthority(); a != nil {
+	if a := n.GetAttestation(); a != nil {
 		for _, err := range attestation.ValidateAuthority(a) {
 			errs = append(errs, fmt.Errorf("attestation_authority.%s", err))
 		}
@@ -121,13 +121,13 @@ func ValidateOccurrence(o *gpb.Occurrence) error {
 		}
 	}
 
-	if i := o.GetDerivedImage(); i != nil {
+	if i := o.GetImage(); i != nil {
 		for _, err := range image.ValidateDetails(i) {
 			errs = append(errs, fmt.Errorf("derived_image.%s", err))
 		}
 	}
 
-	if i := o.GetInstallation(); i != nil {
+	if i := o.GetPackage(); i != nil {
 		for _, err := range pkg.ValidateDetails(i) {
 			errs = append(errs, fmt.Errorf("installation.%s", err))
 		}
@@ -139,7 +139,7 @@ func ValidateOccurrence(o *gpb.Occurrence) error {
 		}
 	}
 
-	if i := o.GetDiscovered(); i != nil {
+	if i := o.GetDiscovery(); i != nil {
 		for _, err := range discovery.ValidateDetails(i) {
 			errs = append(errs, fmt.Errorf("discovered.%s", err))
 		}
