@@ -20,7 +20,6 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 	gpb "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto"
-	vpb "github.com/grafeas/grafeas/proto/v1/vulnerability_go_proto"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -847,9 +846,9 @@ func vulnzNote(t *testing.T) *gpb.Note {
 	t.Helper()
 	return &gpb.Note{
 		Type: &gpb.Note_Vulnerability{
-			Vulnerability: &vpb.Vulnerability{
-				Severity: vpb.Severity_CRITICAL,
-				Details: []*vpb.Vulnerability_Detail{
+			Vulnerability: &gpb.VulnerabilityNote{
+				Severity: gpb.Severity_CRITICAL,
+				Details: []*gpb.VulnerabilityNote_Detail{
 					{
 						CpeUri:       "cpe:/o:debian:debian_linux:7",
 						Package:      "debian",
@@ -867,9 +866,9 @@ func invalidVulnzNote(t *testing.T) *gpb.Note {
 	t.Helper()
 	return &gpb.Note{
 		Type: &gpb.Note_Vulnerability{
-			Vulnerability: &vpb.Vulnerability{
-				Severity: vpb.Severity_CRITICAL,
-				Details: []*vpb.Vulnerability_Detail{
+			Vulnerability: &gpb.VulnerabilityNote{
+				Severity: gpb.Severity_CRITICAL,
+				Details: []*gpb.VulnerabilityNote_Detail{
 					{},
 				},
 			},

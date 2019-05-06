@@ -20,9 +20,6 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 	gpb "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto"
-	pkgpb "github.com/grafeas/grafeas/proto/v1/package_go_proto"
-	provpb "github.com/grafeas/grafeas/proto/v1/provenance_go_proto"
-	vpb "github.com/grafeas/grafeas/proto/v1/vulnerability_go_proto"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -801,12 +798,12 @@ func TestGetVulnerabilityOccurrencesSummary(t *testing.T) {
 				Resource: &gpb.Resource{
 					Name: "debian9",
 					Uri:  "https://eu.gcr.io/consumer1/debian9@sha256:dbc96ed51bc598faeec0901bad307ebb5d1d7259b33e2d7d7296c28f439dc777",
-					ContentHash: &provpb.Hash{
-						Type:  provpb.Hash_SHA256,
+					ContentHash: &gpb.Hash{
+						Type:  gpb.Hash_SHA256,
 						Value: []byte("dbc96ed51bc598faeec0901bad307ebb5d1d7259b33e2d7d7296c28f439dc777"),
 					},
 				},
-				Severity:     vpb.Severity_CRITICAL,
+				Severity:     gpb.Severity_CRITICAL,
 				FixableCount: 1,
 				TotalCount:   3,
 			},
@@ -814,12 +811,12 @@ func TestGetVulnerabilityOccurrencesSummary(t *testing.T) {
 				Resource: &gpb.Resource{
 					Name: "debian9",
 					Uri:  "https://eu.gcr.io/consumer1/debian9@sha256:dbc96ed51bc598faeec0901bad307ebb5d1d7259b33e2d7d7296c28f439dc777",
-					ContentHash: &provpb.Hash{
-						Type:  provpb.Hash_SHA256,
+					ContentHash: &gpb.Hash{
+						Type:  gpb.Hash_SHA256,
 						Value: []byte("dbc96ed51bc598faeec0901bad307ebb5d1d7259b33e2d7d7296c28f439dc777"),
 					},
 				},
-				Severity:     vpb.Severity_LOW,
+				Severity:     gpb.Severity_LOW,
 				FixableCount: 4,
 				TotalCount:   10,
 			},
@@ -901,20 +898,20 @@ func vulnzOcc(t *testing.T, pID, noteName, imageName string) *gpb.Occurrence {
 		},
 		NoteName: noteName,
 		Details: &gpb.Occurrence_Vulnerability{
-			Vulnerability: &vpb.Details{
-				PackageIssue: []*vpb.PackageIssue{
+			Vulnerability: &gpb.VulnerabilityOccurrence{
+				PackageIssue: []*gpb.PackageIssue{
 					{
 						AffectedCpeUri:  "cpe:/o:debian:debian_linux:8",
 						AffectedPackage: "abc",
-						AffectedVersion: &pkgpb.Version{
+						AffectedVersion: &gpb.Version{
 							Name: "0.2.0",
-							Kind: pkgpb.Version_NORMAL,
+							Kind: gpb.Version_NORMAL,
 						},
 						FixedCpeUri:  "cpe:/o:debian:debian_linux:8",
 						FixedPackage: "abc",
-						FixedVersion: &pkgpb.Version{
+						FixedVersion: &gpb.Version{
 							Name: "0.2.0",
-							Kind: pkgpb.Version_NORMAL,
+							Kind: gpb.Version_NORMAL,
 						},
 					},
 				},
@@ -930,20 +927,20 @@ func invalidVulnzOcc(t *testing.T, pID, noteName string) *gpb.Occurrence {
 	return &gpb.Occurrence{
 		NoteName: noteName,
 		Details: &gpb.Occurrence_Vulnerability{
-			Vulnerability: &vpb.Details{
-				PackageIssue: []*vpb.PackageIssue{
+			Vulnerability: &gpb.VulnerabilityOccurrence{
+				PackageIssue: []*gpb.PackageIssue{
 					{
 						AffectedCpeUri:  "cpe:/o:debian:debian_linux:8",
 						AffectedPackage: "abc",
-						AffectedVersion: &pkgpb.Version{
+						AffectedVersion: &gpb.Version{
 							Name: "0.2.0",
-							Kind: pkgpb.Version_NORMAL,
+							Kind: gpb.Version_NORMAL,
 						},
 						FixedCpeUri:  "cpe:/o:debian:debian_linux:8",
 						FixedPackage: "abc",
-						FixedVersion: &pkgpb.Version{
+						FixedVersion: &gpb.Version{
 							Name: "0.2.0",
-							Kind: pkgpb.Version_NORMAL,
+							Kind: gpb.Version_NORMAL,
 						},
 					},
 				},

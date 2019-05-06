@@ -20,12 +20,11 @@ import (
 	"errors"
 	"fmt"
 
-	apb "github.com/grafeas/grafeas/proto/v1/attestation_go_proto"
-	cpb "github.com/grafeas/grafeas/proto/v1/common_go_proto"
+	gpb "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto"
 )
 
 // ValidateAuthority validates that an authority has all its required fields filled in.
-func ValidateAuthority(a *apb.Authority) []error {
+func ValidateAuthority(a *gpb.AttestationNote) []error {
 	errs := []error{}
 
 	if h := a.GetHint(); h != nil {
@@ -37,7 +36,7 @@ func ValidateAuthority(a *apb.Authority) []error {
 	return errs
 }
 
-func validateHint(h *apb.Authority_Hint) []error {
+func validateHint(h *gpb.AttestationNote_Hint) []error {
 	errs := []error{}
 
 	if h.GetHumanReadableName() == "" {
@@ -48,21 +47,7 @@ func validateHint(h *apb.Authority_Hint) []error {
 }
 
 // ValidateDetails validates that a details has all its required fields filled in.
-func ValidateDetails(d *apb.Details) []error {
-	errs := []error{}
-
-	if a := d.GetAttestation(); a == nil {
-		errs = append(errs, errors.New("attestation is required"))
-	} else {
-		for _, err := range validateAttestation(a) {
-			errs = append(errs, fmt.Errorf("attestation.%s", err))
-		}
-	}
-
-	return errs
-}
-
-func validateAttestation(a *apb.Attestation) []error {
+func ValidateDetails(a *gpb.AttestationOccurrence) []error {
 	errs := []error{}
 
 	if sp := a.GetSerializedPayload(); sp == nil {
@@ -78,7 +63,7 @@ func validateAttestation(a *apb.Attestation) []error {
 	return errs
 }
 
-func validateSignatures(signatures []*cpb.Signature) []error {
+func validateSignatures(signatures []*gpb.Signature) []error {
 	errs := []error{}
 
 	for _, s := range signatures {
