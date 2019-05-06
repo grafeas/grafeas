@@ -23,8 +23,8 @@ import (
 	gpb "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto"
 )
 
-// ValidateAuthority validates that an authority has all its required fields filled in.
-func ValidateAuthority(a *gpb.AttestationNote) []error {
+// ValidateNote validates that an authority has all its required fields filled in.
+func ValidateNote(a *gpb.AttestationNote) []error {
 	errs := []error{}
 
 	if h := a.GetHint(); h != nil {
@@ -46,8 +46,8 @@ func validateHint(h *gpb.AttestationNote_Hint) []error {
 	return errs
 }
 
-// ValidateDetails validates that a details has all its required fields filled in.
-func ValidateDetails(a *gpb.AttestationOccurrence) []error {
+// ValidateOccurrence validates that a details has all its required fields filled in.
+func ValidateOccurrence(a *gpb.AttestationOccurrence) []error {
 	errs := []error{}
 
 	if sp := a.GetSerializedPayload(); sp == nil {

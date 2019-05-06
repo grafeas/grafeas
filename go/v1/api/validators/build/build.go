@@ -24,8 +24,8 @@ import (
 	gpb "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto"
 )
 
-// ValidateBuild validates that a build has all its required fields filled in.
-func ValidateBuild(b *gpb.BuildNote) []error {
+// ValidateNote validates that a build has all its required fields filled in.
+func ValidateNote(b *gpb.BuildNote) []error {
 	errs := []error{}
 
 	if b.GetBuilderVersion() == "" {
@@ -51,8 +51,8 @@ func validateSignature(s *gpb.BuildSignature) []error {
 	return errs
 }
 
-// ValidateDetails validates that a details has all its required fields filled in.
-func ValidateDetails(d *gpb.BuildOccurrence) []error {
+// ValidateOccurrence validates that a details has all its required fields filled in.
+func ValidateOccurrence(d *gpb.BuildOccurrence) []error {
 	errs := []error{}
 
 	if p := d.GetProvenance(); p == nil {

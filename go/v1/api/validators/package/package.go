@@ -23,8 +23,8 @@ import (
 	gpb "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto"
 )
 
-// ValidatePackage validates that a package has all its required fields filled in.
-func ValidatePackage(p *gpb.PackageNote) []error {
+// ValidateNote validates that a package has all its required fields filled in.
+func ValidateNote(p *gpb.PackageNote) []error {
 	errs := []error{}
 
 	if p.GetName() == "" {
@@ -75,8 +75,8 @@ func ValidateVersion(v *gpb.Version) []error {
 	return errs
 }
 
-// ValidateDetails validates that a details has all its required fields filled in.
-func ValidateDetails(d *gpb.PackageOccurrence) []error {
+// ValidateOccurrence validates that a details has all its required fields filled in.
+func ValidateOccurrence(d *gpb.PackageOccurrence) []error {
 	errs := []error{}
 
 	if i := d.GetInstallation(); i == nil {

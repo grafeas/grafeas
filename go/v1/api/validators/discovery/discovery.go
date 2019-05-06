@@ -22,8 +22,8 @@ import (
 	gpb "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto"
 )
 
-// ValidateDiscovery validates that a discovery has all its required fields filled in.
-func ValidateDiscovery(d *gpb.DiscoveryNote) []error {
+// ValidateNote validates that a discovery has all its required fields filled in.
+func ValidateNote(d *gpb.DiscoveryNote) []error {
 	errs := []error{}
 
 	if d.GetAnalysisKind() == gpb.NoteKind_NOTE_KIND_UNSPECIFIED {
@@ -33,8 +33,8 @@ func ValidateDiscovery(d *gpb.DiscoveryNote) []error {
 	return errs
 }
 
-// ValidateDetails validates that a details has all its required fields filled in.
-func ValidateDetails(d *gpb.DiscoveryOccurrence) []error {
+// ValidateOccurrence validates that a details has all its required fields filled in.
+func ValidateOccurrence(d *gpb.DiscoveryOccurrence) []error {
 	errs := []error{}
 	return errs
 }

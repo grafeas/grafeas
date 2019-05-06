@@ -23,8 +23,8 @@ import (
 	gpb "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto"
 )
 
-// ValidateDeployable validates that a deployable has all its required fields filled in.
-func ValidateDeployable(d *gpb.DeploymentNote) []error {
+// ValidateNote validates that a deployable has all its required fields filled in.
+func ValidateNote(d *gpb.DeploymentNote) []error {
 	errs := []error{}
 
 	if r := d.GetResourceUri(); r == nil {
@@ -42,8 +42,8 @@ func ValidateDeployable(d *gpb.DeploymentNote) []error {
 	return errs
 }
 
-// ValidateDetails validates that a details has all its required fields filled in.
-func ValidateDetails(d *gpb.DeploymentOccurrence) []error {
+// ValidateOccurrence validates that a details has all its required fields filled in.
+func ValidateOccurrence(d *gpb.DeploymentOccurrence) []error {
 	errs := []error{}
 
 	if d.GetDeployTime() == nil {

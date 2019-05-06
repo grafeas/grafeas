@@ -20,7 +20,7 @@ import (
 	gpb "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto"
 )
 
-func TestValidateBuild(t *testing.T) {
+func TestValidateNote(t *testing.T) {
 	tests := []struct {
 		desc     string
 		b        *gpb.BuildNote
@@ -52,13 +52,13 @@ func TestValidateBuild(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		errs := ValidateBuild(tt.b)
+		errs := ValidateNote(tt.b)
 		t.Logf("%q: error(s): %v", tt.desc, errs)
 		if len(errs) == 0 && tt.wantErrs {
-			t.Errorf("%q: ValidateBuild(%+v): got success, want error(s)", tt.desc, tt.b)
+			t.Errorf("%q: ValidateNote(%+v): got success, want error(s)", tt.desc, tt.b)
 		}
 		if len(errs) > 0 && !tt.wantErrs {
-			t.Errorf("%q: ValidateBuild(%+v): got error(s) %v, want success", tt.desc, tt.b, errs)
+			t.Errorf("%q: ValidateNote(%+v): got error(s) %v, want success", tt.desc, tt.b, errs)
 		}
 	}
 }
@@ -95,7 +95,7 @@ func TestValidateSignature(t *testing.T) {
 	}
 }
 
-func TestValidateDetails(t *testing.T) {
+func TestValidateOccurrence(t *testing.T) {
 	tests := []struct {
 		desc     string
 		d        *gpb.BuildOccurrence
@@ -118,13 +118,13 @@ func TestValidateDetails(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		errs := ValidateDetails(tt.d)
+		errs := ValidateOccurrence(tt.d)
 		t.Logf("%q: error(s): %v", tt.desc, errs)
 		if len(errs) == 0 && tt.wantErrs {
-			t.Errorf("%q: ValidateDetails(%+v): got success, want error(s)", tt.desc, tt.d)
+			t.Errorf("%q: ValidateOccurrence(%+v): got success, want error(s)", tt.desc, tt.d)
 		}
 		if len(errs) > 0 && !tt.wantErrs {
-			t.Errorf("%q: ValidateDetails(%+v): got error(s) %v, want success", tt.desc, tt.d, errs)
+			t.Errorf("%q: ValidateOccurrence(%+v): got error(s) %v, want success", tt.desc, tt.d, errs)
 		}
 	}
 }
