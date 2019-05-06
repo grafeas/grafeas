@@ -54,8 +54,8 @@ func TestValidateNote(t *testing.T) {
 		{
 			desc: "invalid base image, want error",
 			n: &gpb.Note{
-				Type: &gpb.Note_BaseImage{
-					BaseImage: &gpb.ImageNote{},
+				Type: &gpb.Note_Image{
+					Image: &gpb.ImageNote{},
 				},
 			},
 			wantErr: true,
@@ -72,8 +72,8 @@ func TestValidateNote(t *testing.T) {
 		{
 			desc: "invalid deployable, want error",
 			n: &gpb.Note{
-				Type: &gpb.Note_Deployable{
-					Deployable: &gpb.DeploymentNote{},
+				Type: &gpb.Note_Deployment{
+					Deployment: &gpb.DeploymentNote{},
 				},
 			},
 			wantErr: true,
@@ -90,8 +90,8 @@ func TestValidateNote(t *testing.T) {
 		{
 			desc: "invalid attestation authority, want error",
 			n: &gpb.Note{
-				Type: &gpb.Note_AttestationAuthority{
-					AttestationAuthority: &gpb.AttestationNote{
+				Type: &gpb.Note_Attestation{
+					Attestation: &gpb.AttestationNote{
 						Hint: &gpb.AttestationNote_Hint{},
 					},
 				},
@@ -188,8 +188,8 @@ func TestValidateOccurrence(t *testing.T) {
 		{
 			desc: "invalid derived image, want error",
 			o: &gpb.Occurrence{
-				Details: &gpb.Occurrence_DerivedImage{
-					DerivedImage: &gpb.ImageOccurrence{},
+				Details: &gpb.Occurrence_Image{
+					Image: &gpb.ImageOccurrence{},
 				},
 			},
 			wantErr: true,
@@ -197,8 +197,8 @@ func TestValidateOccurrence(t *testing.T) {
 		{
 			desc: "invalid installation, want error",
 			o: &gpb.Occurrence{
-				Details: &gpb.Occurrence_Installation{
-					Installation: &gpb.PackageOccurrence{},
+				Details: &gpb.Occurrence_Package{
+					Package: &gpb.PackageOccurrence{},
 				},
 			},
 			wantErr: true,
@@ -215,8 +215,8 @@ func TestValidateOccurrence(t *testing.T) {
 		{
 			desc: "invalid discovered, want error",
 			o: &gpb.Occurrence{
-				Details: &gpb.Occurrence_Discovered{
-					Discovered: &gpb.DiscoveryOccurrence{},
+				Details: &gpb.Occurrence_Discovery{
+					Discovery: &gpb.DiscoveryOccurrence{},
 				},
 			},
 			wantErr: true,

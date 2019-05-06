@@ -213,13 +213,13 @@ message Occurrence {
     grafeas.v1.BuildOccurrence build = 9;
     // Describes how this resource derives from the basis in the associated
     // note.
-    grafeas.v1.ImageOccurrence derived_image = 10;
+    grafeas.v1.ImageOccurrence image = 10;
     // Describes the installation of a package on the linked resource.
-    grafeas.v1.PackageOccurrence installation = 11;
+    grafeas.v1.PackageOccurrence package = 11;
     // Describes the deployment of an artifact on a runtime.
     grafeas.v1.DeploymentOccurrence deployment = 12;
     // Describes when a resource was discovered.
-    grafeas.v1.DiscoveryOccurrence discovered = 13;
+    grafeas.v1.DiscoveryOccurrence discovery = 13;
     // Describes an attestation of an artifact.
     grafeas.v1.AttestationOccurrence attestation = 14;
   }
@@ -283,15 +283,15 @@ message Note {
     // A note describing build provenance for a verifiable build.
     grafeas.v1.BuildNote build = 11;
     // A note describing a base image.
-    grafeas.v1.ImageNote base_image = 12;
+    grafeas.v1.ImageNote image = 12;
     // A note describing a package hosted by various package managers.
     grafeas.v1.PackageNote package = 13;
     // A note describing something that can be deployed.
-    grafeas.v1.DeploymentNote deployable = 14;
+    grafeas.v1.DeploymentNote deployment = 14;
     // A note describing the initial analysis of a resource.
     grafeas.v1.DiscoveryNote discovery = 15;
     // A note describing an attestation role.
-    grafeas.v1.AttestationNote attestation_authority = 16;
+    grafeas.v1.AttestationNote attestation = 16;
   }
 
   // next_id = 17;
