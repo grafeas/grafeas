@@ -17,34 +17,33 @@ package build
 import (
 	"testing"
 
-	bpb "github.com/grafeas/grafeas/proto/v1/build_go_proto"
-	ppb "github.com/grafeas/grafeas/proto/v1/provenance_go_proto"
+	gpb "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto"
 )
 
-func TestValidateBuild(t *testing.T) {
+func TestValidateNote(t *testing.T) {
 	tests := []struct {
 		desc     string
-		b        *bpb.Build
+		b        *gpb.BuildNote
 		wantErrs bool
 	}{
 		{
 			desc:     "missing builder version, want error(s)",
-			b:        &bpb.Build{},
+			b:        &gpb.BuildNote{},
 			wantErrs: true,
 		},
 		{
 			desc: "invalid signature, want error(s)",
-			b: &bpb.Build{
+			b: &gpb.BuildNote{
 				BuilderVersion: "1.1.1",
-				Signature:      &bpb.BuildSignature{},
+				Signature:      &gpb.BuildSignature{},
 			},
 			wantErrs: true,
 		},
 		{
 			desc: "valid signature, want success",
-			b: &bpb.Build{
+			b: &gpb.BuildNote{
 				BuilderVersion: "1.1.1",
-				Signature: &bpb.BuildSignature{
+				Signature: &gpb.BuildSignature{
 					Signature: []byte("YmVhciByYXdyIHJhd3I="),
 				},
 			},
@@ -53,13 +52,13 @@ func TestValidateBuild(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		errs := ValidateBuild(tt.b)
+		errs := ValidateNote(tt.b)
 		t.Logf("%q: error(s): %v", tt.desc, errs)
 		if len(errs) == 0 && tt.wantErrs {
-			t.Errorf("%q: ValidateBuild(%+v): got success, want error(s)", tt.desc, tt.b)
+			t.Errorf("%q: ValidateNote(%+v): got success, want error(s)", tt.desc, tt.b)
 		}
 		if len(errs) > 0 && !tt.wantErrs {
-			t.Errorf("%q: ValidateBuild(%+v): got error(s) %v, want success", tt.desc, tt.b, errs)
+			t.Errorf("%q: ValidateNote(%+v): got error(s) %v, want success", tt.desc, tt.b, errs)
 		}
 	}
 }
@@ -67,17 +66,17 @@ func TestValidateBuild(t *testing.T) {
 func TestValidateSignature(t *testing.T) {
 	tests := []struct {
 		desc     string
-		s        *bpb.BuildSignature
+		s        *gpb.BuildSignature
 		wantErrs bool
 	}{
 		{
 			desc:     "missing signature, want error(s)",
-			s:        &bpb.BuildSignature{},
+			s:        &gpb.BuildSignature{},
 			wantErrs: true,
 		},
 		{
 			desc: "valid signature, want success",
-			s: &bpb.BuildSignature{
+			s: &gpb.BuildSignature{
 				Signature: []byte("YmVhciByYXdyIHJhd3I="),
 			},
 			wantErrs: false,
@@ -96,21 +95,21 @@ func TestValidateSignature(t *testing.T) {
 	}
 }
 
-func TestValidateDetails(t *testing.T) {
+func TestValidateOccurrence(t *testing.T) {
 	tests := []struct {
 		desc     string
-		d        *bpb.Details
+		d        *gpb.BuildOccurrence
 		wantErrs bool
 	}{
 		{
 			desc:     "missing provenance, want error(s)",
-			d:        &bpb.Details{},
+			d:        &gpb.BuildOccurrence{},
 			wantErrs: true,
 		},
 		{
 			desc: "valid details, want success",
-			d: &bpb.Details{
-				Provenance: &ppb.BuildProvenance{
+			d: &gpb.BuildOccurrence{
+				Provenance: &gpb.BuildProvenance{
 					Id: "8c0b1847-f78b-4bf7-8b2e-38e1bb48b125",
 				},
 			},
@@ -119,13 +118,13 @@ func TestValidateDetails(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		errs := ValidateDetails(tt.d)
+		errs := ValidateOccurrence(tt.d)
 		t.Logf("%q: error(s): %v", tt.desc, errs)
 		if len(errs) == 0 && tt.wantErrs {
-			t.Errorf("%q: ValidateDetails(%+v): got success, want error(s)", tt.desc, tt.d)
+			t.Errorf("%q: ValidateOccurrence(%+v): got success, want error(s)", tt.desc, tt.d)
 		}
 		if len(errs) > 0 && !tt.wantErrs {
-			t.Errorf("%q: ValidateDetails(%+v): got error(s) %v, want success", tt.desc, tt.d, errs)
+			t.Errorf("%q: ValidateOccurrence(%+v): got error(s) %v, want success", tt.desc, tt.d, errs)
 		}
 	}
 }

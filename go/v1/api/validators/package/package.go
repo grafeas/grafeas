@@ -20,11 +20,11 @@ import (
 	"errors"
 	"fmt"
 
-	ppb "github.com/grafeas/grafeas/proto/v1/package_go_proto"
+	gpb "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto"
 )
 
-// ValidatePackage validates that a package has all its required fields filled in.
-func ValidatePackage(p *ppb.Package) []error {
+// ValidateNote validates that a package has all its required fields filled in.
+func ValidateNote(p *gpb.PackageNote) []error {
 	errs := []error{}
 
 	if p.GetName() == "" {
@@ -44,7 +44,7 @@ func ValidatePackage(p *ppb.Package) []error {
 	return errs
 }
 
-func validateDistribution(d *ppb.Distribution) []error {
+func validateDistribution(d *gpb.Distribution) []error {
 	errs := []error{}
 
 	if d.GetCpeUri() == "" {
@@ -61,22 +61,22 @@ func validateDistribution(d *ppb.Distribution) []error {
 }
 
 // ValidateVersion validates that a version has all its required fields filled in.
-func ValidateVersion(v *ppb.Version) []error {
+func ValidateVersion(v *gpb.Version) []error {
 	errs := []error{}
 
 	// MAXIMUM and MINIMUM version kinds are valid without a Name
-	if v.GetKind() == ppb.Version_NORMAL && v.GetName() == "" {
+	if v.GetKind() == gpb.Version_NORMAL && v.GetName() == "" {
 		errs = append(errs, errors.New("name is required"))
 	}
-	if v.GetKind() == ppb.Version_VERSION_KIND_UNSPECIFIED {
+	if v.GetKind() == gpb.Version_VERSION_KIND_UNSPECIFIED {
 		errs = append(errs, errors.New("kind is required"))
 	}
 
 	return errs
 }
 
-// ValidateDetails validates that a details has all its required fields filled in.
-func ValidateDetails(d *ppb.Details) []error {
+// ValidateOccurrence validates that a details has all its required fields filled in.
+func ValidateOccurrence(d *gpb.PackageOccurrence) []error {
 	errs := []error{}
 
 	if i := d.GetInstallation(); i == nil {
@@ -90,7 +90,7 @@ func ValidateDetails(d *ppb.Details) []error {
 	return errs
 }
 
-func validateInstallation(i *ppb.Installation) []error {
+func validateInstallation(i *gpb.Installation) []error {
 	errs := []error{}
 
 	if loc := i.GetLocation(); loc == nil {
@@ -112,7 +112,7 @@ func validateInstallation(i *ppb.Installation) []error {
 	return errs
 }
 
-func validateLocation(l *ppb.Location) []error {
+func validateLocation(l *gpb.Location) []error {
 	errs := []error{}
 
 	if l.GetCpeUri() == "" {

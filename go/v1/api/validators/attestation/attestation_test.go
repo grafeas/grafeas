@@ -17,27 +17,26 @@ package attestation
 import (
 	"testing"
 
-	apb "github.com/grafeas/grafeas/proto/v1/attestation_go_proto"
-	cpb "github.com/grafeas/grafeas/proto/v1/common_go_proto"
+	gpb "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto"
 )
 
-func TestValidateAuthority(t *testing.T) {
+func TestValidateNote(t *testing.T) {
 	tests := []struct {
 		desc     string
-		a        *apb.Authority
+		a        *gpb.AttestationNote
 		wantErrs bool
 	}{
 		{
 			desc: "invalid hint, want error(s)",
-			a: &apb.Authority{
-				Hint: &apb.Authority_Hint{},
+			a: &gpb.AttestationNote{
+				Hint: &gpb.AttestationNote_Hint{},
 			},
 			wantErrs: true,
 		},
 		{
 			desc: "valid authority, want success",
-			a: &apb.Authority{
-				Hint: &apb.Authority_Hint{
+			a: &gpb.AttestationNote{
+				Hint: &gpb.AttestationNote_Hint{
 					HumanReadableName: "QA tests run",
 				},
 			},
@@ -46,13 +45,13 @@ func TestValidateAuthority(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		errs := ValidateAuthority(tt.a)
+		errs := ValidateNote(tt.a)
 		t.Logf("%q: error(s): %v", tt.desc, errs)
 		if len(errs) == 0 && tt.wantErrs {
-			t.Errorf("%q: ValidateAuthority(%+v): got success, want error(s)", tt.desc, tt.a)
+			t.Errorf("%q: ValidateNote(%+v): got success, want error(s)", tt.desc, tt.a)
 		}
 		if len(errs) > 0 && !tt.wantErrs {
-			t.Errorf("%q: ValidateAuthority(%+v): got error(s) %v, want success", tt.desc, tt.a, errs)
+			t.Errorf("%q: ValidateNote(%+v): got error(s) %v, want success", tt.desc, tt.a, errs)
 		}
 	}
 }
@@ -60,17 +59,17 @@ func TestValidateAuthority(t *testing.T) {
 func TestValidateHint(t *testing.T) {
 	tests := []struct {
 		desc     string
-		h        *apb.Authority_Hint
+		h        *gpb.AttestationNote_Hint
 		wantErrs bool
 	}{
 		{
 			desc:     "invalid hint, want error(s)",
-			h:        &apb.Authority_Hint{},
+			h:        &gpb.AttestationNote_Hint{},
 			wantErrs: true,
 		},
 		{
 			desc: "valid hint, want success",
-			h: &apb.Authority_Hint{
+			h: &gpb.AttestationNote_Hint{
 				HumanReadableName: "QA tests run",
 			},
 			wantErrs: false,
@@ -89,69 +88,22 @@ func TestValidateHint(t *testing.T) {
 	}
 }
 
-func TestValidateDetails(t *testing.T) {
+func TestValidateOccurrence(t *testing.T) {
 	tests := []struct {
 		desc     string
-		d        *apb.Details
-		wantErrs bool
-	}{
-		{
-			desc:     "missing attestation, want error(s)",
-			d:        &apb.Details{},
-			wantErrs: true,
-		},
-		{
-			desc: "invalid attestation, want error(s)",
-			d: &apb.Details{
-				Attestation: &apb.Attestation{},
-			},
-			wantErrs: true,
-		},
-		{
-			desc: "valid details, want success",
-			d: &apb.Details{
-				Attestation: &apb.Attestation{
-					SerializedPayload: []byte("bar"),
-					Signatures: []*cpb.Signature{
-						{
-							Signature:   []byte("foo"),
-							PublicKeyId: "public-key",
-						},
-					},
-				},
-			},
-			wantErrs: false,
-		},
-	}
-
-	for _, tt := range tests {
-		errs := ValidateDetails(tt.d)
-		t.Logf("%q: error(s): %v", tt.desc, errs)
-		if len(errs) == 0 && tt.wantErrs {
-			t.Errorf("%q: ValidateDetails(%+v): got success, want error(s)", tt.desc, tt.d)
-		}
-		if len(errs) > 0 && !tt.wantErrs {
-			t.Errorf("%q: ValidateDetails(%+v): got error(s) %v, want success", tt.desc, tt.d, errs)
-		}
-	}
-}
-
-func TestValidateAttestation(t *testing.T) {
-	tests := []struct {
-		desc     string
-		a        *apb.Attestation
+		a        *gpb.AttestationOccurrence
 		wantErrs bool
 	}{
 		{
 			desc:     "missing serialized payload, want error(s)",
-			a:        &apb.Attestation{},
+			a:        &gpb.AttestationOccurrence{},
 			wantErrs: true,
 		},
 		{
 			desc: "missing public key ID in signature, want error(s)",
-			a: &apb.Attestation{
+			a: &gpb.AttestationOccurrence{
 				SerializedPayload: []byte("bar"),
-				Signatures: []*cpb.Signature{
+				Signatures: []*gpb.Signature{
 					{
 						Signature: []byte("foo"),
 					},
@@ -161,9 +113,9 @@ func TestValidateAttestation(t *testing.T) {
 		},
 		{
 			desc: "missing signature, want error(s)",
-			a: &apb.Attestation{
+			a: &gpb.AttestationOccurrence{
 				SerializedPayload: []byte("bar"),
-				Signatures: []*cpb.Signature{
+				Signatures: []*gpb.Signature{
 					{
 						PublicKeyId: "public-key",
 					},
@@ -173,9 +125,9 @@ func TestValidateAttestation(t *testing.T) {
 		},
 		{
 			desc: "one invalid signature in attestation, want error(s)",
-			a: &apb.Attestation{
+			a: &gpb.AttestationOccurrence{
 				SerializedPayload: []byte("bar"),
-				Signatures: []*cpb.Signature{
+				Signatures: []*gpb.Signature{
 					{
 						Signature:   []byte("foo"),
 						PublicKeyId: "public-key",
@@ -189,9 +141,9 @@ func TestValidateAttestation(t *testing.T) {
 		},
 		{
 			desc: "valid attestation, want success",
-			a: &apb.Attestation{
+			a: &gpb.AttestationOccurrence{
 				SerializedPayload: []byte("bar"),
-				Signatures: []*cpb.Signature{
+				Signatures: []*gpb.Signature{
 					{
 						Signature:   []byte("foo"),
 						PublicKeyId: "public-key",
@@ -203,13 +155,13 @@ func TestValidateAttestation(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		errs := validateAttestation(tt.a)
+		errs := ValidateOccurrence(tt.a)
 		t.Logf("%q: error(s): %v", tt.desc, errs)
 		if len(errs) == 0 && tt.wantErrs {
-			t.Errorf("%q: validateAttestation(%+v): got success, want error(s)", tt.desc, tt.a)
+			t.Errorf("%q: ValidateOccurrence(%+v): got success, want error(s)", tt.desc, tt.a)
 		}
 		if len(errs) > 0 && !tt.wantErrs {
-			t.Errorf("%q: validateAttestation(%+v): got error(s) %v, want success", tt.desc, tt.a, errs)
+			t.Errorf("%q: ValidateOccurrence(%+v): got error(s) %v, want success", tt.desc, tt.a, errs)
 		}
 	}
 }

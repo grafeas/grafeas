@@ -20,11 +20,11 @@ import (
 	"errors"
 	"fmt"
 
-	dpb "github.com/grafeas/grafeas/proto/v1/deployment_go_proto"
+	gpb "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto"
 )
 
-// ValidateDeployable validates that a deployable has all its required fields filled in.
-func ValidateDeployable(d *dpb.Deployable) []error {
+// ValidateNote validates that a deployable has all its required fields filled in.
+func ValidateNote(d *gpb.DeploymentNote) []error {
 	errs := []error{}
 
 	if r := d.GetResourceUri(); r == nil {
@@ -42,22 +42,8 @@ func ValidateDeployable(d *dpb.Deployable) []error {
 	return errs
 }
 
-// ValidateDetails validates that a details has all its required fields filled in.
-func ValidateDetails(d *dpb.Details) []error {
-	errs := []error{}
-
-	if dp := d.GetDeployment(); dp == nil {
-		errs = append(errs, errors.New("deployment is required"))
-	} else {
-		for _, err := range validateDeployment(dp) {
-			errs = append(errs, fmt.Errorf("deployment.%s", err))
-		}
-	}
-
-	return errs
-}
-
-func validateDeployment(d *dpb.Deployment) []error {
+// ValidateOccurrence validates that a details has all its required fields filled in.
+func ValidateOccurrence(d *gpb.DeploymentOccurrence) []error {
 	errs := []error{}
 
 	if d.GetDeployTime() == nil {

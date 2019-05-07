@@ -17,14 +17,7 @@ package grafeas
 import (
 	"testing"
 
-	apb "github.com/grafeas/grafeas/proto/v1/attestation_go_proto"
-	bpb "github.com/grafeas/grafeas/proto/v1/build_go_proto"
-	deploymentpb "github.com/grafeas/grafeas/proto/v1/deployment_go_proto"
-	discoverypb "github.com/grafeas/grafeas/proto/v1/discovery_go_proto"
 	gpb "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto"
-	ipb "github.com/grafeas/grafeas/proto/v1/image_go_proto"
-	ppb "github.com/grafeas/grafeas/proto/v1/package_go_proto"
-	vpb "github.com/grafeas/grafeas/proto/v1/vulnerability_go_proto"
 )
 
 func TestValidateNote(t *testing.T) {
@@ -42,8 +35,8 @@ func TestValidateNote(t *testing.T) {
 			desc: "invalid vulnerability, want error",
 			n: &gpb.Note{
 				Type: &gpb.Note_Vulnerability{
-					Vulnerability: &vpb.Vulnerability{
-						Details: []*vpb.Vulnerability_Detail{nil},
+					Vulnerability: &gpb.VulnerabilityNote{
+						Details: []*gpb.VulnerabilityNote_Detail{nil},
 					},
 				},
 			},
@@ -53,7 +46,7 @@ func TestValidateNote(t *testing.T) {
 			desc: "invalid build, want error",
 			n: &gpb.Note{
 				Type: &gpb.Note_Build{
-					Build: &bpb.Build{},
+					Build: &gpb.BuildNote{},
 				},
 			},
 			wantErr: true,
@@ -61,8 +54,8 @@ func TestValidateNote(t *testing.T) {
 		{
 			desc: "invalid base image, want error",
 			n: &gpb.Note{
-				Type: &gpb.Note_BaseImage{
-					BaseImage: &ipb.Basis{},
+				Type: &gpb.Note_Image{
+					Image: &gpb.ImageNote{},
 				},
 			},
 			wantErr: true,
@@ -71,7 +64,7 @@ func TestValidateNote(t *testing.T) {
 			desc: "invalid package, want error",
 			n: &gpb.Note{
 				Type: &gpb.Note_Package{
-					Package: &ppb.Package{},
+					Package: &gpb.PackageNote{},
 				},
 			},
 			wantErr: true,
@@ -79,8 +72,8 @@ func TestValidateNote(t *testing.T) {
 		{
 			desc: "invalid deployable, want error",
 			n: &gpb.Note{
-				Type: &gpb.Note_Deployable{
-					Deployable: &deploymentpb.Deployable{},
+				Type: &gpb.Note_Deployment{
+					Deployment: &gpb.DeploymentNote{},
 				},
 			},
 			wantErr: true,
@@ -89,7 +82,7 @@ func TestValidateNote(t *testing.T) {
 			desc: "invalid discovery, want error",
 			n: &gpb.Note{
 				Type: &gpb.Note_Discovery{
-					Discovery: &discoverypb.Discovery{},
+					Discovery: &gpb.DiscoveryNote{},
 				},
 			},
 			wantErr: true,
@@ -97,9 +90,9 @@ func TestValidateNote(t *testing.T) {
 		{
 			desc: "invalid attestation authority, want error",
 			n: &gpb.Note{
-				Type: &gpb.Note_AttestationAuthority{
-					AttestationAuthority: &apb.Authority{
-						Hint: &apb.Authority_Hint{},
+				Type: &gpb.Note_Attestation{
+					Attestation: &gpb.AttestationNote{
+						Hint: &gpb.AttestationNote_Hint{},
 					},
 				},
 			},
@@ -109,10 +102,10 @@ func TestValidateNote(t *testing.T) {
 			desc: "valid note, want success",
 			n: &gpb.Note{
 				Type: &gpb.Note_Vulnerability{
-					Vulnerability: &vpb.Vulnerability{
-						Severity: vpb.Severity_CRITICAL,
-						Details: []*vpb.Vulnerability_Detail{
-							&vpb.Vulnerability_Detail{
+					Vulnerability: &gpb.VulnerabilityNote{
+						Severity: gpb.Severity_CRITICAL,
+						Details: []*gpb.VulnerabilityNote_Detail{
+							&gpb.VulnerabilityNote_Detail{
 								CpeUri:       "cpe:/o:debian:debian_linux:7",
 								Package:      "debian",
 								SeverityName: "LOW",
@@ -178,7 +171,7 @@ func TestValidateOccurrence(t *testing.T) {
 			desc: "invalid vulnerability, want error",
 			o: &gpb.Occurrence{
 				Details: &gpb.Occurrence_Vulnerability{
-					Vulnerability: &vpb.Details{},
+					Vulnerability: &gpb.VulnerabilityOccurrence{},
 				},
 			},
 			wantErr: true,
@@ -187,7 +180,7 @@ func TestValidateOccurrence(t *testing.T) {
 			desc: "invalid build, want error",
 			o: &gpb.Occurrence{
 				Details: &gpb.Occurrence_Build{
-					Build: &bpb.Details{},
+					Build: &gpb.BuildOccurrence{},
 				},
 			},
 			wantErr: true,
@@ -195,8 +188,8 @@ func TestValidateOccurrence(t *testing.T) {
 		{
 			desc: "invalid derived image, want error",
 			o: &gpb.Occurrence{
-				Details: &gpb.Occurrence_DerivedImage{
-					DerivedImage: &ipb.Details{},
+				Details: &gpb.Occurrence_Image{
+					Image: &gpb.ImageOccurrence{},
 				},
 			},
 			wantErr: true,
@@ -204,8 +197,8 @@ func TestValidateOccurrence(t *testing.T) {
 		{
 			desc: "invalid installation, want error",
 			o: &gpb.Occurrence{
-				Details: &gpb.Occurrence_Installation{
-					Installation: &ppb.Details{},
+				Details: &gpb.Occurrence_Package{
+					Package: &gpb.PackageOccurrence{},
 				},
 			},
 			wantErr: true,
@@ -214,7 +207,7 @@ func TestValidateOccurrence(t *testing.T) {
 			desc: "invalid deployment, want error",
 			o: &gpb.Occurrence{
 				Details: &gpb.Occurrence_Deployment{
-					Deployment: &deploymentpb.Details{},
+					Deployment: &gpb.DeploymentOccurrence{},
 				},
 			},
 			wantErr: true,
@@ -222,8 +215,8 @@ func TestValidateOccurrence(t *testing.T) {
 		{
 			desc: "invalid discovered, want error",
 			o: &gpb.Occurrence{
-				Details: &gpb.Occurrence_Discovered{
-					Discovered: &discoverypb.Details{},
+				Details: &gpb.Occurrence_Discovery{
+					Discovery: &gpb.DiscoveryOccurrence{},
 				},
 			},
 			wantErr: true,
@@ -232,7 +225,7 @@ func TestValidateOccurrence(t *testing.T) {
 			desc: "invalid attestation, want error",
 			o: &gpb.Occurrence{
 				Details: &gpb.Occurrence_Attestation{
-					Attestation: &apb.Details{},
+					Attestation: &gpb.AttestationOccurrence{},
 				},
 			},
 			wantErr: true,

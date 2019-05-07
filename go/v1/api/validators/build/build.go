@@ -21,11 +21,11 @@ import (
 	"fmt"
 
 	"github.com/grafeas/grafeas/go/v1/api/validators/provenance"
-	bpb "github.com/grafeas/grafeas/proto/v1/build_go_proto"
+	gpb "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto"
 )
 
-// ValidateBuild validates that a build has all its required fields filled in.
-func ValidateBuild(b *bpb.Build) []error {
+// ValidateNote validates that a build has all its required fields filled in.
+func ValidateNote(b *gpb.BuildNote) []error {
 	errs := []error{}
 
 	if b.GetBuilderVersion() == "" {
@@ -41,7 +41,7 @@ func ValidateBuild(b *bpb.Build) []error {
 	return errs
 }
 
-func validateSignature(s *bpb.BuildSignature) []error {
+func validateSignature(s *gpb.BuildSignature) []error {
 	errs := []error{}
 
 	if s.GetSignature() == nil {
@@ -51,8 +51,8 @@ func validateSignature(s *bpb.BuildSignature) []error {
 	return errs
 }
 
-// ValidateDetails validates that a details has all its required fields filled in.
-func ValidateDetails(d *bpb.Details) []error {
+// ValidateOccurrence validates that a details has all its required fields filled in.
+func ValidateOccurrence(d *gpb.BuildOccurrence) []error {
 	errs := []error{}
 
 	if p := d.GetProvenance(); p == nil {

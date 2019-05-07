@@ -17,25 +17,25 @@ package pkg
 import (
 	"testing"
 
-	ppb "github.com/grafeas/grafeas/proto/v1/package_go_proto"
+	gpb "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto"
 )
 
-func TestValidatePackage(t *testing.T) {
+func TestValidateNote(t *testing.T) {
 	tests := []struct {
 		desc     string
-		p        *ppb.Package
+		p        *gpb.PackageNote
 		wantErrs bool
 	}{
 		{
 			desc:     "missing name, want error(s)",
-			p:        &ppb.Package{},
+			p:        &gpb.PackageNote{},
 			wantErrs: true,
 		},
 		{
 			desc: "nil distribution, want error(s)",
-			p: &ppb.Package{
+			p: &gpb.PackageNote{
 				Name: "debian",
-				Distribution: []*ppb.Distribution{
+				Distribution: []*gpb.Distribution{
 					nil,
 				},
 			},
@@ -43,9 +43,9 @@ func TestValidatePackage(t *testing.T) {
 		},
 		{
 			desc: "invalid distribution, want error(s)",
-			p: &ppb.Package{
+			p: &gpb.PackageNote{
 				Name: "debian",
-				Distribution: []*ppb.Distribution{
+				Distribution: []*gpb.Distribution{
 					{},
 				},
 			},
@@ -53,9 +53,9 @@ func TestValidatePackage(t *testing.T) {
 		},
 		{
 			desc: "valid package, want success",
-			p: &ppb.Package{
+			p: &gpb.PackageNote{
 				Name: "debian",
-				Distribution: []*ppb.Distribution{
+				Distribution: []*gpb.Distribution{
 					{
 						CpeUri: "cpe:/o:debian:debian_linux:7",
 					},
@@ -66,13 +66,13 @@ func TestValidatePackage(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		errs := ValidatePackage(tt.p)
+		errs := ValidateNote(tt.p)
 		t.Logf("%q: error(s): %v", tt.desc, errs)
 		if len(errs) == 0 && tt.wantErrs {
-			t.Errorf("%q: ValidatePackage(%+v): got success, want error(s)", tt.desc, tt.p)
+			t.Errorf("%q: ValidateNote(%+v): got success, want error(s)", tt.desc, tt.p)
 		}
 		if len(errs) > 0 && !tt.wantErrs {
-			t.Errorf("%q: ValidatePackage(%+v): got error(s) %v, want success", tt.desc, tt.p, errs)
+			t.Errorf("%q: ValidateNote(%+v): got error(s) %v, want success", tt.desc, tt.p, errs)
 		}
 	}
 }
@@ -80,29 +80,29 @@ func TestValidatePackage(t *testing.T) {
 func TestValidateDistribution(t *testing.T) {
 	tests := []struct {
 		desc     string
-		d        *ppb.Distribution
+		d        *gpb.Distribution
 		wantErrs bool
 	}{
 		{
 			desc:     "missing CPE URI, want error(s)",
-			d:        &ppb.Distribution{},
+			d:        &gpb.Distribution{},
 			wantErrs: true,
 		},
 		{
 			desc: "invalid latest version, want error(s)",
-			d: &ppb.Distribution{
+			d: &gpb.Distribution{
 				CpeUri:        "cpe:/o:debian:debian_linux:7",
-				LatestVersion: &ppb.Version{},
+				LatestVersion: &gpb.Version{},
 			},
 			wantErrs: true,
 		},
 		{
 			desc: "valid distribution, want success",
-			d: &ppb.Distribution{
+			d: &gpb.Distribution{
 				CpeUri: "cpe:/o:debian:debian_linux:7",
-				LatestVersion: &ppb.Version{
+				LatestVersion: &gpb.Version{
 					Name: "1.1.2",
-					Kind: ppb.Version_NORMAL,
+					Kind: gpb.Version_NORMAL,
 				},
 			},
 			wantErrs: false,
@@ -124,42 +124,42 @@ func TestValidateDistribution(t *testing.T) {
 func TestValidateVersion(t *testing.T) {
 	tests := []struct {
 		desc     string
-		v        *ppb.Version
+		v        *gpb.Version
 		wantErrs bool
 	}{
 		{
 			desc: "missing name, want error(s)",
-			v: &ppb.Version{
-				Kind: ppb.Version_NORMAL,
+			v: &gpb.Version{
+				Kind: gpb.Version_NORMAL,
 			},
 			wantErrs: true,
 		},
 		{
 			desc: "missing kind, want error(s)",
-			v: &ppb.Version{
+			v: &gpb.Version{
 				Name: "debian",
 			},
 			wantErrs: true,
 		},
 		{
 			desc: "valid version, want success",
-			v: &ppb.Version{
+			v: &gpb.Version{
 				Name: "1.1.2",
-				Kind: ppb.Version_NORMAL,
+				Kind: gpb.Version_NORMAL,
 			},
 			wantErrs: false,
 		},
 		{
 			desc: "valid maximum version, want success",
-			v: &ppb.Version{
-				Kind: ppb.Version_MAXIMUM,
+			v: &gpb.Version{
+				Kind: gpb.Version_MAXIMUM,
 			},
 			wantErrs: false,
 		},
 		{
 			desc: "valid minimum version, want success",
-			v: &ppb.Version{
-				Kind: ppb.Version_MINIMUM,
+			v: &gpb.Version{
+				Kind: gpb.Version_MINIMUM,
 			},
 			wantErrs: false,
 		},
@@ -177,29 +177,29 @@ func TestValidateVersion(t *testing.T) {
 	}
 }
 
-func TestValidateDetails(t *testing.T) {
+func TestValidateOccurrence(t *testing.T) {
 	tests := []struct {
 		desc     string
-		d        *ppb.Details
+		d        *gpb.PackageOccurrence
 		wantErrs bool
 	}{
 		{
 			desc:     "missing installation, want error(s)",
-			d:        &ppb.Details{},
+			d:        &gpb.PackageOccurrence{},
 			wantErrs: true,
 		},
 		{
 			desc: "invalid installation, want error(s)",
-			d: &ppb.Details{
-				Installation: &ppb.Installation{},
+			d: &gpb.PackageOccurrence{
+				Installation: &gpb.Installation{},
 			},
 			wantErrs: true,
 		},
 		{
 			desc: "valid details, want success",
-			d: &ppb.Details{
-				Installation: &ppb.Installation{
-					Location: []*ppb.Location{
+			d: &gpb.PackageOccurrence{
+				Installation: &gpb.Installation{
+					Location: []*gpb.Location{
 						{
 							CpeUri: "cpe:/o:debian:debian_linux:7",
 						},
@@ -211,13 +211,13 @@ func TestValidateDetails(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		errs := ValidateDetails(tt.d)
+		errs := ValidateOccurrence(tt.d)
 		t.Logf("%q: error(s): %v", tt.desc, errs)
 		if len(errs) == 0 && tt.wantErrs {
-			t.Errorf("%q: ValidateDetails(%+v): got success, want error(s)", tt.desc, tt.d)
+			t.Errorf("%q: ValidateOccurrence(%+v): got success, want error(s)", tt.desc, tt.d)
 		}
 		if len(errs) > 0 && !tt.wantErrs {
-			t.Errorf("%q: ValidateDetails(%+v): got error(s) %v, want success", tt.desc, tt.d, errs)
+			t.Errorf("%q: ValidateOccurrence(%+v): got error(s) %v, want success", tt.desc, tt.d, errs)
 		}
 	}
 }
@@ -225,32 +225,32 @@ func TestValidateDetails(t *testing.T) {
 func TestValidateInstallation(t *testing.T) {
 	tests := []struct {
 		desc     string
-		i        *ppb.Installation
+		i        *gpb.Installation
 		wantErrs bool
 	}{
 		{
 			desc:     "missing location, want error(s)",
-			i:        &ppb.Installation{},
+			i:        &gpb.Installation{},
 			wantErrs: true,
 		},
 		{
 			desc: "empty location, want error(s)",
-			i: &ppb.Installation{
-				Location: []*ppb.Location{},
+			i: &gpb.Installation{
+				Location: []*gpb.Location{},
 			},
 			wantErrs: true,
 		},
 		{
 			desc: "nil location, want error(s)",
-			i: &ppb.Installation{
-				Location: []*ppb.Location{nil},
+			i: &gpb.Installation{
+				Location: []*gpb.Location{nil},
 			},
 			wantErrs: true,
 		},
 		{
 			desc: "invalid location, want error(s)",
-			i: &ppb.Installation{
-				Location: []*ppb.Location{
+			i: &gpb.Installation{
+				Location: []*gpb.Location{
 					{},
 				},
 			},
@@ -258,8 +258,8 @@ func TestValidateInstallation(t *testing.T) {
 		},
 		{
 			desc: "valid installation, want success",
-			i: &ppb.Installation{
-				Location: []*ppb.Location{
+			i: &gpb.Installation{
+				Location: []*gpb.Location{
 					{
 						CpeUri: "cpe:/o:debian:debian_linux:7",
 					},
@@ -284,29 +284,29 @@ func TestValidateInstallation(t *testing.T) {
 func TestValidateLocation(t *testing.T) {
 	tests := []struct {
 		desc     string
-		l        *ppb.Location
+		l        *gpb.Location
 		wantErrs bool
 	}{
 		{
 			desc:     "missing CPE URI, want error(s)",
-			l:        &ppb.Location{},
+			l:        &gpb.Location{},
 			wantErrs: true,
 		},
 		{
 			desc: "invalid version, want error(s)",
-			l: &ppb.Location{
+			l: &gpb.Location{
 				CpeUri:  "cpe:/o:debian:debian_linux:7",
-				Version: &ppb.Version{},
+				Version: &gpb.Version{},
 			},
 			wantErrs: true,
 		},
 		{
 			desc: "valid location, want success",
-			l: &ppb.Location{
+			l: &gpb.Location{
 				CpeUri: "cpe:/o:debian:debian_linux:7",
-				Version: &ppb.Version{
+				Version: &gpb.Version{
 					Name: "1.1.2",
-					Kind: ppb.Version_NORMAL,
+					Kind: gpb.Version_NORMAL,
 				},
 			},
 			wantErrs: false,

@@ -20,11 +20,11 @@ import (
 	"errors"
 	"fmt"
 
-	ipb "github.com/grafeas/grafeas/proto/v1/image_go_proto"
+	gpb "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto"
 )
 
-// ValidateBasis validates that an image basis has all its required fields filled in.
-func ValidateBasis(b *ipb.Basis) []error {
+// ValidateNote validates that an image basis has all its required fields filled in.
+func ValidateNote(b *gpb.ImageNote) []error {
 	errs := []error{}
 
 	if b.GetResourceUrl() == "" {
@@ -42,7 +42,7 @@ func ValidateBasis(b *ipb.Basis) []error {
 	return errs
 }
 
-func validateFingerprint(f *ipb.Fingerprint) []error {
+func validateFingerprint(f *gpb.Fingerprint) []error {
 	errs := []error{}
 
 	if f.GetV1Name() == "" {
@@ -64,8 +64,8 @@ func validateFingerprint(f *ipb.Fingerprint) []error {
 	return errs
 }
 
-// ValidateDetails validates that a details has all its required fields filled in.
-func ValidateDetails(d *ipb.Details) []error {
+// ValidateOccurrence validates that a details has all its required fields filled in.
+func ValidateOccurrence(d *gpb.ImageOccurrence) []error {
 	errs := []error{}
 
 	if d := d.GetDerivedImage(); d == nil {
@@ -79,7 +79,7 @@ func ValidateDetails(d *ipb.Details) []error {
 	return errs
 }
 
-func validateDerived(d *ipb.Derived) []error {
+func validateDerived(d *gpb.Derived) []error {
 	errs := []error{}
 
 	if f := d.GetFingerprint(); f == nil {
@@ -103,10 +103,10 @@ func validateDerived(d *ipb.Derived) []error {
 	return errs
 }
 
-func validateLayer(l *ipb.Layer) []error {
+func validateLayer(l *gpb.Layer) []error {
 	errs := []error{}
 
-	if l.GetDirective() == ipb.Layer_DIRECTIVE_UNSPECIFIED {
+	if l.GetDirective() == gpb.Layer_DIRECTIVE_UNSPECIFIED {
 		errs = append(errs, errors.New("directive is required"))
 	}
 

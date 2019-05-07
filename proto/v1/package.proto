@@ -14,11 +14,11 @@
 
 syntax = "proto3";
 
-package grafeas.v1.package;
+package grafeas.v1;
 
-option go_package = "github.com/grafeas/grafeas/proto/v1/package_go_proto";
+option go_package = "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto";
 option java_multiple_files = true;
-option java_package = "io.grafeas.v1.pkg";
+option java_package = "io.grafeas.v1";
 option objc_class_prefix = "GRA";
 
 // DO NOT USE: UNDER HEAVY DEVELOPMENT.
@@ -75,7 +75,7 @@ message Location {
 // This represents a particular package that is distributed over various
 // channels. E.g., glibc (aka libc6) is distributed by many, at various
 // versions.
-message Package {
+message PackageNote {
   // Required. Immutable. The name of the package.
   string name = 1;
 
@@ -84,7 +84,7 @@ message Package {
 }
 
 // Details of a package occurrence.
-message Details {
+message PackageOccurrence {
   // Required. Where the package was installed.
   Installation installation = 1;
 }

@@ -14,11 +14,11 @@
 
 syntax = "proto3";
 
-package grafeas.v1.deployment;
+package grafeas.v1;
 
-option go_package = "github.com/grafeas/grafeas/proto/v1/deployment_go_proto";
+option go_package = "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto";
 option java_multiple_files = true;
-option java_package = "io.grafeas.v1.deployment";
+option java_package = "io.grafeas.v1";
 option objc_class_prefix = "GRA";
 
 import "google/protobuf/timestamp.proto";
@@ -27,19 +27,13 @@ import "google/protobuf/timestamp.proto";
 // TODO(aysylu): finalize this.
 //
 // An artifact that can be deployed in some runtime.
-message Deployable {
+message DeploymentNote {
   // Required. Resource URI for the artifact being deployed.
   repeated string resource_uri = 1;
 }
 
-// Details of a deployment occurrence.
-message Details {
-  // Required. Deployment history for the resource.
-  Deployment deployment = 1;
-}
-
 // The period during which some deployable was active in a runtime.
-message Deployment {
+message DeploymentOccurrence {
   // Identity of the user that triggered this deployment.
   string user_email = 1;
 
