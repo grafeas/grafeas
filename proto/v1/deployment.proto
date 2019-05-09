@@ -23,9 +23,6 @@ option objc_class_prefix = "GRA";
 
 import "google/protobuf/timestamp.proto";
 
-// DO NOT USE: UNDER HEAVY DEVELOPMENT.
-// TODO(aysylu): finalize this.
-//
 // An artifact that can be deployed in some runtime.
 message DeploymentNote {
   // Required. Resource URI for the artifact being deployed.
