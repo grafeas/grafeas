@@ -251,7 +251,7 @@ func TestValidateLayer(t *testing.T) {
 		{
 			desc: "valid layer, want success",
 			l: &gpb.Layer{
-				Directive: gpb.Layer_ADD,
+				Directive: "ADD",
 			},
 			wantErrs: false,
 		},

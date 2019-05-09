@@ -106,7 +106,7 @@ func validateDerived(d *gpb.Derived) []error {
 func validateLayer(l *gpb.Layer) []error {
 	errs := []error{}
 
-	if l.GetDirective() == gpb.Layer_DIRECTIVE_UNSPECIFIED {
+	if l.GetDirective() == "" {
 		errs = append(errs, errors.New("directive is required"))
 	}
 
