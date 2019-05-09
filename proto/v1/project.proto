@@ -24,9 +24,6 @@ option objc_class_prefix = "GRA";
 import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
 
-// DO NOT USE: UNDER HEAVY DEVELOPMENT.
-// TODO(aysylu): finalize this.
-//
 // [Projects](grafeas.io) API.
 //
 // Manages Grafeas `Projects`. Projects contain sets of other Grafeas entities

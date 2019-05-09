@@ -23,9 +23,6 @@ option objc_class_prefix = "GRA";
 
 import "proto/v1/provenance.proto";
 
-// DO NOT USE: UNDER HEAVY DEVELOPMENT.
-// TODO(aysylu): finalize this.
-//
 // Note holding the version of the provider's builder and the signature of the
 // provenance message in the build details occurrence.
 message BuildNote {

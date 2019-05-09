@@ -24,9 +24,6 @@ option objc_class_prefix = "GRA";
 import "google/rpc/status.proto";
 import "proto/v1/common.proto";
 
-// DO NOT USE: UNDER HEAVY DEVELOPMENT.
-// TODO(aysylu): finalize this.
-//
 // A note that indicates a type of analysis a provider would perform. This note
 // exists in a provider's project. A `Discovery` occurrence is created in a
 // consumer's project at the start of analysis.

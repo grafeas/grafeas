@@ -21,9 +21,6 @@ option java_multiple_files = true;
 option java_package = "io.grafeas.v1";
 option objc_class_prefix = "GRA";
 
-// DO NOT USE: UNDER HEAVY DEVELOPMENT.
-// TODO(aysylu): finalize this.
-//
 // Instruction set architectures supported by various package managers.
 enum Architecture {
   // Unknown architecture.
