@@ -137,33 +137,22 @@ func TestValidateOccurrence(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			desc:    "missing resource, want error",
+			desc:    "missing resource URI, want error",
 			o:       &gpb.Occurrence{},
-			wantErr: true,
-		},
-		{
-			desc: "invalid resource, want error",
-			o: &gpb.Occurrence{
-				Resource: &gpb.Resource{},
-			},
 			wantErr: true,
 		},
 		{
 			desc: "missing note name, want error",
 			o: &gpb.Occurrence{
-				Resource: &gpb.Resource{
-					Uri: "goog://foo/bar",
-				},
+				ResourceUri: "goog://foo/bar",
 			},
 			wantErr: true,
 		},
 		{
 			desc: "missing details, want error",
 			o: &gpb.Occurrence{
-				Resource: &gpb.Resource{
-					Uri: "goog://foo/bar",
-				},
-				NoteName: "projects/goog-vulnz/notes/CVE-UH-OH",
+				ResourceUri: "goog://foo/bar",
+				NoteName:    "projects/goog-vulnz/notes/CVE-UH-OH",
 			},
 			wantErr: true,
 		},
@@ -233,11 +222,9 @@ func TestValidateOccurrence(t *testing.T) {
 		{
 			desc: "valid occurrence, want success",
 			o: &gpb.Occurrence{
-				Resource: &gpb.Resource{
-					Uri: "goog://foo/bar",
-				},
-				NoteName: "projects/goog-vulnz/notes/CVE-UH-OH",
-				Details:  &gpb.Occurrence_Vulnerability{},
+				ResourceUri: "goog://foo/bar",
+				NoteName:    "projects/goog-vulnz/notes/CVE-UH-OH",
+				Details:     &gpb.Occurrence_Vulnerability{},
 			},
 			wantErr: false,
 		},
@@ -251,38 +238,6 @@ func TestValidateOccurrence(t *testing.T) {
 		}
 		if err != nil && !tt.wantErr {
 			t.Errorf("%q: ValidateOccurrence(%+v): got error %v, want success", tt.desc, tt.o, err)
-		}
-	}
-}
-
-func TestValidateResource(t *testing.T) {
-	tests := []struct {
-		desc     string
-		r        *gpb.Resource
-		wantErrs bool
-	}{
-		{
-			desc:     "missing URI, want error(s)",
-			r:        &gpb.Resource{},
-			wantErrs: true,
-		},
-		{
-			desc: "valid resource, want success",
-			r: &gpb.Resource{
-				Uri: "goog://foo/bar",
-			},
-			wantErrs: false,
-		},
-	}
-
-	for _, tt := range tests {
-		errs := validateResource(tt.r)
-		t.Logf("%q: error(s): %v", tt.desc, errs)
-		if len(errs) == 0 && tt.wantErrs {
-			t.Errorf("%q: validateResource(%+v): got success, want error(s)", tt.desc, tt.r)
-		}
-		if len(errs) > 0 && !tt.wantErrs {
-			t.Errorf("%q: validateResource(%+v): got error(s) %v, want success", tt.desc, tt.r, errs)
 		}
 	}
 }
