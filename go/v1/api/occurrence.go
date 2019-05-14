@@ -290,29 +290,3 @@ func (g *API) ListNoteOccurrences(ctx context.Context, req *gpb.ListNoteOccurren
 
 	return nil
 }
-
-// GetVulnerabilityOccurrencesSummary produces a summary of vulnerability
-// occurrences grouped by severity that match the specified filter.
-func (g *API) GetVulnerabilityOccurrencesSummary(ctx context.Context, req *gpb.GetVulnerabilityOccurrencesSummaryRequest, resp *gpb.VulnerabilityOccurrencesSummary) error {
-	pID, err := name.ParseProject(req.Parent)
-	if err != nil {
-		return err
-	}
-
-	ctx = g.Logger.PrepareCtx(ctx, pID)
-
-	if err := g.Auth.CheckAccessAndProject(ctx, pID, "", OccurrencesList); err != nil {
-		return err
-	}
-
-	if err := g.Filter.Validate(req.Filter); err != nil {
-		return err
-	}
-
-	summary, err := g.Storage.GetVulnerabilityOccurrencesSummary(ctx, pID, req.Filter)
-	if err != nil {
-		return err
-	}
-	*resp = *summary
-	return nil
-}
