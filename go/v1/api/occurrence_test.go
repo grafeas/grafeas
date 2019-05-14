@@ -787,10 +787,8 @@ func TestListNoteOccurrencesErrors(t *testing.T) {
 func vulnzOcc(t *testing.T, pID, noteName, imageName string) *gpb.Occurrence {
 	t.Helper()
 	return &gpb.Occurrence{
-		Resource: &gpb.Resource{
-			Uri: fmt.Sprintf("https://us.gcr.io/%s/%s@sha256:0baa7a935c0cba530xxx03af85770cb52b26bfe570a9ff09e17c1a02c6b0bd9a", pID, imageName),
-		},
-		NoteName: noteName,
+		ResourceUri: fmt.Sprintf("https://us.gcr.io/%s/%s@sha256:0baa7a935c0cba530xxx03af85770cb52b26bfe570a9ff09e17c1a02c6b0bd9a", pID, imageName),
+		NoteName:    noteName,
 		Details: &gpb.Occurrence_Vulnerability{
 			Vulnerability: &gpb.VulnerabilityOccurrence{
 				PackageIssue: []*gpb.PackageIssue{
