@@ -1,4 +1,4 @@
-FROM golang:1.10.3
+FROM golang:1.12.5
 COPY . /go/src/github.com/grafeas/grafeas/
 WORKDIR /go/src/github.com/grafeas/grafeas/samples/server/go-server/api/server/main
 RUN CGO_ENABLED=0 go build -o grafeas-server .
