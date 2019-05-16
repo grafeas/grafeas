@@ -93,12 +93,8 @@ func ValidateNote(n *gpb.Note) error {
 func ValidateOccurrence(o *gpb.Occurrence) error {
 	errs := []error{}
 
-	if r := o.GetResource(); r == nil {
-		errs = append(errs, errors.New("resource is required"))
-	} else {
-		for _, err := range validateResource(r) {
-			errs = append(errs, fmt.Errorf("resource.%s", err))
-		}
+	if o.GetResourceUri() == "" {
+		errs = append(errs, errors.New("resource_uri is required"))
 	}
 
 	if o.GetNoteName() == "" {
@@ -156,14 +152,4 @@ func ValidateOccurrence(o *gpb.Occurrence) error {
 	}
 
 	return nil
-}
-
-func validateResource(r *gpb.Resource) []error {
-	errs := []error{}
-
-	if r.GetUri() == "" {
-		errs = append(errs, errors.New("uri is required"))
-	}
-
-	return errs
 }

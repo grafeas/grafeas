@@ -163,15 +163,6 @@ service Grafeas {
       get: "/v1/{name=projects/*/notes/*}/occurrences"
     };
   };
-
-  // Gets a summary of the number and severity of occurrences.
-  rpc GetVulnerabilityOccurrencesSummary(
-      GetVulnerabilityOccurrencesSummaryRequest)
-      returns (VulnerabilityOccurrencesSummary) {
-    option (google.api.http) = {
-      get: "/v1/{parent=projects/*}/occurrences:vulnerabilitySummary"
-    };
-  };
 };
 
 // An instance of an analysis type that has been found on a resource.
@@ -180,8 +171,10 @@ message Occurrence {
   // `projects/[PROJECT_ID]/occurrences/[OCCURRENCE_ID]`.
   string name = 1;
 
-  // Required. Immutable. The resource for which the occurrence applies.
-  Resource resource = 2;
+  // Required. Immutable. A URI that represents the resource for which the
+  // occurrence applies. For example,
+  // `https://gcr.io/project/image@sha256:123abc` for a Docker image.
+  string resource_uri = 2;
 
   // Required. Immutable. The analysis note associated with this occurrence, in
   // the form of `projects/[PROVIDER_ID]/notes/[NOTE_ID]`. This field can be
@@ -222,22 +215,6 @@ message Occurrence {
   }
 
   // next_id = 15;
-}
-
-// An entity that can have metadata. For example, a Docker image.
-message Resource {
-  // The name of the resource. For example, the name of a Docker image -
-  // "Debian".
-  string name = 1;
-
-  // Required. The unique URI of the resource. For example,
-  // `https://gcr.io/project/image@sha256:foo` for a Docker image.
-  string uri = 2;
-
-  // The hash of the resource content. For example, the Docker digest.
-  grafeas.v1.Hash content_hash = 3;
-
-  // next_id = 4;
 }
 
 // A type of analysis that can be done for a resource.
@@ -478,33 +455,4 @@ message BatchCreateOccurrencesRequest {
 message BatchCreateOccurrencesResponse {
   // The occurrences that were created.
   repeated Occurrence occurrences = 1;
-}
-
-// Request to get a vulnerability summary for some set of occurrences.
-message GetVulnerabilityOccurrencesSummaryRequest {
-  // The name of the project to get a vulnerability summary for in the form of
-  // `projects/[PROJECT_ID]`.
-  string parent = 1;
-  // The filter expression.
-  string filter = 2;
-}
-
-// A summary of how many vulnerability occurrences there are per resource and
-// severity type.
-message VulnerabilityOccurrencesSummary {
-  // A listing by resource of the number of fixable and total vulnerabilities.
-  repeated FixableTotalByDigest counts = 1;
-
-  // Per resource and severity counts of fixable and total vulnerabilities.
-  message FixableTotalByDigest {
-    // The affected resource.
-    Resource resource = 1;
-    // The severity for this count. SEVERITY_UNSPECIFIED indicates total across
-    // all severities.
-    grafeas.v1.Severity severity = 2;
-    // The number of fixable vulnerabilities associated with this resource.
-    int64 fixable_count = 3;
-    // The total number of vulnerabilities associated with this resource.
-    int64 total_count = 4;
-  }
 }

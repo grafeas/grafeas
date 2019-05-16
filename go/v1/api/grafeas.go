@@ -94,8 +94,6 @@ type Storage interface {
 	GetOccurrenceNote(ctx context.Context, projectID, oID string) (*gpb.Note, error)
 	// ListNoteOccurrences lists occurrences for the specified note from storage.
 	ListNoteOccurrences(ctx context.Context, projectID, nID, filter, pageToken string, pageSize int32) ([]*gpb.Occurrence, string, error)
-	// GetVulnerabilityOccurrencesSummary gets a summary of vulnerability occurrences from storage.
-	GetVulnerabilityOccurrencesSummary(ctx context.Context, projectID, filter string) (*gpb.VulnerabilityOccurrencesSummary, error)
 }
 
 // Auth provides authorization functions for this API.

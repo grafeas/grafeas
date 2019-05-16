@@ -15,7 +15,6 @@
 package grafeas
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/golang/protobuf/proto"
@@ -41,7 +40,7 @@ type fakeStorage struct {
 	// The following errors are for simulating an internal database error.
 	getOccErr, listOccsErr, createOccErr, batchCreateOccsErr, updateOccErr, deleteOccErr       bool
 	getNoteErr, listNotesErr, createNoteErr, batchCreateNotesErr, updateNoteErr, deleteNoteErr bool
-	getOccNoteErr, listNoteOccsErr, getVulnSummaryErr                                          bool
+	getOccNoteErr, listNoteOccsErr                                                             bool
 }
 
 func newFakeStorage() *fakeStorage {
@@ -374,43 +373,6 @@ func (s *fakeStorage) ListNoteOccurrences(ctx context.Context, pID, nID, filter,
 	}
 
 	return foundOccs, "", nil
-}
-
-func (s *fakeStorage) GetVulnerabilityOccurrencesSummary(ctx context.Context, projectID, filter string) (*gpb.VulnerabilityOccurrencesSummary, error) {
-	if s.getVulnSummaryErr {
-		return nil, fmt.Errorf("failed to get vulnerability occurrences summary for project %q", projectID)
-	}
-
-	return &gpb.VulnerabilityOccurrencesSummary{
-		Counts: []*gpb.VulnerabilityOccurrencesSummary_FixableTotalByDigest{
-			{
-				Resource: &gpb.Resource{
-					Name: "debian9",
-					Uri:  "https://eu.gcr.io/consumer1/debian9@sha256:dbc96ed51bc598faeec0901bad307ebb5d1d7259b33e2d7d7296c28f439dc777",
-					ContentHash: &gpb.Hash{
-						Type:  gpb.Hash_SHA256,
-						Value: []byte("dbc96ed51bc598faeec0901bad307ebb5d1d7259b33e2d7d7296c28f439dc777"),
-					},
-				},
-				Severity:     gpb.Severity_CRITICAL,
-				FixableCount: 1,
-				TotalCount:   3,
-			},
-			{
-				Resource: &gpb.Resource{
-					Name: "debian9",
-					Uri:  "https://eu.gcr.io/consumer1/debian9@sha256:dbc96ed51bc598faeec0901bad307ebb5d1d7259b33e2d7d7296c28f439dc777",
-					ContentHash: &gpb.Hash{
-						Type:  gpb.Hash_SHA256,
-						Value: []byte("dbc96ed51bc598faeec0901bad307ebb5d1d7259b33e2d7d7296c28f439dc777"),
-					},
-				},
-				Severity:     gpb.Severity_LOW,
-				FixableCount: 4,
-				TotalCount:   10,
-			},
-		},
-	}, nil
 }
 
 type fakeAuth struct {

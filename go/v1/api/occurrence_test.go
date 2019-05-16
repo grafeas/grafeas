@@ -783,120 +783,12 @@ func TestListNoteOccurrencesErrors(t *testing.T) {
 	}
 }
 
-func TestGetVulnerabilityOccurrencesSummary(t *testing.T) {
-	ctx := context.Background()
-	g := &API{
-		Storage:           &fakeStorage{},
-		Auth:              &fakeAuth{},
-		Filter:            &fakeFilter{},
-		Logger:            &fakeLogger{},
-		EnforceValidation: true,
-	}
-	wantSummary := &gpb.VulnerabilityOccurrencesSummary{
-		Counts: []*gpb.VulnerabilityOccurrencesSummary_FixableTotalByDigest{
-			{
-				Resource: &gpb.Resource{
-					Name: "debian9",
-					Uri:  "https://eu.gcr.io/consumer1/debian9@sha256:dbc96ed51bc598faeec0901bad307ebb5d1d7259b33e2d7d7296c28f439dc777",
-					ContentHash: &gpb.Hash{
-						Type:  gpb.Hash_SHA256,
-						Value: []byte("dbc96ed51bc598faeec0901bad307ebb5d1d7259b33e2d7d7296c28f439dc777"),
-					},
-				},
-				Severity:     gpb.Severity_CRITICAL,
-				FixableCount: 1,
-				TotalCount:   3,
-			},
-			{
-				Resource: &gpb.Resource{
-					Name: "debian9",
-					Uri:  "https://eu.gcr.io/consumer1/debian9@sha256:dbc96ed51bc598faeec0901bad307ebb5d1d7259b33e2d7d7296c28f439dc777",
-					ContentHash: &gpb.Hash{
-						Type:  gpb.Hash_SHA256,
-						Value: []byte("dbc96ed51bc598faeec0901bad307ebb5d1d7259b33e2d7d7296c28f439dc777"),
-					},
-				},
-				Severity:     gpb.Severity_LOW,
-				FixableCount: 4,
-				TotalCount:   10,
-			},
-		},
-	}
-
-	req := &gpb.GetVulnerabilityOccurrencesSummaryRequest{
-		Parent: "projects/consumer1",
-	}
-	resp := &gpb.VulnerabilityOccurrencesSummary{}
-	if err := g.GetVulnerabilityOccurrencesSummary(ctx, req, resp); err != nil {
-		t.Errorf("GetVulnerabilityOccurrencesSummaryRequest(%v) got err %v, want success", req, err)
-	}
-
-	opt := cmp.FilterPath(func(p cmp.Path) bool { return p.String() == "Name" }, cmp.Ignore())
-	if diff := cmp.Diff(wantSummary, resp, opt); diff != "" {
-		t.Errorf("GetVulnerabilityOccurrencesSummaryRequest(%v) returned diff (want -> got):\n%s", req, diff)
-	}
-}
-
-func TestGetVulnerabilityOccurrencesSummaryErrors(t *testing.T) {
-	ctx := context.Background()
-
-	tests := []struct {
-		desc string
-		// Test inputs.
-		req                                    *gpb.GetVulnerabilityOccurrencesSummaryRequest
-		internalStorageErr, authErr, filterErr bool
-	}{
-		{
-			desc: "invalid project name",
-			req: &gpb.GetVulnerabilityOccurrencesSummaryRequest{
-				Parent: "projects//",
-			},
-		}, {
-			desc: "auth error",
-			req: &gpb.GetVulnerabilityOccurrencesSummaryRequest{
-				Parent: "projects/consumer1",
-			},
-			authErr: true,
-		}, {
-			desc: "storage error",
-			req: &gpb.GetVulnerabilityOccurrencesSummaryRequest{
-				Parent: "projects/consumer1",
-			},
-			internalStorageErr: true,
-		}, {
-			desc: "filter parse error",
-			req: &gpb.GetVulnerabilityOccurrencesSummaryRequest{
-				Parent: "projects/consumer1",
-			},
-			filterErr: true,
-		},
-	}
-
-	for _, tt := range tests {
-		s := newFakeStorage()
-		s.getVulnSummaryErr = tt.internalStorageErr
-		g := &API{
-			Storage:           s,
-			Auth:              &fakeAuth{authErr: tt.authErr},
-			Filter:            &fakeFilter{err: tt.filterErr},
-			Logger:            &fakeLogger{},
-			EnforceValidation: true,
-		}
-		resp := &gpb.VulnerabilityOccurrencesSummary{}
-		if err := g.GetVulnerabilityOccurrencesSummary(ctx, tt.req, resp); err == nil {
-			t.Errorf("%q: GetVulnerabilityOccurrencesSummary(%v) got success, want error", tt.desc, tt.req)
-		}
-	}
-}
-
 // vulnzOcc returns a fake v1 valid vulnerability occurrence for testing.
 func vulnzOcc(t *testing.T, pID, noteName, imageName string) *gpb.Occurrence {
 	t.Helper()
 	return &gpb.Occurrence{
-		Resource: &gpb.Resource{
-			Uri: fmt.Sprintf("https://us.gcr.io/%s/%s@sha256:0baa7a935c0cba530xxx03af85770cb52b26bfe570a9ff09e17c1a02c6b0bd9a", pID, imageName),
-		},
-		NoteName: noteName,
+		ResourceUri: fmt.Sprintf("https://us.gcr.io/%s/%s@sha256:0baa7a935c0cba530xxx03af85770cb52b26bfe570a9ff09e17c1a02c6b0bd9a", pID, imageName),
+		NoteName:    noteName,
 		Details: &gpb.Occurrence_Vulnerability{
 			Vulnerability: &gpb.VulnerabilityOccurrence{
 				PackageIssue: []*gpb.PackageIssue{
