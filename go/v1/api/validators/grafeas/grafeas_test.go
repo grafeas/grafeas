@@ -106,9 +106,15 @@ func TestValidateNote(t *testing.T) {
 						Severity: gpb.Severity_CRITICAL,
 						Details: []*gpb.VulnerabilityNote_Detail{
 							&gpb.VulnerabilityNote_Detail{
-								CpeUri:       "cpe:/o:debian:debian_linux:7",
-								Package:      "debian",
-								SeverityName: "LOW",
+								SeverityName:    "LOW",
+								AffectedCpeUri:  "cpe:/o:debian:debian_linux:7",
+								AffectedPackage: "debian",
+								AffectedVersion: &gpb.Version{
+									Kind: gpb.Version_MINIMUM,
+								},
+								FixedVersion: &gpb.Version{
+									Kind: gpb.Version_MAXIMUM,
+								},
 							},
 						},
 					},

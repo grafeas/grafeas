@@ -791,7 +791,7 @@ func vulnzOcc(t *testing.T, pID, noteName, imageName string) *gpb.Occurrence {
 		NoteName:    noteName,
 		Details: &gpb.Occurrence_Vulnerability{
 			Vulnerability: &gpb.VulnerabilityOccurrence{
-				PackageIssue: []*gpb.PackageIssue{
+				PackageIssue: []*gpb.VulnerabilityOccurrence_PackageIssue{
 					{
 						AffectedCpeUri:  "cpe:/o:debian:debian_linux:8",
 						AffectedPackage: "abc",
@@ -802,7 +802,7 @@ func vulnzOcc(t *testing.T, pID, noteName, imageName string) *gpb.Occurrence {
 						FixedCpeUri:  "cpe:/o:debian:debian_linux:8",
 						FixedPackage: "abc",
 						FixedVersion: &gpb.Version{
-							Name: "0.2.0",
+							Name: "1.0.0",
 							Kind: gpb.Version_NORMAL,
 						},
 					},
@@ -820,7 +820,7 @@ func invalidVulnzOcc(t *testing.T, pID, noteName string) *gpb.Occurrence {
 		NoteName: noteName,
 		Details: &gpb.Occurrence_Vulnerability{
 			Vulnerability: &gpb.VulnerabilityOccurrence{
-				PackageIssue: []*gpb.PackageIssue{
+				PackageIssue: []*gpb.VulnerabilityOccurrence_PackageIssue{
 					{
 						AffectedCpeUri:  "cpe:/o:debian:debian_linux:8",
 						AffectedPackage: "abc",
@@ -831,7 +831,7 @@ func invalidVulnzOcc(t *testing.T, pID, noteName string) *gpb.Occurrence {
 						FixedCpeUri:  "cpe:/o:debian:debian_linux:8",
 						FixedPackage: "abc",
 						FixedVersion: &gpb.Version{
-							Name: "0.2.0",
+							Name: "1.0.0",
 							Kind: gpb.Version_NORMAL,
 						},
 					},
