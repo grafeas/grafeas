@@ -226,16 +226,20 @@ message Occurrence {
 
 // An entity that can have metadata. For example, a Docker image.
 message Resource {
+  // Deprecated, do not use. Use uri instead.
+  //
   // The name of the resource. For example, the name of a Docker image -
   // "Debian".
-  string name = 1;
+  string name = 1 [deprecated = true];
 
   // Required. The unique URI of the resource. For example,
   // `https://gcr.io/project/image@sha256:foo` for a Docker image.
   string uri = 2;
 
+  // Deprecated, do not use. Use uri instead.
+  //
   // The hash of the resource content. For example, the Docker digest.
-  grafeas.v1beta1.provenance.Hash content_hash = 3;
+  grafeas.v1beta1.provenance.Hash content_hash = 3 [deprecated = true];
 
   // next_id = 4;
 }
