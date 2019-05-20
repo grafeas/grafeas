@@ -1828,7 +1828,7 @@
       "properties": {
         "name": {
           "type": "string",
-          "description": "The name of the resource. For example, the name of a Docker image -\n\"Debian\"."
+          "description": "Deprecated, do not use. Use uri instead.\n\nThe name of the resource. For example, the name of a Docker image -\n\"Debian\"."
         },
         "uri": {
           "type": "string",
@@ -1836,7 +1836,7 @@
         },
         "content_hash": {
           "$ref": "#/definitions/provenanceHash",
-          "description": "The hash of the resource content. For example, the Docker digest."
+          "description": "Deprecated, do not use. Use uri instead.\n\nThe hash of the resource content. For example, the Docker digest."
         }
       },
       "description": "An entity that can have metadata. For example, a Docker image."
