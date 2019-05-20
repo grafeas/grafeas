@@ -23,24 +23,24 @@ import (
 func TestValidateNote(t *testing.T) {
 	tests := []struct {
 		desc     string
-		b        *gpb.ImageNote
+		n        *gpb.ImageNote
 		wantErrs bool
 	}{
 		{
 			desc:     "missing resource URL, want error(s)",
-			b:        &gpb.ImageNote{},
+			n:        &gpb.ImageNote{},
 			wantErrs: true,
 		},
 		{
 			desc: "nil fingerprint, want error(s)",
-			b: &gpb.ImageNote{
+			n: &gpb.ImageNote{
 				ResourceUrl: "https://www.google.com",
 			},
 			wantErrs: true,
 		},
 		{
 			desc: "invalid fingerprint, want error(s)",
-			b: &gpb.ImageNote{
+			n: &gpb.ImageNote{
 				ResourceUrl: "https://www.google.com",
 				Fingerprint: &gpb.Fingerprint{},
 			},
@@ -48,7 +48,7 @@ func TestValidateNote(t *testing.T) {
 		},
 		{
 			desc: "valid fingerprint, want success",
-			b: &gpb.ImageNote{
+			n: &gpb.ImageNote{
 				ResourceUrl: "https://www.google.com",
 				Fingerprint: &gpb.Fingerprint{
 					V1Name: "foo",
@@ -60,13 +60,13 @@ func TestValidateNote(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		errs := ValidateNote(tt.b)
+		errs := ValidateNote(tt.n)
 		t.Logf("%q: error(s): %v", tt.desc, errs)
 		if len(errs) == 0 && tt.wantErrs {
-			t.Errorf("%q: ValidateNote(%+v): got success, want error(s)", tt.desc, tt.b)
+			t.Errorf("%q: ValidateNote(%+v): got success, want error(s)", tt.desc, tt.n)
 		}
 		if len(errs) > 0 && !tt.wantErrs {
-			t.Errorf("%q: ValidateNote(%+v): got error(s) %v, want success", tt.desc, tt.b, errs)
+			t.Errorf("%q: ValidateNote(%+v): got error(s) %v, want success", tt.desc, tt.n, errs)
 		}
 	}
 }
@@ -130,68 +130,27 @@ func TestValidateFingerprint(t *testing.T) {
 func TestValidateOccurrence(t *testing.T) {
 	tests := []struct {
 		desc     string
-		d        *gpb.ImageOccurrence
+		o        *gpb.ImageOccurrence
 		wantErrs bool
 	}{
 		{
-			desc:     "missing derived image, want error(s)",
-			d:        &gpb.ImageOccurrence{},
-			wantErrs: true,
-		},
-		{
-			desc: "invalid derived image, want error(s)",
-			d: &gpb.ImageOccurrence{
-				DerivedImage: &gpb.Derived{},
+			desc: "missing fingerprint, want error(s)",
+			o: &gpb.ImageOccurrence{
+				LayerInfo: []*gpb.Layer{},
 			},
-			wantErrs: true,
-		},
-		{
-			desc: "valid derived image, want success",
-			d: &gpb.ImageOccurrence{
-				DerivedImage: &gpb.Derived{
-					Fingerprint: &gpb.Fingerprint{
-						V1Name: "foo",
-						V2Blob: []string{"bar"},
-					},
-				},
-			},
-			wantErrs: false,
-		},
-	}
-
-	for _, tt := range tests {
-		errs := ValidateOccurrence(tt.d)
-		t.Logf("%q: error(s): %v", tt.desc, errs)
-		if len(errs) == 0 && tt.wantErrs {
-			t.Errorf("%q: ValidateOccurrence(%+v): got success, want error(s)", tt.desc, tt.d)
-		}
-		if len(errs) > 0 && !tt.wantErrs {
-			t.Errorf("%q: ValidateOccurrence(%+v): got error(s) %v, want success", tt.desc, tt.d, errs)
-		}
-	}
-}
-
-func TestValidateDerived(t *testing.T) {
-	tests := []struct {
-		desc     string
-		d        *gpb.Derived
-		wantErrs bool
-	}{
-		{
-			desc:     "missing fingerprint, want error(s)",
-			d:        &gpb.Derived{},
 			wantErrs: true,
 		},
 		{
 			desc: "invalid fingerprint, want error(s)",
-			d: &gpb.Derived{
+			o: &gpb.ImageOccurrence{
 				Fingerprint: &gpb.Fingerprint{},
+				LayerInfo:   []*gpb.Layer{},
 			},
 			wantErrs: true,
 		},
 		{
 			desc: "nil layer, want error(s)",
-			d: &gpb.Derived{
+			o: &gpb.ImageOccurrence{
 				Fingerprint: &gpb.Fingerprint{
 					V1Name: "foo",
 					V2Blob: []string{"bar"},
@@ -202,7 +161,7 @@ func TestValidateDerived(t *testing.T) {
 		},
 		{
 			desc: "invalid layer, want error(s)",
-			d: &gpb.Derived{
+			o: &gpb.ImageOccurrence{
 				Fingerprint: &gpb.Fingerprint{
 					V1Name: "foo",
 					V2Blob: []string{"bar"},
@@ -214,8 +173,8 @@ func TestValidateDerived(t *testing.T) {
 			wantErrs: true,
 		},
 		{
-			desc: "valid derived, want success",
-			d: &gpb.Derived{
+			desc: "valid image occurrence, want success",
+			o: &gpb.ImageOccurrence{
 				Fingerprint: &gpb.Fingerprint{
 					V1Name: "foo",
 					V2Blob: []string{"bar"},
@@ -226,13 +185,13 @@ func TestValidateDerived(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		errs := validateDerived(tt.d)
+		errs := ValidateOccurrence(tt.o)
 		t.Logf("%q: error(s): %v", tt.desc, errs)
 		if len(errs) == 0 && tt.wantErrs {
-			t.Errorf("%q: validateDerived(%+v): got success, want error(s)", tt.desc, tt.d)
+			t.Errorf("%q: ValidateOccurrence(%+v): got success, want error(s)", tt.desc, tt.o)
 		}
 		if len(errs) > 0 && !tt.wantErrs {
-			t.Errorf("%q: validateDerived(%+v): got error(s) %v, want success", tt.desc, tt.d, errs)
+			t.Errorf("%q: ValidateOccurrence(%+v): got error(s) %v, want success", tt.desc, tt.o, errs)
 		}
 	}
 }

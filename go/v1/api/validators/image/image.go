@@ -23,15 +23,15 @@ import (
 	gpb "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto"
 )
 
-// ValidateNote validates that an image basis has all its required fields filled in.
-func ValidateNote(b *gpb.ImageNote) []error {
+// ValidateNote validates that an image note has all its required fields filled in.
+func ValidateNote(n *gpb.ImageNote) []error {
 	errs := []error{}
 
-	if b.GetResourceUrl() == "" {
+	if n.GetResourceUrl() == "" {
 		errs = append(errs, errors.New("resource_url is required"))
 	}
 
-	if f := b.GetFingerprint(); f == nil {
+	if f := n.GetFingerprint(); f == nil {
 		errs = append(errs, errors.New("fingerprint is required"))
 	} else {
 		for _, err := range validateFingerprint(f) {
@@ -64,25 +64,11 @@ func validateFingerprint(f *gpb.Fingerprint) []error {
 	return errs
 }
 
-// ValidateOccurrence validates that a details has all its required fields filled in.
-func ValidateOccurrence(d *gpb.ImageOccurrence) []error {
+// ValidateOccurrence validates that an image occurrence has all its required fields filled in.
+func ValidateOccurrence(o *gpb.ImageOccurrence) []error {
 	errs := []error{}
 
-	if d := d.GetDerivedImage(); d == nil {
-		errs = append(errs, errors.New("derived_image is required"))
-	} else {
-		for _, err := range validateDerived(d) {
-			errs = append(errs, fmt.Errorf("derived_image.%s", err))
-		}
-	}
-
-	return errs
-}
-
-func validateDerived(d *gpb.Derived) []error {
-	errs := []error{}
-
-	if f := d.GetFingerprint(); f == nil {
+	if f := o.GetFingerprint(); f == nil {
 		errs = append(errs, errors.New("fingerprint is required"))
 	} else {
 		for _, err := range validateFingerprint(f) {
@@ -90,7 +76,7 @@ func validateDerived(d *gpb.Derived) []error {
 		}
 	}
 
-	for i, l := range d.GetLayerInfo() {
+	for i, l := range o.GetLayerInfo() {
 		if l == nil {
 			errs = append(errs, fmt.Errorf("layer_info[%d] layer cannot be null", i))
 		} else {

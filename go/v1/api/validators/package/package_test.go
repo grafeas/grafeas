@@ -23,17 +23,17 @@ import (
 func TestValidateNote(t *testing.T) {
 	tests := []struct {
 		desc     string
-		p        *gpb.PackageNote
+		n        *gpb.PackageNote
 		wantErrs bool
 	}{
 		{
 			desc:     "missing name, want error(s)",
-			p:        &gpb.PackageNote{},
+			n:        &gpb.PackageNote{},
 			wantErrs: true,
 		},
 		{
 			desc: "nil distribution, want error(s)",
-			p: &gpb.PackageNote{
+			n: &gpb.PackageNote{
 				Name: "debian",
 				Distribution: []*gpb.Distribution{
 					nil,
@@ -43,7 +43,7 @@ func TestValidateNote(t *testing.T) {
 		},
 		{
 			desc: "invalid distribution, want error(s)",
-			p: &gpb.PackageNote{
+			n: &gpb.PackageNote{
 				Name: "debian",
 				Distribution: []*gpb.Distribution{
 					{},
@@ -53,7 +53,7 @@ func TestValidateNote(t *testing.T) {
 		},
 		{
 			desc: "valid package, want success",
-			p: &gpb.PackageNote{
+			n: &gpb.PackageNote{
 				Name: "debian",
 				Distribution: []*gpb.Distribution{
 					{
@@ -66,13 +66,13 @@ func TestValidateNote(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		errs := ValidateNote(tt.p)
+		errs := ValidateNote(tt.n)
 		t.Logf("%q: error(s): %v", tt.desc, errs)
 		if len(errs) == 0 && tt.wantErrs {
-			t.Errorf("%q: ValidateNote(%+v): got success, want error(s)", tt.desc, tt.p)
+			t.Errorf("%q: ValidateNote(%+v): got success, want error(s)", tt.desc, tt.n)
 		}
 		if len(errs) > 0 && !tt.wantErrs {
-			t.Errorf("%q: ValidateNote(%+v): got error(s) %v, want success", tt.desc, tt.p, errs)
+			t.Errorf("%q: ValidateNote(%+v): got error(s) %v, want success", tt.desc, tt.n, errs)
 		}
 	}
 }
@@ -180,76 +180,31 @@ func TestValidateVersion(t *testing.T) {
 func TestValidateOccurrence(t *testing.T) {
 	tests := []struct {
 		desc     string
-		d        *gpb.PackageOccurrence
-		wantErrs bool
-	}{
-		{
-			desc:     "missing installation, want error(s)",
-			d:        &gpb.PackageOccurrence{},
-			wantErrs: true,
-		},
-		{
-			desc: "invalid installation, want error(s)",
-			d: &gpb.PackageOccurrence{
-				Installation: &gpb.Installation{},
-			},
-			wantErrs: true,
-		},
-		{
-			desc: "valid details, want success",
-			d: &gpb.PackageOccurrence{
-				Installation: &gpb.Installation{
-					Location: []*gpb.Location{
-						{
-							CpeUri: "cpe:/o:debian:debian_linux:7",
-						},
-					},
-				},
-			},
-			wantErrs: false,
-		},
-	}
-
-	for _, tt := range tests {
-		errs := ValidateOccurrence(tt.d)
-		t.Logf("%q: error(s): %v", tt.desc, errs)
-		if len(errs) == 0 && tt.wantErrs {
-			t.Errorf("%q: ValidateOccurrence(%+v): got success, want error(s)", tt.desc, tt.d)
-		}
-		if len(errs) > 0 && !tt.wantErrs {
-			t.Errorf("%q: ValidateOccurrence(%+v): got error(s) %v, want success", tt.desc, tt.d, errs)
-		}
-	}
-}
-
-func TestValidateInstallation(t *testing.T) {
-	tests := []struct {
-		desc     string
-		i        *gpb.Installation
+		o        *gpb.PackageOccurrence
 		wantErrs bool
 	}{
 		{
 			desc:     "missing location, want error(s)",
-			i:        &gpb.Installation{},
+			o:        &gpb.PackageOccurrence{},
 			wantErrs: true,
 		},
 		{
 			desc: "empty location, want error(s)",
-			i: &gpb.Installation{
+			o: &gpb.PackageOccurrence{
 				Location: []*gpb.Location{},
 			},
 			wantErrs: true,
 		},
 		{
 			desc: "nil location, want error(s)",
-			i: &gpb.Installation{
+			o: &gpb.PackageOccurrence{
 				Location: []*gpb.Location{nil},
 			},
 			wantErrs: true,
 		},
 		{
 			desc: "invalid location, want error(s)",
-			i: &gpb.Installation{
+			o: &gpb.PackageOccurrence{
 				Location: []*gpb.Location{
 					{},
 				},
@@ -258,7 +213,7 @@ func TestValidateInstallation(t *testing.T) {
 		},
 		{
 			desc: "valid installation, want success",
-			i: &gpb.Installation{
+			o: &gpb.PackageOccurrence{
 				Location: []*gpb.Location{
 					{
 						CpeUri: "cpe:/o:debian:debian_linux:7",
@@ -270,13 +225,13 @@ func TestValidateInstallation(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		errs := validateInstallation(tt.i)
+		errs := ValidateOccurrence(tt.o)
 		t.Logf("%q: error(s): %v", tt.desc, errs)
 		if len(errs) == 0 && tt.wantErrs {
-			t.Errorf("%q: validateInstallation(%+v): got success, want error(s)", tt.desc, tt.i)
+			t.Errorf("%q: ValidateOccurrence(%+v): got success, want error(s)", tt.desc, tt.o)
 		}
 		if len(errs) > 0 && !tt.wantErrs {
-			t.Errorf("%q: validateInstallation(%+v): got error(s) %v, want success", tt.desc, tt.i, errs)
+			t.Errorf("%q: ValidateOccurrence(%+v): got error(s) %v, want success", tt.desc, tt.o, errs)
 		}
 	}
 }
