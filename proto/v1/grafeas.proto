@@ -213,8 +213,6 @@ message Occurrence {
     // Describes an attestation of an artifact.
     grafeas.v1.AttestationOccurrence attestation = 14;
   }
-
-  // next_id = 15;
 }
 
 // A type of analysis that can be done for a resource.
@@ -267,8 +265,6 @@ message Note {
     // A note describing an attestation role.
     grafeas.v1.AttestationNote attestation = 16;
   }
-
-  // next_id = 17;
 }
 
 // Request to get an occurrence.
@@ -293,8 +289,6 @@ message ListOccurrencesRequest {
 
   // Token to provide to skip to a particular spot in the list.
   string page_token = 4;
-
-  // next_id = 7;
 }
 
 // Response for listing occurrences.
