@@ -23,15 +23,15 @@ import (
 	gpb "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto"
 )
 
-// ValidateNote validates that a package has all its required fields filled in.
-func ValidateNote(p *gpb.PackageNote) []error {
+// ValidateNote validates that a package note all its required fields filled in.
+func ValidateNote(n *gpb.PackageNote) []error {
 	errs := []error{}
 
-	if p.GetName() == "" {
+	if n.GetName() == "" {
 		errs = append(errs, errors.New("name is required"))
 	}
 
-	for i, d := range p.GetDistribution() {
+	for i, d := range n.GetDistribution() {
 		if d == nil {
 			errs = append(errs, fmt.Errorf("distribution[%d] distribution cannot be null", i))
 		} else {
@@ -75,25 +75,11 @@ func ValidateVersion(v *gpb.Version) []error {
 	return errs
 }
 
-// ValidateOccurrence validates that a details has all its required fields filled in.
-func ValidateOccurrence(d *gpb.PackageOccurrence) []error {
+// ValidateOccurrence validates that a package occurrence has all its required fields filled in.
+func ValidateOccurrence(o *gpb.PackageOccurrence) []error {
 	errs := []error{}
 
-	if i := d.GetInstallation(); i == nil {
-		errs = append(errs, errors.New("installation is required"))
-	} else {
-		for _, err := range validateInstallation(i) {
-			errs = append(errs, fmt.Errorf("installation.%s", err))
-		}
-	}
-
-	return errs
-}
-
-func validateInstallation(i *gpb.Installation) []error {
-	errs := []error{}
-
-	if loc := i.GetLocation(); loc == nil {
+	if loc := o.GetLocation(); loc == nil {
 		errs = append(errs, errors.New("location is required"))
 	} else if len(loc) == 0 {
 		errs = append(errs, errors.New("location requires at least 1 element"))
