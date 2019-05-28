@@ -35,7 +35,7 @@ import "proto/v1/package.proto";
 import "proto/v1/provenance.proto";
 import "proto/v1/vulnerability.proto";
 
-// [Grafeas](grafeas.io) API.
+// [Grafeas](https://grafeas.io) API.
 //
 // Retrieves analysis results of Cloud components such as Docker container
 // images.
