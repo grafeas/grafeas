@@ -27,13 +27,13 @@ import (
 func ParseProject(name string) (string, error) {
 	params := strings.Split(name, "/")
 	if len(params) != 2 {
-		return "", errors.Newf(codes.InvalidArgument, "name must be in the form 'projects/[PROJECT_ID]', got %q", name)
+		return "", errors.Newf(codes.InvalidArgument, `project name must be in the form "projects/[PROJECT_ID]", got %q`, name)
 	}
 	if params[0] != "projects" {
-		return "", errors.Newf(codes.InvalidArgument, "name must be in the form 'projects/[PROJECT_ID]', got %q", name)
+		return "", errors.Newf(codes.InvalidArgument, `project name must be in the form "projects/[PROJECT_ID]", got %q`, name)
 	}
 	if params[1] == "" {
-		return "", errors.Newf(codes.InvalidArgument, "name must be in the form 'projects/[PROJECT_ID]', got %q", name)
+		return "", errors.Newf(codes.InvalidArgument, `project name must be in the form "projects/[PROJECT_ID]", got %q`, name)
 	}
 
 	return params[1], nil
@@ -43,16 +43,16 @@ func ParseProject(name string) (string, error) {
 func ParseNote(name string) (string, string, error) {
 	params := strings.Split(name, "/")
 	if len(params) != 4 {
-		return "", "", errors.Newf(codes.InvalidArgument, "name must be in the form 'projects/[PROJECT_ID]/notes/[NOTE_ID]', got %q", name)
+		return "", "", errors.Newf(codes.InvalidArgument, `note name must be in the form "projects/[PROJECT_ID]/notes/[NOTE_ID]", got %q`, name)
 	}
 	if params[0] != "projects" {
-		return "", "", errors.Newf(codes.InvalidArgument, "name must be in the form 'projects/[PROJECT_ID]/notes/[NOTE_ID]', got %q", name)
+		return "", "", errors.Newf(codes.InvalidArgument, `note name must be in the form "projects/[PROJECT_ID]/notes/[NOTE_ID]", got %q`, name)
 	}
 	if params[2] != "notes" {
-		return "", "", errors.Newf(codes.InvalidArgument, "name must be in the form 'projects/[PROJECT_ID]/notes/[NOTE_ID]', got %q", name)
+		return "", "", errors.Newf(codes.InvalidArgument, `note name must be in the form "projects/[PROJECT_ID]/notes/[NOTE_ID]", got %q`, name)
 	}
 	if params[1] == "" || params[3] == "" {
-		return "", "", errors.Newf(codes.InvalidArgument, "name must be in the form 'projects/[PROJECT_ID]/notes/[NOTE_ID]', got %q", name)
+		return "", "", errors.Newf(codes.InvalidArgument, `note name must be in the form "projects/[PROJECT_ID]/notes/[NOTE_ID]", got %q`, name)
 	}
 
 	return params[1], params[3], nil
@@ -62,16 +62,16 @@ func ParseNote(name string) (string, string, error) {
 func ParseOccurrence(name string) (string, string, error) {
 	params := strings.Split(name, "/")
 	if len(params) != 4 {
-		return "", "", errors.Newf(codes.InvalidArgument, "name must be in the form 'projects/[PROJECT_ID]/occurrences/[OCCURRENCE_ID]', got %q", name)
+		return "", "", errors.Newf(codes.InvalidArgument, `occurrence name must be in the form "projects/[PROJECT_ID]/occurrences/[OCCURRENCE_ID]", got %q`, name)
 	}
 	if params[0] != "projects" {
-		return "", "", errors.Newf(codes.InvalidArgument, "name must be in the form 'projects/[PROJECT_ID]/occurrences/[OCCURRENCE_ID]', got %q", name)
+		return "", "", errors.Newf(codes.InvalidArgument, `occurrence name must be in the form "projects/[PROJECT_ID]/occurrences/[OCCURRENCE_ID]", got %q`, name)
 	}
 	if params[2] != "occurrences" {
-		return "", "", errors.Newf(codes.InvalidArgument, "name must be in the form 'projects/[PROJECT_ID]/occurrences/[OCCURRENCE_ID]', got %q", name)
+		return "", "", errors.Newf(codes.InvalidArgument, `occurrence name must be in the form "projects/[PROJECT_ID]/occurrences/[OCCURRENCE_ID]", got %q`, name)
 	}
 	if params[1] == "" || params[3] == "" {
-		return "", "", errors.Newf(codes.InvalidArgument, "name must be in the form 'projects/[PROJECT_ID]/occurrences/[OCCURRENCE_ID]', got %q", name)
+		return "", "", errors.Newf(codes.InvalidArgument, `occurrence name must be in the form "projects/[PROJECT_ID]/occurrences/[OCCURRENCE_ID]", got %q`, name)
 	}
 
 	return params[1], params[3], nil
