@@ -27,7 +27,6 @@ import (
 	prpb "github.com/grafeas/grafeas/proto/v1beta1/project_go_proto"
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/name"
 	"github.com/lib/pq"
-	opspb "google.golang.org/genproto/googleapis/longrunning"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -445,113 +444,6 @@ func (pg *pgSQLStore) ListNoteOccurrences(pID, nID, filters string, pageSize int
 		return nil, "", status.Error(codes.Internal, "Failed to paginate projects")
 	}
 	return os, encryptedPage, nil
-}
-
-// GetOperation returns the operation with pID and oID
-func (pg *pgSQLStore) GetOperation(pID, opID string) (*opspb.Operation, error) {
-	var data string
-	err := pg.DB.QueryRow(searchOperation, pID, opID).Scan(&data)
-	switch {
-	case err == sql.ErrNoRows:
-		return nil, status.Errorf(codes.NotFound, "Operation with name %q/%q does not Exist", pID, opID)
-	case err != nil:
-		return nil, status.Error(codes.Internal, "Failed to query Operation from database")
-	}
-	var op opspb.Operation
-	proto.UnmarshalText(data, &op)
-	if err != nil {
-		return nil, status.Error(codes.Internal, "Failed to unmarshal Operation from database")
-	}
-	return &op, nil
-}
-
-// CreateOperation adds the specified operation
-func (pg *pgSQLStore) CreateOperation(o *opspb.Operation) error {
-	pID, opID, err := name.ParseOperation(o.Name)
-	if err != nil {
-		log.Printf("Invalid operation name: %v", o.Name)
-		return status.Error(codes.InvalidArgument, "Invalid operation name")
-	}
-	_, err = pg.DB.Exec(insertOperation, pID, opID, proto.MarshalTextString(o))
-	if err, ok := err.(*pq.Error); ok {
-		// Check for unique_violation
-		if err.Code == "23505" {
-			return status.Errorf(codes.AlreadyExists, "Operation with name %q/%q already exists", pID, opID)
-		} else {
-			log.Println("Failed to insert Operation in database", err)
-			return status.Error(codes.Internal, "Failed to insert Operation in database")
-		}
-	}
-	return nil
-}
-
-// DeleteOperation deletes the operation with the given pID and oID
-func (pg *pgSQLStore) DeleteOperation(pID, opID string) error {
-	result, err := pg.DB.Exec(deleteOperation, pID, opID)
-	if err != nil {
-		return status.Error(codes.Internal, "Failed to delete Operation from database")
-	}
-	count, err := result.RowsAffected()
-	if err != nil {
-		return status.Error(codes.Internal, "Failed to delete Operation from database")
-	}
-	if count == 0 {
-		return status.Errorf(codes.NotFound, "Operation with name %q/%q does not Exist", pID, opID)
-	}
-	return nil
-}
-
-// UpdateOperation updates the existing operation with the given pID and nID
-func (pg *pgSQLStore) UpdateOperation(pID, opID string, op *opspb.Operation) error {
-	result, err := pg.DB.Exec(updateOperation, pID, opID, proto.MarshalTextString(op))
-	if err != nil {
-		return status.Error(codes.Internal, "Failed to update Operation")
-	}
-	count, err := result.RowsAffected()
-	if err != nil {
-		return status.Error(codes.Internal, "Failed to update Operation")
-	}
-	if count == 0 {
-		return status.Errorf(codes.NotFound, "Operation with name %q/%q does not Exist", pID, opID)
-	}
-	return nil
-}
-
-// ListOperations returns up to pageSize number of operations for this project (pID) beginning
-// at pageToken (or from start if pageToken is the empty string).
-func (pg *pgSQLStore) ListOperations(pID, filters string, pageSize int, pageToken string) ([]*opspb.Operation, string, error) {
-	var rows *sql.Rows
-	id := decryptInt64(pageToken, pg.paginationKey, 0)
-	rows, err := pg.DB.Query(listOperations, pID, id, pageSize)
-	if err != nil {
-		return nil, "", status.Error(codes.Internal, "Failed to list Operations from database")
-	}
-	defer rows.Close()
-	var ops []*opspb.Operation
-	var lastId int64
-	for rows.Next() {
-		var data string
-		err := rows.Scan(&lastId, &data)
-		if err != nil {
-			return nil, "", status.Error(codes.Internal, "Failed to scan Operations row")
-		}
-		var op opspb.Operation
-		proto.UnmarshalText(data, &op)
-		if err != nil {
-			return nil, "", status.Error(codes.Internal, "Failed to unmarshal Operation from database")
-		}
-		ops = append(ops, &op)
-	}
-	if count, err := pg.count(operationsCnt, pID); err != nil {
-		return nil, "", status.Error(codes.Internal, "Failed to count Operations from database")
-	} else if count == lastId {
-		return ops, "", nil
-	}
-	encryptedPage, err := encryptInt64(lastId, pg.paginationKey)
-	if err != nil {
-		return nil, "", status.Error(codes.Internal, "Failed to paginate projects")
-	}
-	return ops, encryptedPage, nil
 }
 
 // count returns the total number of entries for the specified query (assuming SELECT(*) is used)

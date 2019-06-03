@@ -17,7 +17,6 @@ package server
 import (
 	pb "github.com/grafeas/grafeas/proto/v1beta1/grafeas_go_proto"
 	prpb "github.com/grafeas/grafeas/proto/v1beta1/project_go_proto"
-	opspb "google.golang.org/genproto/googleapis/longrunning"
 )
 
 // Storager is the interface that a Grafeas storage implementation would provide
@@ -31,9 +30,6 @@ type Storager interface {
 	// CreateOccurrence adds the specified occurrence
 	CreateOccurrence(o *pb.Occurrence) error
 
-	// CreateOperation adds the specified operation
-	CreateOperation(o *opspb.Operation) error
-
 	// DeleteNote deletes the project with the given pID
 	DeleteProject(pID string) error
 
@@ -42,9 +38,6 @@ type Storager interface {
 
 	// DeleteOccurrence deletes the occurrence with the given pID and oID
 	DeleteOccurrence(pID, oID string) error
-
-	// DeleteOperation deletes the operation with the given pID and oID
-	DeleteOperation(pID, opID string) error
 
 	// GetProject returns the project with the given pID
 	GetProject(pID string) (*prpb.Project, error)
@@ -57,9 +50,6 @@ type Storager interface {
 
 	// GetOccurrence returns the occurrence with pID and oID
 	GetOccurrence(pID, oID string) (*pb.Occurrence, error)
-
-	// GetOperation returns the operation with pID and oID
-	GetOperation(pID, opID string) (*opspb.Operation, error)
 
 	// ListProjects returns up to pageSize number of projects beginning at pageToken (or from
 	// start if pageToken is the empty string).
@@ -77,16 +67,9 @@ type Storager interface {
 	// at pageToken (or from start if pageToken is the empty string).
 	ListOccurrences(pID, filters string, pageSize int, pageToken string) ([]*pb.Occurrence, string, error)
 
-	// ListOperations returns up to pageSize number of operations for this project (pID) beginning
-	// at pageToken (or from start if pageToken is the empty string).
-	ListOperations(pID, filters string, pageSize int, pageToken string) ([]*opspb.Operation, string, error)
-
 	// UpdateNote updates the existing note with the given pID and nID
 	UpdateNote(pID, nID string, n *pb.Note) error
 
 	// UpdateOccurrence updates the existing occurrence with the given projectID and occurrenceID
 	UpdateOccurrence(pID, oID string, o *pb.Occurrence) error
-
-	// UpdateOperation updates the existing operation with the given pID and nID
-	UpdateOperation(pID, opID string, op *opspb.Operation) error
 }
