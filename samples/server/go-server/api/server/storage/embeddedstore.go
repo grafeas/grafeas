@@ -25,7 +25,6 @@ import (
 	prpb "github.com/grafeas/grafeas/proto/v1beta1/project_go_proto"
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/name"
 	"github.com/grafeas/grafeas/server-go"
-	opspb "google.golang.org/genproto/googleapis/longrunning"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"log"
@@ -295,72 +294,6 @@ func (m *embeddedStore) ListNoteOccurrences(pID, nID, filters string, pageSize i
 				return err
 			}
 			if o.NoteName == nName {
-				os = append(os, &o)
-			}
-			return nil
-		})
-		return err
-	})
-	sort.Slice(os, func(i, j int) bool {
-		return os[i].Name < os[j].Name
-	})
-	startPos := parsePageToken(pageToken, 0)
-	endPos := min(startPos+pageSize, len(os))
-	return os[startPos:endPos], nextPageToken(endPos, len(os)), nil
-}
-
-// GetOperation returns the operation with pID and oID
-func (m *embeddedStore) GetOperation(pID, opID string) (*opspb.Operation, error) {
-	oName := name.OperationName(pID, opID)
-	var o opspb.Operation
-	err := m.get(bucketOperations, oName, &o)
-	if err == errNoKey {
-		return nil, status.Errorf(codes.NotFound, "Operation with name %q does not Exist", oName)
-	}
-	return &o, err
-}
-
-// CreateOperation adds the specified operation to the embedded store
-func (m *embeddedStore) CreateOperation(o *opspb.Operation) error {
-	err := m.update(bucketOperations, o.Name, true, o)
-	if err == errKeyExists {
-		return status.Errorf(codes.AlreadyExists, "Operation with name %q already exists", o.Name)
-	}
-	return err
-}
-
-// DeleteOperation deletes the operation with the given pID and oID from the embeddedStore
-func (m *embeddedStore) DeleteOperation(pID, opID string) error {
-	opName := name.OperationName(pID, opID)
-	err := m.delete(bucketOperations, opName)
-	if err == errNoKey {
-		return status.Errorf(codes.NotFound, "Operation with name %q does not Exist", opName)
-	}
-	return err
-}
-
-// UpdateOperation updates the existing operation with the given pID and nID
-func (m *embeddedStore) UpdateOperation(pID, opID string, op *opspb.Operation) error {
-	opName := name.OperationName(pID, opID)
-	err := m.update(bucketOperations, opName, false, op)
-	if err == errNoKey {
-		return status.Errorf(codes.NotFound, "Operation with name %q does not Exist", opName)
-	}
-	return err
-}
-
-// ListOperations returns up to pageSize number of operations for this project (pID) beginning
-// at pageToken (or from start if pageToken is the empty string).
-func (m *embeddedStore) ListOperations(pID, filters string, pageSize int, pageToken string) ([]*opspb.Operation, string, error) {
-	var os []*opspb.Operation
-	m.db.View(func(tx *bolt.Tx) error {
-		b := tx.Bucket([]byte(bucketOperations))
-		err := b.ForEach(func(k, v []byte) error {
-			var o opspb.Operation
-			if err := proto.Unmarshal(v, &o); err != nil {
-				return err
-			}
-			if strings.HasPrefix(o.Name, fmt.Sprintf("projects/%v", pID)) {
 				os = append(os, &o)
 			}
 			return nil
