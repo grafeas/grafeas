@@ -3,4 +3,5 @@
 protoc
 .install.tools
 proto/**/.done
+proto/v1beta1/*_go_proto/
 proto/v1/*_go_proto/
