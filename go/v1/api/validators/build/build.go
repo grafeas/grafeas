@@ -32,22 +32,6 @@ func ValidateNote(b *gpb.BuildNote) []error {
 		errs = append(errs, errors.New("builder_version is required"))
 	}
 
-	if s := b.GetSignature(); s != nil {
-		for _, err := range validateSignature(s) {
-			errs = append(errs, fmt.Errorf("signature.%s", err))
-		}
-	}
-
-	return errs
-}
-
-func validateSignature(s *gpb.BuildSignature) []error {
-	errs := []error{}
-
-	if s.GetSignature() == nil {
-		errs = append(errs, errors.New("signature is required"))
-	}
-
 	return errs
 }
 
