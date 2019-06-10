@@ -15,7 +15,6 @@
 package project
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -41,16 +40,16 @@ func newFakeStorage() *fakeStorage {
 	}
 }
 
-func (s *fakeStorage) CreateProject(ctx context.Context, pID string) error {
+func (s *fakeStorage) CreateProject(ctx context.Context, pID string, p *prpb.Project) (*prpb.Project, error) {
 	if s.createProjErr {
-		return status.Errorf(codes.Internal, "failed to create project %s", pID)
+		return nil, status.Errorf(codes.Internal, "failed to create project %s", pID)
 	}
 
 	// Create project if it doesn't exist.
 	if _, ok := s.projects[pID]; !ok {
-		s.projects[pID] = prpb.Project{}
+		s.projects[pID] = p
 	}
-	return nil
+	return s.projects[pID], nil
 }
 
 func (s *fakeStorage) GetProject(ctx context.Context, pID string) (*prpb.Project, error) {
@@ -98,14 +97,15 @@ func TestCreateProject(t *testing.T) {
 	req := &prpb.CreateProjectRequest{
 		Project: proj,
 	}
+	resp := &prpb.Project{}
 
-	p, err := gp.CreateProject(ctx, req)
+	err := gp.CreateProject(ctx, req, resp)
 	if err != nil {
 		t.Errorf("Got err %v, want success", err)
 	}
 
-	if diff := cmp.Diff(p, proj); diff != "" {
-		t.Errorf("CreateProject(%v) return diff (want -> got):\n%s", req, diff)
+	if diff := cmp.Diff(proj, resp); diff != "" {
+		t.Errorf("CreateProject(%v) returned diff (want -> got):\n%s", req, diff)
 	}
 }
 
@@ -121,14 +121,14 @@ func TestCreateProjectErrors(t *testing.T) {
 		{
 			desc:          "empty project",
 			req:           &prpb.CreateProjectRequest{},
-			wantErrStatus: codes.InvalidArument,
+			wantErrStatus: codes.InvalidArgument,
 		},
 		{
 			desc: "empty project name",
 			req: &prpb.CreateProjectRequest{
 				Project: &prpb.Project{},
 			},
-			wantErrStatus: codes.InvalidArument,
+			wantErrStatus: codes.InvalidArgument,
 		},
 		{
 			desc: "invalid project name",
@@ -137,7 +137,7 @@ func TestCreateProjectErrors(t *testing.T) {
 					Name: "invalid-project",
 				},
 			},
-			wantErrStatus: codes.InvalidArument,
+			wantErrStatus: codes.InvalidArgument,
 		},
 		{
 			desc: "internal storage error",
@@ -158,8 +158,8 @@ func TestCreateProjectErrors(t *testing.T) {
 			Storage: s,
 		}
 
-		p := &prpb.Project{}
-		err := gp.CreateProject(ctx, tt.req, p)
+		resp := &prpb.Project{}
+		err := gp.CreateProject(ctx, tt.req, resp)
 		t.Logf("%q: error:%v", tt.desc, err)
 		if status.Code(err) != tt.wantErrStatus {
 			t.Errorf("%q: got error status %v, want %v", tt.desc, status.Code(err), tt.wantErrStatus)
@@ -179,7 +179,7 @@ func TestGetProject(t *testing.T) {
 		Name: "projects/1234",
 	}
 
-	if _, err := s.CreateProject(ctx, "1234"); err != nil {
+	if _, err := s.CreateProject(ctx, "1234", proj); err != nil {
 		t.Errorf("Failed to create project %+v", proj)
 	}
 
@@ -192,7 +192,7 @@ func TestGetProject(t *testing.T) {
 	}
 
 	if diff := cmp.Diff(proj, gotP); diff != "" {
-		t.Errorf("GetNote(%v) returned diff (want -> got):\n%s", req, diff)
+		t.Errorf("GetProject(%v) returned diff (want -> got):\n%s", req, diff)
 	}
 }
 
@@ -210,7 +210,7 @@ func TestGetProjectErrors(t *testing.T) {
 			req: &prpb.GetProjectRequest{
 				Name: "invalid-project",
 			},
-			wantErrStatus: codes.InvalidArument,
+			wantErrStatus: codes.InvalidArgument,
 		},
 		{
 			desc: "internal storage error",
@@ -250,33 +250,33 @@ func TestListProjects(t *testing.T) {
 		Name: "projects/1234",
 	}
 
-	if _, err := s.CreateProject(ctx, "1234"); err != nil {
+	if _, err := s.CreateProject(ctx, "1234", proj); err != nil {
 		t.Errorf("Failed to create project %+v", proj)
 	}
 
-	req := &prpb.ListProjectRequest{}
+	req := &prpb.ListProjectsRequest{}
 	resp := &prpb.ListProjectsResponse{}
 	if err := gp.ListProjects(ctx, req, resp); err != nil {
 		t.Errorf("Got err %v, want success", err)
 	}
 
-	if diff := cmp.Diff(n, resp.Projects[0]); diff != "" {
-		t.Errorf("ListNotes(%v) returned diff (want -> got):\n%s", req, diff)
+	if diff := cmp.Diff(proj, resp.Projects[0]); diff != "" {
+		t.Errorf("ListProjects(%v) returned diff (want -> got):\n%s", req, diff)
 	}
 }
 
-func TestListProjectErrors(t *testing.T) {
+func TestListProjectsErrors(t *testing.T) {
 	ctx := context.Background()
 
 	tests := []struct {
 		desc               string
-		req                *prpb.GetProjectRequest
+		req                *prpb.ListProjectsRequest
 		internalStorageErr bool
 		wantErrStatus      codes.Code
 	}{
 		{
 			desc:               "internal storage error",
-			req:                &prpb.ListProjectRequest{},
+			req:                &prpb.ListProjectsRequest{},
 			internalStorageErr: true,
 			wantErrStatus:      codes.Internal,
 		},
@@ -310,7 +310,7 @@ func TestDeleteProject(t *testing.T) {
 		Name: "projects/1234",
 	}
 
-	if _, err := s.CreateProject(ctx, "1234"); err != nil {
+	if _, err := s.CreateProject(ctx, "1234", proj); err != nil {
 		t.Errorf("Failed to create project %+v", proj)
 	}
 
@@ -336,7 +336,7 @@ func TestDeleteProjectErrors(t *testing.T) {
 			req: &prpb.DeleteProjectRequest{
 				Name: "invalid-project",
 			},
-			wantErrStatus: codes.InvalidArument,
+			wantErrStatus: codes.InvalidArgument,
 		},
 		{
 			desc: "internal storage error",
@@ -355,7 +355,6 @@ func TestDeleteProjectErrors(t *testing.T) {
 			Storage: s,
 		}
 
-		p := &prpb.Project{}
 		err := gp.DeleteProject(ctx, tt.req, nil)
 		t.Logf("%q: error:%v", tt.desc, err)
 		if status.Code(err) != tt.wantErrStatus {

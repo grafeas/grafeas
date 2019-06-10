@@ -18,16 +18,17 @@ import (
 	"log"
 
 	"github.com/golang/protobuf/ptypes/empty"
+	"github.com/grafeas/grafeas/go/errors"
+	"github.com/grafeas/grafeas/go/name"
 	prpb "github.com/grafeas/grafeas/proto/v1beta1/project_go_proto"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 // Storage provides storage functions for this API.
 type Storage interface {
 	// CreateProject creates a project with the specified project ID
-	CreateProject(ctx context.Context, pID string) error
+	CreateProject(ctx context.Context, pID string, p *prpb.Project) (*prpb.Project, error)
 	// GetProject gets a project from the datastore
 	GetProject(ctx context.Context, pID string) (*prpb.Project, error)
 	// ListProjects returns the project IDs for all projects in the datastore
@@ -41,24 +42,26 @@ type API struct {
 }
 
 func (gp *API) CreateProject(ctx context.Context, req *prpb.CreateProjectRequest, resp *prpb.Project) error {
-	p := req.Project
-	if p == nil {
+	proj := req.Project
+	if proj == nil {
 		log.Print("Project must not be empty.")
-		return status.Error(codes.InvalidArgument, "Project must not be empty")
+		return errors.Newf(codes.InvalidArgument, "Project must not be empty")
 	}
-	if p.Name == "" {
-		log.Printf("Project name must not be empty: %v", p.Name)
-		return status.Error(codes.InvalidArgument, "Project name must not be empty")
+	if proj.Name == "" {
+		log.Printf("Project name must not be empty: %v", proj.Name)
+		return errors.Newf(codes.InvalidArgument, "Project name must not be empty")
 	}
-	pID, err := name.ParseProject(p.Name)
+	pID, err := name.ParseProject(proj.Name)
 	if err != nil {
-		log.Printf("Invalid project name: %v", p.Name)
-		return status.Error(codes.InvalidArgument, "Invalid project name")
+		log.Printf("Invalid project name: %v", proj.Name)
+		return errors.Newf(codes.InvalidArgument, "Invalid project name")
 	}
 
-	if err := gp.Storage.CreateProject(ctx, pID); err != nil {
+	p, err := gp.Storage.CreateProject(ctx, pID, proj)
+	if err != nil {
 		return err
 	}
+	*resp = *p
 	return nil
 }
 
@@ -67,7 +70,7 @@ func (gp *API) GetProject(ctx context.Context, req *prpb.GetProjectRequest, resp
 	pID, err := name.ParseProject(req.Name)
 	if err != nil {
 		log.Printf("Error parsing project name: %v", req.Name)
-		return status.Error(codes.InvalidArgument, "Invalid Project name")
+		return errors.Newf(codes.InvalidArgument, "Invalid Project name")
 	}
 	p, err := gp.Storage.GetProject(ctx, pID)
 	if err != nil {
@@ -97,7 +100,7 @@ func (gp *API) DeleteProject(ctx context.Context, req *prpb.DeleteProjectRequest
 	pID, err := name.ParseProject(req.Name)
 	if err != nil {
 		log.Printf("Error parsing project name: %v", req.Name)
-		return status.Error(codes.InvalidArgument, "Invalid Project name")
+		return errors.Newf(codes.InvalidArgument, "Invalid Project name")
 	}
 	if err := gp.Storage.DeleteProject(ctx, pID); err != nil {
 		return err
