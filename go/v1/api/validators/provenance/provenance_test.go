@@ -225,7 +225,7 @@ func TestValidateFileHashes(t *testing.T) {
 			f: &gpb.FileHashes{
 				FileHash: []*gpb.Hash{
 					{
-						Type:  gpb.Hash_SHA256,
+						Type:  "SHA256",
 						Value: []byte("foobar"),
 					},
 				},
@@ -260,14 +260,14 @@ func TestValidateHash(t *testing.T) {
 		{
 			desc: "missing value, want error(s)",
 			h: &gpb.Hash{
-				Type: gpb.Hash_SHA256,
+				Type: "SHA256",
 			},
 			wantErrs: true,
 		},
 		{
 			desc: "valid hash, want success",
 			h: &gpb.Hash{
-				Type:  gpb.Hash_SHA256,
+				Type:  "SHA256",
 				Value: []byte("foobar"),
 			},
 			wantErrs: false,

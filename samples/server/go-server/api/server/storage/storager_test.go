@@ -27,7 +27,6 @@ import (
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/name"
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/testing"
 	"github.com/grafeas/grafeas/server-go"
-	opspb "google.golang.org/genproto/googleapis/longrunning"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -95,22 +94,6 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 			t.Fatalf("GetOccurrence got %v, want success", err)
 		} else if !proto.Equal(got, o) {
 			t.Errorf("GetOccurrence got %v, want %v", got, o)
-		}
-	})
-
-	t.Run("CreateOperation", func(t *testing.T) {
-		s, cleanUp := createStore(t)
-		defer cleanUp()
-		opPID := "vulnerability-scanner-a"
-		op := testutil.Operation(opPID)
-		if err := s.CreateOperation(op); err != nil {
-			t.Errorf("CreateOperation got %v want success", err)
-		}
-		// Try to insert the same note twice, expect failure.
-		if err := s.CreateOperation(op); err == nil {
-			t.Errorf("CreateOperation got success, want Error")
-		} else if s, _ := status.FromError(err); s.Code() != codes.AlreadyExists {
-			t.Errorf("CreateOperation got code %v want %v", s.Code(), codes.AlreadyExists)
 		}
 	})
 
@@ -348,90 +331,6 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 		}
 	})
 
-	t.Run("GetOperation", func(t *testing.T) {
-		s, cleanUp := createStore(t)
-		defer cleanUp()
-		oPID := "vulnerability-scanner-a"
-		o := testutil.Operation(oPID)
-
-		pID, oID, err := name.ParseOperation(o.Name)
-		if err != nil {
-			t.Fatalf("Error parsing operation %v", err)
-		}
-		if _, err := s.GetOperation(pID, oID); err == nil {
-			t.Fatal("GetOperation got success, want error")
-		}
-		if err := s.CreateOperation(o); err != nil {
-			t.Errorf("CreateOperation got %v, want Success", err)
-		}
-		if got, err := s.GetOperation(pID, oID); err != nil {
-			t.Fatalf("GetOperation got %v, want success", err)
-		} else if !proto.Equal(got, o) {
-			t.Errorf("GetOperation got %v, want %v", got, o)
-		}
-	})
-
-	t.Run("DeleteOperation", func(t *testing.T) {
-		s, cleanUp := createStore(t)
-		defer cleanUp()
-		oPID := "vulnerability-scanner-a"
-		o := testutil.Operation(oPID)
-		// Delete before the operation exists
-		pID, oID, err := name.ParseOperation(o.Name)
-		if err != nil {
-			t.Fatalf("Error parsing note %v", err)
-		}
-		if err := s.DeleteOperation(pID, oID); err == nil {
-			t.Error("Deleting nonexistant operation got success, want error")
-		}
-		if err := s.CreateOperation(o); err != nil {
-			t.Fatalf("CreateOperation got %v want success", err)
-		}
-
-		if err := s.DeleteOperation(pID, oID); err != nil {
-			t.Errorf("DeleteOperation got %v, want success ", err)
-		}
-
-		if err := s.DeleteOperation(pID, oID); err == nil {
-			t.Error("Deleting an operation that was deleted, got success, want error")
-		}
-	})
-
-	t.Run("UpdateOperation", func(t *testing.T) {
-		s, cleanUp := createStore(t)
-		defer cleanUp()
-		oPID := "vulnerability-scanner-a"
-		o := testutil.Operation(oPID)
-
-		pID, oID, err := name.ParseOperation(o.Name)
-		if err != nil {
-			t.Fatalf("Error parsing projectID and operationID %v", err)
-		}
-		if err := s.UpdateOperation(pID, oID, o); err == nil {
-			t.Fatal("UpdateOperation got success want error")
-		}
-		if err := s.CreateOperation(o); err != nil {
-			t.Fatalf("CreateOperation got %v want success", err)
-		}
-		if got, err := s.GetOperation(pID, oID); err != nil {
-			t.Fatalf("GetOperation got %v, want success", err)
-		} else if !proto.Equal(got, o) {
-			t.Errorf("GetOperation got %v, want %v", got, o)
-		}
-
-		o2 := o
-		o2.Done = true
-		if err := s.UpdateOperation(pID, oID, o2); err != nil {
-			t.Fatalf("UpdateOperation got %v want success", err)
-		}
-
-		if got, err := s.GetOperation(pID, oID); err != nil {
-			t.Fatalf("GetOperation got %v, want success", err)
-		} else if !proto.Equal(got, o2) {
-			t.Errorf("GetOperation got %v, want %v", got, o2)
-		}
-	})
-
 	t.Run("ListProjects", func(t *testing.T) {
 		s, cleanUp := createStore(t)
 		defer cleanUp()
@@ -463,44 +362,6 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 		sort.Strings(gotProjectNames)
 		if !reflect.DeepEqual(gotProjectNames, wantProjectNames) {
 			t.Errorf("ListProjects got %v want %v", gotProjectNames, wantProjectNames)
-		}
-	})
-
-	t.Run("ListOperations", func(t *testing.T) {
-		s, cleanUp := createStore(t)
-		defer cleanUp()
-		ops := []opspb.Operation{}
-		findProject := "findThese"
-		dontFind := "dontFind"
-		for i := 0; i < 20; i++ {
-			o := testutil.Operation("")
-			if i < 5 {
-				o.Name = name.FormatOperation(findProject, strconv.Itoa(i))
-			} else {
-				o.Name = name.FormatOperation(dontFind, strconv.Itoa(i))
-			}
-			if err := s.CreateOperation(o); err != nil {
-				t.Fatalf("CreateOperation got %v want success", err)
-			}
-			ops = append(ops, *o)
-		}
-		gotOs, pageToken, err := s.ListOperations(findProject, "", 100, "")
-		if err != nil {
-			t.Fatalf("ListOperations got %v want success", err)
-		}
-
-		if pageToken != "" {
-			t.Errorf("Got %s want empty page token", pageToken)
-		}
-
-		if len(gotOs) != 5 {
-			t.Errorf("ListOperations got %v operations, want 5", len(gotOs))
-		}
-		for _, o := range gotOs {
-			want := name.FormatProject(findProject)
-			if !strings.HasPrefix(o.Name, want) {
-				t.Errorf("ListOperations got %v want prefix %v", o.Name, want)
-			}
 		}
 	})
 
@@ -831,59 +692,6 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 		}
 		if p := gotOccurrences[0]; p.Name != name.FormatOccurrence(pID, oID3) {
 			t.Fatalf("Got %s want %s", p.Name, name.FormatOccurrence(pID, oID3))
-		}
-	})
-
-	t.Run("OperationPagination", func(t *testing.T) {
-		s, cleanUp := createStore(t)
-		defer cleanUp()
-		pID := "project1"
-		oID1 := "operation1"
-		op1 := testutil.Operation(pID)
-		op1.Name = name.FormatOperation(pID, oID1)
-		if err := s.CreateOperation(op1); err != nil {
-			t.Errorf("CreateOperation got %v want success", err)
-		}
-		oID2 := "operation2"
-		op2 := testutil.Operation(pID)
-		op2.Name = name.FormatOperation(pID, oID2)
-		if err := s.CreateOperation(op2); err != nil {
-			t.Errorf("CreateOperation got %v want success", err)
-		}
-		oID3 := "operation3"
-		op3 := testutil.Operation(pID)
-		op3.Name = name.FormatOperation(pID, oID3)
-		if err := s.CreateOperation(op3); err != nil {
-			t.Errorf("CreateOperation got %v want success", err)
-		}
-		filter := "filters_are_yet_to_be_implemented"
-		// Get operations
-		gotOperations, lastPage, err := s.ListOperations(pID, filter, 2, "")
-		if err != nil {
-			t.Fatalf("ListOperations got %v want success", err)
-		}
-		if len(gotOperations) != 2 {
-			t.Errorf("ListOperations got %v operations, want 2", len(gotOperations))
-		}
-		if p := gotOperations[0]; p.Name != name.FormatOperation(pID, oID1) {
-			t.Fatalf("Got %s want %s", p.Name, name.FormatOperation(pID, oID1))
-		}
-		if p := gotOperations[1]; p.Name != name.FormatOperation(pID, oID2) {
-			t.Fatalf("Got %s want %s", p.Name, name.FormatOperation(pID, oID2))
-		}
-		// Get operations again
-		gotOperations, pageToken, err := s.ListOperations(pID, filter, 100, lastPage)
-		if err != nil {
-			t.Fatalf("ListOperations got %v want success", err)
-		}
-		if pageToken != "" {
-			t.Errorf("Got %s want empty page token", pageToken)
-		}
-		if len(gotOperations) != 1 {
-			t.Errorf("ListOperations got %v operations, want 1", len(gotOperations))
-		}
-		if p := gotOperations[0]; p.Name != name.FormatOperation(pID, oID3) {
-			t.Fatalf("Got %s want %s", p.Name, name.FormatOperation(pID, oID3))
 		}
 	})
 }

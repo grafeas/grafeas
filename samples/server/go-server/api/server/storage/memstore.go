@@ -25,7 +25,6 @@ import (
 	prpb "github.com/grafeas/grafeas/proto/v1beta1/project_go_proto"
 	"github.com/grafeas/grafeas/samples/server/go-server/api/server/name"
 	"github.com/grafeas/grafeas/server-go"
-	opspb "google.golang.org/genproto/googleapis/longrunning"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -35,7 +34,6 @@ type memStore struct {
 	sync.RWMutex
 	occurrencesByID map[string]*pb.Occurrence
 	notesByID       map[string]*pb.Note
-	opsByID         map[string]*opspb.Operation
 	projects        map[string]bool
 }
 
@@ -44,7 +42,6 @@ func NewMemStore() server.Storager {
 	return &memStore{
 		occurrencesByID: map[string]*pb.Occurrence{},
 		notesByID:       map[string]*pb.Note{},
-		opsByID:         map[string]*opspb.Operation{},
 		projects:        map[string]bool{},
 	}
 }
@@ -271,72 +268,6 @@ func (m *memStore) ListNoteOccurrences(pID, nID, filters string, pageSize int, p
 	startPos := parsePageToken(pageToken, 0)
 	endPos := min(startPos+pageSize, len(os))
 	return os[startPos:endPos], nextPageToken(endPos, len(os)), nil
-}
-
-// GetOperation returns the operation with pID and oID
-func (m *memStore) GetOperation(pID, opID string) (*opspb.Operation, error) {
-	oName := name.OperationName(pID, opID)
-	m.RLock()
-	defer m.RUnlock()
-	o, ok := m.opsByID[oName]
-	if !ok {
-		return nil, status.Errorf(codes.NotFound, "Operation with name %q does not Exist", oName)
-	}
-	return o, nil
-}
-
-// CreateOperation adds the specified operation to the mem store
-func (m *memStore) CreateOperation(o *opspb.Operation) error {
-	m.Lock()
-	defer m.Unlock()
-	if _, ok := m.opsByID[o.Name]; ok {
-		return status.Errorf(codes.AlreadyExists, "Operation with name %q already exists", o.Name)
-	}
-	m.opsByID[o.Name] = o
-	return nil
-}
-
-// DeleteOperation deletes the operation with the given pID and oID from the memStore
-func (m *memStore) DeleteOperation(pID, opID string) error {
-	opName := name.OperationName(pID, opID)
-	m.Lock()
-	defer m.Unlock()
-	if _, ok := m.opsByID[opName]; !ok {
-		return status.Errorf(codes.NotFound, "Operation with name %q does not Exist", opName)
-	}
-	delete(m.opsByID, opName)
-	return nil
-}
-
-// UpdateOperation updates the existing operation with the given pID and nID
-func (m *memStore) UpdateOperation(pID, opID string, op *opspb.Operation) error {
-	opName := name.OperationName(pID, opID)
-	m.Lock()
-	defer m.Unlock()
-	if _, ok := m.opsByID[opName]; !ok {
-		return status.Errorf(codes.NotFound, "Operation with name %q does not Exist", opName)
-	}
-	m.opsByID[opName] = op
-	return nil
-}
-
-// ListOperations returns up to pageSize number of operations for this project (pID) beginning
-// at pageToken (or from start if pageToken is the empty string).
-func (m *memStore) ListOperations(pID, filters string, pageSize int, pageToken string) ([]*opspb.Operation, string, error) {
-	ops := []*opspb.Operation{}
-	m.RLock()
-	defer m.RUnlock()
-	for _, op := range m.opsByID {
-		if strings.HasPrefix(op.Name, fmt.Sprintf("projects/%v", pID)) {
-			ops = append(ops, op)
-		}
-	}
-	sort.Slice(ops, func(i, j int) bool {
-		return ops[i].Name < ops[j].Name
-	})
-	startPos := parsePageToken(pageToken, 0)
-	endPos := min(startPos+pageSize, len(ops))
-	return ops[startPos:endPos], nextPageToken(endPos, len(ops)), nil
 }
 
 // Parses the page token to an int. Returns defaultValue if parsing fails
