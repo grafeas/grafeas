@@ -32,14 +32,7 @@ func TestValidateNote(t *testing.T) {
 			wantErrs: true,
 		},
 		{
-			desc: "invalid signature, want error(s)",
-			b: &gpb.BuildNote{
-				BuilderVersion: "1.1.1",
-			},
-			wantErrs: true,
-		},
-		{
-			desc: "valid signature, want success",
+			desc: "valid build note, want success",
 			b: &gpb.BuildNote{
 				BuilderVersion: "1.1.1",
 			},
