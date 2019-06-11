@@ -23,7 +23,7 @@ CLEAN += .install.protoc-gen-go .install.grpc-gateway
 .install.grpc-gateway:
 	go get -u -v github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger && touch $@
 
-build: vet fmt go_protos swagger_docs
+build: fmt go_protos swagger_docs
 	go build -v ./...
 
 # http://golang.org/cmd/go/#hdr-Run_gofmt_on_package_sources
