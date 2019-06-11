@@ -116,7 +116,7 @@ func validateFileHashes(fileHashes *gpb.FileHashes) []error {
 func validateHash(h *gpb.Hash) []error {
 	errs := []error{}
 
-	if h.GetType() == gpb.Hash_HASH_TYPE_UNSPECIFIED {
+	if h.GetType() == "" {
 		errs = append(errs, errors.New("type is required"))
 	}
 
