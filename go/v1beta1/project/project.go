@@ -27,13 +27,13 @@ import (
 
 // Storage provides storage functions for this API.
 type Storage interface {
-	// CreateProject creates a project with the specified project ID
+	// CreateProject creates the specified project in the storage.
 	CreateProject(ctx context.Context, pID string, p *prpb.Project) (*prpb.Project, error)
-	// GetProject gets a project from the datastore
+	// GetProject gets the specified project from the storage.
 	GetProject(ctx context.Context, pID string) (*prpb.Project, error)
-	// ListProjects returns the project IDs for all projects in the datastore
+	// ListProjects returns projects in the storage.
 	ListProjects(ctx context.Context, filter string, pageSize int, pageToken string) ([]*prpb.Project, string, error)
-	// DeleteProject deletes the specified project
+	// DeleteProject deletes the specified project from the storage.
 	DeleteProject(ctx context.Context, pID string) error
 }
 
@@ -41,6 +41,7 @@ type API struct {
 	Storage Storage
 }
 
+// CreateProject creates the specified project in the storage.
 func (gp *API) CreateProject(ctx context.Context, req *prpb.CreateProjectRequest, resp *prpb.Project) error {
 	proj := req.Project
 	if proj == nil {
