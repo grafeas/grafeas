@@ -104,7 +104,7 @@ message FileHashes {
 
 // Container message for hash values.
 message Hash {
-  // Required. The type of hash that was performed.
+  // Required. The type of hash that was performed, e.g. "SHA-256".
   string type = 1;
   // Required. The hash value.
   bytes value = 2;
