@@ -96,7 +96,7 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 
 		oPID := "occurrence-project"
 		o := TestOccurrence(oPID, n.Name)
-		if _, err := g.CreateOccurrence(ctx, nPID, "userID", o); err != nil {
+		if _, err := g.CreateOccurrence(ctx, oPID, "userID", o); err != nil {
 			t.Errorf("CreateOccurrence got %v want success", err)
 		}
 		// Try to insert the same occurrence twice, expect failure.
@@ -165,7 +165,7 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 		if err := g.DeleteOccurrence(ctx, pID, oID); err == nil {
 			t.Error("Deleting nonexistant occurrence got success, want error")
 		}
-		if _, err := g.CreateOccurrence(ctx, nPID, "userID", o); err != nil {
+		if _, err := g.CreateOccurrence(ctx, oPID, "userID", o); err != nil {
 			t.Fatalf("CreateOccurrence got %v want success", err)
 		}
 		if err := g.DeleteOccurrence(ctx, pID, oID); err != nil {
@@ -359,7 +359,7 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 		if _, err := g.GetOccurrence(ctx, pID, oID); err == nil {
 			t.Fatal("GetOccurrence got success, want error")
 		}
-		if _, err := g.CreateOccurrence(ctx, nPID, "userID", o); err != nil {
+		if _, err := g.CreateOccurrence(ctx, oPID, "userID", o); err != nil {
 			t.Errorf("CreateOccurrence got %v, want Success", err)
 		}
 
@@ -405,7 +405,7 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 		}
 	})
 
-	t.Run("GetNoteByOccurrence", func(t *testing.T) {
+	t.Run("GetOccurrenceNote", func(t *testing.T) {
 		g, gp, cleanUp := createStore(t)
 		defer cleanUp()
 
@@ -429,7 +429,7 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 		if _, err := g.GetOccurrenceNote(ctx, pID, oID); err == nil {
 			t.Fatal("GetNoteByOccurrence got success, want error")
 		}
-		if _, err := g.CreateOccurrence(ctx, nPID, "userID", o); err != nil {
+		if _, err := g.CreateOccurrence(ctx, oPID, "userID", o); err != nil {
 			t.Errorf("CreateOccurrence got %v, want Success", err)
 		}
 
