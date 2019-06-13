@@ -25,8 +25,6 @@ import (
 	"github.com/golang/protobuf/ptypes"
 	"github.com/grafeas/grafeas/go/errors"
 	"github.com/grafeas/grafeas/go/name"
-	"github.com/grafeas/grafeas/go/v1beta1/api"
-	"github.com/grafeas/grafeas/go/v1beta1/project"
 	gpb "github.com/grafeas/grafeas/proto/v1beta1/grafeas_go_proto"
 	prpb "github.com/grafeas/grafeas/proto/v1beta1/project_go_proto"
 	"golang.org/x/net/context"
@@ -43,13 +41,12 @@ type memStore struct {
 }
 
 // NewMemStore creates a memStore with all maps initialized.
-func NewMemStore() (grafeas.Storage, project.Storage) {
-	ms := &memStore{
+func NewMemStore() *memStore {
+	return &memStore{
 		occurrencesByName: map[string]*gpb.Occurrence{},
 		notesByName:       map[string]*gpb.Note{},
 		projects:          map[string]*prpb.Project{},
 	}
-	return ms, ms
 }
 
 // CreateProject creates the specified project in memstore.
@@ -82,7 +79,7 @@ func (m *memStore) ListProjects(ctx context.Context, filter string, pageSize int
 	projects := make([]*prpb.Project, len(m.projects))
 	i := 0
 	for k := range m.projects {
-		projects[i] = &prpb.Project{Name: name.FormatProject(k)}
+		projects[i] = m.projects[k]
 		i++
 	}
 	sort.Slice(projects, func(i, j int) bool {
@@ -116,8 +113,8 @@ func (m *memStore) GetOccurrence(ctx context.Context, pID, oID string) (*gpb.Occ
 	return o, nil
 }
 
-// ListOccurrences returns up to pageSize number of occurrences for this project (pID) beginning
-// at pageToken (or from start if pageToken is the empty string).
+// ListOccurrences returns up to pageSize number of occurrences for this project beginning
+// at pageToken, or from start if pageToken is the empty string.
 func (m *memStore) ListOccurrences(ctx context.Context, pID, filter, pageToken string, pageSize int32) ([]*gpb.Occurrence, string, error) {
 	os := []*gpb.Occurrence{}
 	m.RLock()
@@ -202,7 +199,7 @@ func (m *memStore) DeleteOccurrence(ctx context.Context, pID, oID string) error 
 	return nil
 }
 
-// GetNote gets the spcified note from memstore.
+// GetNote gets the specified note from memstore.
 func (m *memStore) GetNote(ctx context.Context, pID, nID string) (*gpb.Note, error) {
 	nName := name.FormatNote(pID, nID)
 	m.RLock()
@@ -234,7 +231,7 @@ func (m *memStore) ListNotes(ctx context.Context, pID, filter, pageToken string,
 }
 
 // CreateNote creates the specified note in memstore.
-func (m *memStore) CreateNote(ctx context.Context, pID, nID string, uID string, n *gpb.Note) (*gpb.Note, error) {
+func (m *memStore) CreateNote(ctx context.Context, pID, nID, uID string, n *gpb.Note) (*gpb.Note, error) {
 	n = proto.Clone(n).(*gpb.Note)
 	nName := name.FormatNote(pID, nID)
 
@@ -251,7 +248,7 @@ func (m *memStore) CreateNote(ctx context.Context, pID, nID string, uID string, 
 }
 
 // BatchCreateNotes batch creates the specified notes in memstore.
-func (m *memStore) BatchCreateNotes(ctx context.Context, pID string, uID string, notes map[string]*gpb.Note) ([]*gpb.Note, []error) {
+func (m *memStore) BatchCreateNotes(ctx context.Context, pID, uID string, notes map[string]*gpb.Note) ([]*gpb.Note, []error) {
 	clonedNotes := map[string]*gpb.Note{}
 	for nID, n := range notes {
 		clonedNotes[nID] = proto.Clone(n).(*gpb.Note)
@@ -276,7 +273,9 @@ func (m *memStore) BatchCreateNotes(ctx context.Context, pID string, uID string,
 
 // UpdateNote updates the specified note in memstore.
 func (m *memStore) UpdateNote(ctx context.Context, pID, nID string, n *gpb.Note, mask *fieldmaskpb.FieldMask) (*gpb.Note, error) {
+	n = proto.Clone(n).(*gpb.Note)
 	nName := name.FormatNote(pID, nID)
+
 	m.Lock()
 	defer m.Unlock()
 	if _, ok := m.notesByName[nName]; !ok {
@@ -285,6 +284,7 @@ func (m *memStore) UpdateNote(ctx context.Context, pID, nID string, n *gpb.Note,
 
 	// TODO(#312): implement the update operation
 	n.UpdateTime = ptypes.TimestampNow()
+	n.Name = nName
 	m.notesByName[nName] = n
 	return n, nil
 }
@@ -317,8 +317,8 @@ func (m *memStore) GetOccurrenceNote(ctx context.Context, pID, oID string) (*gpb
 	return n, nil
 }
 
-// ListNoteOccurrences returns up to pageSize number of occcurrences on the particular note (nID)
-// for this project (pID) projects beginning at pageToken (or from start if pageToken is the empty string).
+// ListNoteOccurrences returns up to pageSize number of occurrences on the note
+// for the project beginning at pageToken, or from start if pageToken is empty.
 func (m *memStore) ListNoteOccurrences(ctx context.Context, pID, nID, filter, pageToken string, pageSize int32) ([]*gpb.Occurrence, string, error) {
 	// TODO: use filters
 	m.RLock()

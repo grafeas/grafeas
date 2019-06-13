@@ -281,7 +281,12 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 		if err != nil {
 			t.Fatalf("GetNote got %v, want success", err)
 		}
-		opt := cmp.FilterPath(func(p cmp.Path) bool { return p.String() == "CreateTime" }, cmp.Ignore())
+		opt := cmp.FilterPath(
+			func(p cmp.Path) bool {
+				ignoreUpdateTime := p.String() == "UpdateTime"
+				ignoreCreateTime := p.String() == "CreateTime"
+				return ignoreUpdateTime || ignoreCreateTime
+			}, cmp.Ignore())
 		if diff := cmp.Diff(got, n, opt); diff != "" {
 			t.Errorf("GetNote returned diff (want -> got):\n%s", diff)
 		}
@@ -643,16 +648,27 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 		defer cleanUp()
 
 		ctx := context.Background()
-		pID1 := "project1"
-		if _, err := gp.CreateProject(ctx, pID1, &prpb.Project{}); err != nil {
+		p1 := &prpb.Project{
+			Name: "projects/project1",
+		}
+		p1ID := "project1"
+		if _, err := gp.CreateProject(ctx, p1ID, p1); err != nil {
 			t.Errorf("CreateProject got %v want success", err)
 		}
-		pID2 := "project2"
-		if _, err := gp.CreateProject(ctx, pID2, &prpb.Project{}); err != nil {
+
+		p2 := &prpb.Project{
+			Name: "projects/project2",
+		}
+		p2ID := "project2"
+		if _, err := gp.CreateProject(ctx, p2ID, p2); err != nil {
 			t.Errorf("CreateProject got %v want success", err)
 		}
-		pID3 := "project3"
-		if _, err := gp.CreateProject(ctx, pID3, &prpb.Project{}); err != nil {
+
+		p3 := &prpb.Project{
+			Name: "projects/project3",
+		}
+		p3ID := "project3"
+		if _, err := gp.CreateProject(ctx, p3ID, p3); err != nil {
 			t.Errorf("CreateProject got %v want success", err)
 		}
 		filter := "filters_are_yet_to_be_implemented"
@@ -664,11 +680,11 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 		if len(gotProjects) != 2 {
 			t.Errorf("ListProjects got %v projects, want 2", len(gotProjects))
 		}
-		if p := gotProjects[0]; p.Name != name.FormatProject(pID1) {
-			t.Fatalf("Got %s want %s", p.Name, name.FormatProject(pID1))
+		if p := gotProjects[0]; p.Name != p1.Name {
+			t.Errorf("Got %s want %s", p.Name, p1.Name)
 		}
-		if p := gotProjects[1]; p.Name != name.FormatProject(pID2) {
-			t.Fatalf("Got %s want %s", p.Name, name.FormatProject(pID2))
+		if p := gotProjects[1]; p.Name != p2.Name {
+			t.Errorf("Got %s want %s", p.Name, p2.Name)
 		}
 		// Get projects again
 		gotProjects, pageToken, err := gp.ListProjects(ctx, filter, 100, lastPage)
@@ -681,8 +697,8 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 		if len(gotProjects) != 1 {
 			t.Errorf("ListProjects got %v projects, want 1", len(gotProjects))
 		}
-		if p := gotProjects[0]; p.Name != name.FormatProject(pID3) {
-			t.Fatalf("Got %s want %s", p.Name, name.FormatProject(pID3))
+		if p := gotProjects[0]; p.Name != p3.Name {
+			t.Fatalf("Got %s want %s", p.Name, p3.Name)
 		}
 	})
 

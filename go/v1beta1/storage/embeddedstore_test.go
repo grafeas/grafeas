@@ -15,18 +15,27 @@
 package storage
 
 import (
+	"io/ioutil"
+	"path/filepath"
+	"strconv"
+	"sync/atomic"
 	"testing"
 
 	"github.com/grafeas/grafeas/go/v1beta1/api"
 	"github.com/grafeas/grafeas/go/v1beta1/project"
 )
 
-func TestBetaMemStore(t *testing.T) {
-	createMemStore := func(t *testing.T) (grafeas.Storage, project.Storage, func()) {
-		s := NewMemStore()
+func TestBetaEmbeddedStore(t *testing.T) {
+	dir, err := ioutil.TempDir("", "embeddedstore")
+	if err != nil {
+		t.Fatalf("ioutil.TempDir failed %v", err)
+	}
+	var instance int32
+	doTestStorage(t, func(t *testing.T) (grafeas.Storage, project.Storage, func()) {
+		testDir := filepath.Join(dir, strconv.Itoa(int(atomic.AddInt32(&instance, 1))))
+		s := NewEmbeddedStore(&EmbeddedStoreConfig{Path: testDir})
 		var g grafeas.Storage = s
 		var gp project.Storage = s
 		return g, gp, func() {}
-	}
-	doTestStorage(t, createMemStore)
+	})
 }
