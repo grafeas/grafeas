@@ -92,7 +92,6 @@ func createDatabase(source, dbName string) error {
 func (pg *pgSQLStore) CreateProject(ctx context.Context, pID string, p *prpb.Project) (*prpb.Project, error) {
 	_, err := pg.DB.Exec(insertProject, name.FormatProject(pID))
 	if err, ok := err.(*pq.Error); ok {
-		log.Printf("err.Code=%s", err.Code)
 		// Check for unique_violation
 		if err.Code == "23505" {
 			return nil, status.Errorf(codes.AlreadyExists, "Project with name %q already exists", pID)

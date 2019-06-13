@@ -100,7 +100,7 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 			t.Errorf("CreateOccurrence got %v want success", err)
 		}
 		// Try to insert the same occurrence twice, expect failure.
-		if _, err := g.CreateOccurrence(ctx, nPID, "userID", o); err == nil {
+		if _, err := g.CreateOccurrence(ctx, oPID, "userID", o); err == nil {
 			t.Errorf("CreateOccurrence got success, want Error")
 		} else if s, _ := status.FromError(err); s.Code() != codes.AlreadyExists {
 			t.Errorf("CreateOccurrence got code %v want %v", s.Code(), codes.AlreadyExists)
