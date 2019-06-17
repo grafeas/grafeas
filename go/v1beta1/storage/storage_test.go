@@ -142,7 +142,7 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 
 		oPID := "occurrence-project"
 		o := createTestOccurrence(oPID, n.Name)
-		if _, err := g.CreateOccurrence(ctx, nPID, "userID", o); err != nil {
+		if _, err := g.CreateOccurrence(ctx, oPID, "userID", o); err != nil {
 			t.Errorf("CreateOccurrence got %v want success", err)
 		}
 
@@ -303,7 +303,7 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 			t.Errorf("CreateProject got %v want success", err)
 		}
 
-		n := TestNote(nPID)
+		n := createTestNote(nPID)
 		// Delete before the note exists
 		pID, nID, err := name.ParseNote(n.Name)
 		if err != nil {
@@ -441,7 +441,7 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 			t.Errorf("CreateProject got %v want success", err)
 		}
 
-		n := TestNote(nPID)
+		n := createTestNote(nPID)
 		pID, nID, err := name.ParseNote(n.Name)
 		if err != nil {
 			t.Fatalf("Error parsing note %v", err)
@@ -842,7 +842,7 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 		}
 
 		oID2 := "occurrence2"
-		op2 := TestOccurrence(pID, n.Name)
+		op2 := createTestOccurrence(pID, n.Name)
 		op2.Name = name.FormatOccurrence(pID, oID2)
 		if _, err := g.CreateOccurrence(ctx, pID, "userID", op2); err != nil {
 			t.Errorf("CreateOccurrence got %v want success", err)

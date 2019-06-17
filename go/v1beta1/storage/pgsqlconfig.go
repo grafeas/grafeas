@@ -27,7 +27,7 @@ type PgSQLConfig struct {
 	PaginationKey string `yaml:"paginationkey"`
 }
 
-func createSourceString(user, password, host, dbName, SSLMode string) string {
+func CreateSourceString(user, password, host, dbName, SSLMode string) string {
 	if user == "" {
 		return fmt.Sprintf("postgres://%s/%s?sslmode=%s", host, dbName, SSLMode)
 	}

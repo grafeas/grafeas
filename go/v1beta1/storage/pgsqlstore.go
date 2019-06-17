@@ -34,29 +34,28 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-type pgSQLStore struct {
+type PgSQLStore struct {
 	*sql.DB
 	paginationKey string
 }
 
-func NewPgSQLStore(config *PgSQLConfig) *pgSQLStore {
-	err := createDatabase(createSourceString(config.User, config.Password, config.Host, "postgres", config.SSLMode), config.DbName)
+func NewPgSQLStore(config *PgSQLConfig) *PgSQLStore {
+	err := createDatabase(CreateSourceString(config.User, config.Password, config.Host, "postgres", config.SSLMode), config.DbName)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	db, err := sql.Open("postgres", createSourceString(config.User, config.Password, config.Host, config.DbName, config.SSLMode))
+	db, err := sql.Open("postgres", CreateSourceString(config.User, config.Password, config.Host, config.DbName, config.SSLMode))
 	if err != nil {
 		log.Fatal(err.Error())
 	}
 	if db.Ping() != nil {
 		log.Fatal("Database server is not alive")
 	}
-	_, err = db.Exec(createTables)
-	if err != nil {
+	if _, err := db.Exec(createTables); err != nil {
 		db.Close()
 		log.Fatal(err.Error())
 	}
-	return &pgSQLStore{
+	return &PgSQLStore{
 		DB:            db,
 		paginationKey: config.PaginationKey,
 	}
@@ -89,7 +88,7 @@ func createDatabase(source, dbName string) error {
 }
 
 // CreateProject adds the specified project to the store
-func (pg *pgSQLStore) CreateProject(ctx context.Context, pID string, p *prpb.Project) (*prpb.Project, error) {
+func (pg *PgSQLStore) CreateProject(ctx context.Context, pID string, p *prpb.Project) (*prpb.Project, error) {
 	_, err := pg.DB.Exec(insertProject, name.FormatProject(pID))
 	if err, ok := err.(*pq.Error); ok {
 		// Check for unique_violation
@@ -104,7 +103,7 @@ func (pg *pgSQLStore) CreateProject(ctx context.Context, pID string, p *prpb.Pro
 }
 
 // DeleteProject deletes the project with the given pID from the store
-func (pg *pgSQLStore) DeleteProject(ctx context.Context, pID string) error {
+func (pg *PgSQLStore) DeleteProject(ctx context.Context, pID string) error {
 	pName := name.FormatProject(pID)
 	result, err := pg.DB.Exec(deleteProject, pName)
 	if err != nil {
@@ -121,7 +120,7 @@ func (pg *pgSQLStore) DeleteProject(ctx context.Context, pID string) error {
 }
 
 // GetProject returns the project with the given pID from the store
-func (pg *pgSQLStore) GetProject(ctx context.Context, pID string) (*prpb.Project, error) {
+func (pg *PgSQLStore) GetProject(ctx context.Context, pID string) (*prpb.Project, error) {
 	pName := name.FormatProject(pID)
 	var exists bool
 	err := pg.DB.QueryRow(projectExists, pName).Scan(&exists)
@@ -136,7 +135,7 @@ func (pg *pgSQLStore) GetProject(ctx context.Context, pID string) (*prpb.Project
 
 // ListProjects returns up to pageSize number of projects beginning at pageToken (or from
 // start if pageToken is the empty string).
-func (pg *pgSQLStore) ListProjects(ctx context.Context, filter string, pageSize int, pageToken string) ([]*prpb.Project, string, error) {
+func (pg *PgSQLStore) ListProjects(ctx context.Context, filter string, pageSize int, pageToken string) ([]*prpb.Project, string, error) {
 	var rows *sql.Rows
 	id := decryptInt64(pageToken, pg.paginationKey, 0)
 	rows, err := pg.DB.Query(listProjects, id, pageSize)
@@ -168,7 +167,7 @@ func (pg *pgSQLStore) ListProjects(ctx context.Context, filter string, pageSize 
 }
 
 // CreateOccurrence adds the specified occurrence
-func (pg *pgSQLStore) CreateOccurrence(ctx context.Context, pID, uID string, o *pb.Occurrence) (*pb.Occurrence, error) {
+func (pg *PgSQLStore) CreateOccurrence(ctx context.Context, pID, uID string, o *pb.Occurrence) (*pb.Occurrence, error) {
 	o = proto.Clone(o).(*pb.Occurrence)
 	o.CreateTime = ptypes.TimestampNow()
 
@@ -196,7 +195,7 @@ func (pg *pgSQLStore) CreateOccurrence(ctx context.Context, pID, uID string, o *
 }
 
 // BatchCreateOccurrence batch creates the specified occurrences in PostreSQL.
-func (pg *pgSQLStore) BatchCreateOccurrences(ctx context.Context, pID string, uID string, occs []*pb.Occurrence) ([]*pb.Occurrence, []error) {
+func (pg *PgSQLStore) BatchCreateOccurrences(ctx context.Context, pID string, uID string, occs []*pb.Occurrence) ([]*pb.Occurrence, []error) {
 	clonedOccs := []*pb.Occurrence{}
 	for _, o := range occs {
 		clonedOccs = append(clonedOccs, proto.Clone(o).(*pb.Occurrence))
@@ -219,7 +218,7 @@ func (pg *pgSQLStore) BatchCreateOccurrences(ctx context.Context, pID string, uI
 }
 
 // DeleteOccurrence deletes the occurrence with the given pID and oID
-func (pg *pgSQLStore) DeleteOccurrence(ctx context.Context, pID, oID string) error {
+func (pg *PgSQLStore) DeleteOccurrence(ctx context.Context, pID, oID string) error {
 	result, err := pg.DB.Exec(deleteOccurrence, pID, oID)
 	if err != nil {
 		return status.Error(codes.Internal, "Failed to delete Occurrence from database")
@@ -235,7 +234,7 @@ func (pg *pgSQLStore) DeleteOccurrence(ctx context.Context, pID, oID string) err
 }
 
 // UpdateOccurrence updates the existing occurrence with the given projectID and occurrenceID
-func (pg *pgSQLStore) UpdateOccurrence(ctx context.Context, pID, oID string, o *pb.Occurrence, mask *fieldmaskpb.FieldMask) (*pb.Occurrence, error) {
+func (pg *PgSQLStore) UpdateOccurrence(ctx context.Context, pID, oID string, o *pb.Occurrence, mask *fieldmaskpb.FieldMask) (*pb.Occurrence, error) {
 	o = proto.Clone(o).(*pb.Occurrence)
 	// TODO(#312): implement the update operation
 	o.UpdateTime = ptypes.TimestampNow()
@@ -255,7 +254,7 @@ func (pg *pgSQLStore) UpdateOccurrence(ctx context.Context, pID, oID string, o *
 }
 
 // GetOccurrence returns the occurrence with pID and oID
-func (pg *pgSQLStore) GetOccurrence(ctx context.Context, pID, oID string) (*pb.Occurrence, error) {
+func (pg *PgSQLStore) GetOccurrence(ctx context.Context, pID, oID string) (*pb.Occurrence, error) {
 	var data string
 	err := pg.DB.QueryRow(searchOccurrence, pID, oID).Scan(&data)
 	switch {
@@ -269,12 +268,14 @@ func (pg *pgSQLStore) GetOccurrence(ctx context.Context, pID, oID string) (*pb.O
 	if err != nil {
 		return nil, status.Error(codes.Internal, "Failed to unmarshal Occurrence from database")
 	}
+	// Set the output-only field before returning
+	o.Name = name.FormatOccurrence(pID, oID)
 	return &o, nil
 }
 
 // ListOccurrences returns up to pageSize number of occurrences for this project beginning
 // at pageToken, or from start if pageToken is the empty string.
-func (pg *pgSQLStore) ListOccurrences(ctx context.Context, pID, filter, pageToken string, pageSize int32) ([]*pb.Occurrence, string, error) {
+func (pg *PgSQLStore) ListOccurrences(ctx context.Context, pID, filter, pageToken string, pageSize int32) ([]*pb.Occurrence, string, error) {
 	var rows *sql.Rows
 	id := decryptInt64(pageToken, pg.paginationKey, 0)
 	rows, err := pg.DB.Query(listOccurrences, pID, id, pageSize)
@@ -311,7 +312,7 @@ func (pg *pgSQLStore) ListOccurrences(ctx context.Context, pID, filter, pageToke
 }
 
 // CreateNote adds the specified note
-func (pg *pgSQLStore) CreateNote(ctx context.Context, pID, nID, uID string, n *pb.Note) (*pb.Note, error) {
+func (pg *PgSQLStore) CreateNote(ctx context.Context, pID, nID, uID string, n *pb.Note) (*pb.Note, error) {
 	n = proto.Clone(n).(*pb.Note)
 	nName := name.FormatNote(pID, nID)
 	n.Name = nName
@@ -331,7 +332,7 @@ func (pg *pgSQLStore) CreateNote(ctx context.Context, pID, nID, uID string, n *p
 }
 
 // BatchCreateNotes batch creates the specified notes in memstore.
-func (pg *pgSQLStore) BatchCreateNotes(ctx context.Context, pID, uID string, notes map[string]*pb.Note) ([]*pb.Note, []error) {
+func (pg *PgSQLStore) BatchCreateNotes(ctx context.Context, pID, uID string, notes map[string]*pb.Note) ([]*pb.Note, []error) {
 	clonedNotes := map[string]*pb.Note{}
 	for nID, n := range notes {
 		clonedNotes[nID] = proto.Clone(n).(*pb.Note)
@@ -355,7 +356,7 @@ func (pg *pgSQLStore) BatchCreateNotes(ctx context.Context, pID, uID string, not
 }
 
 // DeleteNote deletes the note with the given pID and nID
-func (pg *pgSQLStore) DeleteNote(ctx context.Context, pID, nID string) error {
+func (pg *PgSQLStore) DeleteNote(ctx context.Context, pID, nID string) error {
 	result, err := pg.DB.Exec(deleteNote, pID, nID)
 	if err != nil {
 		return status.Error(codes.Internal, "Failed to delete Note from database")
@@ -371,7 +372,7 @@ func (pg *pgSQLStore) DeleteNote(ctx context.Context, pID, nID string) error {
 }
 
 // UpdateNote updates the existing note with the given pID and nID
-func (pg *pgSQLStore) UpdateNote(ctx context.Context, pID, nID string, n *pb.Note, mask *fieldmaskpb.FieldMask) (*pb.Note, error) {
+func (pg *PgSQLStore) UpdateNote(ctx context.Context, pID, nID string, n *pb.Note, mask *fieldmaskpb.FieldMask) (*pb.Note, error) {
 	n = proto.Clone(n).(*pb.Note)
 	nName := name.FormatNote(pID, nID)
 	n.Name = nName
@@ -393,7 +394,7 @@ func (pg *pgSQLStore) UpdateNote(ctx context.Context, pID, nID string, n *pb.Not
 }
 
 // GetNote returns the note with project (pID) and note ID (nID)
-func (pg *pgSQLStore) GetNote(ctx context.Context, pID, nID string) (*pb.Note, error) {
+func (pg *PgSQLStore) GetNote(ctx context.Context, pID, nID string) (*pb.Note, error) {
 	var data string
 	err := pg.DB.QueryRow(searchNote, pID, nID).Scan(&data)
 	switch {
@@ -407,11 +408,13 @@ func (pg *pgSQLStore) GetNote(ctx context.Context, pID, nID string) (*pb.Note, e
 	if err != nil {
 		return nil, status.Error(codes.Internal, "Failed to unmarshal Note from database")
 	}
+	// Set the output-only field before returning
+	note.Name = name.FormatNote(pID, nID)
 	return &note, nil
 }
 
 // GetOccurrenceNote gets the note for the specified occurrence from PostgreSQL.
-func (pg *pgSQLStore) GetOccurrenceNote(ctx context.Context, pID, oID string) (*pb.Note, error) {
+func (pg *PgSQLStore) GetOccurrenceNote(ctx context.Context, pID, oID string) (*pb.Note, error) {
 	o, err := pg.GetOccurrence(ctx, pID, oID)
 	if err != nil {
 		return nil, err
@@ -425,12 +428,14 @@ func (pg *pgSQLStore) GetOccurrenceNote(ctx context.Context, pID, oID string) (*
 	if err != nil {
 		return nil, err
 	}
+	// Set the output-only field before returning
+	n.Name = name.FormatNote(nPID, nID)
 	return n, nil
 }
 
 // ListNotes returns up to pageSize number of notes for this project (pID) beginning
 // at pageToken (or from start if pageToken is the empty string).
-func (pg *pgSQLStore) ListNotes(ctx context.Context, pID, filter, pageToken string, pageSize int32) ([]*pb.Note, string, error) {
+func (pg *PgSQLStore) ListNotes(ctx context.Context, pID, filter, pageToken string, pageSize int32) ([]*pb.Note, string, error) {
 	var rows *sql.Rows
 	id := decryptInt64(pageToken, pg.paginationKey, 0)
 	rows, err := pg.DB.Query(listNotes, pID, id, pageSize)
@@ -468,7 +473,7 @@ func (pg *pgSQLStore) ListNotes(ctx context.Context, pID, filter, pageToken stri
 
 // ListNoteOccurrences returns up to pageSize number of occcurrences on the particular note (nID)
 // for this project (pID) projects beginning at pageToken (or from start if pageToken is the empty string).
-func (pg *pgSQLStore) ListNoteOccurrences(ctx context.Context, pID, nID, filter, pageToken string, pageSize int32) ([]*pb.Occurrence, string, error) {
+func (pg *PgSQLStore) ListNoteOccurrences(ctx context.Context, pID, nID, filter, pageToken string, pageSize int32) ([]*pb.Occurrence, string, error) {
 	// Verify that note exists
 	if _, err := pg.GetNote(ctx, pID, nID); err != nil {
 		return nil, "", err
@@ -509,12 +514,12 @@ func (pg *pgSQLStore) ListNoteOccurrences(ctx context.Context, pID, nID, filter,
 }
 
 // GetVulnerabilityOccurrencesSummary gets a summary of vulnerability occurrences from storage.
-func (pg *pgSQLStore) GetVulnerabilityOccurrencesSummary(ctx context.Context, projectID, filter string) (*pb.VulnerabilityOccurrencesSummary, error) {
+func (pg *PgSQLStore) GetVulnerabilityOccurrencesSummary(ctx context.Context, projectID, filter string) (*pb.VulnerabilityOccurrencesSummary, error) {
 	return &pb.VulnerabilityOccurrencesSummary{}, nil
 }
 
 // count returns the total number of entries for the specified query (assuming SELECT(*) is used)
-func (pg *pgSQLStore) count(query string, args ...interface{}) (int64, error) {
+func (pg *PgSQLStore) count(query string, args ...interface{}) (int64, error) {
 	row := pg.DB.QueryRow(query, args...)
 	var count int64
 	err := row.Scan(&count)

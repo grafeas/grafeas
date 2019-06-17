@@ -12,10 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package storage
+package storage_test
 
 import (
 	"io/ioutil"
+	"os"
 	"path/filepath"
 	"strconv"
 	"sync/atomic"
@@ -23,6 +24,7 @@ import (
 
 	"github.com/grafeas/grafeas/go/v1beta1/api"
 	"github.com/grafeas/grafeas/go/v1beta1/project"
+	"github.com/grafeas/grafeas/go/v1beta1/storage"
 )
 
 func TestBetaEmbeddedStore(t *testing.T) {
@@ -30,10 +32,13 @@ func TestBetaEmbeddedStore(t *testing.T) {
 	if err != nil {
 		t.Fatalf("ioutil.TempDir failed %v", err)
 	}
+	// clean up
+	defer os.RemoveAll(dir)
+
 	var instance int32
 	doTestStorage(t, func(t *testing.T) (grafeas.Storage, project.Storage, func()) {
 		testDir := filepath.Join(dir, strconv.Itoa(int(atomic.AddInt32(&instance, 1))))
-		s := NewEmbeddedStore(&EmbeddedStoreConfig{Path: testDir})
+		s := storage.NewEmbeddedStore(&storage.EmbeddedStoreConfig{Path: testDir})
 		var g grafeas.Storage = s
 		var gp project.Storage = s
 		return g, gp, func() {}

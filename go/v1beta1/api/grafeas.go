@@ -70,7 +70,7 @@ type Storage interface {
 	ListOccurrences(ctx context.Context, projectID, filter, pageToken string, pageSize int32) ([]*gpb.Occurrence, string, error)
 	// CreateOccurrence creates the specified occurrence in storage.
 	CreateOccurrence(ctx context.Context, projectID, userID string, o *gpb.Occurrence) (*gpb.Occurrence, error)
-	// BatchCreateOccurrence batch creates the specified occurrences in storage.
+	// BatchCreateOccurrences batch creates the specified occurrences in storage.
 	BatchCreateOccurrences(ctx context.Context, projectID string, userID string, occs []*gpb.Occurrence) ([]*gpb.Occurrence, []error)
 	// UpdateOccurrence updates the specified occurrence in storage.
 	UpdateOccurrence(ctx context.Context, projectID, occID string, o *gpb.Occurrence, mask *fieldmaskpb.FieldMask) (*gpb.Occurrence, error)

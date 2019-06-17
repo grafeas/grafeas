@@ -110,6 +110,9 @@ func (m *MemStore) GetOccurrence(ctx context.Context, pID, oID string) (*gpb.Occ
 	if !ok {
 		return nil, errors.Newf(codes.NotFound, "Occurrence with name %q does not Exist", oName)
 	}
+
+	// Set the output-only field before returning
+	o.Name = name.FormatOccurrence(pID, oID)
 	return o, nil
 }
 
@@ -209,6 +212,9 @@ func (m *MemStore) GetNote(ctx context.Context, pID, nID string) (*gpb.Note, err
 	if !ok {
 		return nil, errors.Newf(codes.NotFound, "Note with name %q does not Exist", nName)
 	}
+
+	// Set the output-only field before returning
+	n.Name = name.FormatNote(pID, nID)
 	return n, nil
 }
 
@@ -316,6 +322,7 @@ func (m *MemStore) GetOccurrenceNote(ctx context.Context, pID, oID string) (*gpb
 	if !ok {
 		return nil, errors.Newf(codes.NotFound, "Note with name %q does not Exist", o.NoteName)
 	}
+
 	return n, nil
 }
 

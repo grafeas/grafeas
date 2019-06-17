@@ -50,13 +50,13 @@ type EmbeddedStoreConfig struct {
 	Path string `yaml:"path"` // Path is the folder path to storage files
 }
 
-// embeddedStore is a storage solution for Grafeas based on boltdb
-type embeddedStore struct {
+// EmbeddedStore is a storage solution for Grafeas based on boltdb
+type EmbeddedStore struct {
 	db *bolt.DB
 }
 
 // NewEmbeddedStore creates a embeddedS store with initialized filesystem
-func NewEmbeddedStore(config *EmbeddedStoreConfig) *embeddedStore {
+func NewEmbeddedStore(config *EmbeddedStoreConfig) *EmbeddedStore {
 	if err := os.MkdirAll(config.Path, 0700); err != nil {
 		log.Fatalf("Failed to create config directory %v", err)
 	}
@@ -81,11 +81,11 @@ func NewEmbeddedStore(config *EmbeddedStoreConfig) *embeddedStore {
 	}); err != nil {
 		log.Fatal(err)
 	}
-	return &embeddedStore{db: db}
+	return &EmbeddedStore{db: db}
 }
 
 // CreateProject creates the specified project in embedded store.
-func (m *embeddedStore) CreateProject(ctx context.Context, pID string, p *prpb.Project) (*prpb.Project, error) {
+func (m *EmbeddedStore) CreateProject(ctx context.Context, pID string, p *prpb.Project) (*prpb.Project, error) {
 	err := m.update(bucketProjects, pID, true, p)
 	if err == errKeyExists {
 		return nil, errors.Newf(codes.AlreadyExists, "Project with name %q already exists", pID)
@@ -94,7 +94,7 @@ func (m *embeddedStore) CreateProject(ctx context.Context, pID string, p *prpb.P
 }
 
 // GetProject gets the specified project from embedded store.
-func (m *embeddedStore) GetProject(ctx context.Context, pID string) (*prpb.Project, error) {
+func (m *EmbeddedStore) GetProject(ctx context.Context, pID string) (*prpb.Project, error) {
 	var project prpb.Project
 	err := m.get(bucketProjects, pID, &project)
 	if err == errNoKey {
@@ -105,7 +105,7 @@ func (m *embeddedStore) GetProject(ctx context.Context, pID string) (*prpb.Proje
 
 // ListProjects returns up to pageSize number of projects beginning at pageToken, or from
 // start if pageToken is the empty string.
-func (m *embeddedStore) ListProjects(ctx context.Context, filter string, pageSize int, pageToken string) ([]*prpb.Project, string, error) {
+func (m *EmbeddedStore) ListProjects(ctx context.Context, filter string, pageSize int, pageToken string) ([]*prpb.Project, string, error) {
 	var projects []*prpb.Project
 	m.db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(bucketProjects))
@@ -128,7 +128,7 @@ func (m *embeddedStore) ListProjects(ctx context.Context, filter string, pageSiz
 }
 
 // DeleteProject deletes the specified project from embedded store.
-func (m *embeddedStore) DeleteProject(ctx context.Context, pID string) error {
+func (m *EmbeddedStore) DeleteProject(ctx context.Context, pID string) error {
 	err := m.delete(bucketProjects, pID)
 	if err == errNoKey {
 		return errors.Newf(codes.NotFound, "Project with name %q does not Exist", pID)
@@ -137,19 +137,22 @@ func (m *embeddedStore) DeleteProject(ctx context.Context, pID string) error {
 }
 
 // GetOccurrence gets the specified occurrence from embedded store.
-func (m *embeddedStore) GetOccurrence(ctx context.Context, pID, oID string) (*pb.Occurrence, error) {
+func (m *EmbeddedStore) GetOccurrence(ctx context.Context, pID, oID string) (*pb.Occurrence, error) {
 	oName := name.FormatOccurrence(pID, oID)
 	var o pb.Occurrence
 	err := m.get(bucketOccurrences, oName, &o)
 	if err == errNoKey {
 		return nil, errors.Newf(codes.NotFound, "Occurrence with name %q does not exist", oName)
 	}
+
+	// Set the output-only field before returning
+	o.Name = name.FormatOccurrence(pID, oID)
 	return &o, err
 }
 
 // ListOccurrences returns up to pageSize number of occurrences for this project (pID) beginning
 // at pageToken (or from start if pageToken is the empty string).
-func (m *embeddedStore) ListOccurrences(ctx context.Context, pID, filters, pageToken string, pageSize int32) ([]*pb.Occurrence, string, error) {
+func (m *EmbeddedStore) ListOccurrences(ctx context.Context, pID, filters, pageToken string, pageSize int32) ([]*pb.Occurrence, string, error) {
 	var os []*pb.Occurrence
 	m.db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(bucketOccurrences))
@@ -174,7 +177,7 @@ func (m *embeddedStore) ListOccurrences(ctx context.Context, pID, filters, pageT
 }
 
 // CreateOccurrence creates the specified occurrence in embedded store.
-func (m *embeddedStore) CreateOccurrence(ctx context.Context, pID, uID string, o *pb.Occurrence) (*pb.Occurrence, error) {
+func (m *EmbeddedStore) CreateOccurrence(ctx context.Context, pID, uID string, o *pb.Occurrence) (*pb.Occurrence, error) {
 	o = proto.Clone(o).(*pb.Occurrence)
 
 	if err := m.get(bucketOccurrences, o.Name, &pb.Occurrence{}); err == errNoKey {
@@ -187,7 +190,7 @@ func (m *embeddedStore) CreateOccurrence(ctx context.Context, pID, uID string, o
 }
 
 // BatchCreateOccurrence batch creates the specified occurrences in embedded store.
-func (m *embeddedStore) BatchCreateOccurrences(ctx context.Context, pID string, uID string, occs []*pb.Occurrence) ([]*pb.Occurrence, []error) {
+func (m *EmbeddedStore) BatchCreateOccurrences(ctx context.Context, pID string, uID string, occs []*pb.Occurrence) ([]*pb.Occurrence, []error) {
 	clonedOccs := []*pb.Occurrence{}
 	for _, o := range occs {
 		clonedOccs = append(clonedOccs, proto.Clone(o).(*pb.Occurrence))
@@ -210,7 +213,7 @@ func (m *embeddedStore) BatchCreateOccurrences(ctx context.Context, pID string, 
 }
 
 // UpdateOccurrence updates the specified occurrence in embedded store.
-func (m *embeddedStore) UpdateOccurrence(ctx context.Context, pID, oID string, o *pb.Occurrence, mask *fieldmaskpb.FieldMask) (*pb.Occurrence, error) {
+func (m *EmbeddedStore) UpdateOccurrence(ctx context.Context, pID, oID string, o *pb.Occurrence, mask *fieldmaskpb.FieldMask) (*pb.Occurrence, error) {
 	o = proto.Clone(o).(*pb.Occurrence)
 	oName := name.FormatOccurrence(pID, oID)
 	// TODO(#312): implement the update operation
@@ -224,7 +227,7 @@ func (m *embeddedStore) UpdateOccurrence(ctx context.Context, pID, oID string, o
 }
 
 // DeleteOccurrence deletes the specified occurrence in embedded store.
-func (m *embeddedStore) DeleteOccurrence(ctx context.Context, pID, oID string) error {
+func (m *EmbeddedStore) DeleteOccurrence(ctx context.Context, pID, oID string) error {
 	oName := name.FormatOccurrence(pID, oID)
 	err := m.delete(bucketOccurrences, oName)
 	if err == errNoKey {
@@ -234,19 +237,22 @@ func (m *embeddedStore) DeleteOccurrence(ctx context.Context, pID, oID string) e
 }
 
 // GetNote gets the specified note from embedded store.
-func (m *embeddedStore) GetNote(ctx context.Context, pID, nID string) (*pb.Note, error) {
+func (m *EmbeddedStore) GetNote(ctx context.Context, pID, nID string) (*pb.Note, error) {
 	nName := name.FormatNote(pID, nID)
 	var n pb.Note
 	err := m.get(bucketNotes, nName, &n)
 	if err == errNoKey {
 		return nil, errors.Newf(codes.NotFound, "Note with name %q does not Exist", nName)
 	}
+
+	// Set the output-only field before returning
+	n.Name = name.FormatNote(pID, nID)
 	return &n, err
 }
 
 // ListNotes returns up to pageSize number of notes for the project beginning
 // at pageToken, or from start if pageToken is the empty string.
-func (m *embeddedStore) ListNotes(ctx context.Context, pID, filter, pageToken string, pageSize int32) ([]*pb.Note, string, error) {
+func (m *EmbeddedStore) ListNotes(ctx context.Context, pID, filter, pageToken string, pageSize int32) ([]*pb.Note, string, error) {
 	var ns []*pb.Note
 	m.db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(bucketNotes))
@@ -271,7 +277,7 @@ func (m *embeddedStore) ListNotes(ctx context.Context, pID, filter, pageToken st
 }
 
 // CreateNote creates the specified note in embedded store.
-func (m *embeddedStore) CreateNote(ctx context.Context, pID, nID, uID string, n *pb.Note) (*pb.Note, error) {
+func (m *EmbeddedStore) CreateNote(ctx context.Context, pID, nID, uID string, n *pb.Note) (*pb.Note, error) {
 	n = proto.Clone(n).(*pb.Note)
 
 	if err := m.get(bucketNotes, n.Name, &pb.Note{}); err == errNoKey {
@@ -283,7 +289,7 @@ func (m *embeddedStore) CreateNote(ctx context.Context, pID, nID, uID string, n 
 }
 
 // BatchCreateNotes batch creates the specified notes in embedded store.
-func (m *embeddedStore) BatchCreateNotes(ctx context.Context, pID, uID string, notes map[string]*pb.Note) ([]*pb.Note, []error) {
+func (m *EmbeddedStore) BatchCreateNotes(ctx context.Context, pID, uID string, notes map[string]*pb.Note) ([]*pb.Note, []error) {
 	clonedNotes := map[string]*pb.Note{}
 	for nID, n := range notes {
 		clonedNotes[nID] = proto.Clone(n).(*pb.Note)
@@ -307,7 +313,7 @@ func (m *embeddedStore) BatchCreateNotes(ctx context.Context, pID, uID string, n
 }
 
 // UpdateNote updates the specified note in embedded store.
-func (m *embeddedStore) UpdateNote(ctx context.Context, pID, nID string, n *pb.Note, mask *fieldmaskpb.FieldMask) (*pb.Note, error) {
+func (m *EmbeddedStore) UpdateNote(ctx context.Context, pID, nID string, n *pb.Note, mask *fieldmaskpb.FieldMask) (*pb.Note, error) {
 	n = proto.Clone(n).(*pb.Note)
 	// TODO(#312): implement the update operation
 	n.UpdateTime = ptypes.TimestampNow()
@@ -322,7 +328,7 @@ func (m *embeddedStore) UpdateNote(ctx context.Context, pID, nID string, n *pb.N
 }
 
 // DeleteNote deletes the specified note in embedded store.
-func (m *embeddedStore) DeleteNote(ctx context.Context, pID, nID string) error {
+func (m *EmbeddedStore) DeleteNote(ctx context.Context, pID, nID string) error {
 	nName := name.FormatNote(pID, nID)
 	err := m.delete(bucketNotes, nName)
 	if err == errNoKey {
@@ -332,7 +338,7 @@ func (m *embeddedStore) DeleteNote(ctx context.Context, pID, nID string) error {
 }
 
 // GetOccurrenceNote gets the note for the specified occurrence from embedded store.
-func (m *embeddedStore) GetOccurrenceNote(ctx context.Context, pID, oID string) (*pb.Note, error) {
+func (m *EmbeddedStore) GetOccurrenceNote(ctx context.Context, pID, oID string) (*pb.Note, error) {
 	o, err := m.GetOccurrence(ctx, pID, oID)
 	if err != nil {
 		return nil, err
@@ -347,7 +353,7 @@ func (m *embeddedStore) GetOccurrenceNote(ctx context.Context, pID, oID string) 
 
 // ListNoteOccurrences returns up to pageSize number of occurrences on the note
 // for the project beginning at pageToken, or from start if pageToken is empty.
-func (m *embeddedStore) ListNoteOccurrences(ctx context.Context, pID, nID, filter, pageToken string, pageSize int32) ([]*pb.Occurrence, string, error) {
+func (m *EmbeddedStore) ListNoteOccurrences(ctx context.Context, pID, nID, filter, pageToken string, pageSize int32) ([]*pb.Occurrence, string, error) {
 	// TODO: use filters
 	nName := name.FormatNote(pID, nID)
 	var os []*pb.Occurrence
@@ -374,11 +380,11 @@ func (m *embeddedStore) ListNoteOccurrences(ctx context.Context, pID, nID, filte
 }
 
 // GetVulnerabilityOccurrencesSummary gets a summary of vulnerability occurrences from storage.
-func (m *embeddedStore) GetVulnerabilityOccurrencesSummary(ctx context.Context, projectID, filter string) (*pb.VulnerabilityOccurrencesSummary, error) {
+func (m *EmbeddedStore) GetVulnerabilityOccurrencesSummary(ctx context.Context, projectID, filter string) (*pb.VulnerabilityOccurrencesSummary, error) {
 	return &pb.VulnerabilityOccurrencesSummary{}, nil
 }
 
-func (m *embeddedStore) update(bucket string, key string, new bool, pb proto.Message) error {
+func (m *EmbeddedStore) update(bucket string, key string, new bool, pb proto.Message) error {
 	return m.db.Update(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(bucket))
 		value := b.Get([]byte(key))
@@ -395,7 +401,7 @@ func (m *embeddedStore) update(bucket string, key string, new bool, pb proto.Mes
 	})
 }
 
-func (m *embeddedStore) get(bucket string, key string, pb proto.Message) error {
+func (m *EmbeddedStore) get(bucket string, key string, pb proto.Message) error {
 	return m.db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(bucket))
 		value := b.Get([]byte(key))
@@ -406,7 +412,7 @@ func (m *embeddedStore) get(bucket string, key string, pb proto.Message) error {
 	})
 }
 
-func (m *embeddedStore) delete(bucket string, key string) error {
+func (m *EmbeddedStore) delete(bucket string, key string) error {
 	return m.db.Update(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(bucket))
 		value := b.Get([]byte(key))
