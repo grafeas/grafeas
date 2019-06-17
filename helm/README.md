@@ -15,7 +15,7 @@ Build the Grafeas image locally
 docker build -t grafeas:latest .
 ```
 
-Generate self-signed certificates by following [instructions](../docs/running_grafeas.md#use-grafeas-with-self-signed-certificate.
+Generate self-signed certificates by following [instructions](../docs/running_grafeas.md#use-grafeas-with-self-signed-certificate).
 
 If using in-memory store, do:
 
@@ -77,4 +77,7 @@ kubectl get pods
 ```
 
 # Deleting the chart
+
+```sh
 helm delete --purge grafeas
+```

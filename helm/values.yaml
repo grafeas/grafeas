@@ -2,6 +2,7 @@ replicaCount: 1
 
 image:
   repository: grafeas
+  # TODO: update this once the image is publicly released
   tag: latest
   pullPolicy: IfNotPresent
 
