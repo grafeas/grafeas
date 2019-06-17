@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package storage
+package storage_test
 
 import (
 	"fmt"
@@ -26,19 +26,49 @@ import (
 	"github.com/grafeas/grafeas/go/name"
 	"github.com/grafeas/grafeas/go/v1beta1/api"
 	"github.com/grafeas/grafeas/go/v1beta1/project"
+	cpb "github.com/grafeas/grafeas/proto/v1beta1/common_go_proto"
 	pb "github.com/grafeas/grafeas/proto/v1beta1/grafeas_go_proto"
+	pkgpb "github.com/grafeas/grafeas/proto/v1beta1/package_go_proto"
 	prpb "github.com/grafeas/grafeas/proto/v1beta1/project_go_proto"
+	vpb "github.com/grafeas/grafeas/proto/v1beta1/vulnerability_go_proto"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
+const (
+	testNoteID = "CVE-1999-0710"
+)
+
+var (
+	opt = cmp.FilterPath(
+		func(p cmp.Path) bool {
+			ignoreCreate := p.String() == "CreateTime"
+			ignoreUpdate := p.String() == "UpdateTime"
+			return ignoreCreate || ignoreUpdate
+		}, cmp.Ignore())
+)
+
 // Tests implementations of grafeas.Storage and project.Storage
-// createStore is a function that creates new grafeas.Storag and project.Storage instances and
+// createStore is a function that creates new grafeas.Storage and project.Storage instances and
 // a corresponding cleanUp function that will be run at the end of each
 // test case.
+// TODO: add testing for CreateTime and UpdateTime
 func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage, project.Storage, func())) {
 	t.Run("CreateProject", func(t *testing.T) {
+		_, gp, cleanUp := createStore(t)
+		defer cleanUp()
+
+		ctx := context.Background()
+		pID := "project"
+		p := &prpb.Project{}
+		p.Name = name.FormatProject(pID)
+		if _, err := gp.CreateProject(ctx, pID, p); err != nil {
+			t.Errorf("CreateProject got %v want success", err)
+		}
+	})
+
+	t.Run("CreateSameProjectTwice", func(t *testing.T) {
 		_, gp, cleanUp := createStore(t)
 		defer cleanUp()
 
@@ -67,12 +97,28 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 			t.Errorf("CreateProject got %v want success", err)
 		}
 
-		n := TestNote(nPID)
-		if _, err := g.CreateNote(ctx, nPID, TestNoteID, "userID", n); err != nil {
+		n := createTestNote(nPID)
+		if _, err := g.CreateNote(ctx, nPID, testNoteID, "userID", n); err != nil {
+			t.Errorf("CreateNote got %v want success", err)
+		}
+	})
+
+	t.Run("CreateSameNoteTwice", func(t *testing.T) {
+		g, gp, cleanUp := createStore(t)
+		defer cleanUp()
+
+		ctx := context.Background()
+		nPID := "vulnerability-scanner-a"
+		if _, err := gp.CreateProject(ctx, nPID, &prpb.Project{}); err != nil {
+			t.Errorf("CreateProject got %v want success", err)
+		}
+
+		n := createTestNote(nPID)
+		if _, err := g.CreateNote(ctx, nPID, testNoteID, "userID", n); err != nil {
 			t.Errorf("CreateNote got %v want success", err)
 		}
 		// Try to insert the same note twice, expect failure.
-		if _, err := g.CreateNote(ctx, nPID, TestNoteID, "userID", n); err == nil {
+		if _, err := g.CreateNote(ctx, nPID, testNoteID, "userID", n); err == nil {
 			t.Errorf("CreateNote got success, want Error")
 		} else if s, _ := status.FromError(err); s.Code() != codes.AlreadyExists {
 			t.Errorf("CreateNote got code %v want %v", s.Code(), codes.AlreadyExists)
@@ -89,21 +135,15 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 			t.Errorf("CreateProject got %v want success", err)
 		}
 
-		n := TestNote(nPID)
-		if _, err := g.CreateNote(ctx, nPID, TestNoteID, "userID", n); err != nil {
+		n := createTestNote(nPID)
+		if _, err := g.CreateNote(ctx, nPID, testNoteID, "userID", n); err != nil {
 			t.Errorf("CreateNote got %v want success", err)
 		}
 
 		oPID := "occurrence-project"
-		o := TestOccurrence(oPID, n.Name)
-		if _, err := g.CreateOccurrence(ctx, nPID, "userID", o); err != nil {
+		o := createTestOccurrence(oPID, n.Name)
+		if _, err := g.CreateOccurrence(ctx, oPID, "userID", o); err != nil {
 			t.Errorf("CreateOccurrence got %v want success", err)
-		}
-		// Try to insert the same occurrence twice, expect failure.
-		if _, err := g.CreateOccurrence(ctx, nPID, "userID", o); err == nil {
-			t.Errorf("CreateOccurrence got success, want Error")
-		} else if s, _ := status.FromError(err); s.Code() != codes.AlreadyExists {
-			t.Errorf("CreateOccurrence got code %v want %v", s.Code(), codes.AlreadyExists)
 		}
 
 		pID, oID, err := name.ParseOccurrence(o.Name)
@@ -115,9 +155,36 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 		if err != nil {
 			t.Fatalf("GetOccurrence got %v, want success", err)
 		}
-		opt := cmp.FilterPath(func(p cmp.Path) bool { return p.String() == "CreateTime" }, cmp.Ignore())
 		if diff := cmp.Diff(got, o, opt); diff != "" {
 			t.Errorf("GetOccurrence returned diff (want -> got):\n%s", diff)
+		}
+	})
+
+	t.Run("CreateSameOccurrenceTwice", func(t *testing.T) {
+		g, gp, cleanUp := createStore(t)
+		defer cleanUp()
+
+		ctx := context.Background()
+		nPID := "vulnerability-scanner-a"
+		if _, err := gp.CreateProject(ctx, nPID, &prpb.Project{}); err != nil {
+			t.Errorf("CreateProject got %v want success", err)
+		}
+
+		n := createTestNote(nPID)
+		if _, err := g.CreateNote(ctx, nPID, testNoteID, "userID", n); err != nil {
+			t.Errorf("CreateNote got %v want success", err)
+		}
+
+		oPID := "occurrence-project"
+		o := createTestOccurrence(oPID, n.Name)
+		if _, err := g.CreateOccurrence(ctx, nPID, "userID", o); err != nil {
+			t.Errorf("CreateOccurrence got %v want success", err)
+		}
+		// Try to insert the same occurrence twice, expect failure.
+		if _, err := g.CreateOccurrence(ctx, nPID, "userID", o); err == nil {
+			t.Errorf("CreateOccurrence got success, want Error")
+		} else if s, _ := status.FromError(err); s.Code() != codes.AlreadyExists {
+			t.Errorf("CreateOccurrence got code %v want %v", s.Code(), codes.AlreadyExists)
 		}
 	})
 
@@ -127,7 +194,7 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 
 		ctx := context.Background()
 		pID := "myproject"
-		// Delete before the note exists
+		// Delete before the project exists
 		if err := gp.DeleteProject(ctx, pID); err == nil {
 			t.Error("Deleting nonexistant note got success, want error")
 		}
@@ -150,13 +217,13 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 			t.Errorf("CreateProject got %v want success", err)
 		}
 
-		n := TestNote(nPID)
-		if _, err := g.CreateNote(ctx, nPID, TestNoteID, "userID", n); err != nil {
+		n := createTestNote(nPID)
+		if _, err := g.CreateNote(ctx, nPID, testNoteID, "userID", n); err != nil {
 			t.Fatalf("CreateNote got %v want success", err)
 		}
 
 		oPID := "occurrence-project"
-		o := TestOccurrence(oPID, n.Name)
+		o := createTestOccurrence(oPID, n.Name)
 		// Delete before the occurrence exists
 		pID, oID, err := name.ParseOccurrence(o.Name)
 		if err != nil {
@@ -165,7 +232,7 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 		if err := g.DeleteOccurrence(ctx, pID, oID); err == nil {
 			t.Error("Deleting nonexistant occurrence got success, want error")
 		}
-		if _, err := g.CreateOccurrence(ctx, nPID, "userID", o); err != nil {
+		if _, err := g.CreateOccurrence(ctx, oPID, "userID", o); err != nil {
 			t.Fatalf("CreateOccurrence got %v want success", err)
 		}
 		if err := g.DeleteOccurrence(ctx, pID, oID); err != nil {
@@ -183,13 +250,13 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 			t.Errorf("CreateProject got %v want success", err)
 		}
 
-		n := TestNote(nPID)
-		if _, err := g.CreateNote(ctx, nPID, TestNoteID, "userID", n); err != nil {
+		n := createTestNote(nPID)
+		if _, err := g.CreateNote(ctx, nPID, testNoteID, "userID", n); err != nil {
 			t.Fatalf("CreateNote got %v want success", err)
 		}
 
 		oPID := "occurrence-project"
-		o := TestOccurrence(oPID, n.Name)
+		o := createTestOccurrence(oPID, n.Name)
 		pID, oID, err := name.ParseOccurrence(o.Name)
 		if err != nil {
 			t.Fatalf("Error parsing projectID and occurrenceID %v", err)
@@ -205,7 +272,6 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 			t.Fatalf("GetOccurrence got %v, want success", err)
 		}
 
-		opt := cmp.FilterPath(func(p cmp.Path) bool { return p.String() == "CreateTime" }, cmp.Ignore())
 		if diff := cmp.Diff(got, o, opt); diff != "" {
 			t.Errorf("GetOccurrence returned diff (want -> got):\n%s", diff)
 		}
@@ -218,7 +284,6 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 			t.Fatalf("UpdateOccurrence got %v want success", err)
 		}
 
-		opt = cmp.FilterPath(func(p cmp.Path) bool { return p.String() == "UpdateTime" }, cmp.Ignore())
 		got, err = g.GetOccurrence(ctx, pID, oID)
 		if err != nil {
 			t.Fatalf("GetOccurrence got %v, want success", err)
@@ -238,7 +303,7 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 			t.Errorf("CreateProject got %v want success", err)
 		}
 
-		n := TestNote(nPID)
+		n := createTestNote(nPID)
 		// Delete before the note exists
 		pID, nID, err := name.ParseNote(n.Name)
 		if err != nil {
@@ -266,7 +331,7 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 			t.Errorf("CreateProject got %v want success", err)
 		}
 
-		n := TestNote(nPID)
+		n := createTestNote(nPID)
 		pID, nID, err := name.ParseNote(n.Name)
 		if err != nil {
 			t.Fatalf("Error parsing projectID and noteID %v", err)
@@ -281,7 +346,6 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 		if err != nil {
 			t.Fatalf("GetNote got %v, want success", err)
 		}
-		opt := cmp.FilterPath(func(p cmp.Path) bool { return p.String() == "CreateTime" }, cmp.Ignore())
 		if diff := cmp.Diff(got, n, opt); diff != "" {
 			t.Errorf("GetNote returned diff (want -> got):\n%s", diff)
 		}
@@ -340,13 +404,13 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 			t.Errorf("CreateProject got %v want success", err)
 		}
 
-		n := TestNote(nPID)
-		if _, err := g.CreateNote(ctx, nPID, TestNoteID, "userID", n); err != nil {
+		n := createTestNote(nPID)
+		if _, err := g.CreateNote(ctx, nPID, testNoteID, "userID", n); err != nil {
 			t.Fatalf("CreateNote got %v want success", err)
 		}
 
 		oPID := "occurrence-project"
-		o := TestOccurrence(oPID, n.Name)
+		o := createTestOccurrence(oPID, n.Name)
 		pID, oID, err := name.ParseOccurrence(o.Name)
 		if err != nil {
 			t.Fatalf("Error parsing occurrence %v", err)
@@ -354,7 +418,7 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 		if _, err := g.GetOccurrence(ctx, pID, oID); err == nil {
 			t.Fatal("GetOccurrence got success, want error")
 		}
-		if _, err := g.CreateOccurrence(ctx, nPID, "userID", o); err != nil {
+		if _, err := g.CreateOccurrence(ctx, oPID, "userID", o); err != nil {
 			t.Errorf("CreateOccurrence got %v, want Success", err)
 		}
 
@@ -362,7 +426,6 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 		if err != nil {
 			t.Fatalf("GetOccurrence got %v, want success", err)
 		}
-		opt := cmp.FilterPath(func(p cmp.Path) bool { return p.String() == "CreateTime" }, cmp.Ignore())
 		if diff := cmp.Diff(got, o, opt); diff != "" {
 			t.Errorf("GetOccurrence returned diff (want -> got):\n%s", diff)
 		}
@@ -378,7 +441,7 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 			t.Errorf("CreateProject got %v want success", err)
 		}
 
-		n := TestNote(nPID)
+		n := createTestNote(nPID)
 		pID, nID, err := name.ParseNote(n.Name)
 		if err != nil {
 			t.Fatalf("Error parsing note %v", err)
@@ -386,11 +449,10 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 		if _, err := g.GetNote(ctx, pID, nID); err == nil {
 			t.Fatal("GetNote got success, want error")
 		}
-		if _, err := g.CreateNote(ctx, nPID, TestNoteID, "userID", n); err != nil {
+		if _, err := g.CreateNote(ctx, nPID, testNoteID, "userID", n); err != nil {
 			t.Errorf("CreateNote got %v, want Success", err)
 		}
 
-		opt := cmp.FilterPath(func(p cmp.Path) bool { return p.String() == "CreateTime" }, cmp.Ignore())
 		got, err := g.GetNote(ctx, pID, nID)
 		if err != nil {
 			t.Fatalf("GetNote got %v, want success", err)
@@ -400,7 +462,7 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 		}
 	})
 
-	t.Run("GetNoteByOccurrence", func(t *testing.T) {
+	t.Run("GetOccurrenceNote", func(t *testing.T) {
 		g, gp, cleanUp := createStore(t)
 		defer cleanUp()
 
@@ -410,13 +472,13 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 			t.Errorf("CreateProject got %v want success", err)
 		}
 
-		n := TestNote(nPID)
-		if _, err := g.CreateNote(ctx, nPID, TestNoteID, "userID", n); err != nil {
+		n := createTestNote(nPID)
+		if _, err := g.CreateNote(ctx, nPID, testNoteID, "userID", n); err != nil {
 			t.Fatalf("CreateNote got %v want success", err)
 		}
 
 		oPID := "occurrence-project"
-		o := TestOccurrence(oPID, n.Name)
+		o := createTestOccurrence(oPID, n.Name)
 		pID, oID, err := name.ParseOccurrence(o.Name)
 		if err != nil {
 			t.Fatalf("Error parsing occurrence %v", err)
@@ -424,7 +486,7 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 		if _, err := g.GetOccurrenceNote(ctx, pID, oID); err == nil {
 			t.Fatal("GetNoteByOccurrence got success, want error")
 		}
-		if _, err := g.CreateOccurrence(ctx, nPID, "userID", o); err != nil {
+		if _, err := g.CreateOccurrence(ctx, oPID, "userID", o); err != nil {
 			t.Errorf("CreateOccurrence got %v, want Success", err)
 		}
 
@@ -432,7 +494,6 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 		if err != nil {
 			t.Fatalf("GetOccurrenceNote got %v, want success", err)
 		}
-		opt := cmp.FilterPath(func(p cmp.Path) bool { return p.String() == "CreateTime" }, cmp.Ignore())
 		if diff := cmp.Diff(got, n, opt); diff != "" {
 			t.Errorf("GetOccurrenceNote returned diff (want -> got):\n%s", diff)
 		}
@@ -494,7 +555,7 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 
 		ns := []*pb.Note{}
 		for i := 0; i < 20; i++ {
-			n := TestNote("")
+			n := createTestNote("")
 			nPID := ""
 			if i < 5 {
 				n.Name = name.FormatNote(findProject, strconv.Itoa(i))
@@ -539,19 +600,19 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 			t.Errorf("CreateProject got %v want success", err)
 		}
 
-		nFind := TestNote(findProject)
-		if _, err := g.CreateNote(ctx, findProject, TestNoteID, "userID", nFind); err != nil {
+		nFind := createTestNote(findProject)
+		if _, err := g.CreateNote(ctx, findProject, testNoteID, "userID", nFind); err != nil {
 			t.Fatalf("CreateNote got %v want success", err)
 		}
-		nDontFind := TestNote(dontFind)
-		if _, err := g.CreateNote(ctx, dontFind, TestNoteID, "userID", nDontFind); err != nil {
+		nDontFind := createTestNote(dontFind)
+		if _, err := g.CreateNote(ctx, dontFind, testNoteID, "userID", nDontFind); err != nil {
 			t.Fatalf("CreateNote got %v want success", err)
 		}
 
 		os := []*pb.Occurrence{}
 		for i := 0; i < 20; i++ {
 			oPID := ""
-			o := TestOccurrence("", "")
+			o := createTestOccurrence("", "")
 			if i < 5 {
 				oPID = findProject
 				o.NoteName = nFind.Name
@@ -596,15 +657,15 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 			t.Errorf("CreateProject got %v want success", err)
 		}
 
-		n := TestNote(findProject)
-		if _, err := g.CreateNote(ctx, findProject, TestNoteID, "userID", n); err != nil {
+		n := createTestNote(findProject)
+		if _, err := g.CreateNote(ctx, findProject, testNoteID, "userID", n); err != nil {
 			t.Fatalf("CreateNote got %v want success", err)
 		}
 
 		os := []*pb.Occurrence{}
 		for i := 0; i < 20; i++ {
 			oPID := ""
-			o := TestOccurrence("", "")
+			o := createTestOccurrence("", "")
 
 			if i < 5 {
 				oPID = findProject
@@ -643,16 +704,27 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 		defer cleanUp()
 
 		ctx := context.Background()
-		pID1 := "project1"
-		if _, err := gp.CreateProject(ctx, pID1, &prpb.Project{}); err != nil {
+		p1 := &prpb.Project{
+			Name: "projects/project1",
+		}
+		p1ID := "project1"
+		if _, err := gp.CreateProject(ctx, p1ID, p1); err != nil {
 			t.Errorf("CreateProject got %v want success", err)
 		}
-		pID2 := "project2"
-		if _, err := gp.CreateProject(ctx, pID2, &prpb.Project{}); err != nil {
+
+		p2 := &prpb.Project{
+			Name: "projects/project2",
+		}
+		p2ID := "project2"
+		if _, err := gp.CreateProject(ctx, p2ID, p2); err != nil {
 			t.Errorf("CreateProject got %v want success", err)
 		}
-		pID3 := "project3"
-		if _, err := gp.CreateProject(ctx, pID3, &prpb.Project{}); err != nil {
+
+		p3 := &prpb.Project{
+			Name: "projects/project3",
+		}
+		p3ID := "project3"
+		if _, err := gp.CreateProject(ctx, p3ID, p3); err != nil {
 			t.Errorf("CreateProject got %v want success", err)
 		}
 		filter := "filters_are_yet_to_be_implemented"
@@ -664,11 +736,11 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 		if len(gotProjects) != 2 {
 			t.Errorf("ListProjects got %v projects, want 2", len(gotProjects))
 		}
-		if p := gotProjects[0]; p.Name != name.FormatProject(pID1) {
-			t.Fatalf("Got %s want %s", p.Name, name.FormatProject(pID1))
+		if p := gotProjects[0]; p.Name != p1.Name {
+			t.Errorf("Got %s want %s", p.Name, p1.Name)
 		}
-		if p := gotProjects[1]; p.Name != name.FormatProject(pID2) {
-			t.Fatalf("Got %s want %s", p.Name, name.FormatProject(pID2))
+		if p := gotProjects[1]; p.Name != p2.Name {
+			t.Errorf("Got %s want %s", p.Name, p2.Name)
 		}
 		// Get projects again
 		gotProjects, pageToken, err := gp.ListProjects(ctx, filter, 100, lastPage)
@@ -681,8 +753,8 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 		if len(gotProjects) != 1 {
 			t.Errorf("ListProjects got %v projects, want 1", len(gotProjects))
 		}
-		if p := gotProjects[0]; p.Name != name.FormatProject(pID3) {
-			t.Fatalf("Got %s want %s", p.Name, name.FormatProject(pID3))
+		if p := gotProjects[0]; p.Name != p3.Name {
+			t.Fatalf("Got %s want %s", p.Name, p3.Name)
 		}
 	})
 
@@ -697,21 +769,21 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 		}
 
 		nID1 := "note1"
-		op1 := TestNote(pID)
+		op1 := createTestNote(pID)
 		op1.Name = name.FormatNote(pID, nID1)
 		if _, err := g.CreateNote(ctx, pID, nID1, "userID", op1); err != nil {
 			t.Errorf("CreateNote got %v want success", err)
 		}
 
 		nID2 := "note2"
-		op2 := TestNote(pID)
+		op2 := createTestNote(pID)
 		op2.Name = name.FormatNote(pID, nID2)
 		if _, err := g.CreateNote(ctx, pID, nID2, "userID", op2); err != nil {
 			t.Errorf("CreateNote got %v want success", err)
 		}
 
 		nID3 := "note3"
-		op3 := TestNote(pID)
+		op3 := createTestNote(pID)
 		op3.Name = name.FormatNote(pID, nID3)
 		if _, err := g.CreateNote(ctx, pID, nID3, "userID", op3); err != nil {
 			t.Errorf("CreateNote got %v want success", err)
@@ -757,27 +829,27 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 			t.Errorf("CreateProject got %v want success", err)
 		}
 
-		n := TestNote(pID)
-		if _, err := g.CreateNote(ctx, pID, TestNoteID, "userID", n); err != nil {
+		n := createTestNote(pID)
+		if _, err := g.CreateNote(ctx, pID, testNoteID, "userID", n); err != nil {
 			t.Fatalf("CreateNote got %v want success", err)
 		}
 
 		oID1 := "occurrence1"
-		op1 := TestOccurrence(pID, n.Name)
+		op1 := createTestOccurrence(pID, n.Name)
 		op1.Name = name.FormatOccurrence(pID, oID1)
 		if _, err := g.CreateOccurrence(ctx, pID, "userID", op1); err != nil {
 			t.Errorf("CreateOccurrence got %v want success", err)
 		}
 
 		oID2 := "occurrence2"
-		op2 := TestOccurrence(pID, n.Name)
+		op2 := createTestOccurrence(pID, n.Name)
 		op2.Name = name.FormatOccurrence(pID, oID2)
 		if _, err := g.CreateOccurrence(ctx, pID, "userID", op2); err != nil {
 			t.Errorf("CreateOccurrence got %v want success", err)
 		}
 
 		oID3 := "occurrence3"
-		op3 := TestOccurrence(pID, n.Name)
+		op3 := createTestOccurrence(pID, n.Name)
 		op3.Name = name.FormatOccurrence(pID, oID3)
 		if _, err := g.CreateOccurrence(ctx, pID, "userID", op3); err != nil {
 			t.Errorf("CreateOccurrence got %v want success", err)
@@ -827,27 +899,27 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 			t.Errorf("CreateProject got %v want success", err)
 		}
 
-		n := TestNote(nPID)
-		if _, err := g.CreateNote(ctx, nPID, TestNoteID, "userID", n); err != nil {
+		n := createTestNote(nPID)
+		if _, err := g.CreateNote(ctx, nPID, testNoteID, "userID", n); err != nil {
 			t.Fatalf("CreateNote got %v want success", err)
 		}
 
 		oID1 := "occurrence1"
-		op1 := TestOccurrence(pID, n.Name)
+		op1 := createTestOccurrence(pID, n.Name)
 		op1.Name = name.FormatOccurrence(pID, oID1)
 		if _, err := g.CreateOccurrence(ctx, pID, "userID", op1); err != nil {
 			t.Errorf("CreateOccurrence got %v want success", err)
 		}
 
 		oID2 := "occurrence2"
-		op2 := TestOccurrence(pID, n.Name)
+		op2 := createTestOccurrence(pID, n.Name)
 		op2.Name = name.FormatOccurrence(pID, oID2)
 		if _, err := g.CreateOccurrence(ctx, pID, "userID", op2); err != nil {
 			t.Errorf("CreateOccurrence got %v want success", err)
 		}
 
 		oID3 := "occurrence3"
-		op3 := TestOccurrence(pID, n.Name)
+		op3 := createTestOccurrence(pID, n.Name)
 		op3.Name = name.FormatOccurrence(pID, oID3)
 		if _, err := g.CreateOccurrence(ctx, pID, "userID", op3); err != nil {
 			t.Errorf("CreateOccurrence got %v want success", err)
@@ -883,4 +955,146 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 			t.Fatalf("Got %s want %s", p.Name, name.FormatOccurrence(pID, oID3))
 		}
 	})
+}
+
+func createTestOccurrence(pID, noteName string) *pb.Occurrence {
+	return &pb.Occurrence{
+		Name:     fmt.Sprintf("projects/%s/occurrences/134", pID),
+		Resource: &pb.Resource{Uri: "gcr.io/foo/bar"},
+		NoteName: noteName,
+		Kind:     cpb.NoteKind_VULNERABILITY,
+		Details: &pb.Occurrence_Vulnerability{
+			Vulnerability: &vpb.Details{
+				Severity:  vpb.Severity_HIGH,
+				CvssScore: 7.5,
+				PackageIssue: []*vpb.PackageIssue{
+					{
+						SeverityName: "HIGH",
+						AffectedLocation: &vpb.VulnerabilityLocation{
+							CpeUri:  "cpe:/o:debian:debian_linux:8",
+							Package: "icu",
+							Version: &pkgpb.Version{
+								Name:     "52.1",
+								Revision: "8+deb8u3",
+							},
+						},
+						FixedLocation: &vpb.VulnerabilityLocation{
+							CpeUri:  "cpe:/o:debian:debian_linux:8",
+							Package: "icu",
+							Version: &pkgpb.Version{
+								Name:     "52.1",
+								Revision: "8+deb8u4",
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+}
+
+func createTestNote(pID string) *pb.Note {
+	return &pb.Note{
+		Name:             fmt.Sprintf("projects/%s/notes/%s", pID, testNoteID),
+		ShortDescription: "CVE-2014-9911",
+		LongDescription:  "NIST vectors: AV:N/AC:L/Au:N/C:P/I:P",
+		Kind:             cpb.NoteKind_VULNERABILITY,
+		Type: &pb.Note_Vulnerability{
+			&vpb.Vulnerability{
+				CvssScore: 7.5,
+				Severity:  vpb.Severity_HIGH,
+				Details: []*vpb.Vulnerability_Detail{
+					{
+						CpeUri:  "cpe:/o:debian:debian_linux:7",
+						Package: "icu",
+						Description: "Stack-based buffer overflow in the ures_getByKeyWithFallback function in " +
+							"common/uresbund.cpp in International Components for Unicode (ICU) before 54.1 for C/C++ allows " +
+							"remote attackers to cause a denial of service or possibly have unspecified other impact via a crafted uloc_getDisplayName call.",
+						MinAffectedVersion: &pkgpb.Version{
+							Kind: pkgpb.Version_MINIMUM,
+						},
+						SeverityName: "HIGH",
+
+						FixedLocation: &vpb.VulnerabilityLocation{
+							CpeUri:  "cpe:/o:debian:debian_linux:7",
+							Package: "icu",
+							Version: &pkgpb.Version{
+								Name:     "4.8.1.1",
+								Revision: "12+deb7u6",
+							},
+						},
+					},
+					{
+						CpeUri:  "cpe:/o:debian:debian_linux:8",
+						Package: "icu",
+						Description: "Stack-based buffer overflow in the ures_getByKeyWithFallback function in " +
+							"common/uresbund.cpp in International Components for Unicode (ICU) before 54.1 for C/C++ allows " +
+							"remote attackers to cause a denial of service or possibly have unspecified other impact via a crafted uloc_getDisplayName call.",
+						MinAffectedVersion: &pkgpb.Version{
+							Kind: pkgpb.Version_MINIMUM,
+						},
+						SeverityName: "HIGH",
+
+						FixedLocation: &vpb.VulnerabilityLocation{
+							CpeUri:  "cpe:/o:debian:debian_linux:8",
+							Package: "icu",
+							Version: &pkgpb.Version{
+								Name:     "52.1",
+								Revision: "8+deb8u4",
+							},
+						},
+					},
+					{
+						CpeUri:  "cpe:/o:debian:debian_linux:9",
+						Package: "icu",
+						Description: "Stack-based buffer overflow in the ures_getByKeyWithFallback function in " +
+							"common/uresbund.cpp in International Components for Unicode (ICU) before 54.1 for C/C++ allows " +
+							"remote attackers to cause a denial of service or possibly have unspecified other impact via a crafted uloc_getDisplayName call.",
+						MinAffectedVersion: &pkgpb.Version{
+							Kind: pkgpb.Version_MINIMUM,
+						},
+						SeverityName: "HIGH",
+
+						FixedLocation: &vpb.VulnerabilityLocation{
+							CpeUri:  "cpe:/o:debian:debian_linux:9",
+							Package: "icu",
+							Version: &pkgpb.Version{
+								Name:     "55.1",
+								Revision: "3",
+							},
+						},
+					},
+					{
+						CpeUri:  "cpe:/o:canonical:ubuntu_linux:14.04",
+						Package: "android",
+						Description: "Stack-based buffer overflow in the ures_getByKeyWithFallback function in " +
+							"common/uresbund.cpp in International Components for Unicode (ICU) before 54.1 for C/C++ allows " +
+							"remote attackers to cause a denial of service or possibly have unspecified other impact via a crafted uloc_getDisplayName call.",
+						MinAffectedVersion: &pkgpb.Version{
+							Kind: pkgpb.Version_MINIMUM,
+						},
+						SeverityName: "MEDIUM",
+
+						FixedLocation: &vpb.VulnerabilityLocation{
+							CpeUri:  "cpe:/o:canonical:ubuntu_linux:14.04",
+							Package: "android",
+							Version: &pkgpb.Version{
+								Kind: pkgpb.Version_MINIMUM,
+							},
+						},
+					},
+				},
+			},
+		},
+		RelatedUrl: []*cpb.RelatedUrl{
+			{
+				Url:   "https://security-tracker.debian.org/tracker/CVE-2014-9911",
+				Label: "More Info",
+			},
+			{
+				Url:   "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2014-9911",
+				Label: "More Info",
+			},
+		},
+	}
 }

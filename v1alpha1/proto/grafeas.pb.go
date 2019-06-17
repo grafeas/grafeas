@@ -14,8 +14,6 @@ import (
 	longrunning "google.golang.org/genproto/googleapis/longrunning"
 	field_mask "google.golang.org/genproto/protobuf/field_mask"
 	grpc "google.golang.org/grpc"
-	codes "google.golang.org/grpc/codes"
-	status "google.golang.org/grpc/status"
 	math "math"
 )
 
@@ -5844,53 +5842,6 @@ type GrafeasServer interface {
 	ListNoteOccurrences(context.Context, *ListNoteOccurrencesRequest) (*ListNoteOccurrencesResponse, error)
 }
 
-// UnimplementedGrafeasServer can be embedded to have forward compatible implementations.
-type UnimplementedGrafeasServer struct {
-}
-
-func (*UnimplementedGrafeasServer) GetOccurrence(ctx context.Context, req *GetOccurrenceRequest) (*Occurrence, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetOccurrence not implemented")
-}
-func (*UnimplementedGrafeasServer) ListOccurrences(ctx context.Context, req *ListOccurrencesRequest) (*ListOccurrencesResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListOccurrences not implemented")
-}
-func (*UnimplementedGrafeasServer) DeleteOccurrence(ctx context.Context, req *DeleteOccurrenceRequest) (*empty.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteOccurrence not implemented")
-}
-func (*UnimplementedGrafeasServer) CreateOccurrence(ctx context.Context, req *CreateOccurrenceRequest) (*Occurrence, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateOccurrence not implemented")
-}
-func (*UnimplementedGrafeasServer) UpdateOccurrence(ctx context.Context, req *UpdateOccurrenceRequest) (*Occurrence, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateOccurrence not implemented")
-}
-func (*UnimplementedGrafeasServer) GetOccurrenceNote(ctx context.Context, req *GetOccurrenceNoteRequest) (*Note, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetOccurrenceNote not implemented")
-}
-func (*UnimplementedGrafeasServer) CreateOperation(ctx context.Context, req *CreateOperationRequest) (*longrunning.Operation, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateOperation not implemented")
-}
-func (*UnimplementedGrafeasServer) UpdateOperation(ctx context.Context, req *UpdateOperationRequest) (*longrunning.Operation, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateOperation not implemented")
-}
-func (*UnimplementedGrafeasServer) GetNote(ctx context.Context, req *GetNoteRequest) (*Note, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetNote not implemented")
-}
-func (*UnimplementedGrafeasServer) ListNotes(ctx context.Context, req *ListNotesRequest) (*ListNotesResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListNotes not implemented")
-}
-func (*UnimplementedGrafeasServer) DeleteNote(ctx context.Context, req *DeleteNoteRequest) (*empty.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteNote not implemented")
-}
-func (*UnimplementedGrafeasServer) CreateNote(ctx context.Context, req *CreateNoteRequest) (*Note, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateNote not implemented")
-}
-func (*UnimplementedGrafeasServer) UpdateNote(ctx context.Context, req *UpdateNoteRequest) (*Note, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateNote not implemented")
-}
-func (*UnimplementedGrafeasServer) ListNoteOccurrences(ctx context.Context, req *ListNoteOccurrencesRequest) (*ListNoteOccurrencesResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListNoteOccurrences not implemented")
-}
-
 func RegisterGrafeasServer(s *grpc.Server, srv GrafeasServer) {
 	s.RegisterService(&_Grafeas_serviceDesc, srv)
 }
@@ -6280,23 +6231,6 @@ type GrafeasProjectsServer interface {
 	ListProjects(context.Context, *ListProjectsRequest) (*ListProjectsResponse, error)
 	// Deletes the specified project.
 	DeleteProject(context.Context, *DeleteProjectRequest) (*empty.Empty, error)
-}
-
-// UnimplementedGrafeasProjectsServer can be embedded to have forward compatible implementations.
-type UnimplementedGrafeasProjectsServer struct {
-}
-
-func (*UnimplementedGrafeasProjectsServer) CreateProject(ctx context.Context, req *CreateProjectRequest) (*empty.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateProject not implemented")
-}
-func (*UnimplementedGrafeasProjectsServer) GetProject(ctx context.Context, req *GetProjectRequest) (*Project, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetProject not implemented")
-}
-func (*UnimplementedGrafeasProjectsServer) ListProjects(ctx context.Context, req *ListProjectsRequest) (*ListProjectsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListProjects not implemented")
-}
-func (*UnimplementedGrafeasProjectsServer) DeleteProject(ctx context.Context, req *DeleteProjectRequest) (*empty.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteProject not implemented")
 }
 
 func RegisterGrafeasProjectsServer(s *grpc.Server, srv GrafeasProjectsServer) {

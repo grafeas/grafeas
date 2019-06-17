@@ -11,17 +11,29 @@
 SRC = $(shell find . -type f -name '*.go' -not -path "./vendor/*")
 CLEAN := *~
 
-default: build
+default: .check_makefile_in_gopath build
 
 .install.tools: .install.protoc-gen-go .install.grpc-gateway protoc/bin/protoc
 	@touch $@
 
+EXPECTED_MAKE = ${GOPATH}/src/github.com/grafeas/grafeas/Makefile
+
+.check_makefile_in_gopath:
+	if [ "$(realpath ${EXPECTED_MAKE})" != "$(realpath $(lastword $(MAKEFILE_LIST)))" ]; \
+	then  \
+	echo "Makefile is not in GOPATH root"; \
+	false; \
+	fi
+
 CLEAN += .install.protoc-gen-go .install.grpc-gateway
 .install.protoc-gen-go:
-	go get -u -v github.com/golang/protobuf/protoc-gen-go && touch $@
+	cd tools && GO111MODULE=on go install -v github.com/golang/protobuf/protoc-gen-go
+	touch $@
 
 .install.grpc-gateway:
-	go get -u -v github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger && touch $@
+	cd tools && GO111MODULE=on go install -v github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
+	cd tools && GO111MODULE=on go install -v github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger
+	touch $@
 
 build: vet fmt go_protos swagger_docs
 	go build -v ./...

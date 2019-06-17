@@ -69,8 +69,8 @@ func (s *fakeStorage) GetOccurrence(ctx context.Context, pID, oID string) (*gpb.
 		return nil, errors.Newf(codes.NotFound, "occurrence %q not found", oID)
 	}
 
+	// Set the output-only field before returning
 	o.Name = name.FormatOccurrence(pID, oID)
-
 	return o, nil
 }
 
@@ -86,6 +86,7 @@ func (s *fakeStorage) ListOccurrences(ctx context.Context, pID, filter, pageToke
 
 	occurrences := []*gpb.Occurrence{}
 	for oID, o := range s.occurrences[pID] {
+		// Set the output-only field before adding
 		o.Name = name.FormatOccurrence(pID, oID)
 		occurrences = append(occurrences, o)
 	}
@@ -198,6 +199,9 @@ func (s *fakeStorage) GetNote(ctx context.Context, pID, nID string) (*gpb.Note, 
 	if !ok {
 		return nil, errors.Newf(codes.NotFound, "note %q not found", nID)
 	}
+
+	// Set the output-only field before returning
+	n.Name = name.FormatNote(pID, nID)
 	return n, nil
 }
 
@@ -348,8 +352,8 @@ func (s *fakeStorage) GetOccurrenceNote(ctx context.Context, pID, oID string) (*
 		return nil, errors.Newf(codes.NotFound, "note %q not found", nID)
 	}
 
+	// Set the output-only field before returning
 	n.Name = name.FormatNote(pID, nID)
-
 	return n, nil
 }
 
