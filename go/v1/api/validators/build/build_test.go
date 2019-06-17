@@ -32,20 +32,9 @@ func TestValidateNote(t *testing.T) {
 			wantErrs: true,
 		},
 		{
-			desc: "invalid signature, want error(s)",
+			desc: "valid build note, want success",
 			b: &gpb.BuildNote{
 				BuilderVersion: "1.1.1",
-				Signature:      &gpb.BuildSignature{},
-			},
-			wantErrs: true,
-		},
-		{
-			desc: "valid signature, want success",
-			b: &gpb.BuildNote{
-				BuilderVersion: "1.1.1",
-				Signature: &gpb.BuildSignature{
-					Signature: []byte("YmVhciByYXdyIHJhd3I="),
-				},
 			},
 			wantErrs: false,
 		},
@@ -59,38 +48,6 @@ func TestValidateNote(t *testing.T) {
 		}
 		if len(errs) > 0 && !tt.wantErrs {
 			t.Errorf("%q: ValidateNote(%+v): got error(s) %v, want success", tt.desc, tt.b, errs)
-		}
-	}
-}
-
-func TestValidateSignature(t *testing.T) {
-	tests := []struct {
-		desc     string
-		s        *gpb.BuildSignature
-		wantErrs bool
-	}{
-		{
-			desc:     "missing signature, want error(s)",
-			s:        &gpb.BuildSignature{},
-			wantErrs: true,
-		},
-		{
-			desc: "valid signature, want success",
-			s: &gpb.BuildSignature{
-				Signature: []byte("YmVhciByYXdyIHJhd3I="),
-			},
-			wantErrs: false,
-		},
-	}
-
-	for _, tt := range tests {
-		errs := validateSignature(tt.s)
-		t.Logf("%q: error(s): %v", tt.desc, errs)
-		if len(errs) == 0 && tt.wantErrs {
-			t.Errorf("%q: validateSignature(%+v): got success, want error(s)", tt.desc, tt.s)
-		}
-		if len(errs) > 0 && !tt.wantErrs {
-			t.Errorf("%q: validateSignature(%+v): got error(s) %v, want success", tt.desc, tt.s, errs)
 		}
 	}
 }
