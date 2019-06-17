@@ -18,10 +18,13 @@ default: build
 
 CLEAN += .install.protoc-gen-go .install.grpc-gateway
 .install.protoc-gen-go:
-	go get -u -v github.com/golang/protobuf/protoc-gen-go && touch $@
+	cd tools && GO111MODULE=on go install -v github.com/golang/protobuf/protoc-gen-go
+	touch $@
 
 .install.grpc-gateway:
-	go get -u -v github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger && touch $@
+	cd tools && GO111MODULE=on go install -v github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
+	cd tools && GO111MODULE=on go install -v github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger
+	touch $@
 
 build: vet fmt go_protos swagger_docs
 	go build -v ./...
