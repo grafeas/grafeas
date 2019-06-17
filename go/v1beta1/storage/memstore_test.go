@@ -12,18 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package storage
+package storage_test
 
 import (
 	"testing"
 
 	"github.com/grafeas/grafeas/go/v1beta1/api"
 	"github.com/grafeas/grafeas/go/v1beta1/project"
+	"github.com/grafeas/grafeas/go/v1beta1/storage"
 )
 
 func TestBetaMemStore(t *testing.T) {
 	createMemStore := func(t *testing.T) (grafeas.Storage, project.Storage, func()) {
-		s := NewMemStore()
+		s := storage.NewMemStore()
 		var g grafeas.Storage = s
 		var gp project.Storage = s
 		return g, gp, func() {}
