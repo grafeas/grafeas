@@ -11,10 +11,19 @@
 SRC = $(shell find . -type f -name '*.go' -not -path "./vendor/*")
 CLEAN := *~
 
-default: build
+default: .check_makefile_in_gopath build
 
 .install.tools: .install.protoc-gen-go .install.grpc-gateway protoc/bin/protoc
 	@touch $@
+
+EXPECTED_MAKE = ${GOPATH}/src/github.com/grafeas/grafeas/Makefile
+
+.check_makefile_in_gopath:
+	if [ "$(realpath ${EXPECTED_MAKE})" != "$(realpath $(lastword $(MAKEFILE_LIST)))" ]; \
+	then  \
+	echo "Makefile is not in GOPATH root"; \
+	false; \
+	fi
 
 CLEAN += .install.protoc-gen-go .install.grpc-gateway
 .install.protoc-gen-go:
