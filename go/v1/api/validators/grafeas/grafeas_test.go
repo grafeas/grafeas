@@ -109,7 +109,7 @@ func TestValidateNote(t *testing.T) {
 								SeverityName:    "LOW",
 								AffectedCpeUri:  "cpe:/o:debian:debian_linux:7",
 								AffectedPackage: "debian",
-								MinAffectedVersion: &gpb.Version{
+								StartingAffectedVersion: &gpb.Version{
 									Kind: gpb.Version_MINIMUM,
 								},
 								FixedVersion: &gpb.Version{
