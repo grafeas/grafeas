@@ -16,7 +16,7 @@ default: .check_makefile_in_gopath build
 .install.tools: .install.protoc-gen-go .install.grpc-gateway protoc/bin/protoc
 	@touch $@
 
-EXPECTED_MAKE = ${GOPATH}/src/github.com/grafeas/grafeas/Makefile
+EXPECTED_MAKE := $(shell go env GOPATH)/src/github.com/grafeas/grafeas/Makefile
 
 .check_makefile_in_gopath:
 	if [ "$(realpath ${EXPECTED_MAKE})" != "$(realpath $(lastword $(MAKEFILE_LIST)))" ]; \
