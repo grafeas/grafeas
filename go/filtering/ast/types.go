@@ -16,7 +16,7 @@
 package ast
 
 import (
-	expr "github.com/google/cel-spec/proto/v1"
+	expr "github.com/grafeas/grafeas/cel"
 )
 
 // Create a constant from the primitive value with the given id.

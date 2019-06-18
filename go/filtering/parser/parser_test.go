@@ -22,7 +22,7 @@ import (
 	"testing"
 
 	pb "github.com/golang/protobuf/proto"
-	expr "github.com/google/cel-spec/proto/v1"
+	expr "github.com/grafeas/grafeas/cel"
 	"github.com/grafeas/grafeas/go/filtering/common"
 )
 
