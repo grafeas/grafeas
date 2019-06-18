@@ -856,6 +856,9 @@ func vulnzNote(t *testing.T) *gpb.Note {
 						StartingAffectedVersion: &gpb.Version{
 							Kind: gpb.Version_MINIMUM,
 						},
+						EndingAffectedVersion: &gpb.Version{
+							Kind: gpb.Version_MINIMUM,
+						},
 						FixedVersion: &gpb.Version{
 							Kind: gpb.Version_MAXIMUM,
 						},

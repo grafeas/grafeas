@@ -112,6 +112,9 @@ func TestValidateNote(t *testing.T) {
 								StartingAffectedVersion: &gpb.Version{
 									Kind: gpb.Version_MINIMUM,
 								},
+								EndingAffectedVersion: &gpb.Version{
+									Kind: gpb.Version_MINIMUM,
+								},
 								FixedVersion: &gpb.Version{
 									Kind: gpb.Version_MAXIMUM,
 								},
