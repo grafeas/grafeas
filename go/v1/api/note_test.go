@@ -853,7 +853,10 @@ func vulnzNote(t *testing.T) *gpb.Note {
 						SeverityName:    "CRITICAL",
 						AffectedCpeUri:  "cpe:/o:debian:debian_linux:7",
 						AffectedPackage: "foobar",
-						MinAffectedVersion: &gpb.Version{
+						AffectedVersionStart: &gpb.Version{
+							Kind: gpb.Version_MINIMUM,
+						},
+						AffectedVersionEnd: &gpb.Version{
 							Kind: gpb.Version_MINIMUM,
 						},
 						FixedVersion: &gpb.Version{
