@@ -19,7 +19,7 @@ default: .check_makefile_in_gopath build
 	cd tools && GO111MODULE=on go install -v github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger
 	@touch $@
 
-EXPECTED_MAKE = ${GOPATH}/src/github.com/grafeas/grafeas/Makefile
+EXPECTED_MAKE := $(shell go env GOPATH)/src/github.com/grafeas/grafeas/Makefile
 
 .check_makefile_in_gopath:
 	if [ "$(realpath ${EXPECTED_MAKE})" != "$(realpath $(lastword $(MAKEFILE_LIST)))" ]; \
