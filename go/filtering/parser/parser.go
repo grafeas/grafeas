@@ -20,7 +20,7 @@ import (
 	"strconv"
 
 	"github.com/antlr/antlr4/runtime/Go/antlr"
-	expr "github.com/google/cel-spec/proto/v1"
+	expr "github.com/grafeas/grafeas/cel"
 	"github.com/grafeas/grafeas/go/filtering/ast"
 	"github.com/grafeas/grafeas/go/filtering/common"
 	"github.com/grafeas/grafeas/go/filtering/operators"

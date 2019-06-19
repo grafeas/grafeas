@@ -65,17 +65,17 @@ const (
 // Storage provides storage functions for this API.
 type Storage interface {
 	// GetOccurrence gets the specified occurrence from storage.
-	GetOccurrence(ctx context.Context, projectID, oID string) (*gpb.Occurrence, error)
+	GetOccurrence(ctx context.Context, projectID, occID string) (*gpb.Occurrence, error)
 	// ListOccurrences lists occurrences for the specified project from storage.
-	ListOccurrences(ctx context.Context, projectID string, filter, pageToken string, pageSize int32) ([]*gpb.Occurrence, string, error)
+	ListOccurrences(ctx context.Context, projectID, filter, pageToken string, pageSize int32) ([]*gpb.Occurrence, string, error)
 	// CreateOccurrence creates the specified occurrence in storage.
-	CreateOccurrence(ctx context.Context, projectID string, userID string, o *gpb.Occurrence) (*gpb.Occurrence, error)
-	// CreateOccurrence batch creates the specified occurrences in storage.
+	CreateOccurrence(ctx context.Context, projectID, userID string, o *gpb.Occurrence) (*gpb.Occurrence, error)
+	// BatchCreateOccurrences batch creates the specified occurrences in storage.
 	BatchCreateOccurrences(ctx context.Context, projectID string, userID string, occs []*gpb.Occurrence) ([]*gpb.Occurrence, []error)
 	// UpdateOccurrence updates the specified occurrence in storage.
-	UpdateOccurrence(ctx context.Context, projectID, oID string, o *gpb.Occurrence, mask *fieldmaskpb.FieldMask) (*gpb.Occurrence, error)
+	UpdateOccurrence(ctx context.Context, projectID, occID string, o *gpb.Occurrence, mask *fieldmaskpb.FieldMask) (*gpb.Occurrence, error)
 	// DeleteOccurrence deletes the specified occurrence in storage.
-	DeleteOccurrence(ctx context.Context, projectID, oID string) error
+	DeleteOccurrence(ctx context.Context, projectID, occID string) error
 
 	// GetNote gets the specified note from storage.
 	GetNote(ctx context.Context, projectID, nID string) (*gpb.Note, error)
