@@ -16,7 +16,7 @@ default: .check_makefile_in_gopath build
 .install.tools: .install.protoc-gen-go .install.grpc-gateway protoc/bin/protoc
 	@touch $@
 
-EXPECTED_MAKE = ${GOPATH}/src/github.com/grafeas/grafeas/Makefile
+EXPECTED_MAKE := $(shell go env GOPATH)/src/github.com/grafeas/grafeas/Makefile
 
 .check_makefile_in_gopath:
 	if [ "$(realpath ${EXPECTED_MAKE})" != "$(realpath $(lastword $(MAKEFILE_LIST)))" ]; \
@@ -58,9 +58,12 @@ CLEAN += protoc proto/*/*_go_proto
 GO_PROTO_DIRS_V1BETA1 := $(patsubst %.proto,%_go_proto/.done,$(wildcard proto/v1beta1/*.proto))
 GO_PROTO_FILES_V1 := $(filter-out proto/v1/grafeas_go_proto/project.pb.go, $(patsubst proto/v1/%.proto,proto/v1/grafeas_go_proto/%.pb.go,$(wildcard proto/v1/*.proto)))
 
+cel/syntax.pb.go: protoc/bin/protoc .install.protoc-gen-go
+	cd cel && go generate
+
 # v1alpha1 has a different codebase structure than v1beta1 and v1,
 # so it's generated separately
-go_protos: v1alpha1/proto/grafeas.pb.go $(GO_PROTO_DIRS_V1BETA1) $(GO_PROTO_FILES_V1)
+go_protos: cel/syntax.pb.go v1alpha1/proto/grafeas.pb.go $(GO_PROTO_DIRS_V1BETA1) $(GO_PROTO_FILES_V1)
 
 PROTOC_CMD=protoc/bin/protoc -I ./ \
 	-I vendor/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
