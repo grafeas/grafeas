@@ -24,6 +24,7 @@ import (
 	"github.com/fernet/fernet-go"
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes"
+	"github.com/grafeas/grafeas/go/config"
 	"github.com/grafeas/grafeas/go/name"
 	pb "github.com/grafeas/grafeas/proto/v1beta1/grafeas_go_proto"
 	prpb "github.com/grafeas/grafeas/proto/v1beta1/project_go_proto"
@@ -39,7 +40,7 @@ type PgSQLStore struct {
 	paginationKey string
 }
 
-func NewPgSQLStore(config *PgSQLConfig) *PgSQLStore {
+func NewPgSQLStore(config *config.PgSQLConfig) *PgSQLStore {
 	err := createDatabase(CreateSourceString(config.User, config.Password, config.Host, "postgres", config.SSLMode), config.DbName)
 	if err != nil {
 		log.Fatal(err.Error())
@@ -516,6 +517,14 @@ func (pg *PgSQLStore) ListNoteOccurrences(ctx context.Context, pID, nID, filter,
 // GetVulnerabilityOccurrencesSummary gets a summary of vulnerability occurrences from storage.
 func (pg *PgSQLStore) GetVulnerabilityOccurrencesSummary(ctx context.Context, projectID, filter string) (*pb.VulnerabilityOccurrencesSummary, error) {
 	return &pb.VulnerabilityOccurrencesSummary{}, nil
+}
+
+// CreateSourceString generates DB source path.
+func CreateSourceString(user, password, host, dbName, SSLMode string) string {
+	if user == "" {
+		return fmt.Sprintf("postgres://%s/%s?sslmode=%s", host, dbName, SSLMode)
+	}
+	return fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=%s", user, password, host, dbName, SSLMode)
 }
 
 // count returns the total number of entries for the specified query (assuming SELECT(*) is used)

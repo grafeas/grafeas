@@ -20,7 +20,6 @@ import (
 	"log"
 
 	fernet "github.com/fernet/fernet-go"
-	"github.com/grafeas/grafeas/go/v1beta1/storage"
 	"gopkg.in/yaml.v2"
 )
 
@@ -37,12 +36,27 @@ type Config struct {
 	CORSAllowedOrigins []string `yaml:"cors_allowed_origins"` // Permitted CORS origins.
 }
 
+type EmbeddedStoreConfig struct {
+	Path string `yaml:"path"` // Path is the folder path to storage files
+}
+
+type PgSQLConfig struct {
+	Host     string `yaml:"host"`
+	DbName   string `yaml:"dbname"`
+	User     string `yaml:"user"`
+	Password string `yaml:"password"`
+	// Valid sslmodes: disable, allow, prefer, require, verify-ca, verify-full.
+	// See https://www.postgresql.org/docs/current/static/libpq-connect.html for details
+	SSLMode       string `yaml:"sslmode"`
+	PaginationKey string `yaml:"paginationkey"`
+}
+
 // Config is the global configuration for an instance of Grafeas.
 type config struct {
-	API            *Config                  `yaml:"api"`
-	StorageType    string                       `yaml:"storage_type"` // Supported storage types are "memstore", "postgres" and "embedded"
-	PgSQLConfig    *storage.PgSQLConfig         `yaml:"postgres"`
-	EmbeddedConfig *storage.EmbeddedStoreConfig `yaml:"embedded"` // EmbeddedConfig is the embedded store config
+	API            *Config              `yaml:"api"`
+	StorageType    string               `yaml:"storage_type"` // Supported storage types are "memstore", "postgres" and "embedded"
+	PgSQLConfig    *PgSQLConfig         `yaml:"postgres"`
+	EmbeddedConfig *EmbeddedStoreConfig `yaml:"embedded"` // EmbeddedConfig is the embedded store config
 }
 
 // DefaultConfig is a configuration that can be used as a fallback value.
@@ -55,7 +69,7 @@ func defaultConfig() *config {
 			CAFile:   "",
 		},
 		StorageType: "memstore",
-		PgSQLConfig: &storage.PgSQLConfig{},
+		PgSQLConfig: &PgSQLConfig{},
 	}
 }
 

@@ -38,11 +38,17 @@ func main() {
 	var proj project.Storage
 	switch config.StorageType {
 	case "memstore":
-		db, proj = storage.NewMemStore()
+		s := storage.NewMemStore()
+		db = s
+		proj = s
 	case "postgres":
-		db, proj = storage.NewPgSQLStore(config.PgSQLConfig)
+		s := storage.NewPgSQLStore(config.PgSQLConfig)
+		db = s
+		proj = s
 	case "embedded":
-		db, proj = storage.NewEmbeddedStore(config.EmbeddedConfig)
+		s := storage.NewEmbeddedStore(config.EmbeddedConfig)
+		db = s
+		proj = s
 	default:
 		log.Fatalf("Storage type unsupported: %s", config.StorageType)
 	}

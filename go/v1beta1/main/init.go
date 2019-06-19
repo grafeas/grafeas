@@ -25,16 +25,13 @@ import (
 	"os"
 	"strings"
 
-        // TODO: update this dep
-	"github.com/grafeas/grafeas/samples/server/go-server/api/server/v1alpha1"
-
+	"github.com/cockroachdb/cmux"
 	"github.com/grafeas/grafeas/go/config"
-	pb "github.com/grafeas/grafeas/proto/v1beta1/grafeas_go_proto"
-	prpb "github.com/grafeas/grafeas/proto/v1beta1/project_go_proto"
 	"github.com/grafeas/grafeas/go/v1beta1/api"
 	"github.com/grafeas/grafeas/go/v1beta1/project"
+	pb "github.com/grafeas/grafeas/proto/v1beta1/grafeas_go_proto"
+	prpb "github.com/grafeas/grafeas/proto/v1beta1/project_go_proto"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-	"github.com/cockroachdb/cmux"
 	"github.com/rs/cors"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
@@ -136,9 +133,16 @@ func newGrpcServer(tlsConfig *tls.Config, db *grafeas.Storage, proj *project.Sto
 	}
 
 	grpcServer := grpc.NewServer(grpcOpts...)
-	g := v1alpha1.Grafeas{S: *db}
-	gp := v1alpha1.Project{S: *proj}
+	g := grafeas.API{
+		Storage:           *db,
+		Auth:              &grafeas.NoOpAuth{},
+		Filter:            &grafeas.NoOpFilter{},
+		Logger:            &grafeas.NoOpLogger{},
+		EnforceValidation: true,
+	}
 	pb.RegisterGrafeasV1Beta1Server(grpcServer, &g)
+
+	gp := project.API{Storage: *proj}
 	prpb.RegisterProjectsServer(grpcServer, &gp)
 
 	return grpcServer

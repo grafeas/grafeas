@@ -22,6 +22,7 @@ import (
 	"github.com/boltdb/bolt"
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes"
+	"github.com/grafeas/grafeas/go/config"
 	"github.com/grafeas/grafeas/go/errors"
 	"github.com/grafeas/grafeas/go/name"
 	pb "github.com/grafeas/grafeas/proto/v1beta1/grafeas_go_proto"
@@ -46,17 +47,13 @@ var (
 	errNoKey     = fmt.Errorf("key missing")
 )
 
-type EmbeddedStoreConfig struct {
-	Path string `yaml:"path"` // Path is the folder path to storage files
-}
-
 // EmbeddedStore is a storage solution for Grafeas based on boltdb
 type EmbeddedStore struct {
 	db *bolt.DB
 }
 
 // NewEmbeddedStore creates a embeddedS store with initialized filesystem
-func NewEmbeddedStore(config *EmbeddedStoreConfig) *EmbeddedStore {
+func NewEmbeddedStore(config *config.EmbeddedStoreConfig) *EmbeddedStore {
 	if err := os.MkdirAll(config.Path, 0700); err != nil {
 		log.Fatalf("Failed to create config directory %v", err)
 	}
