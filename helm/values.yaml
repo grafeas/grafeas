@@ -1,9 +1,9 @@
 replicaCount: 1
 
 image:
-  repository: grafeas
-  # TODO: update this once the image is publicly released
-  tag: latest
+  repository: us.gcr.io/grafeas/
+  name: grafeas-server
+  tag: 0.1.0
   pullPolicy: IfNotPresent
 
 nameOverride: ""
