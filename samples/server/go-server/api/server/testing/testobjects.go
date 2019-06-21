@@ -16,10 +16,11 @@ package testutil
 
 import (
 	"fmt"
+	"log"
+
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes"
 	"github.com/golang/protobuf/ptypes/any"
-	"log"
 
 	cpb "github.com/grafeas/grafeas/proto/v1beta1/common_go_proto"
 	pb "github.com/grafeas/grafeas/proto/v1beta1/grafeas_go_proto"
@@ -72,7 +73,7 @@ func Note(pID string) *pb.Note {
 		LongDescription:  "NIST vectors: AV:N/AC:L/Au:N/C:P/I:P",
 		Kind:             cpb.NoteKind_VULNERABILITY,
 		Type: &pb.Note_Vulnerability{
-			&vpb.Vulnerability{
+			Vulnerability: &vpb.Vulnerability{
 				CvssScore: 7.5,
 				Severity:  vpb.Severity_HIGH,
 				Details: []*vpb.Vulnerability_Detail{

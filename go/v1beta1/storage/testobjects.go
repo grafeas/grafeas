@@ -70,7 +70,7 @@ func TestNote(pID string) *pb.Note {
 		LongDescription:  "NIST vectors: AV:N/AC:L/Au:N/C:P/I:P",
 		Kind:             cpb.NoteKind_VULNERABILITY,
 		Type: &pb.Note_Vulnerability{
-			&vpb.Vulnerability{
+			Vulnerability: &vpb.Vulnerability{
 				CvssScore: 7.5,
 				Severity:  vpb.Severity_HIGH,
 				Details: []*vpb.Vulnerability_Detail{
