@@ -7,7 +7,7 @@ To run the server, do the following from the root directory:
 
 ```shell
 cd go/v1beta1
-go run main/*.go
+go run main/main.go
 ```
 
 This will start the Grafeas gRPC and REST APIs on `localhost:8080`.

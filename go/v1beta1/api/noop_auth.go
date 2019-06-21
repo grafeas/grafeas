@@ -27,7 +27,7 @@ func (a *NoOpAuth) CheckAccessAndProject(ctx context.Context, projectID string, 
 }
 
 func (a *NoOpAuth) EndUserID(ctx context.Context) (string, error) {
-	return "22", nil
+	return "0", nil
 }
 
 func (a *NoOpAuth) PurgePolicy(ctx context.Context, projectID string, entityID string, r iam.Resource) error {
