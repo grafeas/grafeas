@@ -46,16 +46,18 @@ contain:
     "name" : "projects/provider_example/notes/test",
     "shortDescription": "A brief description of the note",
     "longDescription": "A longer description of the note",
-    "kind": "PACKAGE_VULNERABILITY",
-    "vulnerabilityType": {
+    "kind": "VULNERABILITY",
+    "vulnerability": {
         "details": [
         {
             "package": "libexempi3",
             "cpeUri": "cpe:/o:debian:debian_linux:7",
-            "minAffectedVersion": { "name": "2.5.7", "revision": "1"},
-            "maxAffectedVersion": { "name": "2.5.9", "revision": "1"}
-        }
-        ]
+            "minAffectedVersion": {
+              "name": "2.5.7",
+              "revision": "1",
+              "kind": "NORMAL"
+            },
+        }]
     }
 }
 ```
@@ -63,7 +65,7 @@ contain:
 Now create the note with the following command:
 
 ```bash
-curl http://localhost:8080/v1beta1/projects/provider_example/notes?note_id=testNote
+curl http://localhost:8080/v1beta1/projects/provider_example/notes?note_id=testNote \
     -X POST -H "Content-Type: application/json" -d @note.json
 ```
 
@@ -144,10 +146,13 @@ above, with some sample data about where the vulnerability occurred.
 
 ```json
 {
-  "resourceUrl": "https://gcr.io/project/image@sha256:foo",
+  "name": "projects/occurrence_example/occurrences/test",
+  "resource": {
+    "uri": "https://gcr.io/project/image@sha256:foo",
+  },
   "noteName": "projects/provider_example/notes/test",
-  "kind": "PACKAGE_VULNERABILITY",
-  "vulnerabilityDetails": {
+  "kind": "VULNERABILITY",
+  "vulnerability": {
     "packageIssue": [
       {
         "affectedLocation": {
