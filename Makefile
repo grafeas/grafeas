@@ -93,7 +93,7 @@ proto/v1/grafeas_go_proto/%.pb.go: proto/v1/%.proto .install.tools
 
 swagger_docs: proto/v1beta1/swagger/*.swagger.json
 
-proto/v1beta1/swagger/%.swagger.json: proto/v1beta1/%.proto PROTOC .install.tools
+proto/v1beta1/swagger/%.swagger.json: proto/v1beta1/%.proto .install.tools
 	$(PROTOC_CMD) --swagger_out=logtostderr=true:. $<
 	mv $(<D)/*.swagger.json $@
 
