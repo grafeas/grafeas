@@ -1,4 +1,4 @@
-// This generates the protocol buffer code in go for the v1beta1 proto spec.
+// This generates the protocol buffer code in go for the v1 proto spec.
 
 //go:generate rm -rf grafeas_go_proto
 //go:generate mkdir grafeas_go_proto
