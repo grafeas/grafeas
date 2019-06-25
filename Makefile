@@ -6,7 +6,7 @@
 # print-%:
 # 	@echo $* = $($*)
 
-.PHONY: build fmt test vet clean generate swagger_docs
+.PHONY: build fmt test vet clean generate
 
 SRC = $(shell find . -type f -name '*.go' -not -path "./vendor/*")
 CLEAN := *~
@@ -21,7 +21,8 @@ EXPECTED_MAKE := $(shell go env GOPATH)/src/github.com/grafeas/grafeas/Makefile
 	echo "Makefile is not in GOPATH root"; \
 	false; \
 	fi
-build: vet fmt generate swagger_docs
+
+build: vet fmt generate
 	go build -v ./...
 
 # http://golang.org/cmd/go/#hdr-Run_gofmt_on_package_sources
@@ -35,6 +36,7 @@ vet: generate
 	@go vet ./...
 
 generate:
+	# protoc and tools need to be run before all of the other generations.
 	go generate ./protoc
 	go generate ./tools
 	go generate ./...
