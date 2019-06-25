@@ -42,15 +42,11 @@ test: go_protos
 vet: go_protos
 	@go vet ./...
 
-CLEAN += proto/*/*_go_proto
+CLEAN += proto/v1beta1/*_go_proto
 
 GO_PROTO_DIRS_V1BETA1 := $(patsubst %.proto,%_go_proto/.done,$(wildcard proto/v1beta1/*.proto))
-GO_PROTO_FILES_V1 := $(filter-out proto/v1/grafeas_go_proto/project.pb.go, $(patsubst proto/v1/%.proto,proto/v1/grafeas_go_proto/%.pb.go,$(wildcard proto/v1/*.proto)))
 
-
-# v1alpha1 has a different codebase structure than v1beta1 and v1,
-# so it's generated separately
-go_protos: $(GO_PROTO_DIRS_V1BETA1) $(GO_PROTO_FILES_V1)
+go_protos: $(GO_PROTO_DIRS_V1BETA1)
 	go generate ./...
 
 PROTOC_CMD=protoc/bin/protoc -I ./ \
@@ -72,22 +68,6 @@ proto/v1beta1/%_go_proto/.done: proto/v1beta1/%.proto .install.tools
 	mv proto/v1beta1/$*.pb.go $(@D)
 	if [ -f proto/v1beta1/$*.pb.gw.go ]; then mv proto/v1beta1/$*.pb.gw.go $(@D); fi
 	@touch $@
-
-# Builds go proto packages from protos
-# Example:
-#      $ make proto/v1/grafeas_go_proto/grafeas.pb.go
-#      Builds: proto/v1/grafeas_go_proto/grafeas.pb.go and proto/v1/grafeas_go_proto/grafeas.pb.gw.go
-#      Using: proto/v1/grafeas.proto
-proto/v1/grafeas_go_proto/%.pb.go: proto/v1/%.proto .install.tools
-	$(PROTOC_CMD) \
-		--go_out=plugins=grpc,paths=source_relative:. \
-		--grpc-gateway_out=logtostderr=true,paths=source_relative:. \
-		$<
-	@mkdir -p proto/v1/grafeas_go_proto
-	mv proto/v1/$*.pb.go proto/v1/grafeas_go_proto
-	if [ -f proto/v1/$*.pb.gw.go ]; then mv proto/v1/$*.pb.gw.go proto/v1/grafeas_go_proto; fi
-	@touch $@
-
 
 swagger_docs: proto/v1beta1/swagger/*.swagger.json
 
