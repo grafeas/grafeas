@@ -24,6 +24,8 @@ jobs:
       - checkout
       # specify any bash command here prefixed with `run: `
       - run: make build; make test
+      # ensures the Grafeas server image can be built
+      - run: docker build .
 workflows:
   version: 2
   commit:
