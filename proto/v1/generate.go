@@ -1,3 +1,5 @@
+// This generates the protocol buffer code in go for the v1beta1 proto spec.
+
 //go:generate rm -rf grafeas_go_proto
 //go:generate mkdir grafeas_go_proto
 //go:generate -command protoc ../../protoc/bin/protoc -I ../../ -I ./ -I ../../vendor/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis -I ../../vendor/github.com/grpc-ecosystem/grpc-gateway -I ../../vendor/github.com/googleapis/googleapis --go_out=plugins=grpc,paths=source_relative:.  --grpc-gateway_out=logtostderr=true,paths=source_relative:.
