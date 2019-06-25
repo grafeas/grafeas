@@ -6,14 +6,15 @@
 # print-%:
 # 	@echo $* = $($*)
 
-.PHONY: build fmt test vet clean go_protos grafeas_go_v1alpha1 swagger_docs
+.PHONY: build fmt test vet clean go_protos grafeas_go_v1alpha1 swagger_docs protoc
 
 SRC = $(shell find . -type f -name '*.go' -not -path "./vendor/*")
 CLEAN := *~
 
 default: .check_makefile_in_gopath build
 
-.install.tools: protoc/bin/protoc
+.install.tools:
+	go generate ./protoc
 	cd tools && GO111MODULE=on go install -v github.com/golang/protobuf/protoc-gen-go
 	cd tools && GO111MODULE=on go install -v github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
 	cd tools && GO111MODULE=on go install -v github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger
@@ -43,12 +44,7 @@ test: go_protos
 vet: go_protos
 	@go vet ./...
 
-protoc/bin/protoc:
-	mkdir -p protoc
-	curl https://github.com/google/protobuf/releases/download/v3.3.0/protoc-3.3.0-linux-x86_64.zip -o protoc/protoc.zip -L
-	unzip protoc/protoc -d protoc
-
-CLEAN += protoc proto/*/*_go_proto
+CLEAN += proto/*/*_go_proto
 
 GO_PROTO_DIRS_V1BETA1 := $(patsubst %.proto,%_go_proto/.done,$(wildcard proto/v1beta1/*.proto))
 GO_PROTO_FILES_V1 := $(filter-out proto/v1/grafeas_go_proto/project.pb.go, $(patsubst proto/v1/%.proto,proto/v1/grafeas_go_proto/%.pb.go,$(wildcard proto/v1/*.proto)))
@@ -97,7 +93,7 @@ proto/v1/grafeas_go_proto/%.pb.go: proto/v1/%.proto .install.tools
 
 swagger_docs: proto/v1beta1/swagger/*.swagger.json
 
-proto/v1beta1/swagger/%.swagger.json: proto/v1beta1/%.proto protoc/bin/protoc .install.tools
+proto/v1beta1/swagger/%.swagger.json: proto/v1beta1/%.proto PROTOC .install.tools
 	$(PROTOC_CMD) --swagger_out=logtostderr=true:. $<
 	mv $(<D)/*.swagger.json $@
 
