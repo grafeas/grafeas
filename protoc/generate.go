@@ -1,3 +1,5 @@
+// This downloads and installs the protobuf compiler
+
 //go:generate rm -rf include
 //go:generate rm -rf bin
 //go:generate rm -rf readme.txt
