@@ -42,69 +42,69 @@ type API struct {
 }
 
 // CreateProject creates the specified project in the storage.
-func (gp *API) CreateProject(ctx context.Context, req *prpb.CreateProjectRequest, resp *prpb.Project) error {
+func (gp *API) CreateProject(ctx context.Context, req *prpb.CreateProjectRequest) (*prpb.Project, error) {
 	proj := req.Project
 	if proj == nil {
 		log.Print("Project must not be empty.")
-		return errors.Newf(codes.InvalidArgument, "Project must not be empty")
+		return nil, errors.Newf(codes.InvalidArgument, "Project must not be empty")
 	}
 	if proj.Name == "" {
 		log.Printf("Project name must not be empty: %v", proj.Name)
-		return errors.Newf(codes.InvalidArgument, "Project name must not be empty")
+		return nil, errors.Newf(codes.InvalidArgument, "Project name must not be empty")
 	}
 	pID, err := name.ParseProject(proj.Name)
 	if err != nil {
 		log.Printf("Invalid project name: %v", proj.Name)
-		return errors.Newf(codes.InvalidArgument, "Invalid project name")
+		return nil, errors.Newf(codes.InvalidArgument, "Invalid project name")
 	}
 
 	p, err := gp.Storage.CreateProject(ctx, pID, proj)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	*resp = *p
-	return nil
+	return p, nil
 }
 
 // GetProject gets a project from the datastore.
-func (gp *API) GetProject(ctx context.Context, req *prpb.GetProjectRequest, resp *prpb.Project) error {
+func (gp *API) GetProject(ctx context.Context, req *prpb.GetProjectRequest) (*prpb.Project, error) {
 	pID, err := name.ParseProject(req.Name)
 	if err != nil {
 		log.Printf("Error parsing project name: %v", req.Name)
-		return errors.Newf(codes.InvalidArgument, "Invalid Project name")
+		return nil, errors.Newf(codes.InvalidArgument, "Invalid Project name")
 	}
 	p, err := gp.Storage.GetProject(ctx, pID)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	*resp = *p
-	return nil
+	return p, nil
 }
 
 // ListProjects returns the project id for all projects in the backing datastore.
-func (gp *API) ListProjects(ctx context.Context, req *prpb.ListProjectsRequest, resp *prpb.ListProjectsResponse) error {
+func (gp *API) ListProjects(ctx context.Context, req *prpb.ListProjectsRequest) (*prpb.ListProjectsResponse, error) {
 	// TODO: support filters
 	if req.PageSize == 0 {
 		req.PageSize = 100
 	}
 	ps, nextToken, err := gp.Storage.ListProjects(ctx, req.Filter, int(req.PageSize), req.PageToken)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	resp.Projects = ps
-	resp.NextPageToken = nextToken
-	return nil
+	resp := prpb.ListProjectsResponse{
+		Projects:      ps,
+		NextPageToken: nextToken,
+	}
+	return &resp, nil
 }
 
 // DeleteProject deletes a project from the datastore.
-func (gp *API) DeleteProject(ctx context.Context, req *prpb.DeleteProjectRequest, _ *empty.Empty) error {
+func (gp *API) DeleteProject(ctx context.Context, req *prpb.DeleteProjectRequest) (*empty.Empty, error) {
 	pID, err := name.ParseProject(req.Name)
 	if err != nil {
 		log.Printf("Error parsing project name: %v", req.Name)
-		return errors.Newf(codes.InvalidArgument, "Invalid Project name")
+		return nil, errors.Newf(codes.InvalidArgument, "Invalid Project name")
 	}
 	if err := gp.Storage.DeleteProject(ctx, pID); err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	return nil, nil
 }

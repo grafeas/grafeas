@@ -49,8 +49,8 @@ func TestGetOccurrence(t *testing.T) {
 	req := &gpb.GetOccurrenceRequest{
 		Name: createdOcc.Name,
 	}
-	gotOcc := &gpb.Occurrence{}
-	if err := g.GetOccurrence(ctx, req, gotOcc); err != nil {
+	gotOcc, err := g.GetOccurrence(ctx, req)
+	if err != nil {
 		t.Errorf("Got err %v, want success", err)
 	}
 
@@ -107,8 +107,7 @@ func TestGetOccurrenceErrors(t *testing.T) {
 		req := &gpb.GetOccurrenceRequest{
 			Name: tt.occName,
 		}
-		gotOcc := &gpb.Occurrence{}
-		err := g.GetOccurrence(ctx, req, gotOcc)
+		_, err := g.GetOccurrence(ctx, req)
 		t.Logf("%q: error: %v", tt.desc, err)
 		if status.Code(err) != tt.wantErrStatus {
 			t.Errorf("%q: got error status %v, want %v", tt.desc, status.Code(err), tt.wantErrStatus)
@@ -136,8 +135,8 @@ func TestListOccurrences(t *testing.T) {
 	req := &gpb.ListOccurrencesRequest{
 		Parent: "projects/consumer1",
 	}
-	resp := &gpb.ListOccurrencesResponse{}
-	if err := g.ListOccurrences(ctx, req, resp); err != nil {
+	resp, err := g.ListOccurrences(ctx, req)
+	if err != nil {
 		t.Errorf("Got err %v, want success", err)
 	}
 
@@ -202,8 +201,7 @@ func TestListOccurrencesErrors(t *testing.T) {
 			Parent:   tt.parent,
 			PageSize: tt.pageSize,
 		}
-		resp := &gpb.ListOccurrencesResponse{}
-		err := g.ListOccurrences(ctx, req, resp)
+		_, err := g.ListOccurrences(ctx, req)
 		t.Logf("%q: error: %v", tt.desc, err)
 		if status.Code(err) != tt.wantErrStatus {
 			t.Errorf("%q: got error status %v, want %v", tt.desc, status.Code(err), tt.wantErrStatus)
@@ -225,8 +223,8 @@ func TestCreateOccurrence(t *testing.T) {
 		Parent:     "projects/consumer1",
 		Occurrence: vulnzOcc(t, "consumer1", "projects/goog-vulnz/notes/CVE-UH-OH", "debian"),
 	}
-	o := &gpb.Occurrence{}
-	if err := g.CreateOccurrence(ctx, req, o); err != nil {
+	o, err := g.CreateOccurrence(ctx, req)
+	if err != nil {
 		t.Errorf("Got err %v, want success", err)
 	}
 
@@ -308,8 +306,7 @@ func TestCreateOccurrenceErrors(t *testing.T) {
 			Parent:     tt.parent,
 			Occurrence: tt.occ,
 		}
-		o := &gpb.Occurrence{}
-		err := g.CreateOccurrence(ctx, req, o)
+		_, err := g.CreateOccurrence(ctx, req)
 		t.Logf("%q: error: %v", tt.desc, err)
 		if status.Code(err) != tt.wantErrStatus {
 			t.Errorf("%q: got error status %v, want %v", tt.desc, status.Code(err), tt.wantErrStatus)
@@ -333,8 +330,8 @@ func TestBatchCreateOccurrences(t *testing.T) {
 			vulnzOcc(t, "consumer1", "projects/goog-vulnz/notes/CVE-UH-OH", "debian"),
 		},
 	}
-	resp := &gpb.BatchCreateOccurrencesResponse{}
-	if err := g.BatchCreateOccurrences(ctx, req, resp); err != nil {
+	resp, err := g.BatchCreateOccurrences(ctx, req)
+	if err != nil {
 		t.Errorf("Got err %v, want success", err)
 	}
 
@@ -461,8 +458,7 @@ func TestBatchCreateOccurrencesErrors(t *testing.T) {
 			Parent:      tt.parent,
 			Occurrences: tt.occs,
 		}
-		resp := &gpb.BatchCreateOccurrencesResponse{}
-		err := g.BatchCreateOccurrences(ctx, req, resp)
+		_, err := g.BatchCreateOccurrences(ctx, req)
 		t.Logf("%q: error: %v", tt.desc, err)
 		if status.Code(err) != tt.wantErrStatus {
 			t.Errorf("%q: got error status %v, want %v", tt.desc, status.Code(err), tt.wantErrStatus)
@@ -493,8 +489,8 @@ func TestUpdateOccurrence(t *testing.T) {
 		Name:       createdOcc.Name,
 		Occurrence: o,
 	}
-	updatedOcc := &gpb.Occurrence{}
-	if err := g.UpdateOccurrence(ctx, req, updatedOcc); err != nil {
+	updatedOcc, err := g.UpdateOccurrence(ctx, req)
+	if err != nil {
 		t.Errorf("Got err %v, want success", err)
 	}
 
@@ -569,8 +565,7 @@ func TestUpdateOccurrenceErrors(t *testing.T) {
 			Name:       tt.occName,
 			Occurrence: tt.occ,
 		}
-		o := &gpb.Occurrence{}
-		err := g.UpdateOccurrence(ctx, req, o)
+		_, err := g.UpdateOccurrence(ctx, req)
 		t.Logf("%q: error: %v", tt.desc, err)
 		if status.Code(err) != tt.wantErrStatus {
 			t.Errorf("%q: got error status %v, want %v", tt.desc, status.Code(err), tt.wantErrStatus)
@@ -608,7 +603,7 @@ func TestDeleteOccurrence(t *testing.T) {
 		req := &gpb.DeleteOccurrenceRequest{
 			Name: createdOcc.Name,
 		}
-		if err := g.DeleteOccurrence(ctx, req, nil); err != nil {
+		if _, err := g.DeleteOccurrence(ctx, req); err != nil {
 			t.Errorf("Got err %v, want success", err)
 		}
 	}
@@ -688,7 +683,7 @@ func TestDeleteOccurrenceErrors(t *testing.T) {
 		req := &gpb.DeleteOccurrenceRequest{
 			Name: occToDelete,
 		}
-		err := g.DeleteOccurrence(ctx, req, nil)
+		_, err := g.DeleteOccurrence(ctx, req)
 		t.Logf("%q: error: %v", tt.desc, err)
 		if status.Code(err) != tt.wantErrStatus {
 			t.Errorf("%q: got error status %v, want %v", tt.desc, status.Code(err), tt.wantErrStatus)
@@ -721,8 +716,8 @@ func TestListNoteOccurrences(t *testing.T) {
 	req := &gpb.ListNoteOccurrencesRequest{
 		Name: "projects/goog-vulnz/notes/CVE-UH-OH",
 	}
-	resp := &gpb.ListNoteOccurrencesResponse{}
-	if err := g.ListNoteOccurrences(ctx, req, resp); err != nil {
+	resp, err := g.ListNoteOccurrences(ctx, req)
+	if err != nil {
 		t.Errorf("ListNoteOccurrences(%v) got err %v, want success", req, err)
 	}
 
@@ -777,8 +772,7 @@ func TestListNoteOccurrencesErrors(t *testing.T) {
 		req := &gpb.ListNoteOccurrencesRequest{
 			Name: tt.noteName,
 		}
-		resp := &gpb.ListNoteOccurrencesResponse{}
-		err := g.ListNoteOccurrences(ctx, req, resp)
+		_, err := g.ListNoteOccurrences(ctx, req)
 		t.Logf("%q: error: %v", tt.desc, err)
 		if status.Code(err) != tt.wantErrStatus {
 			t.Errorf("%q: got error status %v, want %v", tt.desc, status.Code(err), tt.wantErrStatus)
@@ -829,8 +823,8 @@ func TestGetVulnerabilityOccurrencesSummary(t *testing.T) {
 	req := &gpb.GetVulnerabilityOccurrencesSummaryRequest{
 		Parent: "projects/consumer1",
 	}
-	resp := &gpb.VulnerabilityOccurrencesSummary{}
-	if err := g.GetVulnerabilityOccurrencesSummary(ctx, req, resp); err != nil {
+	resp, err := g.GetVulnerabilityOccurrencesSummary(ctx, req)
+	if err != nil {
 		t.Errorf("GetVulnerabilityOccurrencesSummaryRequest(%v) got err %v, want success", req, err)
 	}
 
@@ -885,8 +879,7 @@ func TestGetVulnerabilityOccurrencesSummaryErrors(t *testing.T) {
 			Logger:            &fakeLogger{},
 			EnforceValidation: true,
 		}
-		resp := &gpb.VulnerabilityOccurrencesSummary{}
-		if err := g.GetVulnerabilityOccurrencesSummary(ctx, tt.req, resp); err == nil {
+		if _, err := g.GetVulnerabilityOccurrencesSummary(ctx, tt.req); err == nil {
 			t.Errorf("%q: GetVulnerabilityOccurrencesSummary(%v) got success, want error", tt.desc, tt.req)
 		}
 	}
