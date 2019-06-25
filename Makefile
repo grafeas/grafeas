@@ -15,9 +15,7 @@ default: .check_makefile_in_gopath build
 
 .install.tools:
 	go generate ./protoc
-	cd tools && GO111MODULE=on go install -v github.com/golang/protobuf/protoc-gen-go
-	cd tools && GO111MODULE=on go install -v github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
-	cd tools && GO111MODULE=on go install -v github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger
+	go generate ./tools
 	@touch $@
 
 EXPECTED_MAKE := $(shell go env GOPATH)/src/github.com/grafeas/grafeas/Makefile
