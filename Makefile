@@ -39,17 +39,6 @@ generate:
 	go generate ./tools
 	go generate ./...
 
-PROTOC_CMD=protoc/bin/protoc -I ./ \
-	-I vendor/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
-	-I vendor/github.com/grpc-ecosystem/grpc-gateway \
-	-I vendor/github.com/googleapis/googleapis
-
-swagger_docs: proto/v1beta1/swagger/*.swagger.json
-
-proto/v1beta1/swagger/%.swagger.json: proto/v1beta1/%.proto generate
-	$(PROTOC_CMD) --swagger_out=logtostderr=true:. $<
-	mv $(<D)/*.swagger.json $@
-
 clean:
 	go clean ./...
 	rm -rf $(CLEAN)
