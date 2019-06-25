@@ -6,7 +6,7 @@
 # print-%:
 # 	@echo $* = $($*)
 
-.PHONY: build fmt test vet clean generate grafeas_go_v1alpha1 swagger_docs
+.PHONY: build fmt test vet clean generate swagger_docs
 
 SRC = $(shell find . -type f -name '*.go' -not -path "./vendor/*")
 CLEAN := *~
