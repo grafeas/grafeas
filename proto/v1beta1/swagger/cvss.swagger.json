@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "build.proto",
+    "title": "cvss.proto",
     "version": "version not set"
   },
   "schemes": [

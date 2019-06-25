@@ -23,23 +23,26 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-// File is the grafeas config file.
+// file is the Grafeas configuration file.
 type file struct {
-	Grafeas *config `yaml:"grafeas"`
+	Grafeas *GrafeasConfig `yaml:"grafeas"`
 }
 
-type Config struct {
+// ServerConfig is the Grafeas server configuration.
+type ServerConfig struct {
 	Address            string   `yaml:"address"`              // Endpoint address, e.g. localhost:8080 or unix:///var/run/grafeas.sock
-	CertFile           string   `yaml:"certfile"`             // A PEM eoncoded certificate file
+	CertFile           string   `yaml:"certfile"`             // A PEM encoded certificate file
 	KeyFile            string   `yaml:"keyfile"`              // A PEM encoded private key file
-	CAFile             string   `yaml:"cafile"`               // A PEM eoncoded CA's certificate file
+	CAFile             string   `yaml:"cafile"`               // A PEM encoded CA's certificate file
 	CORSAllowedOrigins []string `yaml:"cors_allowed_origins"` // Permitted CORS origins.
 }
 
+// EmbeddedStoreConfig is the configuration for embedded store.
 type EmbeddedStoreConfig struct {
 	Path string `yaml:"path"` // Path is the folder path to storage files
 }
 
+// PgSQLConfig is the configuration for PostgreSQL store.
 type PgSQLConfig struct {
 	Host     string `yaml:"host"`
 	DbName   string `yaml:"dbname"`
@@ -51,18 +54,18 @@ type PgSQLConfig struct {
 	PaginationKey string `yaml:"paginationkey"`
 }
 
-// Config is the global configuration for an instance of Grafeas.
-type config struct {
-	API            *Config              `yaml:"api"`
+// GrafeasConfig is the global configuration for an instance of Grafeas.
+type GrafeasConfig struct {
+	API            *ServerConfig        `yaml:"api"`
 	StorageType    string               `yaml:"storage_type"` // Supported storage types are "memstore", "postgres" and "embedded"
 	PgSQLConfig    *PgSQLConfig         `yaml:"postgres"`
 	EmbeddedConfig *EmbeddedStoreConfig `yaml:"embedded"` // EmbeddedConfig is the embedded store config
 }
 
-// DefaultConfig is a configuration that can be used as a fallback value.
-func defaultConfig() *config {
-	return &config{
-		API: &Config{
+// defaultConfig is a configuration that can be used as a fallback value.
+func defaultConfig() *GrafeasConfig {
+	return &GrafeasConfig{
+		API: &ServerConfig{
 			Address:  "0.0.0.0:8080",
 			CertFile: "",
 			KeyFile:  "",
@@ -73,19 +76,20 @@ func defaultConfig() *config {
 	}
 }
 
-// Creates a config from a YAML-file. If fileName is an empty
+// LoadConfig creates a config from a YAML-file. If fileName is an empty
 // string a default config will be returned.
-func LoadConfig(fileName string) (*config, error) {
+func LoadConfig(fileName string) (*GrafeasConfig, error) {
 	if fileName == "" {
 		return defaultConfig(), nil
 	}
+
 	data, err := ioutil.ReadFile(fileName)
 	if err != nil {
 		return nil, err
 	}
+
 	var configFile file
-	err = yaml.Unmarshal(data, &configFile)
-	if err != nil {
+	if err := yaml.Unmarshal(data, &configFile); err != nil {
 		return nil, err
 	}
 	config := configFile.Grafeas
