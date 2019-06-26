@@ -23,9 +23,9 @@ option objc_class_prefix = "GRA";
 
 import "proto/v1/package.proto";
 
-// An Upgrade Note represents a potential upgrade of a package to a given version.
+// A Upgrade Note represents a potential upgrade of a package to a given version.
 // For each package version combination (i.e. bash 4.0, bash 4.1, bash 4.1.2),
-// there will be a upgrade note.
+// there will be a Upgrade Note.
 message UpgradeNote {
   // Required - The package this Upgrade is for.
   string package = 1;
@@ -50,7 +50,7 @@ message UpgradeDistribution {
   repeated string cve = 4;
 }
 
-// An Upgrade Occurrence represents that a specific resource_url could install a
+// A Upgrade Occurrence represents that a specific resource_url could install a
 // specific upgrade. This presence is supplied via local sources (i.e. it is present
 // in the mirror and the running system has noticed its availability).
 message UpgradeOccurrence {
