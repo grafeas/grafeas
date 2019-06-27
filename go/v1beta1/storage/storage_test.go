@@ -24,7 +24,7 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/grafeas/grafeas/go/name"
-	"github.com/grafeas/grafeas/go/v1beta1/api"
+	grafeas "github.com/grafeas/grafeas/go/v1beta1/api"
 	"github.com/grafeas/grafeas/go/v1beta1/project"
 	cpb "github.com/grafeas/grafeas/proto/v1beta1/common_go_proto"
 	pb "github.com/grafeas/grafeas/proto/v1beta1/grafeas_go_proto"
@@ -1000,7 +1000,7 @@ func createTestNote(pID string) *pb.Note {
 		LongDescription:  "NIST vectors: AV:N/AC:L/Au:N/C:P/I:P",
 		Kind:             cpb.NoteKind_VULNERABILITY,
 		Type: &pb.Note_Vulnerability{
-			&vpb.Vulnerability{
+			Vulnerability: &vpb.Vulnerability{
 				CvssScore: 7.5,
 				Severity:  vpb.Severity_HIGH,
 				Details: []*vpb.Vulnerability_Detail{
