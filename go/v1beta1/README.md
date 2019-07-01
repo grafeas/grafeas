@@ -12,7 +12,7 @@ go run main/main.go
 
 This will start the Grafeas gRPC and REST APIs on `localhost:8080`.
 
-To start grafeas with a custom configuration use the `--config` flag (e.g. `--config config.yaml`). See [`config.yaml.sample`](config.yaml.sample) that can be used as a starting point when creating your own config file.
+To start grafeas with a custom configuration use the `--config` flag (e.g. `--config config.yaml`). See [`config.yaml`](config.yaml) that can be used as a starting point when creating your own config file.
 
 ### Access REST API with curl
 
