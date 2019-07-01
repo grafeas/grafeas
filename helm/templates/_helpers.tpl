@@ -3,7 +3,7 @@
 Expand the name of the chart.
 */}}
 {{- define "grafeas.name" -}}
-{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
+{{- default .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*

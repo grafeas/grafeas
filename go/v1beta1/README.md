@@ -22,8 +22,8 @@ Grafeas provides both a REST API and a gRPC API. Here is an example of using the
 
 ### Access gRPC API with a go client
 
-[`example/client.go`](example/client.go) contains a small example of a go client that connects to Grafeas and outputs the notes in `myproject`.
+[`client.go`](example/client/client.go) contains a small example of a go client that connects to Grafeas and outputs the notes in `myproject`.
 
 ```shell
-go run example/client.go
+go run example/client/client.go
 ```
