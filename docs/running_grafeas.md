@@ -22,10 +22,9 @@ docker run -p 8080:8080 --name grafeas \
 
 ### Using Dockerfile
 
-To start the Grafeas server from the [Dockerfile](../Dockerfile), do:
+To start the Grafeas server from the [Dockerfile](../Dockerfile), run the following inside the repository folder:
 
 ```bash
-<inside the repository folder>
 docker build --tag=grafeas .
 docker run -p 8080:8080 --name grafeas grafeas
 ```
@@ -38,8 +37,9 @@ repository to bring up the stack in your local environment.
 
 ### Using `go run`
 
+Run the following inside the repository folder:
+
 ```shell
-<inside the repository folder>
 cd go/v1beta1
 go run main/main.go
 ```
@@ -88,7 +88,7 @@ openssl pkcs12 -in server.p12 -out server.pem -clcerts
 
 Now, `curl` the endpoint:
 
-````
+```bash
 curl -k --cert server.pem https://localhost:8080/v1beta1/projects`
 ```
 
