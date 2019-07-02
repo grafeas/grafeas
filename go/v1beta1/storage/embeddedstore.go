@@ -19,6 +19,10 @@ import (
 	"sort"
 	"strings"
 
+	"log"
+	"os"
+	"path/filepath"
+
 	"github.com/boltdb/bolt"
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes"
@@ -30,9 +34,6 @@ import (
 	"golang.org/x/net/context"
 	fieldmaskpb "google.golang.org/genproto/protobuf/field_mask"
 	"google.golang.org/grpc/codes"
-	"log"
-	"os"
-	"path/filepath"
 )
 
 const (
@@ -186,7 +187,7 @@ func (m *EmbeddedStore) CreateOccurrence(ctx context.Context, pID, uID string, o
 	return nil, errors.Newf(codes.AlreadyExists, "Occurrence with name %q already exists", o.Name)
 }
 
-// BatchCreateOccurrence batch creates the specified occurrences in embedded store.
+// BatchCreateOccurrences batch creates the specified occurrences in embedded store.
 func (m *EmbeddedStore) BatchCreateOccurrences(ctx context.Context, pID string, uID string, occs []*pb.Occurrence) ([]*pb.Occurrence, []error) {
 	clonedOccs := []*pb.Occurrence{}
 	for _, o := range occs {
@@ -213,10 +214,20 @@ func (m *EmbeddedStore) BatchCreateOccurrences(ctx context.Context, pID string, 
 func (m *EmbeddedStore) UpdateOccurrence(ctx context.Context, pID, oID string, o *pb.Occurrence, mask *fieldmaskpb.FieldMask) (*pb.Occurrence, error) {
 	o = proto.Clone(o).(*pb.Occurrence)
 	oName := name.FormatOccurrence(pID, oID)
-	// TODO(#312): implement the update operation
-	o.UpdateTime = ptypes.TimestampNow()
 
-	err := m.update(bucketOccurrences, oName, false, o)
+	oldOcc, err := m.GetOccurrence(ctx, pID, oID)
+	if err != nil {
+		return nil, err
+	}
+
+	updatedOcc, err := ApplyUpdateOnOccurrence(oldOcc, o, mask)
+	if err != nil {
+		return nil, err
+	}
+
+	updatedOcc.UpdateTime = ptypes.TimestampNow()
+
+	err = m.update(bucketOccurrences, oName, false, updatedOcc)
 	if err == errNoKey {
 		return nil, errors.Newf(codes.NotFound, "Occurrence with name %q does not Exist", oName)
 	}
@@ -312,12 +323,22 @@ func (m *EmbeddedStore) BatchCreateNotes(ctx context.Context, pID, uID string, n
 // UpdateNote updates the specified note in embedded store.
 func (m *EmbeddedStore) UpdateNote(ctx context.Context, pID, nID string, n *pb.Note, mask *fieldmaskpb.FieldMask) (*pb.Note, error) {
 	n = proto.Clone(n).(*pb.Note)
-	// TODO(#312): implement the update operation
-	n.UpdateTime = ptypes.TimestampNow()
 	nName := name.FormatNote(pID, nID)
-	n.Name = nName
 
-	err := m.update(bucketNotes, nName, false, n)
+	oldNote, err := m.GetNote(ctx, pID, nID)
+	if err != nil {
+		return nil, err
+	}
+
+	updatedNote, err := ApplyUpdateOnNote(oldNote, n, mask)
+	if err != nil {
+		return nil, err
+	}
+
+	updatedNote.Name = nName
+	updatedNote.UpdateTime = ptypes.TimestampNow()
+
+	err = m.update(bucketNotes, nName, false, updatedNote)
 	if err == errNoKey {
 		return nil, errors.Newf(codes.NotFound, "Note with name %q does not Exist", nName)
 	}

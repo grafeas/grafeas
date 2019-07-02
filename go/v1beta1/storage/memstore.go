@@ -151,7 +151,7 @@ func (m *MemStore) CreateOccurrence(ctx context.Context, pID, uID string, o *gpb
 	return o, nil
 }
 
-// BatchCreateOccurrence batch creates the specified occurrences in memstore.
+// BatchCreateOccurrences batch creates the specified occurrences in memstore.
 func (m *MemStore) BatchCreateOccurrences(ctx context.Context, pID string, uID string, occs []*gpb.Occurrence) ([]*gpb.Occurrence, []error) {
 	clonedOccs := []*gpb.Occurrence{}
 	for _, o := range occs {
@@ -179,15 +179,22 @@ func (m *MemStore) UpdateOccurrence(ctx context.Context, pID, oID string, o *gpb
 	o = proto.Clone(o).(*gpb.Occurrence)
 
 	oName := name.FormatOccurrence(pID, oID)
+
 	m.Lock()
 	defer m.Unlock()
 	if _, ok := m.occurrencesByName[oName]; !ok {
 		return nil, errors.Newf(codes.NotFound, "Occurrence with name %q does not Exist", oName)
 	}
 
-	// TODO(#312): implement the update operation
-	o.UpdateTime = ptypes.TimestampNow()
-	m.occurrencesByName[oName] = o
+	oldOcc := m.occurrencesByName[oName]
+
+	updatedOcc, err := ApplyUpdateOnOccurrence(oldOcc, o, mask)
+	if err != nil {
+		return nil, errors.Newf(codes.Internal, "Update could not be applied to Occurrence")
+	}
+
+	updatedOcc.UpdateTime = ptypes.TimestampNow()
+	m.occurrencesByName[oName] = updatedOcc
 	return o, nil
 }
 
@@ -290,10 +297,16 @@ func (m *MemStore) UpdateNote(ctx context.Context, pID, nID string, n *gpb.Note,
 		return nil, errors.Newf(codes.NotFound, "Note with name %q does not Exist", nName)
 	}
 
-	// TODO(#312): implement the update operation
-	n.UpdateTime = ptypes.TimestampNow()
-	n.Name = nName
-	m.notesByName[nName] = n
+	oldNote := m.notesByName[nName]
+
+	updatedNote, err := ApplyUpdateOnNote(oldNote, n, mask)
+	if err != nil {
+		return nil, errors.Newf(codes.Internal, "Update could not be applied to Note")
+	}
+
+	updatedNote.UpdateTime = ptypes.TimestampNow()
+	updatedNote.Name = nName
+	m.notesByName[nName] = updatedNote
 	return n, nil
 }
 

@@ -237,10 +237,19 @@ func (pg *PgSQLStore) DeleteOccurrence(ctx context.Context, pID, oID string) err
 // UpdateOccurrence updates the existing occurrence with the given projectID and occurrenceID
 func (pg *PgSQLStore) UpdateOccurrence(ctx context.Context, pID, oID string, o *pb.Occurrence, mask *fieldmaskpb.FieldMask) (*pb.Occurrence, error) {
 	o = proto.Clone(o).(*pb.Occurrence)
-	// TODO(#312): implement the update operation
-	o.UpdateTime = ptypes.TimestampNow()
 
-	result, err := pg.DB.Exec(updateOccurrence, pID, oID, proto.MarshalTextString(o))
+	oldOcc, err := pg.GetOccurrence(ctx, pID, oID)
+	if err != nil {
+		return nil, status.Error(codes.Internal, "Failed to retrieve Occurrence to update")
+	}
+
+	updatedOcc, err := ApplyUpdateOnOccurrence(oldOcc, o, mask)
+	if err != nil {
+		return nil, status.Error(codes.Internal, "Failed to apply update on Occurrence")
+	}
+
+	updatedOcc.UpdateTime = ptypes.TimestampNow()
+	result, err := pg.DB.Exec(updateOccurrence, pID, oID, proto.MarshalTextString(updatedOcc))
 	if err != nil {
 		return nil, status.Error(codes.Internal, "Failed to update Occurrence")
 	}
@@ -376,11 +385,21 @@ func (pg *PgSQLStore) DeleteNote(ctx context.Context, pID, nID string) error {
 func (pg *PgSQLStore) UpdateNote(ctx context.Context, pID, nID string, n *pb.Note, mask *fieldmaskpb.FieldMask) (*pb.Note, error) {
 	n = proto.Clone(n).(*pb.Note)
 	nName := name.FormatNote(pID, nID)
-	n.Name = nName
-	// TODO(#312): implement the update operation
-	n.UpdateTime = ptypes.TimestampNow()
 
-	result, err := pg.DB.Exec(updateNote, pID, nID, proto.MarshalTextString(n))
+	oldNote, err := pg.GetNote(ctx, pID, nID)
+	if err != nil {
+		return nil, status.Error(codes.Internal, "Failed to retrieve Note to update")
+	}
+
+	updatedNote, err := ApplyUpdateOnNote(oldNote, n, mask)
+	if err != nil {
+		return nil, status.Error(codes.Internal, "Failed to apply update on Note")
+	}
+
+	updatedNote.Name = nName
+	updatedNote.UpdateTime = ptypes.TimestampNow()
+
+	result, err := pg.DB.Exec(updateNote, pID, nID, proto.MarshalTextString(updatedNote))
 	if err != nil {
 		return nil, status.Error(codes.Internal, "Failed to update Note")
 	}

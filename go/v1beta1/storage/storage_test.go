@@ -26,6 +26,7 @@ import (
 	"github.com/grafeas/grafeas/go/name"
 	grafeas "github.com/grafeas/grafeas/go/v1beta1/api"
 	"github.com/grafeas/grafeas/go/v1beta1/project"
+	"github.com/grafeas/grafeas/go/v1beta1/storage"
 	cpb "github.com/grafeas/grafeas/proto/v1beta1/common_go_proto"
 	pb "github.com/grafeas/grafeas/proto/v1beta1/grafeas_go_proto"
 	pkgpb "github.com/grafeas/grafeas/proto/v1beta1/package_go_proto"
@@ -279,8 +280,8 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 		o2 := o
 		o2.GetVulnerability().CvssScore = 1.0
 		// TODO(#312): check the result of the update
-		// TODO(#312): use fieldmask in the param
-		if _, err := g.UpdateOccurrence(ctx, pID, oID, o2, nil); err != nil {
+		updateMask := storage.CreateFieldMask([]string{"Details.Vulnerability.CvssScore"})
+		if _, err := g.UpdateOccurrence(ctx, pID, oID, o2, updateMask); err != nil {
 			t.Fatalf("UpdateOccurrence got %v want success", err)
 		}
 
@@ -353,8 +354,8 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 		n2 := n
 		n2.GetVulnerability().CvssScore = 1.0
 		// TODO(#312): check the result of the update
-		// TODO(#312): use fieldmask in the param
-		if _, err := g.UpdateNote(ctx, pID, nID, n2, nil); err != nil {
+		updateMask := storage.CreateFieldMask([]string{"Type.Vulnerability.CvssScore"})
+		if _, err := g.UpdateNote(ctx, pID, nID, n2, updateMask); err != nil {
 			t.Fatalf("UpdateNote got %v want success", err)
 		}
 
