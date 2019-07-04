@@ -1,0 +1,18 @@
+language: go
+
+go:
+  - '1.8'
+  - '1.9'
+  - '1.10'
+  - master
+
+install:
+  - go get github.com/mattn/goveralls
+  - go get -t ./...
+
+script:
+  - make test-with-coverage
+
+env:
+  global:
+    secure: nKvlKS3Mvi9MWbWkQ+0TacPvUrJiNoiV9NaJec2PPhszObY93EpBtHW0Ke+qm0WsuekTLLYMhApjbquefkejOpmR43iUpdtZKtyYGIi+M8C8/lHoqkq2HRMtYNUxgWwoh58Zs7vMSWNQwW3/84UCSxHzoRaDhYdacnvj3oAROTWGYKrpmUbi2mtKXxkLpCKOxmlmZ2lxzTgHV0CigMQK+9k6p5gxmT/h85JHTDhhFRkH+5hz62W7UacgoEFroa/6Sefvb/p3zOcMoSidHZLXOz49YlSUYiiqNUTc9PzaaHggW1uq+QMJoU6snCxdMWiaEoq8sA5bqX78BRgFLzJ54nzhM7rzitPysfKt/c9gf0FPmAFBlech4TJx4vnnsbSn3FWTt8Xsh2jC/EKtv1g0CvEpxFFoOpBhOgTmfPJ90YeqoUHcL7g0UudpN54cZyfdsJqnSPNZdLd8KCZqdkKEAIXVvxLJW/0VqY2df78jZeHm9cIaHi2Vfx9+S0p4BZaytkFQ3617vzTygqT54QsK10AWpvKbEfqrlTcapCWC26ArgYgxBvSQNnv63jvMklNbXvLTJyAm3h8rcvhHLIhCakm2hn9gqT3+CyORnLTMo2Kw1RhPzADOykmE92s4uu8DqFvuO8EHPcNxFyYtbrHqdOX0+mohVqDsTC9IDVHWmRc=

@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+option go_package = "github.com/mennanov/fieldmask-utils/testproto";
+import "google/protobuf/any.proto";
+import "google/protobuf/field_mask.proto";
+
+message Image {
+    string original_url = 1;
+    string resized_url = 2;
+}
+
+message Metrics {
+    uint32 height = 1;
+    uint32 weight = 2;
+}
+
+enum Role {
+    UNKNOWN = 0;
+    REGULAR = 1;
+    ADMIN = 2;
+}
+
+enum Permission {
+    READ = 0;
+    WRITE = 1;
+    EXECUTE = 2;
+}
+
+message User {
+    uint32 id = 1;
+    string username = 2;
+    Role role = 3;
+    map<string, string> meta = 4;
+    bool deactivated = 5;
+
+    repeated Permission permissions = 6;
+    oneof name {
+        string male_name = 7;
+        string female_name = 8;
+    }
+    repeated google.protobuf.Any details = 9;
+    repeated Image images = 10;
+    Image avatar = 11;
+    repeated string tags = 12;
+    repeated User friends = 13;
+    google.protobuf.Any extra_user = 14;
+}
+
+message UpdateUserRequest {
+    User user = 1;
+    google.protobuf.FieldMask field_mask = 2;
+}
