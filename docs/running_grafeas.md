@@ -6,6 +6,34 @@
   Docker image or build one
 * [openssl](https://www.openssl.org/), if planning to use certificates
 
+### Checkout your fork
+
+The Go tools require that you clone the repository to the `src/github.com/grafeas/kritis` directory
+in your [`GOPATH`](https://github.com/golang/go/wiki/SettingGOPATH).
+
+To check out this repository:
+
+1. Create your own [fork of this
+  repo](https://help.github.com/articles/fork-a-repo/)
+2. Clone it to your machine:
+
+  ```bash
+  mkdir -p ${GOPATH}/src/github.com/grafeas
+  cd ${GOPATH}/src/github.com/grafeas
+  git clone git@github.com:${YOUR_GITHUB_USERNAME}/grafeas.git
+  cd grafeas
+  ```
+  
+3. (Optional) If you would like to do development work, run the following:
+
+  ```bash
+  git remote add upstream git@github.com:grafeas/grafeas.git
+  git remote set-url --push upstream no_push
+  ```
+
+_Adding the `upstream` remote sets you up nicely for regularly [syncing your
+fork](https://help.github.com/articles/syncing-a-fork/)._
+
 ## Start Grafeas
 
 The following options will start the Grafeas gRPC and REST APIs on `localhost:8080`.
@@ -22,10 +50,10 @@ docker run -p 8080:8080 --name grafeas \
 
 ### Using Dockerfile
 
-To start the Grafeas server from the [Dockerfile](../Dockerfile), do:
+To start the Grafeas server from the [Dockerfile](../Dockerfile), run the following:
 
 ```bash
-<inside the repository folder>
+cd ~/go/src/github.com/grafeas/grafeas
 docker build --tag=grafeas .
 docker run -p 8080:8080 --name grafeas grafeas
 ```
@@ -38,8 +66,10 @@ repository to bring up the stack in your local environment.
 
 ### Using `go run`
 
+Run the following:
+
 ```shell
-<inside the repository folder>
+cd ~/go/src/github.com/grafeas/grafeas
 cd go/v1beta1
 go run main/main.go
 ```
@@ -88,7 +118,7 @@ openssl pkcs12 -in server.p12 -out server.pem -clcerts
 
 Now, `curl` the endpoint:
 
-````
+```bash
 curl -k --cert server.pem https://localhost:8080/v1beta1/projects`
 ```
 
