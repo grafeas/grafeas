@@ -16,8 +16,7 @@ set -e
 
 echo "releasing helm chart for grafeas..."
 helm init --client-only
-helm plugin install https://github.com/nouney/helm-gcs --version 0.2.0 || true
+helm plugin install https://github.com/hayorov/helm-gcs
 helm repo add grafeas-charts-repository gs://grafeas-charts/repository
-helm package grafeas-charts/
-# TODO(aaron-prindle) remove --force when automated release testing is done
-helm gcs push grafeas-charts-*.tgz grafeas-charts-repository --force
+helm package .
+helm gcs push grafeas-charts-*.tgz grafeas-charts-repository

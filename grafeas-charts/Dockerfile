@@ -26,4 +26,4 @@ WORKDIR /go/src/github.com/grafeas/grafeas
 
 COPY . .
 
-CMD ["./helm/helm_release.sh"]
+CMD ["./grafeas-charts/helm_release.sh"]
