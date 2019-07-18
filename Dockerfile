@@ -1,5 +1,8 @@
 FROM golang:1.12.5
+RUN apt-get update && apt-get install unzip
 COPY . /go/src/github.com/grafeas/grafeas/
+WORKDIR /go/src/github.com/grafeas/grafeas
+RUN make build
 WORKDIR /go/src/github.com/grafeas/grafeas/go/v1beta1/main
 RUN CGO_ENABLED=0 go build -o grafeas-server .
 
