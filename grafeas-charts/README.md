@@ -16,7 +16,7 @@ Generate self-signed certificates by following [instructions](../docs/running_gr
 If using in-memory store, do:
 
 ```
-helm install --name grafeas ./helm/ --set certificates.ca="$(cat ca.crt)" --set certificates.cert="$(cat server.crt)" --set "certificates.key=$(cat server.key)"
+helm install --name grafeas ./grafeas-charts/ --set certificates.ca="$(cat ca.crt)" --set certificates.cert="$(cat server.crt)" --set "certificates.key=$(cat server.key)"
 ```
 
 If using embedded boltdb, create a local persistent volume and a claim:
@@ -68,7 +68,7 @@ Check local services and verify Grafeas is running on port 443:
 kubectl get svc
 
 NAME         TYPE        CLUSTER-IP    EXTERNAL-IP   PORT(S)   AGE
-grafeas      ClusterIP   10.245.68.7   <none>        443/TCP   79s
+grafeas-server      ClusterIP   10.245.68.7   <none>        443/TCP   79s
 
 kubectl get pods
 
