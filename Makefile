@@ -35,15 +35,17 @@ test: generate
 vet: generate
 	@go vet ./...
 
-generate: google/googleapis google/grpc-gateway
+generate: protoc/bin/protoc google/googleapis google/grpc-gateway
 	# protoc and tools need to be run before all of the other generations.
-	go generate ./protoc
 	go generate ./tools
 	go generate ./...
 
 clean:
 	go clean ./...
 	rm -rf $(CLEAN)
+
+
+CLEAN += google/googleapis google/grpc-gateway
 
 google/googleapis:
 	mkdir -p google
@@ -57,4 +59,14 @@ google/grpc-gateway:
 	cd google && unzip grpc-gateway && mv grpc-gateway-1.9.0 grpc-gateway
 	rm -rf google/grpc-gateway.zip
 
-CLEAN += vendor google/googleapis google/grpc-gateway
+CLEAN += protoc
+PROTO_URL := https://github.com/protocolbuffers/protobuf/releases/download/v3.7.1/protoc-3.7.1
+protoc/bin/protoc:
+	mkdir -p protoc
+ifeq ($(shell uname),Darwin)
+	curl $(PROTO_URL)-osx-x86_64.zip -o protoc/protoc.zip -L
+else
+	curl $(PROTO_URL)-linux-x86_64.zip -o protoc/protoc.zip -L
+endif
+	cd protoc && unzip protoc.zip -d .
+
