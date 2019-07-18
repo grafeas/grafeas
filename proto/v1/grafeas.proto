@@ -32,7 +32,6 @@ import "proto/v1/deployment.proto";
 import "proto/v1/discovery.proto";
 import "proto/v1/image.proto";
 import "proto/v1/package.proto";
-import "proto/v1/provenance.proto";
 import "proto/v1/upgrade.proto";
 import "proto/v1/vulnerability.proto";
 

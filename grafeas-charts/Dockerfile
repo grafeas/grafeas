@@ -14,7 +14,7 @@
 
 FROM gcr.io/gcp-runtimes/ubuntu_16_0_4 as runtime_deps
 
-RUN apt-get install --no-install-recommends --no-install-suggests -y \
+RUN apt-get update && apt-get install --no-install-recommends --no-install-suggests -y \
         git
 
 ENV HELM_VERSION v2.8.1
@@ -22,8 +22,9 @@ RUN curl -LO https://storage.googleapis.com/kubernetes-helm/helm-${HELM_VERSION}
     tar -zxvf helm-${HELM_VERSION}-linux-amd64.tar.gz && \
     mv linux-amd64/helm /usr/local/bin/helm
 
-WORKDIR /go/src/github.com/grafeas/grafeas
+WORKDIR /go/src/github.com/grafeas/grafeas/grafeas-charts
 
 COPY . .
 
-CMD ["./grafeas-charts/helm_release.sh"]
+RUN chmod +x helm_release.sh
+CMD ["./helm_release.sh"]
