@@ -35,7 +35,7 @@ test: generate
 vet: generate
 	@go vet ./...
 
-generate:
+generate: google/googleapis google/grpc-gateway
 	# protoc and tools need to be run before all of the other generations.
 	go generate ./protoc
 	go generate ./tools
@@ -44,3 +44,17 @@ generate:
 clean:
 	go clean ./...
 	rm -rf $(CLEAN)
+
+google/googleapis:
+	mkdir -p google
+	curl -sSL https://github.com/googleapis/googleapis/archive/3b943eb373600e969c247017ea05bb4ca62dfd68.zip -o google/googleapis.zip
+	cd google && unzip googleapis && mv googleapis-3b943eb373600e969c247017ea05bb4ca62dfd68 googleapis
+	rm -rf google/googleapis.zip
+
+google/grpc-gateway:
+	mkdir -p google
+	curl -sSL https://github.com/grpc-ecosystem/grpc-gateway/archive/v1.9.0.zip -o google/grpc-gateway.zip
+	cd google && unzip grpc-gateway && mv grpc-gateway-1.9.0 grpc-gateway
+	rm -rf google/grpc-gateway.zip
+
+CLEAN += vendor google/googleapis google/grpc-gateway

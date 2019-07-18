@@ -11,3 +11,4 @@ proto/v1/*_go_proto/
 cel/syntax.proto
 *.pb.go
 *.pb.gw.go
+vendor/
