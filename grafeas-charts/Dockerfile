@@ -14,7 +14,7 @@
 
 FROM gcr.io/gcp-runtimes/ubuntu_16_0_4 as runtime_deps
 
-RUN apt-get install --no-install-recommends --no-install-suggests -y \
+RUN apt-get update && apt-get install --no-install-recommends --no-install-suggests -y \
         git
 
 ENV HELM_VERSION v2.8.1
@@ -26,4 +26,5 @@ WORKDIR /go/src/github.com/grafeas/grafeas
 
 COPY . .
 
-CMD ["./grafeas-charts/helm_release.sh"]
+RUN chmod +x helm_release.sh
+CMD ["./helm_release.sh"]
