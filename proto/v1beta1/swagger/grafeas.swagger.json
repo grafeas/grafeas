@@ -727,6 +727,11 @@
           "type": "boolean",
           "format": "boolean",
           "description": "Whether this detail is obsolete. Occurrences are expected not to point to\nobsolete details."
+        },
+        "source_update_time": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The time this information was last changed at the source. This is an\nupstream timestamp from the underlying information source - e.g. Ubuntu\nsecurity tracker."
         }
       },
       "title": "Identifies all appearances of this vulnerability in the package for a\nspecific distro/location. For example: glibc in\ncpe:/o:debian:debian_linux:8 for versions 2.1 - 2.2"
@@ -2105,6 +2110,11 @@
             "$ref": "#/definitions/VulnerabilityWindowsDetail"
           },
           "description": "Windows details get their own format because the information format and\nmodel don't match a normal detail. Specifically Windows updates are done as\npatches, thus Windows vulnerabilities really are a missing package, rather\nthan a package being at an incorrect version."
+        },
+        "source_update_time": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The time this information was last changed at the source. This is an\nupstream timestamp from the underlying information source - e.g. Ubuntu\nsecurity tracker."
         }
       },
       "description": "Vulnerability provides metadata about a security vulnerability in a Note."
