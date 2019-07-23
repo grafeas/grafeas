@@ -22,9 +22,9 @@ RUN curl -LO https://storage.googleapis.com/kubernetes-helm/helm-${HELM_VERSION}
     tar -zxvf helm-${HELM_VERSION}-linux-amd64.tar.gz && \
     mv linux-amd64/helm /usr/local/bin/helm
 
-WORKDIR /go/src/github.com/grafeas/grafeas/grafeas-charts
-
 COPY . .
 
-RUN chmod +x helm_release.sh
+RUN echo $PWD
+RUN ls $PWD
+RUN chmod +x ./helm_release.sh
 CMD ["./helm_release.sh"]
