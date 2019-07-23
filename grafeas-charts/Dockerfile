@@ -24,7 +24,6 @@ RUN curl -LO https://storage.googleapis.com/kubernetes-helm/helm-${HELM_VERSION}
 
 COPY . .
 
-RUN echo $PWD
 RUN ls $PWD
-RUN chmod +x ./helm_release.sh
-CMD ["./helm_release.sh"]
+RUN ls grafeas-charts
+CMD ["./grafeas-charts/helm_release.sh"]
