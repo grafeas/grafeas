@@ -26,7 +26,7 @@ jobs:
       # ensures the Grafeas server image can be built
       - run: docker build .
       # ensures helm release image can be built
-      - run: docker build -if Dockerfile_helm_release
+      - run: docker build -f Dockerfile_helm_release
       # specify any bash command here prefixed with `run: `
       - run: make build; make test
 workflows:
