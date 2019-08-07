@@ -29,7 +29,6 @@ const (
 
 func TestOccurrence(pID, noteName string) *pb.Occurrence {
 	return &pb.Occurrence{
-		Name:     fmt.Sprintf("projects/%s/occurrences/134", pID),
 		Resource: &pb.Resource{Uri: "gcr.io/foo/bar"},
 		NoteName: noteName,
 		Kind:     cpb.NoteKind_VULNERABILITY,
