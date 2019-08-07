@@ -74,11 +74,4 @@ const (
 	                         WHERE n.id = o.note_id
 	                           AND n.project_name = $1
 	                           AND n.note_name = $2`
-
-	insertOperation = `INSERT INTO operations(project_name, operation_name, data) VALUES ($1, $2, $3)`
-	searchOperation = `SELECT data FROM operations WHERE project_name = $1 AND operation_name = $2`
-	deleteOperation = `DELETE FROM operations WHERE project_name = $1 AND operation_name = $2`
-	updateOperation = `UPDATE operations SET data = $3 WHERE project_name = $1 AND operation_name = $2`
-	listOperations  = `SELECT id, data FROM operations WHERE project_name = $1 AND id > $2 LIMIT $3`
-	operationsCnt   = `SELECT COUNT(*) FROM operations WHERE project_name = $1`
 )
