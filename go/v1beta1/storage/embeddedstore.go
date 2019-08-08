@@ -26,6 +26,7 @@ import (
 	"github.com/boltdb/bolt"
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes"
+	"github.com/google/uuid"
 	"github.com/grafeas/grafeas/go/config"
 	"github.com/grafeas/grafeas/go/errors"
 	"github.com/grafeas/grafeas/go/name"
@@ -136,11 +137,10 @@ func (m *EmbeddedStore) DeleteProject(ctx context.Context, pID string) error {
 
 // GetOccurrence gets the specified occurrence from embedded store.
 func (m *EmbeddedStore) GetOccurrence(ctx context.Context, pID, oID string) (*pb.Occurrence, error) {
-	oName := name.FormatOccurrence(pID, oID)
 	var o pb.Occurrence
-	err := m.get(bucketOccurrences, oName, &o)
+	err := m.get(bucketOccurrences, oID, &o)
 	if err == errNoKey {
-		return nil, errors.Newf(codes.NotFound, "Occurrence with name %q does not exist", oName)
+		return nil, errors.Newf(codes.NotFound, "Occurrence with ID %q does not exist", oID)
 	}
 
 	// Set the output-only field before returning
@@ -176,15 +176,23 @@ func (m *EmbeddedStore) ListOccurrences(ctx context.Context, pID, filters, pageT
 
 // CreateOccurrence creates the specified occurrence in embedded store.
 func (m *EmbeddedStore) CreateOccurrence(ctx context.Context, pID, uID string, o *pb.Occurrence) (*pb.Occurrence, error) {
+	var id string
 	o = proto.Clone(o).(*pb.Occurrence)
+	if nr, err := uuid.NewRandom(); err != nil {
+		return nil, errors.Newf(codes.Internal, "Failed to generate UUID")
+	} else {
+		id = nr.String()
+	}
 
-	if err := m.get(bucketOccurrences, o.Name, &pb.Occurrence{}); err == errNoKey {
+	if err := m.get(bucketOccurrences, id, &pb.Occurrence{}); err == errNoKey {
 		o.CreateTime = ptypes.TimestampNow()
-		err := m.update(bucketOccurrences, o.Name, true, o)
+		o.UpdateTime = o.CreateTime
+		o.Name = name.FormatOccurrence(pID, id)
+		err := m.update(bucketOccurrences, id, true, o)
 		return o, err
 	}
 
-	return nil, errors.Newf(codes.AlreadyExists, "Occurrence with name %q already exists", o.Name)
+	return nil, errors.Newf(codes.AlreadyExists, "Occurrence with ID %q already exists", id)
 }
 
 // BatchCreateOccurrences batch creates the specified occurrences in embedded store.
@@ -229,17 +237,16 @@ func (m *EmbeddedStore) UpdateOccurrence(ctx context.Context, pID, oID string, o
 
 	err = m.update(bucketOccurrences, oName, false, updatedOcc)
 	if err == errNoKey {
-		return nil, errors.Newf(codes.NotFound, "Occurrence with name %q does not Exist", oName)
+		return nil, errors.Newf(codes.NotFound, "Occurrence with oID %q does not exist", oID)
 	}
 	return o, err
 }
 
 // DeleteOccurrence deletes the specified occurrence in embedded store.
 func (m *EmbeddedStore) DeleteOccurrence(ctx context.Context, pID, oID string) error {
-	oName := name.FormatOccurrence(pID, oID)
-	err := m.delete(bucketOccurrences, oName)
+	err := m.delete(bucketOccurrences, oID)
 	if err == errNoKey {
-		return errors.Newf(codes.NotFound, "Occurrence with oName %q does not Exist", oName)
+		return errors.Newf(codes.NotFound, "Occurrence with oID %q does not exist", oID)
 	}
 	return err
 }
@@ -290,6 +297,7 @@ func (m *EmbeddedStore) CreateNote(ctx context.Context, pID, nID, uID string, n 
 
 	if err := m.get(bucketNotes, n.Name, &pb.Note{}); err == errNoKey {
 		n.CreateTime = ptypes.TimestampNow()
+		n.UpdateTime = n.CreateTime
 		err := m.update(bucketNotes, n.Name, true, n)
 		return n, err
 	}

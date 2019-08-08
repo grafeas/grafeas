@@ -24,6 +24,7 @@ import (
 	"github.com/fernet/fernet-go"
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes"
+	"github.com/google/uuid"
 	"github.com/grafeas/grafeas/go/config"
 	"github.com/grafeas/grafeas/go/name"
 	pb "github.com/grafeas/grafeas/proto/v1beta1/grafeas_go_proto"
@@ -172,17 +173,20 @@ func (pg *PgSQLStore) CreateOccurrence(ctx context.Context, pID, uID string, o *
 	o = proto.Clone(o).(*pb.Occurrence)
 	o.CreateTime = ptypes.TimestampNow()
 
-	_, oID, err := name.ParseOccurrence(o.Name)
-	if err != nil {
-		log.Printf("Invalid occurrence name: %v", o.Name)
-		return nil, status.Error(codes.InvalidArgument, "Invalid occurrence name")
+	var id string
+	if nr, err := uuid.NewRandom(); err != nil {
+		return nil, status.Error(codes.Internal, "Failed to generate UUID")
+	} else {
+		id = nr.String()
 	}
+	o.Name = fmt.Sprintf("projects/%s/occurrences/%s", pID, id)
+
 	nPID, nID, err := name.ParseNote(o.NoteName)
 	if err != nil {
 		log.Printf("Invalid note name: %v", o.NoteName)
 		return nil, status.Error(codes.InvalidArgument, "Invalid note name")
 	}
-	_, err = pg.DB.Exec(insertOccurrence, pID, oID, nPID, nID, proto.MarshalTextString(o))
+	_, err = pg.DB.Exec(insertOccurrence, pID, id, nPID, nID, proto.MarshalTextString(o))
 	if err, ok := err.(*pq.Error); ok {
 		// Check for unique_violation
 		if err.Code == "23505" {
