@@ -221,7 +221,6 @@ func (m *EmbeddedStore) BatchCreateOccurrences(ctx context.Context, pID string, 
 // UpdateOccurrence updates the specified occurrence in embedded store.
 func (m *EmbeddedStore) UpdateOccurrence(ctx context.Context, pID, oID string, o *pb.Occurrence, mask *fieldmaskpb.FieldMask) (*pb.Occurrence, error) {
 	o = proto.Clone(o).(*pb.Occurrence)
-	oName := name.FormatOccurrence(pID, oID)
 
 	oldOcc, err := m.GetOccurrence(ctx, pID, oID)
 	if err != nil {
@@ -235,7 +234,7 @@ func (m *EmbeddedStore) UpdateOccurrence(ctx context.Context, pID, oID string, o
 
 	updatedOcc.UpdateTime = ptypes.TimestampNow()
 
-	err = m.update(bucketOccurrences, oName, false, updatedOcc)
+	err = m.update(bucketOccurrences, oID, false, updatedOcc)
 	if err == errNoKey {
 		return nil, errors.Newf(codes.NotFound, "Occurrence with oID %q does not exist", oID)
 	}
