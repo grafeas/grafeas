@@ -64,4 +64,4 @@ helm package .
 helm gcs push grafeas-charts-*.tgz grafeas-charts-repository
 ```
 
-[link](https://pantheon.google.com/storage/browser/grafeas-charts/repository/?project=grafeas&folder=true).
+[Grafeas Helm chart](https://storage.cloud.google.com/grafeas-charts/repository/grafeas-charts-0.1.0.tgz?organizationId=433637338589).
