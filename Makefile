@@ -8,19 +8,12 @@
 
 .PHONY: build fmt test vet clean generate
 
-SRC = $(shell find . -type f -name '*.go' -not -path "./vendor/*")
+SRC = $(shell find . -type f -name '*.go' -not -path "./protodeps/*")
 CLEAN := *~
 
-default: .check_makefile_in_gopath build
+.EXPORT_ALL_VARIABLES:
 
-EXPECTED_MAKE := $(shell go env GOPATH)/src/github.com/grafeas/grafeas/Makefile
-
-.check_makefile_in_gopath:
-	if [ "$(realpath ${EXPECTED_MAKE})" != "$(realpath $(lastword $(MAKEFILE_LIST)))" ]; \
-	then  \
-	echo "Makefile is not in GOPATH root"; \
-	false; \
-	fi
+GO111MODULE=on
 
 build: vet fmt generate
 	go build -v ./...
@@ -38,8 +31,12 @@ vet: generate
 generate:
 	# protoc and tools need to be run before all of the other generations.
 	go generate ./protoc
-	go generate ./tools
-	go generate ./...
+	cd tools && go generate
+	go generate ./protodeps
+	go generate ./cel
+	go generate ./proto/v1
+	go generate ./proto/v1alpha1
+	go generate ./proto/v1beta1
 
 clean:
 	go clean ./...
