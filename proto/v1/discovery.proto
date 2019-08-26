@@ -73,4 +73,7 @@ message DiscoveryOccurrence {
   // details to show to the user. The LocalizedMessage is output only and
   // populated by the API.
   google.rpc.Status analysis_status_error = 3;
+
+  // The CPE of the resource being scanned.
+  string  cpe = 4;
 }
