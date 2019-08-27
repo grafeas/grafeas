@@ -45,7 +45,18 @@ var (
 		func(p cmp.Path) bool {
 			ignoreCreate := p.String() == "CreateTime"
 			ignoreUpdate := p.String() == "UpdateTime"
-			return ignoreCreate || ignoreUpdate
+			// Remove ignoring of the fields below once go-cmp is able to ignore generated fields.
+			// See https://github.com/google/go-cmp/issues/153
+			ignoreXXXCache :=
+				p.String() == "XXX_sizecache" ||
+					p.String() == "Resource.XXX_sizecache" ||
+					p.String() == "Details.Vulnerability.XXX_sizecache" ||
+					p.String() == "Details.Vulnerability.PackageIssue.XXX_sizecache" ||
+					p.String() == "Details.Vulnerability.PackageIssue.AffectedLocation.XXX_sizecache" ||
+					p.String() == "Details.Vulnerability.PackageIssue.AffectedLocation.Version.XXX_sizecache" ||
+					p.String() == "Details.Vulnerability.PackageIssue.FixedLocation.XXX_sizecache" ||
+					p.String() == "Details.Vulnerability.PackageIssue.FixedLocation.Version.XXX_sizecache"
+			return ignoreCreate || ignoreUpdate || ignoreXXXCache
 		}, cmp.Ignore())
 )
 
@@ -142,11 +153,12 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 
 		oPID := "occurrence-project"
 		o := createTestOccurrence(oPID, n.Name)
-		if _, err := g.CreateOccurrence(ctx, oPID, "userID", o); err != nil {
+		oo, err := g.CreateOccurrence(ctx, oPID, "userID", o)
+		if err != nil {
 			t.Errorf("CreateOccurrence got %v want success", err)
 		}
 
-		pID, oID, err := name.ParseOccurrence(o.Name)
+		pID, oID, err := name.ParseOccurrence(oo.Name)
 		if err != nil {
 			t.Fatalf("Error parsing projectID and occurrenceID %v", err)
 		}
@@ -155,7 +167,7 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 		if err != nil {
 			t.Fatalf("GetOccurrence got %v, want success", err)
 		}
-		if diff := cmp.Diff(got, o, opt); diff != "" {
+		if diff := cmp.Diff(got, oo, opt); diff != "" {
 			t.Errorf("GetOccurrence returned diff (want -> got):\n%s", diff)
 		}
 	})
@@ -180,11 +192,9 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 		if _, err := g.CreateOccurrence(ctx, nPID, "userID", o); err != nil {
 			t.Errorf("CreateOccurrence got %v want success", err)
 		}
-		// Try to insert the same occurrence twice, expect failure.
-		if _, err := g.CreateOccurrence(ctx, nPID, "userID", o); err == nil {
-			t.Errorf("CreateOccurrence got success, want Error")
-		} else if s, _ := status.FromError(err); s.Code() != codes.AlreadyExists {
-			t.Errorf("CreateOccurrence got code %v want %v", s.Code(), codes.AlreadyExists)
+		// Try to insert the same occurrence twice, expect success, because different IDs are generated.
+		if _, err := g.CreateOccurrence(ctx, nPID, "userID", o); err != nil {
+			t.Errorf("CreateOccurrence got %v, want success", err)
 		}
 	})
 
@@ -224,16 +234,13 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 
 		oPID := "occurrence-project"
 		o := createTestOccurrence(oPID, n.Name)
-		// Delete before the occurrence exists
-		pID, oID, err := name.ParseOccurrence(o.Name)
+		oo, err := g.CreateOccurrence(ctx, oPID, "userID", o)
+		if err != nil {
+			t.Fatalf("CreateOccurrence got %v want success", err)
+		}
+		pID, oID, err := name.ParseOccurrence(oo.Name)
 		if err != nil {
 			t.Fatalf("Error parsing occurrence %v", err)
-		}
-		if err := g.DeleteOccurrence(ctx, pID, oID); err == nil {
-			t.Error("Deleting nonexistant occurrence got success, want error")
-		}
-		if _, err := g.CreateOccurrence(ctx, oPID, "userID", o); err != nil {
-			t.Fatalf("CreateOccurrence got %v want success", err)
 		}
 		if err := g.DeleteOccurrence(ctx, pID, oID); err != nil {
 			t.Errorf("DeleteOccurrence got %v, want success ", err)
@@ -257,26 +264,24 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 
 		oPID := "occurrence-project"
 		o := createTestOccurrence(oPID, n.Name)
-		pID, oID, err := name.ParseOccurrence(o.Name)
+		oo, err := g.CreateOccurrence(ctx, oPID, "userID", o)
+		if err != nil {
+			t.Fatalf("CreateOccurrence got %v want success", err)
+		}
+		pID, oID, err := name.ParseOccurrence(oo.Name)
 		if err != nil {
 			t.Fatalf("Error parsing projectID and occurrenceID %v", err)
-		}
-		if _, err := g.UpdateOccurrence(ctx, pID, oID, o, nil); err == nil {
-			t.Fatal("UpdateOccurrence got success want error")
-		}
-		if _, err := g.CreateOccurrence(ctx, pID, "userID", o); err != nil {
-			t.Fatalf("CreateOccurrence got %v want success", err)
 		}
 		got, err := g.GetOccurrence(ctx, pID, oID)
 		if err != nil {
 			t.Fatalf("GetOccurrence got %v, want success", err)
 		}
 
-		if diff := cmp.Diff(got, o, opt); diff != "" {
+		if diff := cmp.Diff(got, oo, opt); diff != "" {
 			t.Errorf("GetOccurrence returned diff (want -> got):\n%s", diff)
 		}
 
-		o2 := o
+		o2 := oo
 		o2.GetVulnerability().CvssScore = 1.0
 		// TODO(#312): check the result of the update
 		// TODO(#312): use fieldmask in the param
@@ -411,22 +416,20 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 
 		oPID := "occurrence-project"
 		o := createTestOccurrence(oPID, n.Name)
-		pID, oID, err := name.ParseOccurrence(o.Name)
+		oo, err := g.CreateOccurrence(ctx, oPID, "userID", o)
+		if err != nil {
+			t.Errorf("CreateOccurrence got %v, want Success", err)
+		}
+		pID, oID, err := name.ParseOccurrence(oo.Name)
 		if err != nil {
 			t.Fatalf("Error parsing occurrence %v", err)
-		}
-		if _, err := g.GetOccurrence(ctx, pID, oID); err == nil {
-			t.Fatal("GetOccurrence got success, want error")
-		}
-		if _, err := g.CreateOccurrence(ctx, oPID, "userID", o); err != nil {
-			t.Errorf("CreateOccurrence got %v, want Success", err)
 		}
 
 		got, err := g.GetOccurrence(ctx, pID, oID)
 		if err != nil {
 			t.Fatalf("GetOccurrence got %v, want success", err)
 		}
-		if diff := cmp.Diff(got, o, opt); diff != "" {
+		if diff := cmp.Diff(got, oo, opt); diff != "" {
 			t.Errorf("GetOccurrence returned diff (want -> got):\n%s", diff)
 		}
 	})
@@ -479,15 +482,13 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 
 		oPID := "occurrence-project"
 		o := createTestOccurrence(oPID, n.Name)
-		pID, oID, err := name.ParseOccurrence(o.Name)
+		oo, err := g.CreateOccurrence(ctx, oPID, "userID", o)
+		if err != nil {
+			t.Errorf("CreateOccurrence got %v, want Success", err)
+		}
+		pID, oID, err := name.ParseOccurrence(oo.Name)
 		if err != nil {
 			t.Fatalf("Error parsing occurrence %v", err)
-		}
-		if _, err := g.GetOccurrenceNote(ctx, pID, oID); err == nil {
-			t.Fatal("GetNoteByOccurrence got success, want error")
-		}
-		if _, err := g.CreateOccurrence(ctx, oPID, "userID", o); err != nil {
-			t.Errorf("CreateOccurrence got %v, want Success", err)
 		}
 
 		got, err := g.GetOccurrenceNote(ctx, pID, oID)
@@ -620,11 +621,11 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 				oPID = dontFind
 				o.NoteName = nDontFind.Name
 			}
-			o.Name = name.FormatOccurrence(oPID, strconv.Itoa(i))
-			if _, err := g.CreateOccurrence(ctx, oPID, "userID", o); err != nil {
+			oo, err := g.CreateOccurrence(ctx, oPID, "userID", o)
+			if err != nil {
 				t.Fatalf("CreateOccurrence got %v want success", err)
 			}
-			os = append(os, o)
+			os = append(os, oo)
 		}
 
 		filter := "filters_are_yet_to_be_implemented"
@@ -672,12 +673,12 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 			} else {
 				oPID = dontFind
 			}
-			o.Name = name.FormatOccurrence(oPID, strconv.Itoa(i))
 			o.NoteName = n.Name
-			if _, err := g.CreateOccurrence(ctx, oPID, "userID", o); err != nil {
+			oo, err := g.CreateOccurrence(ctx, oPID, "userID", o)
+			if err != nil {
 				t.Fatalf("CreateOccurrence got %v want success", err)
 			}
-			os = append(os, o)
+			os = append(os, oo)
 		}
 
 		pID, nID, err := name.ParseNote(n.Name)
@@ -834,23 +835,17 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 			t.Fatalf("CreateNote got %v want success", err)
 		}
 
-		oID1 := "occurrence1"
 		op1 := createTestOccurrence(pID, n.Name)
-		op1.Name = name.FormatOccurrence(pID, oID1)
 		if _, err := g.CreateOccurrence(ctx, pID, "userID", op1); err != nil {
 			t.Errorf("CreateOccurrence got %v want success", err)
 		}
 
-		oID2 := "occurrence2"
 		op2 := createTestOccurrence(pID, n.Name)
-		op2.Name = name.FormatOccurrence(pID, oID2)
 		if _, err := g.CreateOccurrence(ctx, pID, "userID", op2); err != nil {
 			t.Errorf("CreateOccurrence got %v want success", err)
 		}
 
-		oID3 := "occurrence3"
 		op3 := createTestOccurrence(pID, n.Name)
-		op3.Name = name.FormatOccurrence(pID, oID3)
 		if _, err := g.CreateOccurrence(ctx, pID, "userID", op3); err != nil {
 			t.Errorf("CreateOccurrence got %v want success", err)
 		}
@@ -863,12 +858,6 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 		if len(gotOccurrences) != 2 {
 			t.Errorf("ListOccurrences got %v occurrences, want 2", len(gotOccurrences))
 		}
-		if p := gotOccurrences[0]; p.Name != name.FormatOccurrence(pID, oID1) {
-			t.Fatalf("Got %s want %s", p.Name, name.FormatOccurrence(pID, oID1))
-		}
-		if p := gotOccurrences[1]; p.Name != name.FormatOccurrence(pID, oID2) {
-			t.Fatalf("Got %s want %s", p.Name, name.FormatOccurrence(pID, oID2))
-		}
 		// Get occurrences again
 		gotOccurrences, pageToken, err := g.ListOccurrences(ctx, pID, filter, lastPage, 100)
 		if err != nil {
@@ -879,9 +868,6 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 		}
 		if len(gotOccurrences) != 1 {
 			t.Errorf("ListOccurrences got %v operations, want 1", len(gotOccurrences))
-		}
-		if p := gotOccurrences[0]; p.Name != name.FormatOccurrence(pID, oID3) {
-			t.Fatalf("Got %s want %s", p.Name, name.FormatOccurrence(pID, oID3))
 		}
 	})
 
@@ -904,23 +890,17 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 			t.Fatalf("CreateNote got %v want success", err)
 		}
 
-		oID1 := "occurrence1"
 		op1 := createTestOccurrence(pID, n.Name)
-		op1.Name = name.FormatOccurrence(pID, oID1)
 		if _, err := g.CreateOccurrence(ctx, pID, "userID", op1); err != nil {
 			t.Errorf("CreateOccurrence got %v want success", err)
 		}
 
-		oID2 := "occurrence2"
 		op2 := createTestOccurrence(pID, n.Name)
-		op2.Name = name.FormatOccurrence(pID, oID2)
 		if _, err := g.CreateOccurrence(ctx, pID, "userID", op2); err != nil {
 			t.Errorf("CreateOccurrence got %v want success", err)
 		}
 
-		oID3 := "occurrence3"
 		op3 := createTestOccurrence(pID, n.Name)
-		op3.Name = name.FormatOccurrence(pID, oID3)
 		if _, err := g.CreateOccurrence(ctx, pID, "userID", op3); err != nil {
 			t.Errorf("CreateOccurrence got %v want success", err)
 		}
@@ -934,12 +914,6 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 		if len(gotOccurrences) != 2 {
 			t.Errorf("ListNoteOccurrences got %v occurrences, want 2", len(gotOccurrences))
 		}
-		if p := gotOccurrences[0]; p.Name != name.FormatOccurrence(pID, oID1) {
-			t.Fatalf("Got %s want %s", p.Name, name.FormatOccurrence(pID, oID1))
-		}
-		if p := gotOccurrences[1]; p.Name != name.FormatOccurrence(pID, oID2) {
-			t.Fatalf("Got %s want %s", p.Name, name.FormatOccurrence(pID, oID2))
-		}
 		// Get occurrences again
 		gotOccurrences, pageToken, err := g.ListNoteOccurrences(ctx, nPID, nID, filter, lastPage, 100)
 		if err != nil {
@@ -950,9 +924,6 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 		}
 		if len(gotOccurrences) != 1 {
 			t.Errorf("ListNoteOccurrences got %v operations, want 1", len(gotOccurrences))
-		}
-		if p := gotOccurrences[0]; p.Name != name.FormatOccurrence(pID, oID3) {
-			t.Fatalf("Got %s want %s", p.Name, name.FormatOccurrence(pID, oID3))
 		}
 	})
 }

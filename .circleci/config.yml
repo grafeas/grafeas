@@ -22,6 +22,9 @@ jobs:
     working_directory: /go/src/github.com/grafeas/grafeas/
     steps:
       - checkout
+      - setup_remote_docker
+      # ensures the Grafeas server image can be built
+      - run: docker build .
       # specify any bash command here prefixed with `run: `
       - run: make build; make test
 workflows:

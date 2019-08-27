@@ -1,6 +1,9 @@
 .install.grpc-gateway
 .install.protoc-gen-go
-protoc
+protoc/bin
+protoc/include
+protoc/protoc.zip
+protoc/readme.txt
 .install.tools
 proto/**/.done
 proto/v1beta1/*_go_proto/
@@ -8,3 +11,4 @@ proto/v1/*_go_proto/
 cel/syntax.proto
 *.pb.go
 *.pb.gw.go
+protodeps/*

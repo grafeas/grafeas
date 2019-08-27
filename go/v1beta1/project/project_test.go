@@ -97,9 +97,8 @@ func TestCreateProject(t *testing.T) {
 	req := &prpb.CreateProjectRequest{
 		Project: proj,
 	}
-	resp := &prpb.Project{}
 
-	err := gp.CreateProject(ctx, req, resp)
+	resp, err := gp.CreateProject(ctx, req)
 	if err != nil {
 		t.Errorf("Got err %v, want success", err)
 	}
@@ -158,8 +157,7 @@ func TestCreateProjectErrors(t *testing.T) {
 			Storage: s,
 		}
 
-		resp := &prpb.Project{}
-		err := gp.CreateProject(ctx, tt.req, resp)
+		_, err := gp.CreateProject(ctx, tt.req)
 		t.Logf("%q: error:%v", tt.desc, err)
 		if status.Code(err) != tt.wantErrStatus {
 			t.Errorf("%q: got error status %v, want %v", tt.desc, status.Code(err), tt.wantErrStatus)
@@ -186,8 +184,8 @@ func TestGetProject(t *testing.T) {
 	req := &prpb.GetProjectRequest{
 		Name: "projects/1234",
 	}
-	gotP := &prpb.Project{}
-	if err := gp.GetProject(ctx, req, gotP); err != nil {
+	gotP, err := gp.GetProject(ctx, req)
+	if err != nil {
 		t.Errorf("Got err %v, want success", err)
 	}
 
@@ -229,8 +227,7 @@ func TestGetProjectErrors(t *testing.T) {
 			Storage: s,
 		}
 
-		p := &prpb.Project{}
-		err := gp.GetProject(ctx, tt.req, p)
+		_, err := gp.GetProject(ctx, tt.req)
 		t.Logf("%q: error:%v", tt.desc, err)
 		if status.Code(err) != tt.wantErrStatus {
 			t.Errorf("%q: got error status %v, want %v", tt.desc, status.Code(err), tt.wantErrStatus)
@@ -255,8 +252,8 @@ func TestListProjects(t *testing.T) {
 	}
 
 	req := &prpb.ListProjectsRequest{}
-	resp := &prpb.ListProjectsResponse{}
-	if err := gp.ListProjects(ctx, req, resp); err != nil {
+	resp, err := gp.ListProjects(ctx, req)
+	if err != nil {
 		t.Errorf("Got err %v, want success", err)
 	}
 
@@ -289,8 +286,7 @@ func TestListProjectsErrors(t *testing.T) {
 			Storage: s,
 		}
 
-		resp := &prpb.ListProjectsResponse{}
-		err := gp.ListProjects(ctx, tt.req, resp)
+		_, err := gp.ListProjects(ctx, tt.req)
 		t.Logf("%q: error:%v", tt.desc, err)
 		if status.Code(err) != tt.wantErrStatus {
 			t.Errorf("%q: got error status %v, want %v", tt.desc, status.Code(err), tt.wantErrStatus)
@@ -317,7 +313,7 @@ func TestDeleteProject(t *testing.T) {
 	req := &prpb.DeleteProjectRequest{
 		Name: "projects/1234",
 	}
-	if err := gp.DeleteProject(ctx, req, nil); err != nil {
+	if _, err := gp.DeleteProject(ctx, req); err != nil {
 		t.Errorf("Got err %v, want success", err)
 	}
 }
@@ -355,7 +351,7 @@ func TestDeleteProjectErrors(t *testing.T) {
 			Storage: s,
 		}
 
-		err := gp.DeleteProject(ctx, tt.req, nil)
+		_, err := gp.DeleteProject(ctx, tt.req)
 		t.Logf("%q: error:%v", tt.desc, err)
 		if status.Code(err) != tt.wantErrStatus {
 			t.Errorf("%q: got error status %v, want %v", tt.desc, status.Code(err), tt.wantErrStatus)

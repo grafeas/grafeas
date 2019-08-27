@@ -23,6 +23,7 @@ import (
 
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes"
+	"github.com/google/uuid"
 	"github.com/grafeas/grafeas/go/errors"
 	"github.com/grafeas/grafeas/go/name"
 	gpb "github.com/grafeas/grafeas/proto/v1beta1/grafeas_go_proto"
@@ -35,17 +36,17 @@ import (
 // MemStore is an in-memory storage solution for Grafeas
 type MemStore struct {
 	sync.RWMutex
-	occurrencesByName map[string]*gpb.Occurrence
-	notesByName       map[string]*gpb.Note
-	projects          map[string]*prpb.Project
+	occurrencesByID map[string]*gpb.Occurrence
+	notesByName     map[string]*gpb.Note
+	projects        map[string]*prpb.Project
 }
 
 // NewMemStore creates a MemStore with all maps initialized.
 func NewMemStore() *MemStore {
 	return &MemStore{
-		occurrencesByName: map[string]*gpb.Occurrence{},
-		notesByName:       map[string]*gpb.Note{},
-		projects:          map[string]*prpb.Project{},
+		occurrencesByID: map[string]*gpb.Occurrence{},
+		notesByName:     map[string]*gpb.Note{},
+		projects:        map[string]*prpb.Project{},
 	}
 }
 
@@ -103,12 +104,11 @@ func (m *MemStore) DeleteProject(ctx context.Context, pID string) error {
 
 // GetOccurrence gets the specified occurrence from memstore.
 func (m *MemStore) GetOccurrence(ctx context.Context, pID, oID string) (*gpb.Occurrence, error) {
-	oName := name.FormatOccurrence(pID, oID)
 	m.RLock()
 	defer m.RUnlock()
-	o, ok := m.occurrencesByName[oName]
+	o, ok := m.occurrencesByID[oID]
 	if !ok {
-		return nil, errors.Newf(codes.NotFound, "Occurrence with name %q does not Exist", oName)
+		return nil, errors.Newf(codes.NotFound, "Occurrence with ID %s does not Exist", oID)
 	}
 
 	// Set the output-only field before returning
@@ -122,7 +122,7 @@ func (m *MemStore) ListOccurrences(ctx context.Context, pID, filter, pageToken s
 	os := []*gpb.Occurrence{}
 	m.RLock()
 	defer m.RUnlock()
-	for _, o := range m.occurrencesByName {
+	for _, o := range m.occurrencesByID {
 		if strings.HasPrefix(o.Name, fmt.Sprintf("projects/%v", pID)) {
 			os = append(os, o)
 		}
@@ -137,17 +137,23 @@ func (m *MemStore) ListOccurrences(ctx context.Context, pID, filter, pageToken s
 
 // CreateOccurrence creates the specified occurrence in memstore.
 func (m *MemStore) CreateOccurrence(ctx context.Context, pID, uID string, o *gpb.Occurrence) (*gpb.Occurrence, error) {
+	var id string
 	o = proto.Clone(o).(*gpb.Occurrence)
+	if nr, err := uuid.NewRandom(); err != nil {
+		return nil, errors.Newf(codes.Internal, "Failed to generate UUID")
+	} else {
+		id = nr.String()
+	}
 
 	m.Lock()
 	defer m.Unlock()
-	if _, ok := m.occurrencesByName[o.Name]; ok {
-		return nil, errors.Newf(codes.AlreadyExists, "Occurrence with name %q already exists", o.Name)
+	if _, ok := m.occurrencesByID[id]; ok {
+		return nil, errors.Newf(codes.AlreadyExists, "Occurrence with ID %q already exists", id)
 	}
-
 	o.CreateTime = ptypes.TimestampNow()
 	o.UpdateTime = o.CreateTime
-	m.occurrencesByName[o.Name] = o
+	o.Name = name.FormatOccurrence(pID, id)
+	m.occurrencesByID[id] = o
 	return o, nil
 }
 
@@ -178,28 +184,26 @@ func (m *MemStore) BatchCreateOccurrences(ctx context.Context, pID string, uID s
 func (m *MemStore) UpdateOccurrence(ctx context.Context, pID, oID string, o *gpb.Occurrence, mask *fieldmaskpb.FieldMask) (*gpb.Occurrence, error) {
 	o = proto.Clone(o).(*gpb.Occurrence)
 
-	oName := name.FormatOccurrence(pID, oID)
 	m.Lock()
 	defer m.Unlock()
-	if _, ok := m.occurrencesByName[oName]; !ok {
-		return nil, errors.Newf(codes.NotFound, "Occurrence with name %q does not Exist", oName)
+	if _, ok := m.occurrencesByID[oID]; !ok {
+		return nil, errors.Newf(codes.NotFound, "Occurrence with ID %s does not exist", oID)
 	}
 
 	// TODO(#312): implement the update operation
 	o.UpdateTime = ptypes.TimestampNow()
-	m.occurrencesByName[oName] = o
+	m.occurrencesByID[oID] = o
 	return o, nil
 }
 
 // DeleteOccurrence deletes the specified occurrence in memstore.
 func (m *MemStore) DeleteOccurrence(ctx context.Context, pID, oID string) error {
-	oName := name.FormatOccurrence(pID, oID)
 	m.Lock()
 	defer m.Unlock()
-	if _, ok := m.occurrencesByName[oName]; !ok {
-		return errors.Newf(codes.NotFound, "Occurrence with name %q does not Exist", oName)
+	if _, ok := m.occurrencesByID[oID]; !ok {
+		return errors.Newf(codes.NotFound, "Occurrence with ID %s does not Exist", oID)
 	}
-	delete(m.occurrencesByName, oName)
+	delete(m.occurrencesByID, oID)
 	return nil
 }
 
@@ -311,12 +315,11 @@ func (m *MemStore) DeleteNote(ctx context.Context, pID, nID string) error {
 
 // GetOccurrenceNote gets the note for the specified occurrence from memstore.
 func (m *MemStore) GetOccurrenceNote(ctx context.Context, pID, oID string) (*gpb.Note, error) {
-	oName := name.FormatOccurrence(pID, oID)
 	m.RLock()
 	defer m.RUnlock()
-	o, ok := m.occurrencesByName[oName]
+	o, ok := m.occurrencesByID[oID]
 	if !ok {
-		return nil, errors.Newf(codes.NotFound, "Occurrence with name %q does not Exist", oName)
+		return nil, errors.Newf(codes.NotFound, "Occurrence with ID %s does not Exist", oID)
 	}
 	n, ok := m.notesByName[o.NoteName]
 	if !ok {
@@ -338,7 +341,7 @@ func (m *MemStore) ListNoteOccurrences(ctx context.Context, pID, nID, filter, pa
 	}
 	nName := name.FormatNote(pID, nID)
 	os := []*gpb.Occurrence{}
-	for _, o := range m.occurrencesByName {
+	for _, o := range m.occurrencesByID {
 		if o.NoteName == nName {
 			os = append(os, o)
 		}

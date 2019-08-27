@@ -22,6 +22,7 @@ import (
 	"sync/atomic"
 	"testing"
 
+	"github.com/grafeas/grafeas/go/config"
 	"github.com/grafeas/grafeas/go/v1beta1/api"
 	"github.com/grafeas/grafeas/go/v1beta1/project"
 	"github.com/grafeas/grafeas/go/v1beta1/storage"
@@ -38,7 +39,7 @@ func TestBetaEmbeddedStore(t *testing.T) {
 	var instance int32
 	doTestStorage(t, func(t *testing.T) (grafeas.Storage, project.Storage, func()) {
 		testDir := filepath.Join(dir, strconv.Itoa(int(atomic.AddInt32(&instance, 1))))
-		s := storage.NewEmbeddedStore(&storage.EmbeddedStoreConfig{Path: testDir})
+		s := storage.NewEmbeddedStore(&config.EmbeddedStoreConfig{Path: testDir})
 		var g grafeas.Storage = s
 		var gp project.Storage = s
 		return g, gp, func() {}

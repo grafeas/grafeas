@@ -19,12 +19,13 @@ import (
 	"os"
 	"testing"
 
+	"github.com/grafeas/grafeas/go/config"
 	"github.com/grafeas/grafeas/go/v1beta1/api"
 	"github.com/grafeas/grafeas/go/v1beta1/project"
 	"github.com/grafeas/grafeas/go/v1beta1/storage"
 )
 
-func dropDatabase(t *testing.T, config *storage.PgSQLConfig) {
+func dropDatabase(t *testing.T, config *config.PgSQLConfig) {
 	t.Helper()
 	// Open database
 	source := storage.CreateSourceString(config.User, config.Password, config.Host, "postgres", config.SSLMode)
@@ -48,7 +49,7 @@ func dropDatabase(t *testing.T, config *storage.PgSQLConfig) {
 func TestBetaPgSQLStore(t *testing.T) {
 	createPgSQLStore := func(t *testing.T) (grafeas.Storage, project.Storage, func()) {
 		t.Helper()
-		config := &storage.PgSQLConfig{
+		config := &config.PgSQLConfig{
 			Host:          "127.0.0.1:5432",
 			DbName:        "test_db",
 			User:          "postgres",
@@ -68,7 +69,7 @@ func TestBetaPgSQLStore(t *testing.T) {
 func TestPgSQLStoreWithUserAsEnv(t *testing.T) {
 	createPgSQLStore := func(t *testing.T) (grafeas.Storage, project.Storage, func()) {
 		t.Helper()
-		config := &storage.PgSQLConfig{
+		config := &config.PgSQLConfig{
 			Host:          "127.0.0.1:5432",
 			DbName:        "test_db",
 			User:          "",

@@ -32,7 +32,7 @@ import "proto/v1/deployment.proto";
 import "proto/v1/discovery.proto";
 import "proto/v1/image.proto";
 import "proto/v1/package.proto";
-import "proto/v1/provenance.proto";
+import "proto/v1/upgrade.proto";
 import "proto/v1/vulnerability.proto";
 
 // [Grafeas](https://grafeas.io) API.
@@ -212,6 +212,9 @@ message Occurrence {
     grafeas.v1.DiscoveryOccurrence discovery = 13;
     // Describes an attestation of an artifact.
     grafeas.v1.AttestationOccurrence attestation = 14;
+    // Describes an available package upgrade on the linked resource.
+    grafeas.v1.UpgradeOccurrence upgrade = 15;
+
   }
 }
 
@@ -264,6 +267,8 @@ message Note {
     grafeas.v1.DiscoveryNote discovery = 15;
     // A note describing an attestation role.
     grafeas.v1.AttestationNote attestation = 16;
+    // A note describing available package upgrades.
+    grafeas.v1.UpgradeNote upgrade = 17;
   }
 }
 
@@ -301,7 +306,7 @@ message ListOccurrencesResponse {
   string next_page_token = 2;
 }
 
-// Request to delete a occurrence.
+// Request to delete an occurrence.
 message DeleteOccurrenceRequest {
   // The name of the occurrence in the form of
   // `projects/[PROJECT_ID]/occurrences/[OCCURRENCE_ID]`.
