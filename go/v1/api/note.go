@@ -204,9 +204,6 @@ func (g *API) ListNotes(ctx context.Context, req *gpb.ListNotesRequest, resp *gp
 	if err != nil {
 		return err
 	}
-	if err := g.Filter.Validate(req.Filter); err != nil {
-		return err
-	}
 
 	notes, npt, err := g.Storage.ListNotes(ctx, pID, req.Filter, req.PageToken, ps)
 	if err != nil {
