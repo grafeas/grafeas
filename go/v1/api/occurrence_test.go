@@ -31,7 +31,6 @@ func TestGetOccurrence(t *testing.T) {
 	g := &API{
 		Storage:           s,
 		Auth:              &fakeAuth{},
-		Logger:            &fakeLogger{},
 		EnforceValidation: true,
 	}
 
@@ -95,7 +94,6 @@ func TestGetOccurrenceErrors(t *testing.T) {
 		g := &API{
 			Storage:           s,
 			Auth:              &fakeAuth{authErr: tt.authErr},
-			Logger:            &fakeLogger{},
 			EnforceValidation: true,
 		}
 
@@ -117,7 +115,6 @@ func TestListOccurrences(t *testing.T) {
 	g := &API{
 		Storage:           s,
 		Auth:              &fakeAuth{},
-		Logger:            &fakeLogger{},
 		EnforceValidation: true,
 	}
 
@@ -181,7 +178,6 @@ func TestListOccurrencesErrors(t *testing.T) {
 		g := &API{
 			Storage:           s,
 			Auth:              &fakeAuth{authErr: tt.authErr},
-			Logger:            &fakeLogger{},
 			EnforceValidation: true,
 		}
 
@@ -203,7 +199,6 @@ func TestCreateOccurrence(t *testing.T) {
 	g := &API{
 		Storage:           newFakeStorage(),
 		Auth:              &fakeAuth{},
-		Logger:            &fakeLogger{},
 		EnforceValidation: true,
 	}
 
@@ -285,7 +280,6 @@ func TestCreateOccurrenceErrors(t *testing.T) {
 		g := &API{
 			Storage:           s,
 			Auth:              &fakeAuth{authErr: tt.authErr, endUserIDErr: tt.endUserIDErr},
-			Logger:            &fakeLogger{},
 			EnforceValidation: true,
 		}
 
@@ -307,7 +301,6 @@ func TestBatchCreateOccurrences(t *testing.T) {
 	g := &API{
 		Storage:           newFakeStorage(),
 		Auth:              &fakeAuth{},
-		Logger:            &fakeLogger{},
 		EnforceValidation: true,
 	}
 
@@ -436,7 +429,6 @@ func TestBatchCreateOccurrencesErrors(t *testing.T) {
 		g := &API{
 			Storage:           s,
 			Auth:              &fakeAuth{authErr: tt.authErr, endUserIDErr: tt.endUserIDErr},
-			Logger:            &fakeLogger{},
 			EnforceValidation: true,
 		}
 
@@ -459,7 +451,6 @@ func TestUpdateOccurrence(t *testing.T) {
 	g := &API{
 		Storage:           s,
 		Auth:              &fakeAuth{},
-		Logger:            &fakeLogger{},
 		EnforceValidation: true,
 	}
 
@@ -542,7 +533,6 @@ func TestUpdateOccurrenceErrors(t *testing.T) {
 		g := &API{
 			Storage:           s,
 			Auth:              &fakeAuth{authErr: tt.authErr},
-			Logger:            &fakeLogger{},
 			EnforceValidation: true,
 		}
 
@@ -574,7 +564,6 @@ func TestDeleteOccurrence(t *testing.T) {
 		g := &API{
 			Storage:           s,
 			Auth:              &fakeAuth{},
-			Logger:            &fakeLogger{},
 			EnforceValidation: true,
 		}
 
@@ -646,7 +635,6 @@ func TestDeleteOccurrenceErrors(t *testing.T) {
 		g := &API{
 			Storage:           s,
 			Auth:              &fakeAuth{authErr: tt.authErr, purgeErr: tt.purgeErr},
-			Logger:            &fakeLogger{},
 			EnforceValidation: true,
 		}
 
@@ -681,7 +669,6 @@ func TestListNoteOccurrences(t *testing.T) {
 	g := &API{
 		Storage:           s,
 		Auth:              &fakeAuth{},
-		Logger:            &fakeLogger{},
 		EnforceValidation: true,
 	}
 
@@ -744,7 +731,6 @@ func TestListNoteOccurrencesErrors(t *testing.T) {
 		g := &API{
 			Storage:           s,
 			Auth:              &fakeAuth{authErr: tt.authErr},
-			Logger:            &fakeLogger{},
 			EnforceValidation: true,
 		}
 
