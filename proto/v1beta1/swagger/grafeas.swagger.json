@@ -705,7 +705,7 @@
         },
         "max_affected_version": {
           "$ref": "#/definitions/packageVersion",
-          "description": "Deprecated, do not use. Use fixed_location instead.\n\nThe max version of the package in which the vulnerability exists."
+          "description": "The max version of the package in which the vulnerability exists."
         },
         "severity_name": {
           "type": "string",
