@@ -30,7 +30,6 @@ func TestCreateNote(t *testing.T) {
 	g := &API{
 		Storage:           newFakeStorage(),
 		Auth:              &fakeAuth{},
-		Filter:            &fakeFilter{},
 		Logger:            &fakeLogger{},
 		EnforceValidation: true,
 	}
@@ -146,7 +145,6 @@ func TestCreateNoteErrors(t *testing.T) {
 		g := &API{
 			Storage:           s,
 			Auth:              &fakeAuth{authErr: tt.authErr, endUserIDErr: tt.endUserIDErr},
-			Filter:            &fakeFilter{},
 			Logger:            &fakeLogger{},
 			EnforceValidation: true,
 		}
@@ -171,7 +169,6 @@ func TestBatchCreateNotes(t *testing.T) {
 	g := &API{
 		Storage:           newFakeStorage(),
 		Auth:              &fakeAuth{},
-		Filter:            &fakeFilter{},
 		Logger:            &fakeLogger{},
 		EnforceValidation: true,
 	}
@@ -325,7 +322,6 @@ func TestBatchCreateNotesErrors(t *testing.T) {
 		g := &API{
 			Storage:           s,
 			Auth:              &fakeAuth{authErr: tt.authErr, endUserIDErr: tt.endUserIDErr},
-			Filter:            &fakeFilter{},
 			Logger:            &fakeLogger{},
 			EnforceValidation: true,
 		}
@@ -351,7 +347,6 @@ func TestGetNote(t *testing.T) {
 	g := &API{
 		Storage:           s,
 		Auth:              &fakeAuth{},
-		Filter:            &fakeFilter{},
 		Logger:            &fakeLogger{},
 		EnforceValidation: true,
 	}
@@ -423,7 +418,6 @@ func TestGetNoteErrors(t *testing.T) {
 		g := &API{
 			Storage:           s,
 			Auth:              &fakeAuth{authErr: tt.authErr},
-			Filter:            &fakeFilter{},
 			Logger:            &fakeLogger{},
 			EnforceValidation: true,
 		}
@@ -443,7 +437,6 @@ func TestListNotes(t *testing.T) {
 	g := &API{
 		Storage:           s,
 		Auth:              &fakeAuth{},
-		Filter:            &fakeFilter{},
 		Logger:            &fakeLogger{},
 		EnforceValidation: true,
 	}
@@ -472,10 +465,10 @@ func TestListNotesErrors(t *testing.T) {
 	ctx := context.Background()
 
 	tests := []struct {
-		desc                                   string
-		req                                    *gpb.ListNotesRequest
-		internalStorageErr, authErr, filterErr bool
-		wantErrStatus                          codes.Code
+		desc                        string
+		req                         *gpb.ListNotesRequest
+		internalStorageErr, authErr bool
+		wantErrStatus               codes.Code
 	}{
 		{
 			desc: "invalid parent name",
@@ -501,14 +494,6 @@ func TestListNotesErrors(t *testing.T) {
 			wantErrStatus:      codes.Internal,
 		},
 		{
-			desc: "filter parse error",
-			req: &gpb.ListNotesRequest{
-				Parent: "projects/goog-vulnz",
-			},
-			filterErr:     true,
-			wantErrStatus: codes.InvalidArgument,
-		},
-		{
 			desc: "invalid page size error",
 			req: &gpb.ListNotesRequest{
 				Parent:   "projects/goog-vulnz",
@@ -524,7 +509,6 @@ func TestListNotesErrors(t *testing.T) {
 		g := &API{
 			Storage:           s,
 			Auth:              &fakeAuth{authErr: tt.authErr},
-			Filter:            &fakeFilter{err: tt.filterErr},
 			Logger:            &fakeLogger{},
 			EnforceValidation: true,
 		}
@@ -544,7 +528,6 @@ func TestUpdateNote(t *testing.T) {
 	g := &API{
 		Storage:           s,
 		Auth:              &fakeAuth{},
-		Filter:            &fakeFilter{},
 		Logger:            &fakeLogger{},
 		EnforceValidation: true,
 	}
@@ -629,7 +612,6 @@ func TestUpdateNoteErrors(t *testing.T) {
 		g := &API{
 			Storage:           s,
 			Auth:              &fakeAuth{authErr: tt.authErr},
-			Filter:            &fakeFilter{},
 			Logger:            &fakeLogger{},
 			EnforceValidation: true,
 		}
@@ -649,7 +631,6 @@ func TestDeleteNote(t *testing.T) {
 	g := &API{
 		Storage:           s,
 		Auth:              &fakeAuth{},
-		Filter:            &fakeFilter{},
 		Logger:            &fakeLogger{},
 		EnforceValidation: true,
 	}
@@ -724,7 +705,6 @@ func TestDeleteNoteErrors(t *testing.T) {
 		g := &API{
 			Storage:           s,
 			Auth:              &fakeAuth{authErr: tt.authErr, purgeErr: tt.purgeErr},
-			Filter:            &fakeFilter{},
 			Logger:            &fakeLogger{},
 			EnforceValidation: true,
 		}
@@ -750,7 +730,6 @@ func TestGetOccurrenceNote(t *testing.T) {
 	g := &API{
 		Storage:           s,
 		Auth:              &fakeAuth{},
-		Filter:            &fakeFilter{},
 		Logger:            &fakeLogger{},
 		EnforceValidation: true,
 	}
@@ -827,7 +806,6 @@ func TestGetOccurrenceNoteErrors(t *testing.T) {
 		g := &API{
 			Storage:           s,
 			Auth:              &fakeAuth{authErr: tt.authErr},
-			Filter:            &fakeFilter{},
 			Logger:            &fakeLogger{},
 			EnforceValidation: true,
 		}
