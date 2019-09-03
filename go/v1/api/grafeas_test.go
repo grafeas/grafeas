@@ -401,18 +401,6 @@ func (a *fakeAuth) PurgePolicy(ctx context.Context, projectID string, entityID s
 	return nil
 }
 
-type fakeFilter struct {
-	// Whether filter calls return an error to exercise err code paths.
-	err bool
-}
-
-func (f *fakeFilter) Validate(filter string) error {
-	if f.err {
-		return status.Errorf(codes.InvalidArgument, "failed to parse filter %q", filter)
-	}
-	return nil
-}
-
 type fakeLogger struct{}
 
 func (fakeLogger) PrepareCtx(ctx context.Context, projectID string) context.Context {

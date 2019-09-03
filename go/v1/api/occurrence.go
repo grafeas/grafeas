@@ -65,9 +65,6 @@ func (g *API) ListOccurrences(ctx context.Context, req *gpb.ListOccurrencesReque
 	if err != nil {
 		return err
 	}
-	if err := g.Filter.Validate(req.Filter); err != nil {
-		return err
-	}
 
 	occs, npt, err := g.Storage.ListOccurrences(ctx, pID, req.Filter, req.PageToken, ps)
 	if err != nil {
@@ -274,10 +271,6 @@ func (g *API) ListNoteOccurrences(ctx context.Context, req *gpb.ListNoteOccurren
 	ctx = g.Logger.PrepareCtx(ctx, pID)
 
 	if err := g.Auth.CheckAccessAndProject(ctx, pID, nID, NotesListOccurrences); err != nil {
-		return err
-	}
-
-	if err := g.Filter.Validate(req.Filter); err != nil {
 		return err
 	}
 

@@ -111,12 +111,6 @@ type Auth interface {
 	PurgePolicy(ctx context.Context, projectID string, entityID string, r iam.Resource) error
 }
 
-// Filter provides functions for parsing filter strings.
-type Filter interface {
-	// Validate determines whether the specified filter string is a valid filter.
-	Validate(f string) error
-}
-
 // Logger provides functions for logging at various levels.
 type Logger interface {
 	// PrepareCtx adds values to the context for logging if necessary.
@@ -133,7 +127,6 @@ type Logger interface {
 type API struct {
 	Storage           Storage
 	Auth              Auth
-	Filter            Filter
 	Logger            Logger
 	EnforceValidation bool
 }

@@ -31,7 +31,6 @@ func TestGetOccurrence(t *testing.T) {
 	g := &API{
 		Storage:           s,
 		Auth:              &fakeAuth{},
-		Filter:            &fakeFilter{},
 		Logger:            &fakeLogger{},
 		EnforceValidation: true,
 	}
@@ -96,7 +95,6 @@ func TestGetOccurrenceErrors(t *testing.T) {
 		g := &API{
 			Storage:           s,
 			Auth:              &fakeAuth{authErr: tt.authErr},
-			Filter:            &fakeFilter{},
 			Logger:            &fakeLogger{},
 			EnforceValidation: true,
 		}
@@ -119,7 +117,6 @@ func TestListOccurrences(t *testing.T) {
 	g := &API{
 		Storage:           s,
 		Auth:              &fakeAuth{},
-		Filter:            &fakeFilter{},
 		Logger:            &fakeLogger{},
 		EnforceValidation: true,
 	}
@@ -148,11 +145,11 @@ func TestListOccurrencesErrors(t *testing.T) {
 	ctx := context.Background()
 
 	tests := []struct {
-		desc                                   string
-		parent                                 string
-		pageSize                               int32
-		internalStorageErr, authErr, filterErr bool
-		wantErrStatus                          codes.Code
+		desc                        string
+		parent                      string
+		pageSize                    int32
+		internalStorageErr, authErr bool
+		wantErrStatus               codes.Code
 	}{
 		{
 			desc:          "invalid parent name",
@@ -172,12 +169,6 @@ func TestListOccurrencesErrors(t *testing.T) {
 			wantErrStatus:      codes.Internal,
 		},
 		{
-			desc:          "filter parse error",
-			parent:        "projects/consumer1",
-			filterErr:     true,
-			wantErrStatus: codes.InvalidArgument,
-		},
-		{
 			desc:          "invalid page size error",
 			parent:        "projects/consumer1",
 			pageSize:      -1,
@@ -190,7 +181,6 @@ func TestListOccurrencesErrors(t *testing.T) {
 		g := &API{
 			Storage:           s,
 			Auth:              &fakeAuth{authErr: tt.authErr},
-			Filter:            &fakeFilter{err: tt.filterErr},
 			Logger:            &fakeLogger{},
 			EnforceValidation: true,
 		}
@@ -213,7 +203,6 @@ func TestCreateOccurrence(t *testing.T) {
 	g := &API{
 		Storage:           newFakeStorage(),
 		Auth:              &fakeAuth{},
-		Filter:            &fakeFilter{},
 		Logger:            &fakeLogger{},
 		EnforceValidation: true,
 	}
@@ -296,7 +285,6 @@ func TestCreateOccurrenceErrors(t *testing.T) {
 		g := &API{
 			Storage:           s,
 			Auth:              &fakeAuth{authErr: tt.authErr, endUserIDErr: tt.endUserIDErr},
-			Filter:            &fakeFilter{},
 			Logger:            &fakeLogger{},
 			EnforceValidation: true,
 		}
@@ -319,7 +307,6 @@ func TestBatchCreateOccurrences(t *testing.T) {
 	g := &API{
 		Storage:           newFakeStorage(),
 		Auth:              &fakeAuth{},
-		Filter:            &fakeFilter{},
 		Logger:            &fakeLogger{},
 		EnforceValidation: true,
 	}
@@ -449,7 +436,6 @@ func TestBatchCreateOccurrencesErrors(t *testing.T) {
 		g := &API{
 			Storage:           s,
 			Auth:              &fakeAuth{authErr: tt.authErr, endUserIDErr: tt.endUserIDErr},
-			Filter:            &fakeFilter{},
 			Logger:            &fakeLogger{},
 			EnforceValidation: true,
 		}
@@ -473,7 +459,6 @@ func TestUpdateOccurrence(t *testing.T) {
 	g := &API{
 		Storage:           s,
 		Auth:              &fakeAuth{},
-		Filter:            &fakeFilter{},
 		Logger:            &fakeLogger{},
 		EnforceValidation: true,
 	}
@@ -557,7 +542,6 @@ func TestUpdateOccurrenceErrors(t *testing.T) {
 		g := &API{
 			Storage:           s,
 			Auth:              &fakeAuth{authErr: tt.authErr},
-			Filter:            &fakeFilter{},
 			Logger:            &fakeLogger{},
 			EnforceValidation: true,
 		}
@@ -590,7 +574,6 @@ func TestDeleteOccurrence(t *testing.T) {
 		g := &API{
 			Storage:           s,
 			Auth:              &fakeAuth{},
-			Filter:            &fakeFilter{},
 			Logger:            &fakeLogger{},
 			EnforceValidation: true,
 		}
@@ -663,7 +646,6 @@ func TestDeleteOccurrenceErrors(t *testing.T) {
 		g := &API{
 			Storage:           s,
 			Auth:              &fakeAuth{authErr: tt.authErr, purgeErr: tt.purgeErr},
-			Filter:            &fakeFilter{},
 			Logger:            &fakeLogger{},
 			EnforceValidation: true,
 		}
@@ -699,7 +681,6 @@ func TestListNoteOccurrences(t *testing.T) {
 	g := &API{
 		Storage:           s,
 		Auth:              &fakeAuth{},
-		Filter:            &fakeFilter{},
 		Logger:            &fakeLogger{},
 		EnforceValidation: true,
 	}
@@ -733,30 +714,27 @@ func TestListNoteOccurrencesErrors(t *testing.T) {
 	ctx := context.Background()
 
 	tests := []struct {
-		desc                                   string
-		noteName                               string
-		internalStorageErr, authErr, filterErr bool
-		wantErrStatus                          codes.Code
+		desc                        string
+		noteName                    string
+		internalStorageErr, authErr bool
+		wantErrStatus               codes.Code
 	}{
 		{
 			desc:          "invalid note name",
 			noteName:      "projects/google-vulnz/notes/",
 			wantErrStatus: codes.InvalidArgument,
-		}, {
+		},
+		{
 			desc:          "auth error",
 			noteName:      "projects/goog-vulnz/notes/CVE-UH-OH",
 			authErr:       true,
 			wantErrStatus: codes.PermissionDenied,
-		}, {
+		},
+		{
 			desc:               "internal storage error",
 			noteName:           "projects/goog-vulnz/notes/CVE-UH-OH",
 			internalStorageErr: true,
 			wantErrStatus:      codes.Internal,
-		}, {
-			desc:          "filter parse error",
-			noteName:      "projects/goog-vulnz/notes/CVE-UH-OH",
-			filterErr:     true,
-			wantErrStatus: codes.InvalidArgument,
 		},
 	}
 
@@ -766,7 +744,6 @@ func TestListNoteOccurrencesErrors(t *testing.T) {
 		g := &API{
 			Storage:           s,
 			Auth:              &fakeAuth{authErr: tt.authErr},
-			Filter:            &fakeFilter{err: tt.filterErr},
 			Logger:            &fakeLogger{},
 			EnforceValidation: true,
 		}
