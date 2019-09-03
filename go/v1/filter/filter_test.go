@@ -12,18 +12,6 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-type fakeLogger struct{}
-
-func (fakeLogger) PrepareCtx(ctx context.Context, projectID string) context.Context {
-	return ctx
-}
-func (fakeLogger) Info(ctx context.Context, args ...interface{})                    {}
-func (fakeLogger) Infof(ctx context.Context, format string, args ...interface{})    {}
-func (fakeLogger) Warning(ctx context.Context, args ...interface{})                 {}
-func (fakeLogger) Warningf(ctx context.Context, format string, args ...interface{}) {}
-func (fakeLogger) Error(ctx context.Context, args ...interface{})                   {}
-func (fakeLogger) Errorf(ctx context.Context, format string, args ...interface{})   {}
-
 func TestListOccsFilter(t *testing.T) {
 	byResourceUri := func(ctx context.Context, projID string, filter, pageToken string, pageSize int32) ([]*gpb.Occurrence, string, bool, error) {
 		if strings.HasPrefix(filter, "resourceUri = ") {
@@ -36,7 +24,6 @@ func TestListOccsFilter(t *testing.T) {
 	}
 
 	f := filter.ListOccsFilterer{
-		Log:             &fakeLogger{},
 		FilterFns:       []filter.ListOccsFilterFn{byResourceUri},
 		DefaultFilterFn: defaultFilterFn,
 	}
@@ -94,7 +81,6 @@ func TestListOccsFilterErrors(t *testing.T) {
 	}
 
 	f := filter.ListOccsFilterer{
-		Log:             &fakeLogger{},
 		FilterFns:       []filter.ListOccsFilterFn{byResourceUri},
 		DefaultFilterFn: defaultFilterFn,
 	}

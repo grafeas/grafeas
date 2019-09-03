@@ -2,7 +2,7 @@
 package filter
 
 import (
-	"github.com/grafeas/grafeas/go/v1/api"
+	"github.com/google/logger"
 	gpb "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto"
 	"golang.org/x/net/context"
 )
@@ -16,7 +16,6 @@ type ListOccsFilterFn func(ctx context.Context, projID, filter, pageToken string
 // ListOccsFilterer holds functions on how to handle various filter patterns for listing
 // occurrences.
 type ListOccsFilterer struct {
-	Log grafeas.Logger
 	// FilterFns contain all functions that handle specific filter patterns.
 	FilterFns []ListOccsFilterFn
 	// DefaultFilterFn contains the fallback function to handle a filter if none of the filter
@@ -30,7 +29,7 @@ func (f *ListOccsFilterer) Filter(ctx context.Context, projID, filter, pageToken
 	for _, filterFn := range f.FilterFns {
 		occs, npt, ok, err := filterFn(ctx, projID, filter, pageToken, pageSize)
 		if !ok {
-			f.Log.Infof(ctx, "Cannot handle filter %q", filter)
+			logger.Infof("Cannot handle filter %q", filter)
 			continue
 		}
 		if err != nil {
