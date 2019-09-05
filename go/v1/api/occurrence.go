@@ -18,6 +18,7 @@ import (
 	"fmt"
 
 	emptypb "github.com/golang/protobuf/ptypes/empty"
+	"github.com/google/logger"
 	"github.com/grafeas/grafeas/go/errors"
 	"github.com/grafeas/grafeas/go/name"
 	"github.com/grafeas/grafeas/go/v1/api/validators/grafeas"
@@ -32,8 +33,6 @@ func (g *API) GetOccurrence(ctx context.Context, req *gpb.GetOccurrenceRequest, 
 	if err != nil {
 		return err
 	}
-
-	ctx = g.Logger.PrepareCtx(ctx, pID)
 
 	if err := g.Auth.CheckAccessAndProject(ctx, pID, oID, OccurrencesGet); err != nil {
 		return err
@@ -55,17 +54,12 @@ func (g *API) ListOccurrences(ctx context.Context, req *gpb.ListOccurrencesReque
 		return err
 	}
 
-	ctx = g.Logger.PrepareCtx(ctx, pID)
-
 	if err := g.Auth.CheckAccessAndProject(ctx, pID, "", OccurrencesList); err != nil {
 		return err
 	}
 
 	ps, err := validatePageSize(req.PageSize)
 	if err != nil {
-		return err
-	}
-	if err := g.Filter.Validate(req.Filter); err != nil {
 		return err
 	}
 
@@ -85,8 +79,6 @@ func (g *API) CreateOccurrence(ctx context.Context, req *gpb.CreateOccurrenceReq
 	if err != nil {
 		return err
 	}
-
-	ctx = g.Logger.PrepareCtx(ctx, pID)
 
 	if req.Occurrence == nil {
 		return errors.Newf(codes.InvalidArgument, "an occurrence must be specified")
@@ -110,7 +102,7 @@ func (g *API) CreateOccurrence(ctx context.Context, req *gpb.CreateOccurrenceReq
 		if g.EnforceValidation {
 			return err
 		}
-		g.Logger.Warningf(ctx, "CreateOccurrence %+v for project %q: invalid occurrence, fail open, would have failed with: %v", req.Occurrence, pID, err)
+		logger.Warningf("CreateOccurrence %+v for project %q: invalid occurrence, fail open, would have failed with: %v", req.Occurrence, pID, err)
 	}
 
 	uID, err := g.Auth.EndUserID(ctx)
@@ -133,8 +125,6 @@ func (g *API) BatchCreateOccurrences(ctx context.Context, req *gpb.BatchCreateOc
 	if err != nil {
 		return err
 	}
-
-	ctx = g.Logger.PrepareCtx(ctx, pID)
 
 	if err := g.Auth.CheckAccessAndProject(ctx, pID, "", OccurrencesCreate); err != nil {
 		return err
@@ -173,7 +163,7 @@ func (g *API) BatchCreateOccurrences(ctx context.Context, req *gpb.BatchCreateOc
 		if g.EnforceValidation {
 			return errors.Newf(codes.InvalidArgument, "one or more occurrences are invalid, no occurrences were created: %v", validationErrs)
 		}
-		g.Logger.Warningf(ctx, "BatchCreateOccurrences %+v for project %q: invalid occurrences(s), fail open, would have failed with: %v", req.Occurrences, pID, validationErrs)
+		logger.Warningf("BatchCreateOccurrences %+v for project %q: invalid occurrences(s), fail open, would have failed with: %v", req.Occurrences, pID, validationErrs)
 	}
 
 	uID, err := g.Auth.EndUserID(ctx)
@@ -197,8 +187,6 @@ func (g *API) UpdateOccurrence(ctx context.Context, req *gpb.UpdateOccurrenceReq
 	if err != nil {
 		return err
 	}
-
-	ctx = g.Logger.PrepareCtx(ctx, pID)
 
 	if req.Occurrence == nil {
 		return errors.Newf(codes.InvalidArgument, "an occurrence must be specified")
@@ -231,8 +219,6 @@ func (g *API) DeleteOccurrence(ctx context.Context, req *gpb.DeleteOccurrenceReq
 		return err
 	}
 
-	ctx = g.Logger.PrepareCtx(ctx, pID)
-
 	if err := g.Auth.CheckAccessAndProject(ctx, pID, oID, OccurrencesDelete); err != nil {
 		return err
 	}
@@ -258,7 +244,7 @@ func (g *API) DeleteOccurrence(ctx context.Context, req *gpb.DeleteOccurrenceReq
 	// Purge any IAM policies set on this entity.
 	if err := g.Auth.PurgePolicy(ctx, pID, oID, Occurrences); err != nil {
 		// This fails open, should not block on policy deletion failure.
-		g.Logger.Warningf(ctx, "Error deleting policies for occurrence %q in project %q: %v", oID, pID, err)
+		logger.Warningf("Error deleting policies for occurrence %q in project %q: %v", oID, pID, err)
 	}
 
 	return nil
@@ -271,13 +257,7 @@ func (g *API) ListNoteOccurrences(ctx context.Context, req *gpb.ListNoteOccurren
 		return err
 	}
 
-	ctx = g.Logger.PrepareCtx(ctx, pID)
-
 	if err := g.Auth.CheckAccessAndProject(ctx, pID, nID, NotesListOccurrences); err != nil {
-		return err
-	}
-
-	if err := g.Filter.Validate(req.Filter); err != nil {
 		return err
 	}
 

@@ -111,30 +111,10 @@ type Auth interface {
 	PurgePolicy(ctx context.Context, projectID string, entityID string, r iam.Resource) error
 }
 
-// Filter provides functions for parsing filter strings.
-type Filter interface {
-	// Validate determines whether the specified filter string is a valid filter.
-	Validate(f string) error
-}
-
-// Logger provides functions for logging at various levels.
-type Logger interface {
-	// PrepareCtx adds values to the context for logging if necessary.
-	PrepareCtx(ctx context.Context, projectID string) context.Context
-	Info(ctx context.Context, args ...interface{})
-	Infof(ctx context.Context, format string, args ...interface{})
-	Warning(ctx context.Context, args ...interface{})
-	Warningf(ctx context.Context, format string, args ...interface{})
-	Error(ctx context.Context, args ...interface{})
-	Errorf(ctx context.Context, format string, args ...interface{})
-}
-
 // API implements the methods in the v1 Grafeas API.
 type API struct {
 	Storage           Storage
 	Auth              Auth
-	Filter            Filter
-	Logger            Logger
 	EnforceValidation bool
 }
 

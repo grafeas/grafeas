@@ -18,6 +18,7 @@ import (
 	"fmt"
 
 	emptypb "github.com/golang/protobuf/ptypes/empty"
+	"github.com/google/logger"
 	"github.com/grafeas/grafeas/go/errors"
 	"github.com/grafeas/grafeas/go/name"
 	"github.com/grafeas/grafeas/go/v1/api/validators/grafeas"
@@ -33,8 +34,6 @@ func (g *API) CreateNote(ctx context.Context, req *gpb.CreateNoteRequest, resp *
 		return err
 	}
 
-	ctx = g.Logger.PrepareCtx(ctx, pID)
-
 	if err := g.Auth.CheckAccessAndProject(ctx, pID, "", NotesCreate); err != nil {
 		return err
 	}
@@ -49,7 +48,7 @@ func (g *API) CreateNote(ctx context.Context, req *gpb.CreateNoteRequest, resp *
 		if g.EnforceValidation {
 			return err
 		}
-		g.Logger.Warningf(ctx, "CreateNote %+v for project %q: invalid note, fail open, would have failed with: %v", req.Note, pID, err)
+		logger.Warningf("CreateNote %+v for project %q: invalid note, fail open, would have failed with: %v", req.Note, pID, err)
 	}
 
 	uID, err := g.Auth.EndUserID(ctx)
@@ -73,8 +72,6 @@ func (g *API) BatchCreateNotes(ctx context.Context, req *gpb.BatchCreateNotesReq
 		return err
 	}
 
-	ctx = g.Logger.PrepareCtx(ctx, pID)
-
 	if err := g.Auth.CheckAccessAndProject(ctx, pID, "", NotesCreate); err != nil {
 		return err
 	}
@@ -95,7 +92,7 @@ func (g *API) BatchCreateNotes(ctx context.Context, req *gpb.BatchCreateNotesReq
 		if g.EnforceValidation {
 			return errors.Newf(codes.InvalidArgument, "one or more notes are invalid, no notes were created: %v", validationErrs)
 		}
-		g.Logger.Warningf(ctx, "BatchCreateNotes %+v for project %q: invalid note(s), fail open, would have failed with: %v", req.Notes, pID, validationErrs)
+		logger.Warningf("BatchCreateNotes %+v for project %q: invalid note(s), fail open, would have failed with: %v", req.Notes, pID, validationErrs)
 	}
 
 	uID, err := g.Auth.EndUserID(ctx)
@@ -120,8 +117,6 @@ func (g *API) GetNote(ctx context.Context, req *gpb.GetNoteRequest, resp *gpb.No
 		return err
 	}
 
-	ctx = g.Logger.PrepareCtx(ctx, pID)
-
 	if err := g.Auth.CheckAccessAndProject(ctx, pID, nID, NotesGet); err != nil {
 		return err
 	}
@@ -141,8 +136,6 @@ func (g *API) UpdateNote(ctx context.Context, req *gpb.UpdateNoteRequest, resp *
 	if err != nil {
 		return err
 	}
-
-	ctx = g.Logger.PrepareCtx(ctx, pID)
 
 	if err := g.Auth.CheckAccessAndProject(ctx, pID, nID, NotesUpdate); err != nil {
 		return err
@@ -168,8 +161,6 @@ func (g *API) DeleteNote(ctx context.Context, req *gpb.DeleteNoteRequest, _ *emp
 		return err
 	}
 
-	ctx = g.Logger.PrepareCtx(ctx, pID)
-
 	if err := g.Auth.CheckAccessAndProject(ctx, pID, nID, NotesDelete); err != nil {
 		return err
 	}
@@ -181,7 +172,7 @@ func (g *API) DeleteNote(ctx context.Context, req *gpb.DeleteNoteRequest, _ *emp
 	// Purge any IAM policies set on this entity.
 	if err := g.Auth.PurgePolicy(ctx, pID, nID, Notes); err != nil {
 		// This fails open, should not block on policy deletion failure.
-		g.Logger.Warningf(ctx, "Error deleting policies for note %q in project %q: %v", nID, pID, err)
+		logger.Warningf("Error deleting policies for note %q in project %q: %v", nID, pID, err)
 	}
 
 	return nil
@@ -194,17 +185,12 @@ func (g *API) ListNotes(ctx context.Context, req *gpb.ListNotesRequest, resp *gp
 		return err
 	}
 
-	ctx = g.Logger.PrepareCtx(ctx, pID)
-
 	if err := g.Auth.CheckAccessAndProject(ctx, pID, "", NotesList); err != nil {
 		return err
 	}
 
 	ps, err := validatePageSize(req.PageSize)
 	if err != nil {
-		return err
-	}
-	if err := g.Filter.Validate(req.Filter); err != nil {
 		return err
 	}
 
@@ -224,8 +210,6 @@ func (g *API) GetOccurrenceNote(ctx context.Context, req *gpb.GetOccurrenceNoteR
 	if err != nil {
 		return err
 	}
-
-	ctx = g.Logger.PrepareCtx(ctx, pID)
 
 	if err := g.Auth.CheckAccessAndProject(ctx, pID, oID, OccurrencesGet); err != nil {
 		return err

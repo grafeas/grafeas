@@ -401,30 +401,6 @@ func (a *fakeAuth) PurgePolicy(ctx context.Context, projectID string, entityID s
 	return nil
 }
 
-type fakeFilter struct {
-	// Whether filter calls return an error to exercise err code paths.
-	err bool
-}
-
-func (f *fakeFilter) Validate(filter string) error {
-	if f.err {
-		return status.Errorf(codes.InvalidArgument, "failed to parse filter %q", filter)
-	}
-	return nil
-}
-
-type fakeLogger struct{}
-
-func (fakeLogger) PrepareCtx(ctx context.Context, projectID string) context.Context {
-	return ctx
-}
-func (fakeLogger) Info(ctx context.Context, args ...interface{})                    {}
-func (fakeLogger) Infof(ctx context.Context, format string, args ...interface{})    {}
-func (fakeLogger) Warning(ctx context.Context, args ...interface{})                 {}
-func (fakeLogger) Warningf(ctx context.Context, format string, args ...interface{}) {}
-func (fakeLogger) Error(ctx context.Context, args ...interface{})                   {}
-func (fakeLogger) Errorf(ctx context.Context, format string, args ...interface{})   {}
-
 func TestValidatePageSize(t *testing.T) {
 	tests := []struct {
 		desc       string
