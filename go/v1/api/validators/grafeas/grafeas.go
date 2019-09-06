@@ -20,7 +20,6 @@ import (
 	"errors"
 	"fmt"
 
-	apierrors "github.com/grafeas/grafeas/go/errors"
 	"github.com/grafeas/grafeas/go/v1/api/validators/attestation"
 	"github.com/grafeas/grafeas/go/v1/api/validators/build"
 	"github.com/grafeas/grafeas/go/v1/api/validators/deployment"
@@ -30,6 +29,7 @@ import (
 	"github.com/grafeas/grafeas/go/v1/api/validators/vulnerability"
 	gpb "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 // ValidateNote validates that a note has all its required fields filled in.
@@ -83,7 +83,7 @@ func ValidateNote(n *gpb.Note) error {
 	}
 
 	if len(errs) > 0 {
-		return apierrors.Newf(codes.InvalidArgument, "note is invalid: %v", errs)
+		return status.Errorf(codes.InvalidArgument, "note is invalid: %v", errs)
 	}
 
 	return nil
@@ -148,7 +148,7 @@ func ValidateOccurrence(o *gpb.Occurrence) error {
 	}
 
 	if len(errs) > 0 {
-		return apierrors.Newf(codes.InvalidArgument, "occurrence is invalid: %v", errs)
+		return status.Errorf(codes.InvalidArgument, "occurrence is invalid: %v", errs)
 	}
 
 	return nil
