@@ -16,12 +16,12 @@
 package grafeas
 
 import (
-	"github.com/grafeas/grafeas/go/errors"
 	"github.com/grafeas/grafeas/go/iam"
 	gpb "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto"
 	"golang.org/x/net/context"
 	fieldmaskpb "google.golang.org/genproto/protobuf/field_mask"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 const (
@@ -125,9 +125,9 @@ func validatePageSize(ps int32) (int32, error) {
 	case ps == 0:
 		return defaultPageSize, nil
 	case ps > maxPageSize:
-		return 0, errors.Newf(codes.InvalidArgument, "page size %d cannot be large than max page size %d", ps, maxPageSize)
+		return 0, status.Errorf(codes.InvalidArgument, "page size %d cannot be large than max page size %d", ps, maxPageSize)
 	case ps < 0:
-		return 0, errors.Newf(codes.InvalidArgument, "page size %d cannot be negative", ps)
+		return 0, status.Errorf(codes.InvalidArgument, "page size %d cannot be negative", ps)
 	}
 
 	return ps, nil

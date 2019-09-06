@@ -18,11 +18,11 @@ import (
 	"log"
 
 	"github.com/golang/protobuf/ptypes/empty"
-	"github.com/grafeas/grafeas/go/errors"
 	"github.com/grafeas/grafeas/go/name"
 	prpb "github.com/grafeas/grafeas/proto/v1beta1/project_go_proto"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 // Storage provides storage functions for this API.
@@ -46,16 +46,16 @@ func (gp *API) CreateProject(ctx context.Context, req *prpb.CreateProjectRequest
 	proj := req.Project
 	if proj == nil {
 		log.Print("Project must not be empty.")
-		return nil, errors.Newf(codes.InvalidArgument, "Project must not be empty")
+		return nil, status.Errorf(codes.InvalidArgument, "Project must not be empty")
 	}
 	if proj.Name == "" {
 		log.Printf("Project name must not be empty: %v", proj.Name)
-		return nil, errors.Newf(codes.InvalidArgument, "Project name must not be empty")
+		return nil, status.Errorf(codes.InvalidArgument, "Project name must not be empty")
 	}
 	pID, err := name.ParseProject(proj.Name)
 	if err != nil {
 		log.Printf("Invalid project name: %v", proj.Name)
-		return nil, errors.Newf(codes.InvalidArgument, "Invalid project name")
+		return nil, status.Errorf(codes.InvalidArgument, "Invalid project name")
 	}
 
 	p, err := gp.Storage.CreateProject(ctx, pID, proj)
@@ -70,7 +70,7 @@ func (gp *API) GetProject(ctx context.Context, req *prpb.GetProjectRequest) (*pr
 	pID, err := name.ParseProject(req.Name)
 	if err != nil {
 		log.Printf("Error parsing project name: %v", req.Name)
-		return nil, errors.Newf(codes.InvalidArgument, "Invalid Project name")
+		return nil, status.Errorf(codes.InvalidArgument, "Invalid Project name")
 	}
 	p, err := gp.Storage.GetProject(ctx, pID)
 	if err != nil {
@@ -101,7 +101,7 @@ func (gp *API) DeleteProject(ctx context.Context, req *prpb.DeleteProjectRequest
 	pID, err := name.ParseProject(req.Name)
 	if err != nil {
 		log.Printf("Error parsing project name: %v", req.Name)
-		return nil, errors.Newf(codes.InvalidArgument, "Invalid Project name")
+		return nil, status.Errorf(codes.InvalidArgument, "Invalid Project name")
 	}
 	if err := gp.Storage.DeleteProject(ctx, pID); err != nil {
 		return nil, err
