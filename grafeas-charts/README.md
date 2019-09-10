@@ -90,9 +90,9 @@ The following table lists the configurable parameters of the Grafeas chart and t
 | ------------------------------------------  | ----------------------------------------  | -------------------------------------------|
 | `replicaCount`                                | Number of replicas deployed               | `1`                                          |
 | `deploymentStrategy`                          | Deployment strategy                       | `{}`                                         |
-| `image.repository`                            | image repository                          | `us.gcr.io/grafeas`                          |
-| `image.name`                                  | image name                                | `grafeas-server`                             |
-| `image.tag`                                   | image tag                                 | `v0.1.0`                                     |
+| `image.repository`                            | Image repository                          | `us.gcr.io/grafeas`                          |
+| `image.name`                                  | Image name                                | `grafeas-server`                             |
+| `image.tag`                                   | Image tag                                 | `v0.1.0`                                     |
 | `image.pullPolicy`                            | Image pull policy                         | `IfNotPresent`                               |
 | `nameOverride`                                | App name                                  | `grafeas-server`                             |
 | `fullnameOverride`                            | App name                                  | `grafeas-server`                             |
