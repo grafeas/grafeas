@@ -3,3 +3,4 @@ appVersion: "0.1"
 description: A Helm chart for Kubernetes
 name: grafeas-charts
 version: 0.1.0
+icon: https://grafeas.io/img/grafeas-logo.svg

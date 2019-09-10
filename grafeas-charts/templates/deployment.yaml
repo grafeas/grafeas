@@ -38,8 +38,12 @@ spec:
           - name: persistent-volume
             mountPath: /data
 {{- end }}
+          livenessProbe:
+{{ toYaml .Values.livenessProbe | indent 12 }}
+          readinessProbe:
+{{ toYaml .Values.readinessProbe | indent 12 }}
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+{{- toYaml .Values.resources | nindent 12 }}
       volumes:
         - name: config-volume
           configMap:

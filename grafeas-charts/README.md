@@ -81,3 +81,32 @@ grafeas-server-4cf696-ncbk7   1/1     Running     0          17h
 ```sh
 helm delete --purge grafeas
 ```
+
+## Configuration
+
+The following table lists the configurable parameters of the Grafeas chart and their default values.
+
+| Parameter                                   | Description                               | Default                                    |
+| ------------------------------------------  | ----------------------------------------  | -------------------------------------------|
+| `replicaCount`                                | Number of replicas deployed               | `1`                                          |
+| `deploymentStrategy`                          | Deployment strategy                       | `{}`                                         |
+| `image.repository`                            | image repository                          | `us.gcr.io/grafeas`                          |
+| `image.name`                                  | image name                                | `grafeas-server`                             |
+| `image.tag`                                   | image tag                                 | `v0.1.0`                                     |
+| `image.pullPolicy`                            | Image pull policy                         | `IfNotPresent`                               |
+| `nameOverride`                                | App name                                  | `grafeas-server`                             |
+| `fullnameOverride`                            | App name                                  | `grafeas-server`                             |
+| `persistentVolumeClaimName`                   | The name of persistent volume             | `grafeas`                                    |
+| `storageType`                                 | The type of storage used, supported options: memstore or embedded | `memstore`           |
+| `service.type`                                | Kubernetes Service type                   | `ClusterIP`                                  |
+| `service.port`                                | Kubernetes Service port                   | `443`                                        |
+| `certificates.name`                           | Certificate name                          | `grafeas-ssl-certs`                        |
+| `certificates.ca`                             | Certificate CA                            | `null`                                       |
+| `certificates.cert`                           | Certificate body                          | `null`                                       |
+| `certificates.key`                            | Certificate key                           | `null`                                       |
+| `resources`                                   | CPU/Memory resource requests/limits       | `{}`                                         |
+| `livenessProbe`                               | Liveness Probe settings                   | `{}`                                         |
+| `readinessProbe`                              | Readiness Probe settings                  | `{}`                                         |
+| `nodeSelector`                                | Node labels for pod assignment            | `{}`                                         |
+| `tolerations`                                 | Toleration labels for pod assignment	  | `[]`                                         |
+| `affinity`                                    | Affinity settings for pod assignment      | `{}`                                         |
