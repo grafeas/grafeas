@@ -142,7 +142,7 @@ func (g *API) UpdateNote(ctx context.Context, req *gpb.UpdateNoteRequest, resp *
 	}
 
 	if req.Note == nil {
-		return status.Errorf(codes.InvalidArgument, "an note must be specified")
+		return status.Errorf(codes.InvalidArgument, "a note must be specified")
 	}
 
 	n, err := g.Storage.UpdateNote(ctx, pID, nID, req.Note, req.UpdateMask)
