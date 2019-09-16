@@ -43,9 +43,9 @@ The following options will start the Grafeas gRPC and REST APIs on `localhost:80
 To start the Grafeas server from the publicly published Docker image, do:
 
 ```bash
-docker pull us.gcr.io/grafeas/grafeas-server:0.1.0
+docker pull us.gcr.io/grafeas/grafeas-server:v0.1.0
 docker run -p 8080:8080 --name grafeas \
-  us.gcr.io/grafeas/grafeas-server:0.1.0
+  us.gcr.io/grafeas/grafeas-server:v0.1.0
 ```
 
 ### Using Dockerfile

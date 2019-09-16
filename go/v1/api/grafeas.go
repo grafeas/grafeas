@@ -16,12 +16,12 @@
 package grafeas
 
 import (
-	"github.com/grafeas/grafeas/go/errors"
 	"github.com/grafeas/grafeas/go/iam"
 	gpb "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto"
 	"golang.org/x/net/context"
 	fieldmaskpb "google.golang.org/genproto/protobuf/field_mask"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 const (
@@ -111,30 +111,10 @@ type Auth interface {
 	PurgePolicy(ctx context.Context, projectID string, entityID string, r iam.Resource) error
 }
 
-// Filter provides functions for parsing filter strings.
-type Filter interface {
-	// Validate determines whether the specified filter string is a valid filter.
-	Validate(f string) error
-}
-
-// Logger provides functions for logging at various levels.
-type Logger interface {
-	// PrepareCtx adds values to the context for logging if necessary.
-	PrepareCtx(ctx context.Context, projectID string) context.Context
-	Info(ctx context.Context, args ...interface{})
-	Infof(ctx context.Context, format string, args ...interface{})
-	Warning(ctx context.Context, args ...interface{})
-	Warningf(ctx context.Context, format string, args ...interface{})
-	Error(ctx context.Context, args ...interface{})
-	Errorf(ctx context.Context, format string, args ...interface{})
-}
-
 // API implements the methods in the v1 Grafeas API.
 type API struct {
 	Storage           Storage
 	Auth              Auth
-	Filter            Filter
-	Logger            Logger
 	EnforceValidation bool
 }
 
@@ -145,9 +125,9 @@ func validatePageSize(ps int32) (int32, error) {
 	case ps == 0:
 		return defaultPageSize, nil
 	case ps > maxPageSize:
-		return 0, errors.Newf(codes.InvalidArgument, "page size %d cannot be large than max page size %d", ps, maxPageSize)
+		return 0, status.Errorf(codes.InvalidArgument, "page size %d cannot be large than max page size %d", ps, maxPageSize)
 	case ps < 0:
-		return 0, errors.Newf(codes.InvalidArgument, "page size %d cannot be negative", ps)
+		return 0, status.Errorf(codes.InvalidArgument, "page size %d cannot be negative", ps)
 	}
 
 	return ps, nil
