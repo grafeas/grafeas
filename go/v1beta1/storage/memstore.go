@@ -194,7 +194,7 @@ func (m *MemStore) UpdateOccurrence(ctx context.Context, pID, oID string, o *gpb
 
 	updatedOcc, err := ApplyUpdateOnOccurrence(oldOcc, o, mask)
 	if err != nil {
-		return nil, errors.Newf(codes.Internal, "Update could not be applied to Occurrence")
+		return nil, status.Errorf(codes.Internal, "Update could not be applied to Occurrence")
 	}
 
 	updatedOcc.UpdateTime = ptypes.TimestampNow()
@@ -304,7 +304,7 @@ func (m *MemStore) UpdateNote(ctx context.Context, pID, nID string, n *gpb.Note,
 
 	updatedNote, err := ApplyUpdateOnNote(oldNote, n, mask)
 	if err != nil {
-		return nil, errors.Newf(codes.Internal, "Update could not be applied to Note")
+		return nil, status.Errorf(codes.Internal, "Update could not be applied to Note")
 	}
 
 	updatedNote.UpdateTime = ptypes.TimestampNow()
