@@ -22,10 +22,6 @@ import (
 	"sort"
 	"strings"
 
-	"log"
-	"os"
-	"path/filepath"
-
 	"github.com/boltdb/bolt"
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes"
