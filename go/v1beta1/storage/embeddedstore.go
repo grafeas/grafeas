@@ -16,6 +16,9 @@ package storage
 
 import (
 	"fmt"
+	"log"
+	"os"
+	"path/filepath"
 	"sort"
 	"strings"
 
@@ -28,13 +31,13 @@ import (
 	"github.com/golang/protobuf/ptypes"
 	"github.com/google/uuid"
 	"github.com/grafeas/grafeas/go/config"
-	"github.com/grafeas/grafeas/go/errors"
 	"github.com/grafeas/grafeas/go/name"
 	pb "github.com/grafeas/grafeas/proto/v1beta1/grafeas_go_proto"
 	prpb "github.com/grafeas/grafeas/proto/v1beta1/project_go_proto"
 	"golang.org/x/net/context"
 	fieldmaskpb "google.golang.org/genproto/protobuf/field_mask"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 const (
@@ -87,7 +90,7 @@ func NewEmbeddedStore(config *config.EmbeddedStoreConfig) *EmbeddedStore {
 func (m *EmbeddedStore) CreateProject(ctx context.Context, pID string, p *prpb.Project) (*prpb.Project, error) {
 	err := m.update(bucketProjects, pID, true, p)
 	if err == errKeyExists {
-		return nil, errors.Newf(codes.AlreadyExists, "Project with name %q already exists", pID)
+		return nil, status.Errorf(codes.AlreadyExists, "Project with name %q already exists", pID)
 	}
 	return p, err
 }
@@ -97,7 +100,7 @@ func (m *EmbeddedStore) GetProject(ctx context.Context, pID string) (*prpb.Proje
 	var project prpb.Project
 	err := m.get(bucketProjects, pID, &project)
 	if err == errNoKey {
-		return nil, errors.Newf(codes.NotFound, "Project with name %q does not Exist", pID)
+		return nil, status.Errorf(codes.NotFound, "Project with name %q does not Exist", pID)
 	}
 	return &project, err
 }
@@ -130,7 +133,7 @@ func (m *EmbeddedStore) ListProjects(ctx context.Context, filter string, pageSiz
 func (m *EmbeddedStore) DeleteProject(ctx context.Context, pID string) error {
 	err := m.delete(bucketProjects, pID)
 	if err == errNoKey {
-		return errors.Newf(codes.NotFound, "Project with name %q does not Exist", pID)
+		return status.Errorf(codes.NotFound, "Project with name %q does not Exist", pID)
 	}
 	return err
 }
@@ -140,7 +143,7 @@ func (m *EmbeddedStore) GetOccurrence(ctx context.Context, pID, oID string) (*pb
 	var o pb.Occurrence
 	err := m.get(bucketOccurrences, oID, &o)
 	if err == errNoKey {
-		return nil, errors.Newf(codes.NotFound, "Occurrence with ID %q does not exist", oID)
+		return nil, status.Errorf(codes.NotFound, "Occurrence with ID %q does not exist", oID)
 	}
 
 	// Set the output-only field before returning
@@ -179,7 +182,7 @@ func (m *EmbeddedStore) CreateOccurrence(ctx context.Context, pID, uID string, o
 	var id string
 	o = proto.Clone(o).(*pb.Occurrence)
 	if nr, err := uuid.NewRandom(); err != nil {
-		return nil, errors.Newf(codes.Internal, "Failed to generate UUID")
+		return nil, status.Errorf(codes.Internal, "Failed to generate UUID")
 	} else {
 		id = nr.String()
 	}
@@ -192,7 +195,7 @@ func (m *EmbeddedStore) CreateOccurrence(ctx context.Context, pID, uID string, o
 		return o, err
 	}
 
-	return nil, errors.Newf(codes.AlreadyExists, "Occurrence with ID %q already exists", id)
+	return nil, status.Errorf(codes.AlreadyExists, "Occurrence with ID %q already exists", id)
 }
 
 // BatchCreateOccurrences batch creates the specified occurrences in embedded store.
@@ -236,7 +239,7 @@ func (m *EmbeddedStore) UpdateOccurrence(ctx context.Context, pID, oID string, o
 
 	err = m.update(bucketOccurrences, oID, false, updatedOcc)
 	if err == errNoKey {
-		return nil, errors.Newf(codes.NotFound, "Occurrence with oID %q does not exist", oID)
+		return nil, status.Errorf(codes.NotFound, "Occurrence with oID %q does not exist", oID)
 	}
 	return o, err
 }
@@ -245,7 +248,7 @@ func (m *EmbeddedStore) UpdateOccurrence(ctx context.Context, pID, oID string, o
 func (m *EmbeddedStore) DeleteOccurrence(ctx context.Context, pID, oID string) error {
 	err := m.delete(bucketOccurrences, oID)
 	if err == errNoKey {
-		return errors.Newf(codes.NotFound, "Occurrence with oID %q does not exist", oID)
+		return status.Errorf(codes.NotFound, "Occurrence with oID %q does not exist", oID)
 	}
 	return err
 }
@@ -256,7 +259,7 @@ func (m *EmbeddedStore) GetNote(ctx context.Context, pID, nID string) (*pb.Note,
 	var n pb.Note
 	err := m.get(bucketNotes, nName, &n)
 	if err == errNoKey {
-		return nil, errors.Newf(codes.NotFound, "Note with name %q does not Exist", nName)
+		return nil, status.Errorf(codes.NotFound, "Note with name %q does not Exist", nName)
 	}
 
 	// Set the output-only field before returning
@@ -300,7 +303,7 @@ func (m *EmbeddedStore) CreateNote(ctx context.Context, pID, nID, uID string, n 
 		err := m.update(bucketNotes, n.Name, true, n)
 		return n, err
 	}
-	return nil, errors.Newf(codes.AlreadyExists, "Note with name %q already exists", n.Name)
+	return nil, status.Errorf(codes.AlreadyExists, "Note with name %q already exists", n.Name)
 }
 
 // BatchCreateNotes batch creates the specified notes in embedded store.
@@ -347,7 +350,7 @@ func (m *EmbeddedStore) UpdateNote(ctx context.Context, pID, nID string, n *pb.N
 
 	err = m.update(bucketNotes, nName, false, updatedNote)
 	if err == errNoKey {
-		return nil, errors.Newf(codes.NotFound, "Note with name %q does not Exist", nName)
+		return nil, status.Errorf(codes.NotFound, "Note with name %q does not Exist", nName)
 	}
 	return n, err
 }
@@ -357,7 +360,7 @@ func (m *EmbeddedStore) DeleteNote(ctx context.Context, pID, nID string) error {
 	nName := name.FormatNote(pID, nID)
 	err := m.delete(bucketNotes, nName)
 	if err == errNoKey {
-		return errors.Newf(codes.NotFound, "Note with name %q does not Exist", nName)
+		return status.Errorf(codes.NotFound, "Note with name %q does not Exist", nName)
 	}
 	return err
 }
@@ -371,7 +374,7 @@ func (m *EmbeddedStore) GetOccurrenceNote(ctx context.Context, pID, oID string) 
 	var n pb.Note
 	err = m.get(bucketNotes, o.NoteName, &n)
 	if err == errNoKey {
-		return nil, errors.Newf(codes.NotFound, "Note with name %q does not Exist", o.NoteName)
+		return nil, status.Errorf(codes.NotFound, "Note with name %q does not Exist", o.NoteName)
 	}
 	return &n, err
 }

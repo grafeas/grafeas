@@ -19,12 +19,12 @@ import (
 
 	emptypb "github.com/golang/protobuf/ptypes/empty"
 	"github.com/google/logger"
-	"github.com/grafeas/grafeas/go/errors"
 	"github.com/grafeas/grafeas/go/name"
 	"github.com/grafeas/grafeas/go/v1/api/validators/grafeas"
 	gpb "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 // GetOccurrence gets the specified occurrence.
@@ -81,7 +81,7 @@ func (g *API) CreateOccurrence(ctx context.Context, req *gpb.CreateOccurrenceReq
 	}
 
 	if req.Occurrence == nil {
-		return errors.Newf(codes.InvalidArgument, "an occurrence must be specified")
+		return status.Errorf(codes.InvalidArgument, "an occurrence must be specified")
 	}
 
 	if err := g.Auth.CheckAccessAndProject(ctx, pID, "", OccurrencesCreate); err != nil {
@@ -131,10 +131,10 @@ func (g *API) BatchCreateOccurrences(ctx context.Context, req *gpb.BatchCreateOc
 	}
 
 	if len(req.Occurrences) == 0 {
-		return errors.Newf(codes.InvalidArgument, "at least one occurrence must be specified")
+		return status.Errorf(codes.InvalidArgument, "at least one occurrence must be specified")
 	}
 	if len(req.Occurrences) > maxBatchSize {
-		return errors.Newf(codes.InvalidArgument, "%d is too many occurrence to batch create, a maximum of %d occurrence is allowed per batch create", len(req.Occurrences), maxBatchSize)
+		return status.Errorf(codes.InvalidArgument, "%d is too many occurrence to batch create, a maximum of %d occurrence is allowed per batch create", len(req.Occurrences), maxBatchSize)
 	}
 
 	// Creating occurrences requires an additional notes attacher permissions check before we can
@@ -150,7 +150,7 @@ func (g *API) BatchCreateOccurrences(ctx context.Context, req *gpb.BatchCreateOc
 		}
 	}
 	if len(authErrs) > 0 {
-		return errors.Newf(codes.PermissionDenied, "one or more occurrences had auth errors, no occurrences were created: %v", authErrs)
+		return status.Errorf(codes.PermissionDenied, "one or more occurrences had auth errors, no occurrences were created: %v", authErrs)
 	}
 
 	validationErrs := []error{}
@@ -161,7 +161,7 @@ func (g *API) BatchCreateOccurrences(ctx context.Context, req *gpb.BatchCreateOc
 	}
 	if len(validationErrs) > 0 {
 		if g.EnforceValidation {
-			return errors.Newf(codes.InvalidArgument, "one or more occurrences are invalid, no occurrences were created: %v", validationErrs)
+			return status.Errorf(codes.InvalidArgument, "one or more occurrences are invalid, no occurrences were created: %v", validationErrs)
 		}
 		logger.Warningf("BatchCreateOccurrences %+v for project %q: invalid occurrences(s), fail open, would have failed with: %v", req.Occurrences, pID, validationErrs)
 	}
@@ -175,7 +175,7 @@ func (g *API) BatchCreateOccurrences(ctx context.Context, req *gpb.BatchCreateOc
 	resp.Occurrences = created
 	if len(errs) != 0 {
 		// Report any storage layer errors as invalid argument for now, find a better way to do this.
-		return errors.Newf(codes.InvalidArgument, "errors encountered when batch creating occurrences: %d of %d occurrences failed: %v", len(errs), len(req.Occurrences), errs)
+		return status.Errorf(codes.InvalidArgument, "errors encountered when batch creating occurrences: %d of %d occurrences failed: %v", len(errs), len(req.Occurrences), errs)
 	}
 
 	return nil
@@ -189,7 +189,7 @@ func (g *API) UpdateOccurrence(ctx context.Context, req *gpb.UpdateOccurrenceReq
 	}
 
 	if req.Occurrence == nil {
-		return errors.Newf(codes.InvalidArgument, "an occurrence must be specified")
+		return status.Errorf(codes.InvalidArgument, "an occurrence must be specified")
 	}
 
 	if err := g.Auth.CheckAccessAndProject(ctx, pID, oID, OccurrencesUpdate); err != nil {
