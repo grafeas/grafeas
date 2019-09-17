@@ -27,13 +27,15 @@ spec:
           args: ["--config=/etc/config/config.yaml"]
           ports:
             - name: grafeas
-              containerPort: 443
+              containerPort: {{ .Values.container.port }}
               protocol: TCP
           volumeMounts:
           - name: config-volume
             mountPath: /etc/config
+{{- if eq .Values.certificates.enabled true }}
           - name: certificates
             mountPath: /certificates
+{{- end }}
 {{- if eq .Values.storageType "embedded" }}
           - name: persistent-volume
             mountPath: /data
