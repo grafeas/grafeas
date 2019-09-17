@@ -38,12 +38,18 @@ spec:
           - name: persistent-volume
             mountPath: /data
 {{- end }}
-          livenessProbe:
-{{ toYaml .Values.livenessProbe | indent 12 }}
-          readinessProbe:
-{{ toYaml .Values.readinessProbe | indent 12 }}
           resources:
 {{- toYaml .Values.resources | nindent 12 }}
+          livenessProbe:
+             tcpSocket:
+               port: grafeas
+             initialDelaySeconds: {{ .Values.livenessprobe.initialDelaySeconds }}
+             periodSeconds: {{ .Values.livenessprobe.periodSeconds }}
+          readinessProbe:
+             tcpSocket:
+               port: grafeas
+             initialDelaySeconds: {{ .Values.readinessprobe.initialDelaySeconds }}
+             periodSeconds: {{ .Values.readinessprobe.periodSeconds }}
       volumes:
         - name: config-volume
           configMap:
