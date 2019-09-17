@@ -99,12 +99,22 @@ The following table lists the configurable parameters of the Grafeas chart and t
 | `persistentVolumeClaimName`                   | The name of persistent volume             | `grafeas`                                    |
 | `storageType`                                 | The type of storage used, supported options: memstore or embedded | `memstore`           |
 | `service.type`                                | Kubernetes Service type                   | `ClusterIP`                                  |
-| `service.port`                                | Kubernetes Service port                   | `443`                                        |
-| `certificates.name`                           | Certificate name                          | `grafeas-ssl-certs`                        |
+| `service.port`                                | Kubernetes Service port                   | `8080`                                       |
+| `container.port`                              | Grafeas container port                    | `8080`                                       |
+| `certificates.enabled`                        | Whether to enable client certificates for auth | `false`                                 |
+| `certificates.name`                           | Certificate name                          | `grafeas-ssl-certs`                          |
 | `certificates.ca`                             | Certificate CA                            | `null`                                       |
 | `certificates.cert`                           | Certificate body                          | `null`                                       |
 | `certificates.key`                            | Certificate key                           | `null`                                       |
 | `resources`                                   | CPU/Memory resource requests/limits       | `{}`                                         |
+| `resources.limits.cpu`                        | CPU limit                                 | `100m`                                       |
+| `resources.limits.memory`                     | Memory limit                              | `128Mi`                                      |
+| `resources.requests.cpu`                      | CPU requests                              | `100m`                                       |
+| `resources.requests.memory`                   | Memory requests                           | `128Mi`                                      |
+| `livenessprobe.initialDelaySeconds`           | Liveness probe initial delay seconds      | `15`                                         |
+| `livenessprobe.periodSeconds`                 | Liveness probe period seconds             | `20`                                         |
+| `readinessprobe.initialDelaySeconds`          | Readiness initial delay seconds           | `5`                                          |
+| `readinessprobe.periodSeconds`                | Readiness probe period seconds            | `10`                                         |
 | `livenessProbe`                               | Liveness Probe settings                   | `{}`                                         |
 | `readinessProbe`                              | Readiness Probe settings                  | `{}`                                         |
 | `nodeSelector`                                | Node labels for pod assignment            | `{}`                                         |
