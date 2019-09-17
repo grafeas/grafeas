@@ -16,7 +16,7 @@ Generate self-signed certificates by following [instructions](../docs/running_gr
 If using in-memory store, do:
 
 ```
-helm install --name grafeas ./grafeas-charts/ --set certificates.ca="$(cat ca.crt)" --set certificates.cert="$(cat server.crt)" --set "certificates.key=$(cat server.key)"
+helm install --name grafeas ./grafeas-charts/ --set container.port=443 --set certificates.enabled=true --set service.port=443 --set certificates.ca="$(cat ca.crt)" --set certificates.cert="$(cat server.crt)" --set "certificates.key=$(cat server.key)"
 ```
 
 If using embedded boltdb, create a local persistent volume and a claim:
