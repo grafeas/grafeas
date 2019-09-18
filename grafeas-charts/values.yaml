@@ -51,8 +51,8 @@ resources:
 
 livenessprobe:
   initialDelaySeconds: 15
-  periodSeconds: 20
+  periodSeconds: 10
 
 readinessprobe:
-  initialDelaySeconds: 5
+  initialDelaySeconds: 15
   periodSeconds: 10
