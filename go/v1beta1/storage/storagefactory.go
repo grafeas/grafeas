@@ -24,14 +24,14 @@ import (
 )
 
 // use type aliasing to get multiple inheritance even though both interfaces are called Storage
-type ps = project.Storage
-type gs = grafeas.Storage
+type Ps = project.Storage
+type Gs = grafeas.Storage
 
 // unified interface that basically gives us a single interface called Storage that implements
 // both anonymous interfaces.
 type Storage struct {
-	ps
-	gs
+	Ps
+	Gs
 }
 
 var registeredStorageTypeProviders = map[string]func(storageType string, storageConfig *interface{}) (*Storage, error){}
@@ -64,8 +64,8 @@ func memstoreStorageTypeProvider(storageType string, storageConfig *interface{})
 
 	s := NewMemStore()
 	storage := &Storage{
-		ps: s,
-		gs: s,
+		Ps: s,
+		Gs: s,
 	}
 
 	return storage, nil
@@ -86,8 +86,8 @@ func embeddedStorageTypeProvider(storageType string, storageConfig *interface{})
 
 	s := NewEmbeddedStore(&storeConfig)
 	storage := &Storage{
-		ps: s,
-		gs: s,
+		Ps: s,
+		Gs: s,
 	}
 
 	return storage, nil
@@ -109,8 +109,8 @@ func postgresStorageTypeProvider(storageType string, storageConfig *interface{})
 
 	s := NewPgSQLStore(&storeConfig)
 	storage := &Storage{
-		ps: s,
-		gs: s,
+		Ps: s,
+		Gs: s,
 	}
 
 	return storage, nil
