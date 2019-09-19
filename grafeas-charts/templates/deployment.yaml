@@ -47,11 +47,13 @@ spec:
                port: grafeas
              initialDelaySeconds: {{ .Values.livenessprobe.initialDelaySeconds }}
              periodSeconds: {{ .Values.livenessprobe.periodSeconds }}
+             failureThreshold: {{ .Values.livenessprobe.failureThreshold }}
           readinessProbe:
              tcpSocket:
                port: grafeas
              initialDelaySeconds: {{ .Values.readinessprobe.initialDelaySeconds }}
              periodSeconds: {{ .Values.readinessprobe.periodSeconds }}
+             failureThreshold: {{ .Values.readinessprobe.failureThreshold }}
       volumes:
         - name: config-volume
           configMap:

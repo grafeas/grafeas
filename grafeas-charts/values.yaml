@@ -50,9 +50,11 @@ resources:
     memory: 128Mi
 
 livenessprobe:
-  initialDelaySeconds: 30 # Value based on pod startup average of ~20 seconds using default limits above
+  initialDelaySeconds: 15 # Value based on pod startup average of ~12 seconds using default limits above
   periodSeconds: 10
+  failureThreshold: 3 # initialDelaySeconds + (failureThreshold * periodSeconds) based on worst case startup time of 45 seconds
 
 readinessprobe:
-  initialDelaySeconds: 30 # Value based on pod startup average of ~20 seconds using default limits above
+  initialDelaySeconds: 15 # Value based on pod startup average of ~12 seconds using default limits above
   periodSeconds: 10
+  failureThreshold: 3 # initialDelaySeconds + (failureThreshold * periodSeconds) based on worst case startup time of 45 seconds

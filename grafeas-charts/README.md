@@ -112,9 +112,11 @@ The following table lists the configurable parameters of the Grafeas chart and t
 | `resources.requests.cpu`                      | CPU requests                              | `100m`                                       |
 | `resources.requests.memory`                   | Memory requests                           | `128Mi`                                      |
 | `livenessprobe.initialDelaySeconds`           | Liveness probe initial delay seconds      | `15`                                         |
-| `livenessprobe.periodSeconds`                 | Liveness probe period seconds             | `20`                                         |
-| `readinessprobe.initialDelaySeconds`          | Readiness initial delay seconds           | `5`                                          |
+| `livenessprobe.periodSeconds`                 | Liveness probe period seconds             | `10`                                         |
+| `livenessprobe.failureThreshold`              | Liveness probe failure threshold          | `3`                                          |
+| `readinessprobe.initialDelaySeconds`          | Readiness probe initial delay seconds     | `15`                                         |
 | `readinessprobe.periodSeconds`                | Readiness probe period seconds            | `10`                                         |
+| `readinessprobe.failureThreshold`             | Readiness probe failure threshold         | `3`                                          |
 | `nodeSelector`                                | Node labels for pod assignment            | `{}`                                         |
 | `tolerations`                                 | Toleration labels for pod assignment	  | `[]`                                         |
 | `affinity`                                    | Affinity settings for pod assignment      | `{}`                                         |
