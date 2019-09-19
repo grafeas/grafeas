@@ -15,101 +15,124 @@
 package config
 
 import (
-	"errors"
+	"bytes"
+	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 
-	fernet "github.com/fernet/fernet-go"
-	"gopkg.in/yaml.v2"
+	"github.com/spf13/viper"
 )
 
 // file is the Grafeas configuration file.
 type file struct {
-	Grafeas *GrafeasConfig `yaml:"grafeas"`
+	Grafeas GrafeasConfig `mapstructure:"grafeas"`
+}
+
+type GrafeasConfig struct {
+	API           *ServerConfig `mapstructure:"api"`
+	StorageType   string        `mapstructure:"storage_type"` // Natively supported storage types are "memstore" and "embedded"
+	StorageConfig *interface{}
 }
 
 // ServerConfig is the Grafeas server configuration.
 type ServerConfig struct {
-	Address            string   `yaml:"address"`              // Endpoint address, e.g. localhost:8080 or unix:///var/run/grafeas.sock
-	CertFile           string   `yaml:"certfile"`             // A PEM encoded certificate file
-	KeyFile            string   `yaml:"keyfile"`              // A PEM encoded private key file
-	CAFile             string   `yaml:"cafile"`               // A PEM encoded CA's certificate file
-	CORSAllowedOrigins []string `yaml:"cors_allowed_origins"` // Permitted CORS origins.
+	Address            string   `mapstructure:"address"`              // Endpoint address, e.g. localhost:8080 or unix:///var/run/grafeas.sock
+	CertFile           string   `mapstructure:"certfile"`             // A PEM encoded certificate file
+	KeyFile            string   `mapstructure:"keyfile"`              // A PEM encoded private key file
+	CAFile             string   `mapstructure:"cafile"`               // A PEM encoded CA's certificate file
+	CORSAllowedOrigins []string `mapstructure:"cors_allowed_origins"` // Permitted CORS origins.
 }
 
 // EmbeddedStoreConfig is the configuration for embedded store.
 type EmbeddedStoreConfig struct {
-	Path string `yaml:"path"` // Path is the folder path to storage files
+	Path string `mapstructure:"path"` // Path is the folder path to storage files
 }
 
+// TODO(#341) Move this to its own project
 // PgSQLConfig is the configuration for PostgreSQL store.
 type PgSQLConfig struct {
-	Host     string `yaml:"host"`
-	DbName   string `yaml:"dbname"`
-	User     string `yaml:"user"`
-	Password string `yaml:"password"`
+	Host     string `mapstructure:"host"`
+	DbName   string `mapstructure:"dbname"`
+	User     string `mapstructure:"user"`
+	Password string `mapstructure:"password"`
 	// Valid sslmodes: disable, allow, prefer, require, verify-ca, verify-full.
 	// See https://www.postgresql.org/docs/current/static/libpq-connect.html for details
-	SSLMode       string `yaml:"sslmode"`
-	PaginationKey string `yaml:"paginationkey"`
-}
-
-// GrafeasConfig is the global configuration for an instance of Grafeas.
-type GrafeasConfig struct {
-	API            *ServerConfig        `yaml:"api"`
-	StorageType    string               `yaml:"storage_type"` // Supported storage types are "memstore", "postgres" and "embedded"
-	PgSQLConfig    *PgSQLConfig         `yaml:"postgres"`
-	EmbeddedConfig *EmbeddedStoreConfig `yaml:"embedded"` // EmbeddedConfig is the embedded store config
+	SSLMode       string `mapstructure:"sslmode"`
+	PaginationKey string `mapstructure:"paginationkey"`
 }
 
 // defaultConfig is a configuration that can be used as a fallback value.
-func defaultConfig() *GrafeasConfig {
-	return &GrafeasConfig{
-		API: &ServerConfig{
-			Address:  "0.0.0.0:8080",
-			CertFile: "",
-			KeyFile:  "",
-			CAFile:   "",
-		},
-		StorageType: "memstore",
-		PgSQLConfig: &PgSQLConfig{},
-	}
-}
+var defaultConfig = []byte(`
+grafeas:
+  # Grafeas api server config
+  api:
+    # Endpoint address
+    address: "0.0.0.0:8080"
+    # PKI configuration (optional)
+    certfile:
+    keyfile:
+    cafile: 
+    # CORS configuration (optional)
+    cors_allowed_origins:
+      # - "http://example.net"
+  # Supported storage types are "memstore" and "postgres"
+  storage_type: "memstore"
+`)
 
 // LoadConfig creates a config from a YAML-file. If fileName is an empty
 // string a default config will be returned.
 func LoadConfig(fileName string) (*GrafeasConfig, error) {
-	if fileName == "" {
-		return defaultConfig(), nil
-	}
+	v := viper.New()
+	v.SetConfigType("yaml")
 
-	data, err := ioutil.ReadFile(fileName)
+	var err error
+	data := defaultConfig
+	// now read from config cfg if required
+	if fileName != "" {
+		data, err = ioutil.ReadFile(fileName)
+		if err != nil {
+			return nil, err
+		}
+	}
+	err = v.ReadConfig(bytes.NewBuffer(data))
 	if err != nil {
 		return nil, err
 	}
 
-	var configFile file
-	if err := yaml.Unmarshal(data, &configFile); err != nil {
-		return nil, err
-	}
-	config := configFile.Grafeas
+	var config GrafeasConfig
 
-	if config.StorageType == "postgres" {
-		// Generate a pagination key if none is provided.
-		if config.PgSQLConfig.PaginationKey == "" {
-			log.Println("pagination key is empty, generating...")
-			var key fernet.Key
-			if err = key.Generate(); err != nil {
-				return nil, err
-			}
-			config.PgSQLConfig.PaginationKey = key.Encode()
-		} else {
-			_, err = fernet.DecodeKey(config.PgSQLConfig.PaginationKey)
-			if err != nil {
-				err = errors.New("Invalid Pagination key; must be 32-bit URL-safe base64")
-				return nil, err
-			}
-		}
+	// parse server config
+	serverCfg := ServerConfig{}
+	err = v.UnmarshalKey("grafeas.api", &serverCfg)
+	if err != nil {
+		log.Panicf("Unable to decode into struct, %v", err)
 	}
-	return config, nil
+	config.API = &serverCfg
+
+	// parse storage type
+	config.StorageType = v.GetString("grafeas.storage_type")
+
+	// parse storage type-specific configuration
+	genericConfig := v.Get(fmt.Sprintf("grafeas.%s", config.StorageType))
+
+	if config.StorageType != "memstore" && genericConfig != nil {
+		config.StorageConfig = &genericConfig
+	}
+
+	return &config, nil
+}
+
+// ConvertGenericConfigToSpecificType will attempt to copy generic configuration within source
+// to a target struct that represents the specific storage configuration, represented as an interface{}.
+// see config_test.go for example usage.
+func ConvertGenericConfigToSpecificType(source interface{}, target interface{}) error {
+	b, _ := json.Marshal(source)
+
+	err := json.Unmarshal(b, &target)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
