@@ -63,7 +63,7 @@ func TestBetaPgSQLStore(t *testing.T) {
 		return g, gp, func() { dropDatabase(t, config); pg.Close() }
 	}
 
-	DoTestStorage(t, createPgSQLStore)
+	storage.DoTestStorage(t, createPgSQLStore)
 }
 
 func TestPgSQLStoreWithUserAsEnv(t *testing.T) {
@@ -85,5 +85,5 @@ func TestPgSQLStoreWithUserAsEnv(t *testing.T) {
 		return g, gp, func() { dropDatabase(t, config); pg.Close() }
 	}
 
-	DoTestStorage(t, createPgSQLStore)
+	storage.DoTestStorage(t, createPgSQLStore)
 }
