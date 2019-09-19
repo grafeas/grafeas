@@ -17,6 +17,7 @@ package main
 import (
 	"log"
 
+	"github.com/grafeas/grafeas/go/v1beta1/server"
 	"github.com/grafeas/grafeas/go/v1beta1/storage"
 )
 
@@ -25,5 +26,5 @@ func main() {
 	if err != nil {
 		log.Panicf("Error when registering storage type providers, %s", err)
 	}
-	StartGrafeas()
+	server.StartGrafeas()
 }
