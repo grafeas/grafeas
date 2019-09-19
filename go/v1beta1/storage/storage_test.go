@@ -65,7 +65,7 @@ var (
 // a corresponding cleanUp function that will be run at the end of each
 // test case.
 // TODO: add testing for CreateTime and UpdateTime
-func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage, project.Storage, func())) {
+func DoTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage, project.Storage, func())) {
 	t.Run("CreateProject", func(t *testing.T) {
 		_, gp, cleanUp := createStore(t)
 		defer cleanUp()
