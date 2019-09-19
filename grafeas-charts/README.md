@@ -115,8 +115,6 @@ The following table lists the configurable parameters of the Grafeas chart and t
 | `livenessprobe.periodSeconds`                 | Liveness probe period seconds             | `20`                                         |
 | `readinessprobe.initialDelaySeconds`          | Readiness initial delay seconds           | `5`                                          |
 | `readinessprobe.periodSeconds`                | Readiness probe period seconds            | `10`                                         |
-| `livenessProbe`                               | Liveness Probe settings                   | `{}`                                         |
-| `readinessProbe`                              | Readiness Probe settings                  | `{}`                                         |
 | `nodeSelector`                                | Node labels for pod assignment            | `{}`                                         |
 | `tolerations`                                 | Toleration labels for pod assignment	  | `[]`                                         |
 | `affinity`                                    | Affinity settings for pod assignment      | `{}`                                         |
