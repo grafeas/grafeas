@@ -22,9 +22,10 @@ import (
 )
 
 func main() {
-	err := storage.RegisterDefaultStorageTypeProviders()
-	if err != nil {
-		log.Panicf("Error when registering storage type providers, %s", err)
+	if err := storage.RegisterDefaultStorageTypeProviders(); err != nil {
+		log.Fatalf("Error when registering storage type providers, %s", err)
 	}
-	server.StartGrafeas()
+	if err := server.StartGrafeas(); err != nil {
+		log.Fatalf("Error starting Grafeas server, %s", err)
+	}
 }

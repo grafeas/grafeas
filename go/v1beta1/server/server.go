@@ -12,13 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// Package to include all generic instantiation of the Grafeas server, designed to be called from a very small main() implementation.
 package server
 
 import (
 	"context"
 	"crypto/tls"
 	"crypto/x509"
+	"errors"
 	"flag"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net"
@@ -43,22 +46,24 @@ var (
 	configFile = flag.String("config", "", "Path to a config file")
 )
 
-func StartGrafeas() {
+// Start the Grafeas server, instantiating the storage of the type specified in the config.
+func StartGrafeas() error {
 	flag.Parse()
 	cfg, err := config.LoadConfig(*configFile)
 	if err != nil {
-		log.Fatalf("Failed to load cfg file: %s", err)
+		return errors.New(fmt.Sprintf("Failed to load cfg file: %s", err))
 	}
 	var db grafeas.Storage
 	var proj project.Storage
 
 	s, err := storage.CreateStorageOfType(cfg.StorageType, cfg.StorageConfig)
 	if err != nil {
-		log.Fatalf("Failed to create storage: %s", err)
+		return errors.New(fmt.Sprintf("Failed to create storage: %s", err))
 	}
 	db = s
 	proj = s
 	run(cfg.API, &db, &proj)
+	return nil
 }
 
 // run initializes grpc and grpc gateway api services on the same address

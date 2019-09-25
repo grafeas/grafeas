@@ -17,9 +17,9 @@ package config
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
-	"log"
 
 	"github.com/spf13/viper"
 )
@@ -95,8 +95,7 @@ func LoadConfig(fileName string) (*GrafeasConfig, error) {
 			return nil, err
 		}
 	}
-	err = v.ReadConfig(bytes.NewBuffer(data))
-	if err != nil {
+	if err = v.ReadConfig(bytes.NewBuffer(data)); err != nil {
 		return nil, err
 	}
 
@@ -104,9 +103,8 @@ func LoadConfig(fileName string) (*GrafeasConfig, error) {
 
 	// parse server config
 	serverCfg := ServerConfig{}
-	err = v.UnmarshalKey("grafeas.api", &serverCfg)
-	if err != nil {
-		log.Panicf("Unable to decode into struct, %v", err)
+	if err = v.UnmarshalKey("grafeas.api", &serverCfg); err != nil {
+		return nil, errors.New(fmt.Sprintf("Unable to decode into struct, %v", err))
 	}
 	config.API = &serverCfg
 
@@ -127,12 +125,10 @@ func LoadConfig(fileName string) (*GrafeasConfig, error) {
 // to a target struct that represents the specific storage configuration, represented as an interface{}.
 // see config_test.go for example usage.
 func ConvertGenericConfigToSpecificType(source interface{}, target interface{}) error {
-	b, _ := json.Marshal(source)
-
-	err := json.Unmarshal(b, &target)
+	b, err := json.Marshal(source)
 	if err != nil {
-		return err
+		return errors.New(fmt.Sprintf("Error parsing configuration, %v", err))
 	}
 
-	return nil
+	return json.Unmarshal(b, &target)
 }

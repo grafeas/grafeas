@@ -23,7 +23,7 @@ import (
 	"github.com/google/go-cmp/cmp"
 )
 
-func defaultServerConfig() *ServerConfig {
+func defaultServerConfig(t *testing.T) *ServerConfig {
 	return &ServerConfig{
 		Address:            "0.0.0.0:8080",
 		CertFile:           "",
@@ -33,7 +33,7 @@ func defaultServerConfig() *ServerConfig {
 	}
 }
 
-func userServerConfig() *ServerConfig {
+func userServerConfig(t *testing.T) *ServerConfig {
 	return &ServerConfig{
 		Address:  "0.0.0.0:8081",
 		CertFile: "abc",
@@ -46,7 +46,8 @@ func userServerConfig() *ServerConfig {
 	}
 }
 
-var userConfig_memstore_yaml = []byte(`
+func userConfig_memstore_yaml(t *testing.T) []byte {
+	return []byte(`
 grafeas:
   api:
     address: "0.0.0.0:8081"
@@ -58,14 +59,16 @@ grafeas:
       - "https://somewhere.else.com"
   storage_type: "memstore"
 `)
+}
 
-func userEmbeddedConfig() *EmbeddedStoreConfig {
+func userEmbeddedConfig(t *testing.T) *EmbeddedStoreConfig {
 	return &EmbeddedStoreConfig{
 		Path: "/some/path",
 	}
 }
 
-var userConfig_embedded_yaml = []byte(`
+func userConfig_embedded_yaml(t *testing.T) []byte {
+	return []byte(`
 grafeas:
   api:
     address: "0.0.0.0:8081"
@@ -79,6 +82,7 @@ grafeas:
   embedded: 
     path: /some/path
 `)
+}
 
 func TestLoadConfig_ReturnsDefaultConfig_NoInput(t *testing.T) {
 	cfg, err := LoadConfig("")
@@ -90,8 +94,8 @@ func TestLoadConfig_ReturnsDefaultConfig_NoInput(t *testing.T) {
 		t.Errorf("config API is nil")
 	}
 
-	if !cmp.Equal(cfg.API, defaultServerConfig()) {
-		t.Errorf("Values in cfg.API are not correct\n%s", cmp.Diff(cfg.API, defaultServerConfig()))
+	if !cmp.Equal(cfg.API, defaultServerConfig(t)) {
+		t.Errorf("Values in cfg.API are not correct\n%s", cmp.Diff(cfg.API, defaultServerConfig(t)))
 	}
 
 	if cfg.StorageType != "memstore" {
@@ -112,7 +116,7 @@ func TestLoadConfig_ReturnsConfig_UserSuppliedValues_Memstore(t *testing.T) {
 		_ = os.Remove(file.Name())
 	}()
 
-	_, err = file.Write(userConfig_memstore_yaml)
+	_, err = file.Write(userConfig_memstore_yaml(t))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -131,8 +135,8 @@ func TestLoadConfig_ReturnsConfig_UserSuppliedValues_Memstore(t *testing.T) {
 		t.Errorf("config API is nil")
 	}
 
-	if !cmp.Equal(cfg.API, userServerConfig()) {
-		t.Errorf("Values in cfg.API are not correct\n%s", cmp.Diff(cfg.API, userServerConfig()))
+	if !cmp.Equal(cfg.API, userServerConfig(t)) {
+		t.Errorf("Values in cfg.API are not correct\n%s", cmp.Diff(cfg.API, userServerConfig(t)))
 	}
 
 	if cfg.StorageType != "memstore" {
@@ -153,7 +157,7 @@ func TestLoadConfig_ReturnsConfig_UserSuppliedValues_Embedded(t *testing.T) {
 		_ = os.Remove(file.Name())
 	}()
 
-	_, err = file.Write(userConfig_embedded_yaml)
+	_, err = file.Write(userConfig_embedded_yaml(t))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -172,8 +176,8 @@ func TestLoadConfig_ReturnsConfig_UserSuppliedValues_Embedded(t *testing.T) {
 		t.Errorf("config API is nil")
 	}
 
-	if !cmp.Equal(cfg.API, userServerConfig()) {
-		t.Errorf("Values in cfg.API are not correct\n%s", cmp.Diff(cfg.API, userServerConfig()))
+	if !cmp.Equal(cfg.API, userServerConfig(t)) {
+		t.Errorf("Values in cfg.API are not correct\n%s", cmp.Diff(cfg.API, userServerConfig(t)))
 	}
 
 	if cfg.StorageType != "embedded" {
@@ -191,13 +195,13 @@ func TestLoadConfig_ReturnsConfig_UserSuppliedValues_Embedded(t *testing.T) {
 		log.Fatal(err)
 	}
 
-	if !cmp.Equal(storeConfig, *userEmbeddedConfig()) {
-		t.Errorf("Values in storage configuration are not correct\n%s", cmp.Diff(storeConfig, *userEmbeddedConfig()))
+	if !cmp.Equal(storeConfig, *userEmbeddedConfig(t)) {
+		t.Errorf("Values in storage configuration are not correct\n%s", cmp.Diff(storeConfig, *userEmbeddedConfig(t)))
 	}
 }
 
 // TODO(#341) move these 2 supporting functions and the test case to the new project
-func userPostgresConfig() *PgSQLConfig {
+func userPostgresConfig(t *testing.T) *PgSQLConfig {
 	return &PgSQLConfig{
 		Host:          "127.0.0.1:5432",
 		DbName:        "postgres",
@@ -208,7 +212,8 @@ func userPostgresConfig() *PgSQLConfig {
 	}
 }
 
-var userConfig_postgres_yaml = []byte(`
+func userConfig_postgres_yaml(t *testing.T) []byte {
+	return []byte(`
 grafeas:
   api:
     address: "0.0.0.0:8081"
@@ -227,6 +232,7 @@ grafeas:
     sslmode: "require"
     paginationkey:
 `)
+}
 
 func TestLoadConfig_ReturnsConfig_UserSuppliedValues_Postgres(t *testing.T) {
 	file, err := ioutil.TempFile("", "config.*.yaml")
@@ -237,7 +243,7 @@ func TestLoadConfig_ReturnsConfig_UserSuppliedValues_Postgres(t *testing.T) {
 		_ = os.Remove(file.Name())
 	}()
 
-	_, err = file.Write(userConfig_postgres_yaml)
+	_, err = file.Write(userConfig_postgres_yaml(t))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -256,8 +262,8 @@ func TestLoadConfig_ReturnsConfig_UserSuppliedValues_Postgres(t *testing.T) {
 		t.Errorf("config API is nil")
 	}
 
-	if !cmp.Equal(cfg.API, userServerConfig()) {
-		t.Errorf("Values in cfg.API are not correct\n%s", cmp.Diff(cfg.API, userServerConfig()))
+	if !cmp.Equal(cfg.API, userServerConfig(t)) {
+		t.Errorf("Values in cfg.API are not correct\n%s", cmp.Diff(cfg.API, userServerConfig(t)))
 	}
 
 	if cfg.StorageType != "postgres" {
@@ -275,8 +281,8 @@ func TestLoadConfig_ReturnsConfig_UserSuppliedValues_Postgres(t *testing.T) {
 		log.Fatal(err)
 	}
 
-	if !cmp.Equal(storeConfig, *userPostgresConfig()) {
-		t.Errorf("Values in storage configuration are not correct\n%s", cmp.Diff(storeConfig, *userPostgresConfig()))
+	if !cmp.Equal(storeConfig, *userPostgresConfig(t)) {
+		t.Errorf("Values in storage configuration are not correct\n%s", cmp.Diff(storeConfig, *userPostgresConfig(t)))
 	}
 }
 

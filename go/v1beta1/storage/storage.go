@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// Package to export utility functions used in testing for use by other projects.
 package storage
 
 import (
