@@ -8,11 +8,13 @@ data:
       # Grafeas api server config
       api:
         # Endpoint address
-        address: "0.0.0.0:443"
+        address: "0.0.0.0:{{ .Values.container.port }}"
+{{- if eq .Values.certificates.enabled true }}
         # PKI configuration
         cafile: /certificates/ca.crt
         keyfile: /certificates/server.key
         certfile: /certificates/server.crt
+{{- end }}
         cors_allowed_origins:
         # - "http://example.net"
       storage_type: {{ .Values.storageType }}
