@@ -76,7 +76,7 @@ grafeas:
     # CORS configuration (optional)
     cors_allowed_origins:
       # - "http://example.net"
-  # Supported storage types are "memstore" and "postgres"
+  # Supported storage types are "memstore" and "embedded"
   storage_type: "memstore"
 `)
 
@@ -88,7 +88,7 @@ func LoadConfig(fileName string) (*GrafeasConfig, error) {
 
 	var err error
 	data := defaultConfig
-	// now read from config cfg if required
+	// now read from config fileName if required
 	if fileName != "" {
 		data, err = ioutil.ReadFile(fileName)
 		if err != nil {

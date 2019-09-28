@@ -56,7 +56,7 @@ func CreateStorageOfType(storageType string, storageConfig *interface{}) (*Stora
 
 }
 
-// MemstoreStorageTypeProvider returns a memstore storage instance
+// memstoreStorageTypeProvider returns a memstore storage instance
 func memstoreStorageTypeProvider(storageType string, storageConfig *interface{}) (*Storage, error) {
 	if storageType != "memstore" {
 		return nil, errors.New(fmt.Sprintf("Unknown storage type %s, must be 'memstore'", storageType))
@@ -71,7 +71,7 @@ func memstoreStorageTypeProvider(storageType string, storageConfig *interface{})
 	return storage, nil
 }
 
-// EmbeddedStorageTypeProvider returns an embedded storage instance
+// embeddedStorageTypeProvider returns an embedded storage instance
 func embeddedStorageTypeProvider(storageType string, storageConfig *interface{}) (*Storage, error) {
 	if storageType != "embedded" {
 		return nil, errors.New(fmt.Sprintf("Unknown storage type %s, must be 'embedded'", storageType))
@@ -93,7 +93,7 @@ func embeddedStorageTypeProvider(storageType string, storageConfig *interface{})
 	return storage, nil
 }
 
-// PostgresStorageTypeProvider returns a postgres storage instance
+// postgresStorageTypeProvider returns a postgres storage instance
 // TODO(#341) move this function to a separate project
 func postgresStorageTypeProvider(storageType string, storageConfig *interface{}) (*Storage, error) {
 	if storageType != "postgres" {

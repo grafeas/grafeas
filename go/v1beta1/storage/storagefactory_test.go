@@ -29,19 +29,15 @@ func TestRegisterStorageTypeProvider_AddsProviders(t *testing.T) {
 		t.Errorf("Expected 0 storage providers at start of test, got %d", numProviders)
 	}
 
-	err := RegisterStorageTypeProvider("p1", func(storageType string, storageConfig *interface{}) (storage *Storage, e error) {
+	if err := RegisterStorageTypeProvider("p1", func(storageType string, storageConfig *interface{}) (storage *Storage, e error) {
 		return nil, nil
-	})
-
-	if err != nil {
+	}); err != nil {
 		t.Errorf("Error adding provider, %s", err)
 	}
 
-	err = RegisterStorageTypeProvider("p2", func(storageType string, storageConfig *interface{}) (storage *Storage, e error) {
+	if err := RegisterStorageTypeProvider("p2", func(storageType string, storageConfig *interface{}) (storage *Storage, e error) {
 		return nil, nil
-	})
-
-	if err != nil {
+	}); err != nil {
 		t.Errorf("Error adding provider, %s", err)
 	}
 
@@ -62,25 +58,21 @@ func TestCreateStorageOfType_CorrectProviderIsCalled(t *testing.T) {
 	}
 	providerExecutionTestVariable = 0
 
-	err := RegisterStorageTypeProvider("p1", func(storageType string, storageConfig *interface{}) (storage *Storage, e error) {
+	if err := RegisterStorageTypeProvider("p1", func(storageType string, storageConfig *interface{}) (storage *Storage, e error) {
 		providerExecutionTestVariable = 1
 		return nil, nil
-	})
-
-	if err != nil {
+	}); err != nil {
 		t.Errorf("Error adding provider, %s", err)
 	}
 
-	err = RegisterStorageTypeProvider("p2", func(storageType string, storageConfig *interface{}) (storage *Storage, e error) {
+	if err := RegisterStorageTypeProvider("p2", func(storageType string, storageConfig *interface{}) (storage *Storage, e error) {
 		providerExecutionTestVariable = 2
 		return nil, nil
-	})
-
-	if err != nil {
+	}); err != nil {
 		t.Errorf("Error adding provider, %s", err)
 	}
 
-	_, err = CreateStorageOfType("p1", nil)
+	_, err := CreateStorageOfType("p1", nil)
 	if providerExecutionTestVariable != 1 {
 		t.Errorf("Provider 'p1' not called")
 	}
