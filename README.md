@@ -15,6 +15,7 @@ control of different types of metadata.
 
 ## Getting Started
 
+* Watch the talk on [Software Supply Chain Management with Grafeas and Kritis](https://www.infoq.com/presentations/supply-grafeas-kritis/)
 * Read the Grafeas [announcement](https://grafeas.io/blog/introducing-grafeas)
 * Learn the [Grafeas concepts](docs/grafeas_concepts.md) and [core design
   principles](docs/design_principles.md)
