@@ -16,7 +16,6 @@ package config
 
 import (
 	"io/ioutil"
-	"log"
 	"os"
 	"testing"
 
@@ -24,6 +23,7 @@ import (
 )
 
 func defaultServerConfig(t *testing.T) *ServerConfig {
+	t.Helper()
 	return &ServerConfig{
 		Address:            "0.0.0.0:8080",
 		CertFile:           "",
@@ -34,6 +34,7 @@ func defaultServerConfig(t *testing.T) *ServerConfig {
 }
 
 func userServerConfig(t *testing.T) *ServerConfig {
+	t.Helper()
 	return &ServerConfig{
 		Address:  "0.0.0.0:8081",
 		CertFile: "abc",
@@ -47,6 +48,7 @@ func userServerConfig(t *testing.T) *ServerConfig {
 }
 
 func userConfig_memstore_yaml(t *testing.T) []byte {
+	t.Helper()
 	return []byte(`
 grafeas:
   api:
@@ -62,12 +64,14 @@ grafeas:
 }
 
 func userEmbeddedConfig(t *testing.T) *EmbeddedStoreConfig {
+	t.Helper()
 	return &EmbeddedStoreConfig{
 		Path: "/some/path",
 	}
 }
 
 func userConfig_embedded_yaml(t *testing.T) []byte {
+	t.Helper()
 	return []byte(`
 grafeas:
   api:
@@ -110,20 +114,18 @@ func TestLoadConfig_ReturnsDefaultConfig_NoInput(t *testing.T) {
 func TestLoadConfig_ReturnsConfig_UserSuppliedValues_Memstore(t *testing.T) {
 	file, err := ioutil.TempFile("", "config.*.yaml")
 	if err != nil {
-		log.Fatal(err)
+		t.Fatalf("%s", err)
 	}
 	defer func() {
 		_ = os.Remove(file.Name())
 	}()
 
-	_, err = file.Write(userConfig_memstore_yaml(t))
-	if err != nil {
-		log.Fatal(err)
+	if _, err = file.Write(userConfig_memstore_yaml(t)); err != nil {
+		t.Fatalf("%s", err)
 	}
 
-	err = file.Close()
-	if err != nil {
-		log.Fatal(err)
+	if err = file.Close(); err != nil {
+		t.Fatalf("%s", err)
 	}
 
 	cfg, err := LoadConfig(file.Name())
@@ -151,20 +153,18 @@ func TestLoadConfig_ReturnsConfig_UserSuppliedValues_Memstore(t *testing.T) {
 func TestLoadConfig_ReturnsConfig_UserSuppliedValues_Embedded(t *testing.T) {
 	file, err := ioutil.TempFile("", "config.*.yaml")
 	if err != nil {
-		log.Fatal(err)
+		t.Fatalf("%s", err)
 	}
 	defer func() {
 		_ = os.Remove(file.Name())
 	}()
 
-	_, err = file.Write(userConfig_embedded_yaml(t))
-	if err != nil {
-		log.Fatal(err)
+	if _, err = file.Write(userConfig_embedded_yaml(t)); err != nil {
+		t.Fatalf("%s", err)
 	}
 
-	err = file.Close()
-	if err != nil {
-		log.Fatal(err)
+	if err = file.Close(); err != nil {
+		t.Fatalf("%s", err)
 	}
 
 	cfg, err := LoadConfig(file.Name())
@@ -190,9 +190,8 @@ func TestLoadConfig_ReturnsConfig_UserSuppliedValues_Embedded(t *testing.T) {
 
 	var storeConfig EmbeddedStoreConfig
 
-	err = ConvertGenericConfigToSpecificType(*cfg.StorageConfig, &storeConfig)
-	if err != nil {
-		log.Fatal(err)
+	if err = ConvertGenericConfigToSpecificType(*cfg.StorageConfig, &storeConfig); err != nil {
+		t.Fatalf("%s", err)
 	}
 
 	if !cmp.Equal(storeConfig, *userEmbeddedConfig(t)) {
@@ -202,6 +201,7 @@ func TestLoadConfig_ReturnsConfig_UserSuppliedValues_Embedded(t *testing.T) {
 
 // TODO(#341) move these 2 supporting functions and the test case to the new project
 func userPostgresConfig(t *testing.T) *PgSQLConfig {
+	t.Helper()
 	return &PgSQLConfig{
 		Host:          "127.0.0.1:5432",
 		DbName:        "postgres",
@@ -213,6 +213,7 @@ func userPostgresConfig(t *testing.T) *PgSQLConfig {
 }
 
 func userConfig_postgres_yaml(t *testing.T) []byte {
+	t.Helper()
 	return []byte(`
 grafeas:
   api:
@@ -237,20 +238,18 @@ grafeas:
 func TestLoadConfig_ReturnsConfig_UserSuppliedValues_Postgres(t *testing.T) {
 	file, err := ioutil.TempFile("", "config.*.yaml")
 	if err != nil {
-		log.Fatal(err)
+		t.Fatalf("%s", err)
 	}
 	defer func() {
 		_ = os.Remove(file.Name())
 	}()
 
-	_, err = file.Write(userConfig_postgres_yaml(t))
-	if err != nil {
-		log.Fatal(err)
+	if _, err = file.Write(userConfig_postgres_yaml(t)); err != nil {
+		t.Fatalf("%s", err)
 	}
 
-	err = file.Close()
-	if err != nil {
-		log.Fatal(err)
+	if err = file.Close(); err != nil {
+		t.Fatalf("%s", err)
 	}
 
 	cfg, err := LoadConfig(file.Name())
@@ -276,9 +275,8 @@ func TestLoadConfig_ReturnsConfig_UserSuppliedValues_Postgres(t *testing.T) {
 
 	var storeConfig PgSQLConfig
 
-	err = ConvertGenericConfigToSpecificType(*cfg.StorageConfig, &storeConfig)
-	if err != nil {
-		log.Fatal(err)
+	if err = ConvertGenericConfigToSpecificType(*cfg.StorageConfig, &storeConfig); err != nil {
+		t.Fatalf("%s", err)
 	}
 
 	if !cmp.Equal(storeConfig, *userPostgresConfig(t)) {

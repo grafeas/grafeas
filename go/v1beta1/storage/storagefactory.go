@@ -34,10 +34,10 @@ type Storage struct {
 	Gs
 }
 
-var registeredStorageTypeProviders = map[string]func(storageType string, storageConfig *interface{}) (*Storage, error){}
+var registeredStorageTypeProviders = map[string]func(storageType string, storageConfig *config.StorageConfiguration) (*Storage, error){}
 
 // RegisterStorageTypeProvider registers a new provider to create a specific type of Storage
-func RegisterStorageTypeProvider(storageType string, provider func(storageType string, storageConfig *interface{}) (*Storage, error)) error {
+func RegisterStorageTypeProvider(storageType string, provider func(storageType string, storageConfig *config.StorageConfiguration) (*Storage, error)) error {
 	if _, present := registeredStorageTypeProviders[storageType]; !present {
 		registeredStorageTypeProviders[storageType] = provider
 		return nil
@@ -47,7 +47,7 @@ func RegisterStorageTypeProvider(storageType string, provider func(storageType s
 }
 
 // CreateStorageOfType will create an instance of Storage by name or an error if that type is unsupported.
-func CreateStorageOfType(storageType string, storageConfig *interface{}) (*Storage, error) {
+func CreateStorageOfType(storageType string, storageConfig *config.StorageConfiguration) (*Storage, error) {
 	if provider, present := registeredStorageTypeProviders[storageType]; present {
 		return provider(storageType, storageConfig)
 	} else {
@@ -57,7 +57,7 @@ func CreateStorageOfType(storageType string, storageConfig *interface{}) (*Stora
 }
 
 // memstoreStorageTypeProvider returns a memstore storage instance
-func memstoreStorageTypeProvider(storageType string, storageConfig *interface{}) (*Storage, error) {
+func memstoreStorageTypeProvider(storageType string, storageConfig *config.StorageConfiguration) (*Storage, error) {
 	if storageType != "memstore" {
 		return nil, errors.New(fmt.Sprintf("Unknown storage type %s, must be 'memstore'", storageType))
 	}
@@ -72,7 +72,7 @@ func memstoreStorageTypeProvider(storageType string, storageConfig *interface{})
 }
 
 // embeddedStorageTypeProvider returns an embedded storage instance
-func embeddedStorageTypeProvider(storageType string, storageConfig *interface{}) (*Storage, error) {
+func embeddedStorageTypeProvider(storageType string, storageConfig *config.StorageConfiguration) (*Storage, error) {
 	if storageType != "embedded" {
 		return nil, errors.New(fmt.Sprintf("Unknown storage type %s, must be 'embedded'", storageType))
 	}
@@ -95,7 +95,7 @@ func embeddedStorageTypeProvider(storageType string, storageConfig *interface{})
 
 // postgresStorageTypeProvider returns a postgres storage instance
 // TODO(#341) move this function to a separate project
-func postgresStorageTypeProvider(storageType string, storageConfig *interface{}) (*Storage, error) {
+func postgresStorageTypeProvider(storageType string, storageConfig *config.StorageConfiguration) (*Storage, error) {
 	if storageType != "postgres" {
 		return nil, errors.New(fmt.Sprintf("Unknown storage type %s, must be 'postgres'", storageType))
 	}

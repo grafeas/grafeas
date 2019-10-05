@@ -39,35 +39,40 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/rs/cors"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/status"
 )
 
 var (
 	configFile = flag.String("config", "", "Path to a config file")
 )
 
-// Start the Grafeas server, instantiating the storage of the type specified in the config.
+// StartGrafeas starts the Grafeas server, instantiating the storage of the type specified in the config.
 func StartGrafeas() error {
 	flag.Parse()
 	cfg, err := config.LoadConfig(*configFile)
 	if err != nil {
-		return errors.New(fmt.Sprintf("Failed to load cfg file: %s", err))
+		return status.Errorf(codes.Internal, "failed to load cfg file: %s", err)
 	}
 	var db grafeas.Storage
 	var proj project.Storage
 
 	s, err := storage.CreateStorageOfType(cfg.StorageType, cfg.StorageConfig)
 	if err != nil {
-		return errors.New(fmt.Sprintf("Failed to create storage: %s", err))
+		return status.Errorf(codes.Internal, "failed to create storage: %s", err)
 	}
 	db = s
 	proj = s
-	run(cfg.API, &db, &proj)
-	return nil
+	if err := run(cfg.API, &db, &proj); err != nil {
+		return status.Errorf(codes.Internal, "internal error: %s", err)
+	} else {
+		return nil
+	}
 }
 
 // run initializes grpc and grpc gateway api services on the same address
-func run(config *config.ServerConfig, db *grafeas.Storage, proj *project.Storage) {
+func run(config *config.ServerConfig, db *grafeas.Storage, proj *project.Storage) error {
 	network, address := "tcp", config.Address
 	if strings.HasPrefix(config.Address, "unix://") {
 		network = "unix"
@@ -77,7 +82,7 @@ func run(config *config.ServerConfig, db *grafeas.Storage, proj *project.Storage
 	}
 	l, err := net.Listen(network, address)
 	if err != nil {
-		log.Fatalln("could not listen to address", config.Address)
+		return errors.New(fmt.Sprintf("could not listen to address %s", config.Address))
 	}
 	log.Printf("starting grpc server on %s", address)
 
@@ -92,13 +97,13 @@ func run(config *config.ServerConfig, db *grafeas.Storage, proj *project.Storage
 
 	tlsConfig, err := tlsClientConfig(config.CAFile)
 	if err != nil {
-		log.Fatal("Failed to create tls config", err)
+		return errors.New(fmt.Sprintf("failed to create tls config %s", err))
 	}
 
 	if tlsConfig != nil {
 		cert, err := tls.LoadX509KeyPair(config.CertFile, config.KeyFile)
 		if err != nil {
-			log.Fatalln("Failed to load certificate files", err)
+			return errors.New(fmt.Sprintf("failed to load certificate files %s", err))
 		}
 		tlsConfig.Certificates = []tls.Certificate{cert}
 		tlsConfig.NextProtos = []string{"h2"}
@@ -107,7 +112,10 @@ func run(config *config.ServerConfig, db *grafeas.Storage, proj *project.Storage
 		go func() { handleShutdown(tcpMux.Serve()) }()
 
 		grpcServer := newGrpcServer(tlsConfig, db, proj)
-		gwmux := newGrpcGatewayServer(ctx, apiListener.Addr().String(), tlsConfig)
+		gwmux, err := newGrpcGatewayServer(ctx, apiListener.Addr().String(), tlsConfig)
+		if err != nil {
+			return err
+		}
 
 		httpMux.Handle("/", gwmux)
 		apiHandler = grpcHandlerFunc(grpcServer, httpMux)
@@ -121,7 +129,10 @@ func run(config *config.ServerConfig, db *grafeas.Storage, proj *project.Storage
 		grpcServer := newGrpcServer(nil, db, proj)
 		go func() { handleShutdown(grpcServer.Serve(grpcL)) }()
 
-		gwmux := newGrpcGatewayServer(ctx, apiListener.Addr().String(), nil)
+		gwmux, err := newGrpcGatewayServer(ctx, apiListener.Addr().String(), nil)
+		if err != nil {
+			return err
+		}
 
 		httpMux.Handle("/", gwmux)
 		apiHandler = httpMux
@@ -141,17 +152,21 @@ func run(config *config.ServerConfig, db *grafeas.Storage, proj *project.Storage
 	}
 
 	// blocking call
-	handleShutdown(srv.Serve(apiListener))
+	if err := handleShutdown(srv.Serve(apiListener)); err != nil {
+		return errors.New(fmt.Sprintf("fatal error on shutdown %s", err))
+	}
 	log.Println("Grpc API stopped")
+	return nil
 }
 
 // handleShutdown handles the server shut down error.
-func handleShutdown(err error) {
+func handleShutdown(err error) error {
 	if err != nil {
 		if opErr, ok := err.(*net.OpError); !ok || (ok && opErr.Op != "accept") {
-			log.Fatal(err)
+			return err
 		}
 	}
+	return nil
 }
 
 func newGrpcServer(tlsConfig *tls.Config, db *grafeas.Storage, proj *project.Storage) *grpc.Server {
@@ -177,7 +192,7 @@ func newGrpcServer(tlsConfig *tls.Config, db *grafeas.Storage, proj *project.Sto
 	return grpcServer
 }
 
-func newGrpcGatewayServer(ctx context.Context, listenerAddr string, tlsConfig *tls.Config) http.Handler {
+func newGrpcGatewayServer(ctx context.Context, listenerAddr string, tlsConfig *tls.Config) (http.Handler, error) {
 	var (
 		gwTLSConfig *tls.Config
 		gwOpts      []grpc.DialOption
@@ -197,19 +212,19 @@ func newGrpcGatewayServer(ctx context.Context, listenerAddr string, tlsConfig *t
 
 	conn, err := grpc.DialContext(ctx, listenerAddr, gwOpts...)
 	if err != nil {
-		log.Fatal("could not initialize grpc gateway connection")
+		return nil, errors.New("could not initialize grpc gateway connection")
 	}
 	err = pb.RegisterGrafeasV1Beta1Handler(ctx, gwmux, conn)
 	if err != nil {
-		log.Fatal("could not initialize ancestry grpc gateway")
+		return nil, errors.New("could not initialize ancestry grpc gateway")
 	}
 
 	err = prpb.RegisterProjectsHandler(ctx, gwmux, conn)
 	if err != nil {
-		log.Fatal("could not initialize notification grpc gateway")
+		return nil, errors.New("could not initialize notification grpc gateway")
 	}
 
-	return http.Handler(gwmux)
+	return http.Handler(gwmux), nil
 }
 
 // grpcHandlerFunc returns an http.Handler that delegates to grpcServer on incoming gRPC

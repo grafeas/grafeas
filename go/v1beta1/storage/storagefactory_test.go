@@ -16,6 +16,8 @@ package storage
 
 import (
 	"testing"
+
+	"github.com/grafeas/grafeas/go/config"
 )
 
 func TestRegisterStorageTypeProvider_AddsProviders(t *testing.T) {
@@ -29,13 +31,13 @@ func TestRegisterStorageTypeProvider_AddsProviders(t *testing.T) {
 		t.Errorf("Expected 0 storage providers at start of test, got %d", numProviders)
 	}
 
-	if err := RegisterStorageTypeProvider("p1", func(storageType string, storageConfig *interface{}) (storage *Storage, e error) {
+	if err := RegisterStorageTypeProvider("p1", func(storageType string, storageConfig *config.StorageConfiguration) (storage *Storage, e error) {
 		return nil, nil
 	}); err != nil {
 		t.Errorf("Error adding provider, %s", err)
 	}
 
-	if err := RegisterStorageTypeProvider("p2", func(storageType string, storageConfig *interface{}) (storage *Storage, e error) {
+	if err := RegisterStorageTypeProvider("p2", func(storageType string, storageConfig *config.StorageConfiguration) (storage *Storage, e error) {
 		return nil, nil
 	}); err != nil {
 		t.Errorf("Error adding provider, %s", err)
@@ -58,14 +60,14 @@ func TestCreateStorageOfType_CorrectProviderIsCalled(t *testing.T) {
 	}
 	providerExecutionTestVariable = 0
 
-	if err := RegisterStorageTypeProvider("p1", func(storageType string, storageConfig *interface{}) (storage *Storage, e error) {
+	if err := RegisterStorageTypeProvider("p1", func(storageType string, storageConfig *config.StorageConfiguration) (storage *Storage, e error) {
 		providerExecutionTestVariable = 1
 		return nil, nil
 	}); err != nil {
 		t.Errorf("Error adding provider, %s", err)
 	}
 
-	if err := RegisterStorageTypeProvider("p2", func(storageType string, storageConfig *interface{}) (storage *Storage, e error) {
+	if err := RegisterStorageTypeProvider("p2", func(storageType string, storageConfig *config.StorageConfiguration) (storage *Storage, e error) {
 		providerExecutionTestVariable = 2
 		return nil, nil
 	}); err != nil {

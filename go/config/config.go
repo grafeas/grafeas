@@ -29,10 +29,14 @@ type file struct {
 	Grafeas GrafeasConfig `mapstructure:"grafeas"`
 }
 
+// StorageConfiguration is a generic interface as its implementation is entirely storage-specific.
+type StorageConfiguration interface{}
+
+// GrafeasConfig is the top-level configuration object, containing generic config + storage-specific config.
 type GrafeasConfig struct {
 	API           *ServerConfig `mapstructure:"api"`
 	StorageType   string        `mapstructure:"storage_type"` // Natively supported storage types are "memstore" and "embedded"
-	StorageConfig *interface{}
+	StorageConfig *StorageConfiguration
 }
 
 // ServerConfig is the Grafeas server configuration.
@@ -111,11 +115,13 @@ func LoadConfig(fileName string) (*GrafeasConfig, error) {
 	// parse storage type
 	config.StorageType = v.GetString("grafeas.storage_type")
 
-	// parse storage type-specific configuration
+	// parse storage type-specific configuration into interface{}, which may be nil
 	genericConfig := v.Get(fmt.Sprintf("grafeas.%s", config.StorageType))
 
 	if config.StorageType != "memstore" && genericConfig != nil {
-		config.StorageConfig = &genericConfig
+		// convert interface{} into StorageConfiguration if it's not nil
+		storageConfiguration := genericConfig.(StorageConfiguration)
+		config.StorageConfig = &storageConfiguration
 	}
 
 	return &config, nil
