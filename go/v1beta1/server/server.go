@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Package to include all generic instantiation of the Grafeas server, designed to be called from a very small main() implementation.
+// Package server includes all generic instantiation of the Grafeas server, designed to be called from a very small main() implementation.
 package server
 
 import (
