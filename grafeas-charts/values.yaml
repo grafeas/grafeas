@@ -3,7 +3,7 @@ replicaCount: 1
 image:
   repository: us.gcr.io/grafeas
   name: grafeas-server
-  tag: v0.1.0
+  tag: v0.1.1
   pullPolicy: IfNotPresent
 
 nameOverride: "grafeas-server"
@@ -19,10 +19,14 @@ storageType: "memstore"
 
 service:
   type: ClusterIP
-  port: 443
+  port: 8080
+
+container:
+  port: 8080
 
 # Certificates for mutual authentication
 certificates:
+  enabled: false
   name: grafeas-ssl-certs
   ca: |-
       -----BEGIN CERTIFICATE-----
@@ -36,3 +40,21 @@ certificates:
       -----BEGIN RSA PRIVATE KEY-----
       ...
       -----END RSA PRIVATE KEY-----
+
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+livenessprobe:
+  initialDelaySeconds: 15 # Value based on pod startup average of ~12 seconds using default limits above
+  periodSeconds: 10
+  failureThreshold: 3 # initialDelaySeconds + (failureThreshold * periodSeconds) based on worst case startup time of 45 seconds
+
+readinessprobe:
+  initialDelaySeconds: 15 # Value based on pod startup average of ~12 seconds using default limits above
+  periodSeconds: 10
+  failureThreshold: 3 # initialDelaySeconds + (failureThreshold * periodSeconds) based on worst case startup time of 45 seconds
