@@ -1,4 +1,4 @@
-// Package filter handles filtering the results of list methods.
+// Package filter handles filtering the results of methods that support filtering.
 package filter
 
 import (
@@ -16,11 +16,11 @@ type Resource interface{}
 //
 // The base resource name
 // (https://cloud.google.com/apis/design/resource_names#relative_resource_name) is an optional
-// dimension the filter works on. For example it could be the project name if the list method this
-// filter handler is for acts on a project level.
+// dimension the filter works on. For example it could be the project name if the method this filter
+// handler is for acts on a project level.
 type Handler func(ctx context.Context, baseResourceName, filter, pageToken string, pageSize int32) (Resource, string, bool, error)
 
-// Filterer holds functions on how to handle various filter patterns for listing resources.
+// Filterer holds functions on how to handle various filter patterns for filtering resources.
 type Filterer struct {
 	// Handlers contain all functions that handle specific filter patterns.
 	Handlers []Handler
