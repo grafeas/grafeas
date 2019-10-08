@@ -13,7 +13,12 @@ type Resource interface{}
 // filter to determine if it can handle it, and if it can, it returns only resources that match the
 // filter, and the next page token (if available). The function always returns a bool indicating
 // whether it can answer the specified filter.
-type Handler func(ctx context.Context, projID, filter, pageToken string, pageSize int32) (Resource, string, bool, error)
+//
+// The base resource name
+// (https://cloud.google.com/apis/design/resource_names#relative_resource_name) is an optional
+// dimension the filter works on. For example it could be the project name if the list method this
+// filter handler is for acts on a project level.
+type Handler func(ctx context.Context, baseResourceName, filter, pageToken string, pageSize int32) (Resource, string, bool, error)
 
 // Filterer holds functions on how to handle various filter patterns for listing resources.
 type Filterer struct {
@@ -26,9 +31,9 @@ type Filterer struct {
 
 // Filter finds the appropriate filter function to handle the specified filter and executes it to
 // return filtered resources.
-func (f *Filterer) Filter(ctx context.Context, projID, filter, pageToken string, pageSize int32) (Resource, string, error) {
+func (f *Filterer) Filter(ctx context.Context, baseResourceName, filter, pageToken string, pageSize int32) (Resource, string, error) {
 	for _, handler := range f.Handlers {
-		resources, npt, ok, err := handler(ctx, projID, filter, pageToken, pageSize)
+		resources, npt, ok, err := handler(ctx, baseResourceName, filter, pageToken, pageSize)
 		if !ok {
 			logger.Infof("Cannot handle filter %q", filter)
 			continue
@@ -39,6 +44,6 @@ func (f *Filterer) Filter(ctx context.Context, projID, filter, pageToken string,
 		return resources, npt, nil
 	}
 
-	resources, npt, _, err := f.DefaultHandler(ctx, projID, filter, pageToken, pageSize)
+	resources, npt, _, err := f.DefaultHandler(ctx, baseResourceName, filter, pageToken, pageSize)
 	return resources, npt, err
 }

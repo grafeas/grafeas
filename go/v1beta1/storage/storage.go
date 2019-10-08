@@ -12,7 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package storage_test
+// Package to export utility functions used in testing for use by other projects.
+package storage
 
 import (
 	"fmt"
@@ -24,7 +25,7 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/grafeas/grafeas/go/name"
-	grafeas "github.com/grafeas/grafeas/go/v1beta1/api"
+	"github.com/grafeas/grafeas/go/v1beta1/api"
 	"github.com/grafeas/grafeas/go/v1beta1/project"
 	cpb "github.com/grafeas/grafeas/proto/v1beta1/common_go_proto"
 	pb "github.com/grafeas/grafeas/proto/v1beta1/grafeas_go_proto"
@@ -65,7 +66,7 @@ var (
 // a corresponding cleanUp function that will be run at the end of each
 // test case.
 // TODO: add testing for CreateTime and UpdateTime
-func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage, project.Storage, func())) {
+func DoTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage, project.Storage, func())) {
 	t.Run("CreateProject", func(t *testing.T) {
 		_, gp, cleanUp := createStore(t)
 		defer cleanUp()
@@ -133,6 +134,32 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 			t.Errorf("CreateNote got success, want Error")
 		} else if s, _ := status.FromError(err); s.Code() != codes.AlreadyExists {
 			t.Errorf("CreateNote got code %v want %v", s.Code(), codes.AlreadyExists)
+		}
+	})
+
+	t.Run("CreateSameNoteTwiceInDifferentProjects", func(t *testing.T) {
+		g, gp, cleanUp := createStore(t)
+		defer cleanUp()
+
+		ctx := context.Background()
+		nPID1 := "vulnerability-scanner-a"
+		if _, err := gp.CreateProject(ctx, nPID1, &prpb.Project{}); err != nil {
+			t.Errorf("CreateProject got %v want success", err)
+		}
+
+		nPID2 := "vulnerability-scanner-b"
+		if _, err := gp.CreateProject(ctx, nPID2, &prpb.Project{}); err != nil {
+			t.Errorf("CreateProject got %v want success", err)
+		}
+
+		n1 := createTestNote(nPID1)
+		if _, err := g.CreateNote(ctx, nPID1, testNoteID, "userID", n1); err != nil {
+			t.Errorf("CreateNote got %v want success", err)
+		}
+
+		n2 := createTestNote(nPID2)
+		if _, err := g.CreateNote(ctx, nPID2, testNoteID, "userID", n2); err != nil {
+			t.Errorf("CreateNote got %v want success", err)
 		}
 	})
 
@@ -315,7 +342,7 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 			t.Fatalf("Error parsing note %v", err)
 		}
 		if err := g.DeleteNote(ctx, pID, nID); err == nil {
-			t.Error("Deleting nonexistant note got success, want error")
+			t.Error("Deleting nonexistent note got success, want error")
 		}
 		if _, err := g.CreateNote(ctx, pID, nID, "userID", n); err != nil {
 			t.Fatalf("CreateNote got %v want success", err)
