@@ -29,5 +29,5 @@ func TestBetaMemStore(t *testing.T) {
 		var gp project.Storage = s
 		return g, gp, func() {}
 	}
-	doTestStorage(t, createMemStore)
+	storage.DoTestStorage(t, createMemStore)
 }
