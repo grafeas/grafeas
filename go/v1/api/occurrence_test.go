@@ -703,6 +703,7 @@ func TestListNoteOccurrencesErrors(t *testing.T) {
 	tests := []struct {
 		desc                        string
 		noteName                    string
+		pageSize                    int32
 		internalStorageErr, authErr bool
 		wantErrStatus               codes.Code
 	}{
@@ -723,6 +724,12 @@ func TestListNoteOccurrencesErrors(t *testing.T) {
 			internalStorageErr: true,
 			wantErrStatus:      codes.Internal,
 		},
+		{
+			desc:          "invalid page size error",
+			noteName:      "projects/goog-vulnz/notes/CVE-UH-OH",
+			pageSize:      -1,
+			wantErrStatus: codes.InvalidArgument,
+		},
 	}
 
 	for _, tt := range tests {
@@ -735,7 +742,8 @@ func TestListNoteOccurrencesErrors(t *testing.T) {
 		}
 
 		req := &gpb.ListNoteOccurrencesRequest{
-			Name: tt.noteName,
+			Name:     tt.noteName,
+			PageSize: tt.pageSize,
 		}
 		resp := &gpb.ListNoteOccurrencesResponse{}
 		err := g.ListNoteOccurrences(ctx, req, resp)
