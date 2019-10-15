@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package grafeas.v1beta1.intoto;
+
+message SignatureObject {
+  string keyid = 1;
+
+  string signature = 2;
+}
+
+message Signature {
+  repeated SignatureObject signatures = 1;
+}
+
+message ArtifactHashObject {
+  map<string, string> hashes = 1;
+}
+
+message Signed {
+  string _type = 1;
+
+  string name = 2;
+
+  repeated string command = 3;
+
+  map<string, ArtifactHashObject> materials = 4;
+
+  map<string, ArtifactHashObject> products = 5;
+
+  map<string, string> byproducts = 6;
+
+  map<string, string> environment = 7;
+
+  repeated SignatureObject signature = 8;
+}
+
+message InTotoLinkAttestation {
+  Signature signature = 1;
+
+  Signed signed = 2;
+}
