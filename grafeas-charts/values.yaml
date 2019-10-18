@@ -1,5 +1,8 @@
 replicaCount: 1
 
+secret:
+  enabled: false
+
 image:
   repository: us.gcr.io/grafeas
   name: grafeas-server
