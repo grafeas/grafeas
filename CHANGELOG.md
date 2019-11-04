@@ -1,6 +1,9 @@
 This is the changelog of Grafeas server releases. For more information on
 versionining, see [versioning](docs/versioning.md) document.
 
+v0.1.2:
+  * Support for multiple storage implementations.
+
 v0.1.1:
   * Grafeas helm chart is compliant with stable requirements.
   * Code cleanup.
