@@ -56,7 +56,7 @@ contain:
               "name": "2.5.7",
               "revision": "1",
               "kind": "NORMAL"
-            },
+            }
         }]
     }
 }
@@ -148,7 +148,7 @@ above, with some sample data about where the vulnerability occurred.
 {
   "name": "projects/occurrence_example/occurrences/test",
   "resource": {
-    "uri": "https://gcr.io/project/image@sha256:foo",
+    "uri": "https://gcr.io/project/image@sha256:foo"
   },
   "noteName": "projects/provider_example/notes/test",
   "kind": "VULNERABILITY",
