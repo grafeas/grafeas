@@ -122,8 +122,8 @@ func run(config *config.ServerConfig, db *grafeas.Storage, proj *project.Storage
 
 		log.Println("grpc server is configured with client certificate authentication")
 	} else {
-		grpcL := tcpMux.Match(cmux.HTTP2HeaderField("content-type", "application/grpc"))
-		apiListener = tcpMux.Match(cmux.Any())
+		grpcL := tcpMux.Match(cmux.HTTP2())
+		apiListener = tcpMux.Match(cmux.HTTP1())
 		go func() { handleShutdown(tcpMux.Serve()) }()
 
 		grpcServer := newGrpcServer(nil, db, proj)
