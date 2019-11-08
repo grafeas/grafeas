@@ -836,7 +836,7 @@
         "signatures": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/v1beta1Signature"
+            "$ref": "#/definitions/grafeasv1beta1Signature"
           },
           "description": "One or more signatures over `serialized_payload`.  Verifier implementations\nshould consider this attestation message verified if at least one\n`signature` verifies `serialized_payload`.  See `Signature` in common.proto\nfor more details on signature structure and verification."
         }
@@ -1002,6 +1002,21 @@
       },
       "description": "A note that indicates a type of analysis a provider would perform. This note\nexists in a provider's project. A `Discovery` occurrence is created in a\nconsumer's project at the start of analysis."
     },
+    "grafeasv1beta1Signature": {
+      "type": "object",
+      "properties": {
+        "signature": {
+          "type": "string",
+          "format": "byte",
+          "description": "The content of the signature, an opaque bytestring.\nThe payload that this signature verifies MUST be unambiguously provided\nwith the Signature during verification. A wrapper message might provide\nthe payload explicitly. Alternatively, a message might have a canonical\nserialization that can always be unambiguously computed to derive the\npayload."
+        },
+        "public_key_id": {
+          "type": "string",
+          "description": "The identifier for the public key that verifies this signature.\n  * The `public_key_id` is required.\n  * The `public_key_id` MUST be an RFC3986 conformant URI.\n  * When possible, the `public_key_id` SHOULD be an immutable reference,\n    such as a cryptographic digest.\n\nExamples of valid `public_key_id`s:\n\nOpenPGP V4 public key fingerprint:\n  * \"openpgp4fpr:74FAF3B861BDA0870C7B6DEF607E48D2A663AEEA\"\nSee https://www.iana.org/assignments/uri-schemes/prov/openpgp4fpr for more\ndetails on this scheme.\n\nRFC6920 digest-named SubjectPublicKeyInfo (digest of the DER\nserialization):\n  * \"ni:///sha-256;cD9o9Cq6LG3jD0iKXqEi_vdjJGecm_iXkbqVoScViaU\"\n  * \"nih:///sha-256;703f68f42aba2c6de30f488a5ea122fef76324679c9bf89791ba95a1271589a5\""
+        }
+      },
+      "description": "Verifiers (e.g. Kritis implementations) MUST verify signatures\nwith respect to the trust anchors defined in policy (e.g. a Kritis policy).\nTypically this means that the verifier has been configured with a map from\n`public_key_id` to public key material (and any required parameters, e.g.\nsigning algorithm).\n\nIn particular, verification implementations MUST NOT treat the signature\n`public_key_id` as anything more than a key lookup hint. The `public_key_id`\nDOES NOT validate or authenticate a public key; it only provides a mechanism\nfor quickly selecting a public key ALREADY CONFIGURED on the verifier through\na trusted channel. Verification implementations MUST reject signatures in any\nof the following circumstances:\n  * The `public_key_id` is not recognized by the verifier.\n  * The public key that `public_key_id` refers to does not verify the\n    signature with respect to the payload.\n\nThe `signature` contents SHOULD NOT be \"attached\" (where the payload is\nincluded with the serialized `signature` bytes). Verifiers MUST ignore any\n\"attached\" payload and only verify signatures with respect to explicitly\nprovided payload (e.g. a `payload` field on the proto message that holds\nthis Signature, or the canonical serialization of the proto message that\nholds this signature)."
+    },
     "imageBasis": {
       "type": "object",
       "properties": {
@@ -1079,6 +1094,73 @@
         }
       },
       "description": "Layer holds metadata specific to a layer of a Docker image."
+    },
+    "intotoByProductObject": {
+      "type": "object",
+      "properties": {
+        "return_value": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "stderr": {
+          "type": "string"
+        },
+        "stdout": {
+          "type": "string"
+        }
+      }
+    },
+    "intotoInToto": {
+      "type": "object",
+      "properties": {
+        "signatures": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1beta1intotoSignature"
+          }
+        },
+        "signed": {
+          "$ref": "#/definitions/intotoSigned"
+        }
+      }
+    },
+    "intotoSigned": {
+      "type": "object",
+      "properties": {
+        "_type": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "command": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "materials": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/protobufStruct"
+          }
+        },
+        "products": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/protobufStruct"
+          }
+        },
+        "byproducts": {
+          "$ref": "#/definitions/intotoByProductObject"
+        },
+        "environment": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
     },
     "packageArchitecture": {
       "type": "string",
@@ -1206,6 +1288,72 @@
       },
       "description": "paths: \"f.a\"\n    paths: \"f.b.d\"\n\nHere `f` represents a field in some root message, `a` and `b`\nfields in the message found in `f`, and `d` a field found in the\nmessage in `f.b`.\n\nField masks are used to specify a subset of fields that should be\nreturned by a get operation or modified by an update operation.\nField masks also have a custom JSON encoding (see below).\n\n# Field Masks in Projections\n\nWhen used in the context of a projection, a response message or\nsub-message is filtered by the API to only contain those fields as\nspecified in the mask. For example, if the mask in the previous\nexample is applied to a response message as follows:\n\n    f {\n      a : 22\n      b {\n        d : 1\n        x : 2\n      }\n      y : 13\n    }\n    z: 8\n\nThe result will not contain specific values for fields x,y and z\n(their value will be set to the default, and omitted in proto text\noutput):\n\n\n    f {\n      a : 22\n      b {\n        d : 1\n      }\n    }\n\nA repeated field is not allowed except at the last position of a\npaths string.\n\nIf a FieldMask object is not present in a get operation, the\noperation applies to all fields (as if a FieldMask of all fields\nhad been specified).\n\nNote that a field mask does not necessarily apply to the\ntop-level response message. In case of a REST get operation, the\nfield mask applies directly to the response, but in case of a REST\nlist operation, the mask instead applies to each individual message\nin the returned resource list. In case of a REST custom method,\nother definitions may be used. Where the mask applies will be\nclearly documented together with its declaration in the API.  In\nany case, the effect on the returned resource/resources is required\nbehavior for APIs.\n\n# Field Masks in Update Operations\n\nA field mask in update operations specifies which fields of the\ntargeted resource are going to be updated. The API is required\nto only change the values of the fields as specified in the mask\nand leave the others untouched. If a resource is passed in to\ndescribe the updated values, the API ignores the values of all\nfields not covered by the mask.\n\nIf a repeated field is specified for an update operation, new values will\nbe appended to the existing repeated field in the target resource. Note that\na repeated field is only allowed in the last position of a `paths` string.\n\nIf a sub-message is specified in the last position of the field mask for an\nupdate operation, then new value will be merged into the existing sub-message\nin the target resource.\n\nFor example, given the target message:\n\n    f {\n      b {\n        d: 1\n        x: 2\n      }\n      c: [1]\n    }\n\nAnd an update message:\n\n    f {\n      b {\n        d: 10\n      }\n      c: [2]\n    }\n\nthen if the field mask is:\n\n paths: [\"f.b\", \"f.c\"]\n\nthen the result will be:\n\n    f {\n      b {\n        d: 10\n        x: 2\n      }\n      c: [1, 2]\n    }\n\nAn implementation may provide options to override this default behavior for\nrepeated and message fields.\n\nIn order to reset a field's value to the default, the field must\nbe in the mask and set to the default value in the provided resource.\nHence, in order to reset all fields of a resource, provide a default\ninstance of the resource and set all fields in the mask, or do\nnot provide a mask as described below.\n\nIf a field mask is not present on update, the operation applies to\nall fields (as if a field mask of all fields has been specified).\nNote that in the presence of schema evolution, this may mean that\nfields the client does not know and has therefore not filled into\nthe request will be reset to their default. If this is unwanted\nbehavior, a specific service may require a client to always specify\na field mask, producing an error if not.\n\nAs with get operations, the location of the resource which\ndescribes the updated values in the request message depends on the\noperation kind. In any case, the effect of the field mask is\nrequired to be honored by the API.\n\n## Considerations for HTTP REST\n\nThe HTTP kind of an update operation which uses a field mask must\nbe set to PATCH instead of PUT in order to satisfy HTTP semantics\n(PUT must only be used for full updates).\n\n# JSON Encoding of Field Masks\n\nIn JSON, a field mask is encoded as a single string where paths are\nseparated by a comma. Fields name in each path are converted\nto/from lower-camel naming conventions.\n\nAs an example, consider the following message declarations:\n\n    message Profile {\n      User user = 1;\n      Photo photo = 2;\n    }\n    message User {\n      string display_name = 1;\n      string address = 2;\n    }\n\nIn proto a field mask for `Profile` may look as such:\n\n    mask {\n      paths: \"user.display_name\"\n      paths: \"photo\"\n    }\n\nIn JSON, the same mask is represented as below:\n\n    {\n      mask: \"user.displayName,photo\"\n    }\n\n# Field Masks and Oneof Fields\n\nField masks treat fields in oneofs just as regular fields. Consider the\nfollowing message:\n\n    message SampleMessage {\n      oneof test_oneof {\n        string name = 4;\n        SubMessage sub_message = 9;\n      }\n    }\n\nThe field mask can be:\n\n    mask {\n      paths: \"name\"\n    }\n\nOr:\n\n    mask {\n      paths: \"sub_message\"\n    }\n\nNote that oneof type names (\"test_oneof\" in this case) cannot be used in\npaths.\n\n## Field Mask Verification\n\nThe implementation of any API method which has a FieldMask type field in the\nrequest should verify the included field paths, and return an\n`INVALID_ARGUMENT` error if any path is duplicated or unmappable.",
       "title": "`FieldMask` represents a set of symbolic field paths, for example:"
+    },
+    "protobufListValue": {
+      "type": "object",
+      "properties": {
+        "values": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufValue"
+          },
+          "description": "Repeated field of dynamically typed values."
+        }
+      },
+      "description": "`ListValue` is a wrapper around a repeated field of values.\n\nThe JSON representation for `ListValue` is JSON array."
+    },
+    "protobufNullValue": {
+      "type": "string",
+      "enum": [
+        "NULL_VALUE"
+      ],
+      "default": "NULL_VALUE",
+      "description": "`NullValue` is a singleton enumeration to represent the null value for the\n`Value` type union.\n\n The JSON representation for `NullValue` is JSON `null`.\n\n - NULL_VALUE: Null value."
+    },
+    "protobufStruct": {
+      "type": "object",
+      "properties": {
+        "fields": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/protobufValue"
+          },
+          "description": "Unordered map of dynamically typed values."
+        }
+      },
+      "description": "`Struct` represents a structured data value, consisting of fields\nwhich map to dynamically typed values. In some languages, `Struct`\nmight be supported by a native representation. For example, in\nscripting languages like JS a struct is represented as an\nobject. The details of that representation are described together\nwith the proto support for the language.\n\nThe JSON representation for `Struct` is JSON object."
+    },
+    "protobufValue": {
+      "type": "object",
+      "properties": {
+        "null_value": {
+          "$ref": "#/definitions/protobufNullValue",
+          "description": "Represents a null value."
+        },
+        "number_value": {
+          "type": "number",
+          "format": "double",
+          "description": "Represents a double value."
+        },
+        "string_value": {
+          "type": "string",
+          "description": "Represents a string value."
+        },
+        "bool_value": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": "Represents a boolean value."
+        },
+        "struct_value": {
+          "$ref": "#/definitions/protobufStruct",
+          "description": "Represents a structured value."
+        },
+        "list_value": {
+          "$ref": "#/definitions/protobufListValue",
+          "description": "Represents a repeated `Value`."
+        }
+      },
+      "description": "`Value` represents a dynamically typed value which can be either\nnull, a number, a string, a boolean, a recursive struct value, or a\nlist of values. A producer of value is expected to set one of that\nvariants, absence of any variant indicates an error.\n\nThe JSON representation for `Value` is JSON value."
     },
     "provenanceArtifact": {
       "type": "object",
@@ -1727,6 +1875,10 @@
         "attestation_authority": {
           "$ref": "#/definitions/attestationAuthority",
           "description": "A note describing an attestation role."
+        },
+        "intoto": {
+          "$ref": "#/definitions/intotoInToto",
+          "description": "A note describing an in-toto link."
         }
       },
       "description": "A type of analysis that can be done for a resource."
@@ -1741,10 +1893,11 @@
         "PACKAGE",
         "DEPLOYMENT",
         "DISCOVERY",
-        "ATTESTATION"
+        "ATTESTATION",
+        "INTOTO"
       ],
       "default": "NOTE_KIND_UNSPECIFIED",
-      "description": "Kind represents the kinds of notes supported.\n\n - NOTE_KIND_UNSPECIFIED: Unknown.\n - VULNERABILITY: The note and occurrence represent a package vulnerability.\n - BUILD: The note and occurrence assert build provenance.\n - IMAGE: This represents an image basis relationship.\n - PACKAGE: This represents a package installed via a package manager.\n - DEPLOYMENT: The note and occurrence track deployment events.\n - DISCOVERY: The note and occurrence track the initial discovery status of a resource.\n - ATTESTATION: This represents a logical \"role\" that can attest to artifacts."
+      "description": "Kind represents the kinds of notes supported.\n\n - NOTE_KIND_UNSPECIFIED: Unknown.\n - VULNERABILITY: The note and occurrence represent a package vulnerability.\n - BUILD: The note and occurrence assert build provenance.\n - IMAGE: This represents an image basis relationship.\n - PACKAGE: This represents a package installed via a package manager.\n - DEPLOYMENT: The note and occurrence track deployment events.\n - DISCOVERY: The note and occurrence track the initial discovery status of a resource.\n - ATTESTATION: This represents a logical \"role\" that can attest to artifacts.\n - INTOTO: This represents an in-toto link file."
     },
     "v1beta1Occurrence": {
       "type": "object",
@@ -1846,21 +1999,6 @@
       },
       "description": "An entity that can have metadata. For example, a Docker image."
     },
-    "v1beta1Signature": {
-      "type": "object",
-      "properties": {
-        "signature": {
-          "type": "string",
-          "format": "byte",
-          "description": "The content of the signature, an opaque bytestring.\nThe payload that this signature verifies MUST be unambiguously provided\nwith the Signature during verification. A wrapper message might provide\nthe payload explicitly. Alternatively, a message might have a canonical\nserialization that can always be unambiguously computed to derive the\npayload."
-        },
-        "public_key_id": {
-          "type": "string",
-          "description": "The identifier for the public key that verifies this signature.\n  * The `public_key_id` is required.\n  * The `public_key_id` MUST be an RFC3986 conformant URI.\n  * When possible, the `public_key_id` SHOULD be an immutable reference,\n    such as a cryptographic digest.\n\nExamples of valid `public_key_id`s:\n\nOpenPGP V4 public key fingerprint:\n  * \"openpgp4fpr:74FAF3B861BDA0870C7B6DEF607E48D2A663AEEA\"\nSee https://www.iana.org/assignments/uri-schemes/prov/openpgp4fpr for more\ndetails on this scheme.\n\nRFC6920 digest-named SubjectPublicKeyInfo (digest of the DER\nserialization):\n  * \"ni:///sha-256;cD9o9Cq6LG3jD0iKXqEi_vdjJGecm_iXkbqVoScViaU\"\n  * \"nih:///sha-256;703f68f42aba2c6de30f488a5ea122fef76324679c9bf89791ba95a1271589a5\""
-        }
-      },
-      "description": "Verifiers (e.g. Kritis implementations) MUST verify signatures\nwith respect to the trust anchors defined in policy (e.g. a Kritis policy).\nTypically this means that the verifier has been configured with a map from\n`public_key_id` to public key material (and any required parameters, e.g.\nsigning algorithm).\n\nIn particular, verification implementations MUST NOT treat the signature\n`public_key_id` as anything more than a key lookup hint. The `public_key_id`\nDOES NOT validate or authenticate a public key; it only provides a mechanism\nfor quickly selecting a public key ALREADY CONFIGURED on the verifier through\na trusted channel. Verification implementations MUST reject signatures in any\nof the following circumstances:\n  * The `public_key_id` is not recognized by the verifier.\n  * The public key that `public_key_id` refers to does not verify the\n    signature with respect to the payload.\n\nThe `signature` contents SHOULD NOT be \"attached\" (where the payload is\nincluded with the serialized `signature` bytes). Verifiers MUST ignore any\n\"attached\" payload and only verify signatures with respect to explicitly\nprovided payload (e.g. a `payload` field on the proto message that holds\nthis Signature, or the canonical serialization of the proto message that\nholds this signature)."
-    },
     "v1beta1VulnerabilityOccurrencesSummary": {
       "type": "object",
       "properties": {
@@ -1927,6 +2065,17 @@
         }
       },
       "description": "Details of an image occurrence."
+    },
+    "v1beta1intotoSignature": {
+      "type": "object",
+      "properties": {
+        "keyid": {
+          "type": "string"
+        },
+        "sig": {
+          "type": "string"
+        }
+      }
     },
     "v1beta1packageDetails": {
       "type": "object",
