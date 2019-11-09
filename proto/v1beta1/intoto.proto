@@ -9,12 +9,21 @@ option objc_class_prefix = "GRA";
 
 import "google/protobuf/struct.proto";
 
+// This file defines the proto that matches the schema of an in-toto link
+// file. in-toto is a framework to protect a software supply chain. You can read
+// more about in-toto at https://in-toto.io/ and you can find the current
+// version of the in-toto specification at
+// https://github.com/in-toto/docs/blob/master/in-toto-spec.md
+
+
+// A signature object consists of the KeyID used and the signature itself.
 message Signature {
   string keyid = 1 [json_name="keyid"];
 
   string sig = 2 [json_name="sig"];
 }
 
+// An object defined to capture the by products of a step.
 message ByProductObject {
   int32 return_value = 1 [json_name="return-value"];
 
@@ -23,24 +32,41 @@ message ByProductObject {
   string stdout = 3 [json_name="stdout"];
 }
 
-message Signed {
+// This corrresponds to the core in-toto link attestation.
+message Link {
+  // This field denotes the type of metadata being handled - in this case, the
+  // value is always "link".
   string _type = 1 [json_name="_type"];
 
+  // This field contains the name of the step the link attestation was generated
+  // for.
   string name = 2 [json_name="name"];
 
+  // This field contains the full command executed for the step. This can also
+  // be empty if attestations are generated for operations that aren't directly
+  // mapped to a specific command.
   repeated string command = 3 [json_name="command"];
 
+  // Materials are the supply chain artifacts that go into the step and are used
+  // for the operation performed.
   map<string, google.protobuf.Struct> materials = 4 [json_name="materials"];
 
+  // Products are the supply chain artifacts generated as a result of the step.
   map<string, google.protobuf.Struct> products = 5 [json_name="products"];
 
+  // By Products are made up of the data that is generated as part of a software
+  // supply chain step, but are not the actual result of the step.
   ByProductObject byproducts = 6 [json_name="byproducts"];
 
+  // This is a field that can be used to capture information about the
+  // environment.
   map<string, string> environment = 7 [json_name="environment"];
 }
 
+// This corresponds to a full signed attestation - it is made up of one or more
+// signatures and the core link attestation itself.
 message InToto {
   repeated Signature signatures = 1 [json_name="signatures"];
 
-  Signed signed = 2 [json_name="signed"];
+  Link link = 2 [json_name="signed"];
 }

@@ -1108,7 +1108,8 @@
         "stdout": {
           "type": "string"
         }
-      }
+      },
+      "description": "An object defined to capture the by products of a step."
     },
     "intotoInToto": {
       "type": "object",
@@ -1119,48 +1120,57 @@
             "$ref": "#/definitions/v1beta1intotoSignature"
           }
         },
-        "signed": {
-          "$ref": "#/definitions/intotoSigned"
+        "link": {
+          "$ref": "#/definitions/intotoLink"
         }
-      }
+      },
+      "description": "This corresponds to a full signed attestation - it is made up of one or more\nsignatures and the core link attestation itself."
     },
-    "intotoSigned": {
+    "intotoLink": {
       "type": "object",
       "properties": {
         "_type": {
-          "type": "string"
+          "type": "string",
+          "description": "This field denotes the type of metadata being handled - in this case, the\nvalue is always \"link\"."
         },
         "name": {
-          "type": "string"
+          "type": "string",
+          "description": "This field contains the name of the step the link attestation was generated\nfor."
         },
         "command": {
           "type": "array",
           "items": {
             "type": "string"
-          }
+          },
+          "description": "This field contains the full command executed for the step. This can also\nbe empty if attestations are generated for operations that aren't directly\nmapped to a specific command."
         },
         "materials": {
           "type": "object",
           "additionalProperties": {
             "$ref": "#/definitions/protobufStruct"
-          }
+          },
+          "description": "Materials are the supply chain artifacts that go into the step and are used\nfor the operation performed."
         },
         "products": {
           "type": "object",
           "additionalProperties": {
             "$ref": "#/definitions/protobufStruct"
-          }
+          },
+          "description": "Products are the supply chain artifacts generated as a result of the step."
         },
         "byproducts": {
-          "$ref": "#/definitions/intotoByProductObject"
+          "$ref": "#/definitions/intotoByProductObject",
+          "description": "By Products are made up of the data that is generated as part of a software\nsupply chain step, but are not the actual result of the step."
         },
         "environment": {
           "type": "object",
           "additionalProperties": {
             "type": "string"
-          }
+          },
+          "description": "This is a field that can be used to capture information about the\nenvironment."
         }
-      }
+      },
+      "description": "This corrresponds to the core in-toto link attestation."
     },
     "packageArchitecture": {
       "type": "string",
@@ -2075,7 +2085,8 @@
         "sig": {
           "type": "string"
         }
-      }
+      },
+      "description": "A signature object consists of the KeyID used and the signature itself."
     },
     "v1beta1packageDetails": {
       "type": "object",
