@@ -244,7 +244,7 @@ func (pg *PgSQLStore) UpdateOccurrence(ctx context.Context, pID, oID string, o *
 	// TODO(#312): implement the update operation
 	o.UpdateTime = ptypes.TimestampNow()
 
-	result, err := pg.DB.Exec(updateOccurrence, pID, oID, proto.MarshalTextString(o))
+	result, err := pg.DB.Exec(updateOccurrence, proto.MarshalTextString(o), pID, oID)
 	if err != nil {
 		return nil, status.Error(codes.Internal, "Failed to update Occurrence")
 	}
@@ -384,7 +384,7 @@ func (pg *PgSQLStore) UpdateNote(ctx context.Context, pID, nID string, n *pb.Not
 	// TODO(#312): implement the update operation
 	n.UpdateTime = ptypes.TimestampNow()
 
-	result, err := pg.DB.Exec(updateNote, pID, nID, proto.MarshalTextString(n))
+	result, err := pg.DB.Exec(updateNote, proto.MarshalTextString(n), pID, nID)
 	if err != nil {
 		return nil, status.Error(codes.Internal, "Failed to update Note")
 	}
