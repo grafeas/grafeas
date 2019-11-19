@@ -195,7 +195,7 @@ service GrafeasV1Beta1 {
 // An instance of an analysis type that has been found on a resource.
 message Occurrence {
   option (google.api.resource) = {
-    type: "grafeas.grafeas.io/Occurrence"
+    type: "grafeas.io/Occurrence"
     pattern: "projects/{project}/occurrences/{occurrence}"
   };
 
@@ -270,7 +270,7 @@ message Resource {
 // A type of analysis that can be done for a resource.
 message Note {
   option (google.api.resource) = {
-    type: "grafeas.grafeas.io/Note"
+    type: "grafeas.io/Note"
     pattern: "projects/{project}/notes/{note}"
   };
 
@@ -332,7 +332,7 @@ message GetOccurrenceRequest {
   // `projects/[PROJECT_ID]/occurrences/[OCCURRENCE_ID]`.
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference).type = "grafeas.grafeas.io/Occurrence"
+    (google.api.resource_reference).type = "grafeas.io/Occurrence"
   ];
 }
 
@@ -374,7 +374,7 @@ message DeleteOccurrenceRequest {
   // `projects/[PROJECT_ID]/occurrences/[OCCURRENCE_ID]`.
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference).type = "grafeas.grafeas.io/Occurrence"
+    (google.api.resource_reference).type = "grafeas.io/Occurrence"
   ];
 }
 
@@ -396,7 +396,7 @@ message UpdateOccurrenceRequest {
   // `projects/[PROJECT_ID]/occurrences/[OCCURRENCE_ID]`.
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference).type = "grafeas.grafeas.io/Occurrence"
+    (google.api.resource_reference).type = "grafeas.io/Occurrence"
   ];
   // The updated occurrence.
   Occurrence occurrence = 2 [(google.api.field_behavior) = REQUIRED];
@@ -410,7 +410,7 @@ message GetNoteRequest {
   // `projects/[PROVIDER_ID]/notes/[NOTE_ID]`.
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference).type = "grafeas.grafeas.io/Note"
+    (google.api.resource_reference).type = "grafeas.io/Note"
   ];
 }
 
@@ -420,7 +420,7 @@ message GetOccurrenceNoteRequest {
   // `projects/[PROJECT_ID]/occurrences/[OCCURRENCE_ID]`.
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference).type = "grafeas.grafeas.io/Occurrence"
+    (google.api.resource_reference).type = "grafeas.io/Occurrence"
   ];
 }
 
@@ -460,7 +460,7 @@ message DeleteNoteRequest {
   // `projects/[PROVIDER_ID]/notes/[NOTE_ID]`.
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference).type = "grafeas.grafeas.io/Note"
+    (google.api.resource_reference).type = "grafeas.io/Note"
   ];
 }
 
@@ -484,7 +484,7 @@ message UpdateNoteRequest {
   // `projects/[PROVIDER_ID]/notes/[NOTE_ID]`.
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference).type = "grafeas.grafeas.io/Note"
+    (google.api.resource_reference).type = "grafeas.io/Note"
   ];
   // The updated note.
   Note note = 2 [(google.api.field_behavior) = REQUIRED];
@@ -498,7 +498,7 @@ message ListNoteOccurrencesRequest {
   // `projects/[PROVIDER_ID]/notes/[NOTE_ID]`.
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference).type = "grafeas.grafeas.io/Note"
+    (google.api.resource_reference).type = "grafeas.io/Note"
   ];
   // The filter expression.
   string filter = 2;
