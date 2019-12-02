@@ -342,6 +342,7 @@ func TestBatchCreateOccurrences(t *testing.T) {
 	if len(resp.Occurrences) != 1 {
 		t.Fatalf("Got created occurrences of len %d, want 1", len(resp.Occurrences))
 	}
+	resp.Occurrences[0].Name = ""
 	if diff := cmp.Diff(req.Occurrences[0], resp.Occurrences[0], cmp.Comparer(proto.Equal)); diff != "" {
 		t.Errorf("BatchCreateOccurrences(%v) returned diff (want -> got):\n%s", req, diff)
 	}
