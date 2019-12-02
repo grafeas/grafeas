@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/golang/protobuf/proto"
 	"github.com/google/go-cmp/cmp"
 	gpb "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto"
 	"golang.org/x/net/context"
@@ -46,11 +47,11 @@ func TestGetOccurrence(t *testing.T) {
 	}
 	gotOcc := &gpb.Occurrence{}
 	if err := g.GetOccurrence(ctx, req, gotOcc); err != nil {
-		t.Errorf("Got err %v, want success", err)
+		t.Fatalf("Got err %v, want success", err)
 	}
 
-	opt := cmp.FilterPath(func(p cmp.Path) bool { return p.String() == "Name" }, cmp.Ignore())
-	if diff := cmp.Diff(o, gotOcc, opt); diff != "" {
+	gotOcc.Name = ""
+	if diff := cmp.Diff(o, gotOcc, cmp.Comparer(proto.Equal)); diff != "" {
 		t.Errorf("GetOccurrence(%v) returned diff (want -> got):\n%s", req, diff)
 	}
 }
@@ -129,11 +130,14 @@ func TestListOccurrences(t *testing.T) {
 	}
 	resp := &gpb.ListOccurrencesResponse{}
 	if err := g.ListOccurrences(ctx, req, resp); err != nil {
-		t.Errorf("Got err %v, want success", err)
+		t.Fatalf("Got err %v, want success", err)
 	}
 
-	opt := cmp.FilterPath(func(p cmp.Path) bool { return p.String() == "Name" }, cmp.Ignore())
-	if diff := cmp.Diff(o, resp.Occurrences[0], opt); diff != "" {
+	if len(resp.Occurrences) != 1 {
+		t.Fatalf("Got occurrences of len %d, want 1", len(resp.Occurrences))
+	}
+	resp.Occurrences[0].Name = ""
+	if diff := cmp.Diff(o, resp.Occurrences[0], cmp.Comparer(proto.Equal)); diff != "" {
 		t.Errorf("ListOccurrences(%v) returned diff (want -> got):\n%s", req, diff)
 	}
 }
@@ -206,13 +210,13 @@ func TestCreateOccurrence(t *testing.T) {
 		Parent:     "projects/consumer1",
 		Occurrence: vulnzOcc(t, "consumer1", "projects/goog-vulnz/notes/CVE-UH-OH", "debian"),
 	}
-	o := &gpb.Occurrence{}
-	if err := g.CreateOccurrence(ctx, req, o); err != nil {
-		t.Errorf("Got err %v, want success", err)
+	createdOcc := &gpb.Occurrence{}
+	if err := g.CreateOccurrence(ctx, req, createdOcc); err != nil {
+		t.Fatalf("Got err %v, want success", err)
 	}
 
-	opt := cmp.FilterPath(func(p cmp.Path) bool { return p.String() == "Name" }, cmp.Ignore())
-	if diff := cmp.Diff(req.Occurrence, o, opt); diff != "" {
+	createdOcc.Name = ""
+	if diff := cmp.Diff(req.Occurrence, createdOcc, cmp.Comparer(proto.Equal)); diff != "" {
 		t.Errorf("CreateOccurrence(%v) returned diff (want -> got):\n%s", req, diff)
 	}
 }
@@ -312,14 +316,14 @@ func TestBatchCreateOccurrences(t *testing.T) {
 	}
 	resp := &gpb.BatchCreateOccurrencesResponse{}
 	if err := g.BatchCreateOccurrences(ctx, req, resp); err != nil {
-		t.Errorf("Got err %v, want success", err)
+		t.Fatalf("Got err %v, want success", err)
 	}
 
 	if len(resp.Occurrences) != 1 {
-		t.Errorf("Got created occurrences of len %d, want 1", len(resp.Occurrences))
+		t.Fatalf("Got created occurrences of len %d, want 1", len(resp.Occurrences))
 	}
-	opt := cmp.FilterPath(func(p cmp.Path) bool { return p.String() == "Name" }, cmp.Ignore())
-	if diff := cmp.Diff(req.Occurrences[0], resp.Occurrences[0], opt); diff != "" {
+	resp.Occurrences[0].Name = ""
+	if diff := cmp.Diff(req.Occurrences[0], resp.Occurrences[0], cmp.Comparer(proto.Equal)); diff != "" {
 		t.Errorf("BatchCreateOccurrences(%v) returned diff (want -> got):\n%s", req, diff)
 	}
 }
@@ -468,11 +472,11 @@ func TestUpdateOccurrence(t *testing.T) {
 	}
 	updatedOcc := &gpb.Occurrence{}
 	if err := g.UpdateOccurrence(ctx, req, updatedOcc); err != nil {
-		t.Errorf("Got err %v, want success", err)
+		t.Fatalf("Got err %v, want success", err)
 	}
 
-	opt := cmp.FilterPath(func(p cmp.Path) bool { return p.String() == "Name" }, cmp.Ignore())
-	if diff := cmp.Diff(o, updatedOcc, opt); diff != "" {
+	updatedOcc.Name = ""
+	if diff := cmp.Diff(o, updatedOcc, cmp.Comparer(proto.Equal)); diff != "" {
 		t.Errorf("UpdateOccurrence(%v) returned diff (want -> got):\n%s", req, diff)
 	}
 }
@@ -688,11 +692,14 @@ func TestListNoteOccurrences(t *testing.T) {
 	}
 	resp := &gpb.ListNoteOccurrencesResponse{}
 	if err := g.ListNoteOccurrences(ctx, req, resp); err != nil {
-		t.Errorf("ListNoteOccurrences(%v) got err %v, want success", req, err)
+		t.Fatalf("ListNoteOccurrences(%v) got err %v, want success", req, err)
 	}
 
-	opt := cmp.FilterPath(func(p cmp.Path) bool { return p.String() == "Name" }, cmp.Ignore())
-	if diff := cmp.Diff(createdOcc, resp.Occurrences[0], opt); diff != "" {
+	if len(resp.Occurrences) != 1 {
+		t.Fatalf("Got occurrences of len %d, want 1", len(resp.Occurrences))
+	}
+	resp.Occurrences[0].Name = ""
+	if diff := cmp.Diff(createdOcc, resp.Occurrences[0], cmp.Comparer(proto.Equal)); diff != "" {
 		t.Errorf("ListNoteOccurrences(%v) returned diff (want -> got):\n%s", req, diff)
 	}
 }

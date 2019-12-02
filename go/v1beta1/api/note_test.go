@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/golang/protobuf/proto"
 	"github.com/google/go-cmp/cmp"
 	gpb "github.com/grafeas/grafeas/proto/v1beta1/grafeas_go_proto"
 	vpb "github.com/grafeas/grafeas/proto/v1beta1/vulnerability_go_proto"
@@ -42,13 +43,13 @@ func TestCreateNote(t *testing.T) {
 		Note:   vulnzNote(t),
 	}
 
-	n, err := g.CreateNote(ctx, req)
+	createdNote, err := g.CreateNote(ctx, req)
 	if err != nil {
-		t.Errorf("Got err %v, want success", err)
+		t.Fatalf("Got err %v, want success", err)
 	}
 
-	opt := cmp.FilterPath(func(p cmp.Path) bool { return p.String() == "Name" }, cmp.Ignore())
-	if diff := cmp.Diff(req.Note, n, opt); diff != "" {
+	createdNote.Name = ""
+	if diff := cmp.Diff(req.Note, createdNote, cmp.Comparer(proto.Equal)); diff != "" {
 		t.Errorf("CreateNote(%v) returned diff (want -> got):\n%s", req, diff)
 	}
 }
@@ -189,10 +190,10 @@ func TestBatchCreateNotes(t *testing.T) {
 	}
 
 	if len(resp.Notes) != 1 {
-		t.Errorf("Got created notes of len %d, want 1", len(resp.Notes))
+		t.Fatalf("Got created notes of len %d, want 1", len(resp.Notes))
 	}
-	opt := cmp.FilterPath(func(p cmp.Path) bool { return p.String() == "Name" }, cmp.Ignore())
-	if diff := cmp.Diff(req.Notes["CVE-UH-OH"], resp.Notes[0], opt); diff != "" {
+	resp.Notes[0].Name = ""
+	if diff := cmp.Diff(req.Notes["CVE-UH-OH"], resp.Notes[0], cmp.Comparer(proto.Equal)); diff != "" {
 		t.Errorf("BatchCreateNotes(%v) returned diff (want -> got):\n%s", req, diff)
 	}
 }
@@ -367,11 +368,11 @@ func TestGetNote(t *testing.T) {
 	}
 	gotN, err := g.GetNote(ctx, req)
 	if err != nil {
-		t.Errorf("Got err %v, want success", err)
+		t.Fatalf("Got err %v, want success", err)
 	}
 
-	opt := cmp.FilterPath(func(p cmp.Path) bool { return p.String() == "Name" }, cmp.Ignore())
-	if diff := cmp.Diff(n, gotN, opt); diff != "" {
+	gotN.Name = ""
+	if diff := cmp.Diff(n, gotN, cmp.Comparer(proto.Equal)); diff != "" {
 		t.Errorf("GetNote(%v) returned diff (want -> got):\n%s", req, diff)
 	}
 }
@@ -458,11 +459,11 @@ func TestListNotes(t *testing.T) {
 	}
 	resp, err := g.ListNotes(ctx, req)
 	if err != nil {
-		t.Errorf("Got err %v, want success", err)
+		t.Fatalf("Got err %v, want success", err)
 	}
 
-	opt := cmp.FilterPath(func(p cmp.Path) bool { return p.String() == "Name" }, cmp.Ignore())
-	if diff := cmp.Diff(n, resp.Notes[0], opt); diff != "" {
+	resp.Notes[0].Name = ""
+	if diff := cmp.Diff(n, resp.Notes[0], cmp.Comparer(proto.Equal)); diff != "" {
 		t.Errorf("ListNotes(%v) returned diff (want -> got):\n%s", req, diff)
 	}
 }
@@ -560,11 +561,11 @@ func TestUpdateNote(t *testing.T) {
 	}
 	updatedN, err := g.UpdateNote(ctx, req)
 	if err != nil {
-		t.Errorf("Got err %v, want success", err)
+		t.Fatalf("Got err %v, want success", err)
 	}
 
-	opt := cmp.FilterPath(func(p cmp.Path) bool { return p.String() == "Name" }, cmp.Ignore())
-	if diff := cmp.Diff(n, updatedN, opt); diff != "" {
+	updatedN.Name = ""
+	if diff := cmp.Diff(n, updatedN, cmp.Comparer(proto.Equal)); diff != "" {
 		t.Errorf("UpdateNote(%v) returned diff (want -> got):\n%s", req, diff)
 	}
 }
@@ -768,11 +769,11 @@ func TestGetOccurrenceNote(t *testing.T) {
 	}
 	gotN, err := g.GetOccurrenceNote(ctx, req)
 	if err != nil {
-		t.Errorf("GetOccurrenceNote(%v): got err %v, want success", req, err)
+		t.Fatalf("GetOccurrenceNote(%v): got err %v, want success", req, err)
 	}
 
-	opt := cmp.FilterPath(func(p cmp.Path) bool { return p.String() == "Name" }, cmp.Ignore())
-	if diff := cmp.Diff(n, gotN, opt); diff != "" {
+	gotN.Name = ""
+	if diff := cmp.Diff(n, gotN, cmp.Comparer(proto.Equal)); diff != "" {
 		t.Errorf("GetOccurrenceNote(%v): returned diff (want -> got):\n%s", req, diff)
 	}
 }
