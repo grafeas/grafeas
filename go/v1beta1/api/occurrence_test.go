@@ -847,7 +847,7 @@ func TestGetVulnerabilityOccurrencesSummary(t *testing.T) {
 		t.Fatalf("GetVulnerabilityOccurrencesSummaryRequest(%v) got err %v, want success", req, err)
 	}
 
-	if diff := cmp.Diff(wantSummary, resp); diff != "" {
+	if diff := cmp.Diff(wantSummary, resp, cmp.Comparer(proto.Equal)); diff != "" {
 		t.Errorf("GetVulnerabilityOccurrencesSummaryRequest(%v) returned diff (want -> got):\n%s", req, diff)
 	}
 }
