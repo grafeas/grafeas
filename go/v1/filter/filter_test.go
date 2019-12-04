@@ -4,6 +4,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/golang/protobuf/proto"
 	"github.com/google/go-cmp/cmp"
 	"github.com/grafeas/grafeas/go/v1/filter"
 	gpb "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto"
@@ -63,7 +64,7 @@ func TestFilter(t *testing.T) {
 			}
 			notes := resources.([]*gpb.Note)
 
-			if diff := cmp.Diff(tt.wantNotes, notes); diff != "" {
+			if diff := cmp.Diff(tt.wantNotes, notes, cmp.Comparer(proto.Equal)); diff != "" {
 				t.Errorf("Filter(\"projects/my-proj\", %q, \"\", 0) returned diff -want +got\n%s", tt.filter, diff)
 			}
 		})
