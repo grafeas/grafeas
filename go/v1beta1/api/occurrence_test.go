@@ -965,3 +965,5 @@ func vulnzOccs(t *testing.T, pID, noteName, imageNamePrefix string, num int) []*
 	}
 	return occs
 }
+
+//test
