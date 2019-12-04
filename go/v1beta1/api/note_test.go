@@ -48,6 +48,8 @@ func TestCreateNote(t *testing.T) {
 		t.Fatalf("Got err %v, want success", err)
 	}
 
+	// TODO: migrate to protocolbuffers/protobuf-go when it is stable so we can use
+	// protocmp.IgnoreFields instead.
 	createdNote.Name = ""
 	if diff := cmp.Diff(req.Note, createdNote, cmp.Comparer(proto.Equal)); diff != "" {
 		t.Errorf("CreateNote(%v) returned diff (want -> got):\n%s", req, diff)
@@ -192,6 +194,8 @@ func TestBatchCreateNotes(t *testing.T) {
 	if len(resp.Notes) != 1 {
 		t.Fatalf("Got created notes of len %d, want 1", len(resp.Notes))
 	}
+	// TODO: migrate to protocolbuffers/protobuf-go when it is stable so we can use
+	// protocmp.IgnoreFields instead.
 	resp.Notes[0].Name = ""
 	if diff := cmp.Diff(req.Notes["CVE-UH-OH"], resp.Notes[0], cmp.Comparer(proto.Equal)); diff != "" {
 		t.Errorf("BatchCreateNotes(%v) returned diff (want -> got):\n%s", req, diff)
@@ -371,6 +375,8 @@ func TestGetNote(t *testing.T) {
 		t.Fatalf("Got err %v, want success", err)
 	}
 
+	// TODO: migrate to protocolbuffers/protobuf-go when it is stable so we can use
+	// protocmp.IgnoreFields instead.
 	gotN.Name = ""
 	if diff := cmp.Diff(n, gotN, cmp.Comparer(proto.Equal)); diff != "" {
 		t.Errorf("GetNote(%v) returned diff (want -> got):\n%s", req, diff)
@@ -462,6 +468,8 @@ func TestListNotes(t *testing.T) {
 		t.Fatalf("Got err %v, want success", err)
 	}
 
+	// TODO: migrate to protocolbuffers/protobuf-go when it is stable so we can use
+	// protocmp.IgnoreFields instead.
 	resp.Notes[0].Name = ""
 	if diff := cmp.Diff(n, resp.Notes[0], cmp.Comparer(proto.Equal)); diff != "" {
 		t.Errorf("ListNotes(%v) returned diff (want -> got):\n%s", req, diff)
@@ -564,6 +572,8 @@ func TestUpdateNote(t *testing.T) {
 		t.Fatalf("Got err %v, want success", err)
 	}
 
+	// TODO: migrate to protocolbuffers/protobuf-go when it is stable so we can use
+	// protocmp.IgnoreFields instead.
 	updatedN.Name = ""
 	if diff := cmp.Diff(n, updatedN, cmp.Comparer(proto.Equal)); diff != "" {
 		t.Errorf("UpdateNote(%v) returned diff (want -> got):\n%s", req, diff)
@@ -772,6 +782,8 @@ func TestGetOccurrenceNote(t *testing.T) {
 		t.Fatalf("GetOccurrenceNote(%v): got err %v, want success", req, err)
 	}
 
+	// TODO: migrate to protocolbuffers/protobuf-go when it is stable so we can use
+	// protocmp.IgnoreFields instead.
 	gotN.Name = ""
 	if diff := cmp.Diff(n, gotN, cmp.Comparer(proto.Equal)); diff != "" {
 		t.Errorf("GetOccurrenceNote(%v): returned diff (want -> got):\n%s", req, diff)

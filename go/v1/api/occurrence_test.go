@@ -50,6 +50,8 @@ func TestGetOccurrence(t *testing.T) {
 		t.Fatalf("Got err %v, want success", err)
 	}
 
+	// TODO: migrate to protocolbuffers/protobuf-go when it is stable so we can use
+	// protocmp.IgnoreFields instead.
 	gotOcc.Name = ""
 	if diff := cmp.Diff(o, gotOcc, cmp.Comparer(proto.Equal)); diff != "" {
 		t.Errorf("GetOccurrence(%v) returned diff (want -> got):\n%s", req, diff)
@@ -136,6 +138,8 @@ func TestListOccurrences(t *testing.T) {
 	if len(resp.Occurrences) != 1 {
 		t.Fatalf("Got occurrences of len %d, want 1", len(resp.Occurrences))
 	}
+	// TODO: migrate to protocolbuffers/protobuf-go when it is stable so we can use
+	// protocmp.IgnoreFields instead.
 	resp.Occurrences[0].Name = ""
 	if diff := cmp.Diff(o, resp.Occurrences[0], cmp.Comparer(proto.Equal)); diff != "" {
 		t.Errorf("ListOccurrences(%v) returned diff (want -> got):\n%s", req, diff)
@@ -215,6 +219,8 @@ func TestCreateOccurrence(t *testing.T) {
 		t.Fatalf("Got err %v, want success", err)
 	}
 
+	// TODO: migrate to protocolbuffers/protobuf-go when it is stable so we can use
+	// protocmp.IgnoreFields instead.
 	createdOcc.Name = ""
 	if diff := cmp.Diff(req.Occurrence, createdOcc, cmp.Comparer(proto.Equal)); diff != "" {
 		t.Errorf("CreateOccurrence(%v) returned diff (want -> got):\n%s", req, diff)
@@ -322,6 +328,8 @@ func TestBatchCreateOccurrences(t *testing.T) {
 	if len(resp.Occurrences) != 1 {
 		t.Fatalf("Got created occurrences of len %d, want 1", len(resp.Occurrences))
 	}
+	// TODO: migrate to protocolbuffers/protobuf-go when it is stable so we can use
+	// protocmp.IgnoreFields instead.
 	resp.Occurrences[0].Name = ""
 	if diff := cmp.Diff(req.Occurrences[0], resp.Occurrences[0], cmp.Comparer(proto.Equal)); diff != "" {
 		t.Errorf("BatchCreateOccurrences(%v) returned diff (want -> got):\n%s", req, diff)
@@ -475,6 +483,8 @@ func TestUpdateOccurrence(t *testing.T) {
 		t.Fatalf("Got err %v, want success", err)
 	}
 
+	// TODO: migrate to protocolbuffers/protobuf-go when it is stable so we can use
+	// protocmp.IgnoreFields instead.
 	updatedOcc.Name = ""
 	if diff := cmp.Diff(o, updatedOcc, cmp.Comparer(proto.Equal)); diff != "" {
 		t.Errorf("UpdateOccurrence(%v) returned diff (want -> got):\n%s", req, diff)
@@ -698,6 +708,8 @@ func TestListNoteOccurrences(t *testing.T) {
 	if len(resp.Occurrences) != 1 {
 		t.Fatalf("Got occurrences of len %d, want 1", len(resp.Occurrences))
 	}
+	// TODO: migrate to protocolbuffers/protobuf-go when it is stable so we can use
+	// protocmp.IgnoreFields instead.
 	resp.Occurrences[0].Name = ""
 	if diff := cmp.Diff(createdOcc, resp.Occurrences[0], cmp.Comparer(proto.Equal)); diff != "" {
 		t.Errorf("ListNoteOccurrences(%v) returned diff (want -> got):\n%s", req, diff)
