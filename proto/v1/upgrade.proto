@@ -62,14 +62,14 @@ message UpgradeDistribution {
 // https://docs.microsoft.com/en-us/windows/win32/api/wuapi/nn-wuapi-iupdate.
 message WindowsUpdate {
   // The unique identifier of the update.
-  message identity {
+  message Identity {
     // The revision independent identifier of the update.
     string update_id = 1;
     // The revision number of the update.
     int32 revision = 2;
   }
   // Required - The unique identifier for the update.
-  identity Identity = 1;
+  Identity identity = 1;
   // The localized title of the update.
   string title = 2;
   // The localized description of the update.
