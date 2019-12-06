@@ -24,7 +24,7 @@ option objc_class_prefix = "GRA";
 import "google/protobuf/timestamp.proto";
 import "proto/v1/package.proto";
 
-// A Upgrade Note represents a potential upgrade of a package to a given
+// An Upgrade Note represents a potential upgrade of a package to a given
 // version. For each package version combination (i.e. bash 4.0, bash 4.1,
 // bash 4.1.2), there will be an Upgrade Note. For Windows, windows_update field
 // represents the information related to the update.
@@ -92,7 +92,7 @@ message WindowsUpdate {
   google.protobuf.Timestamp last_deployment_change_time = 7;
 }
 
-// A Upgrade Occurrence represents that a specific resource_url could install a
+// An Upgrade Occurrence represents that a specific resource_url could install a
 // specific upgrade. This presence is supplied via local sources (i.e. it is
 // present in the mirror and the running system has noticed its availability).
 // For Windows, both distribution and windows_update contain information for the
