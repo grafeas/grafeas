@@ -89,7 +89,7 @@ message WindowsUpdate {
   // The hyperlink to the support information for the update.
   string support_url = 6;
   // The last published timestamp of the update.
-  google.protobuf.Timestamp last_deployment_change_time = 7;
+  google.protobuf.Timestamp last_published_timestamp = 7;
 }
 
 // An Upgrade Occurrence represents that a specific resource_url could install a
