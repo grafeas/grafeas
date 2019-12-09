@@ -48,7 +48,8 @@ message UpgradeDistribution {
   // https://cpe.mitre.org/specification/.
   string cpe_uri = 1;
   // The operating system classification of this Upgrade, as specified by the
-  // upstream operating system upgrade feed.
+  // upstream operating system upgrade feed. For Windows the classification is
+  // one of the category_ids listed at https://docs.microsoft.com/en-us/previous-versions/windows/desktop/ff357803(v=vs.85)
   string classification = 2;
   // The severity as specified by the upstream operating system.
   string severity = 3;
@@ -77,7 +78,6 @@ message WindowsUpdate {
   // The category to which the update belongs.
   message Category {
     // The identifier of the category.
-    // Mapping of category_id to Microsoft Classification type: https://docs.microsoft.com/en-us/previous-versions/windows/desktop/ff357803(v=vs.85)
     string category_id = 1;
     // The localized name of the category.
     string name = 2;
