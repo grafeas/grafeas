@@ -243,9 +243,11 @@ message Occurrence {
     grafeas.v1beta1.discovery.Details discovered = 13;
     // Describes an attestation of an artifact.
     grafeas.v1beta1.attestation.Details attestation = 14;
+    // Describes a specific in-toto InTotolink attestation.
+    grafeas.v1beta1.intoto.Details intoto = 15;
   }
 
-  // next_id = 15;
+  // next_id = 16;
 }
 
 // An entity that can have metadata. For example, a Docker image.

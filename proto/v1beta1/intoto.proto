@@ -1,3 +1,17 @@
+// Copyright 2020 The Grafeas Authors. All rights reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 syntax = "proto3";
 
 package grafeas.v1beta1.intoto;
@@ -19,54 +33,83 @@ import "google/protobuf/struct.proto";
 // A signature object consists of the KeyID used and the signature itself.
 message Signature {
   string keyid = 1 [json_name="keyid"];
-
   string sig = 2 [json_name="sig"];
 }
 
 // An object defined to capture the by products of a step.
 message ByProductObject {
   int32 return_value = 1 [json_name="return-value"];
-
   string stderr = 2 [json_name="stderr"];
-
   string stdout = 3 [json_name="stdout"];
 }
 
 // This corrresponds to the core in-toto link attestation.
 message Link {
-  // This field denotes the type of metadata being handled - in this case, the
-  // value is always "link".
-  string _type = 1 [json_name="_type"];
-
-  // This field contains the name of the step the link attestation was generated
-  // for.
-  string name = 2 [json_name="name"];
-
   // This field contains the full command executed for the step. This can also
   // be empty if attestations are generated for operations that aren't directly
-  // mapped to a specific command.
-  repeated string command = 3 [json_name="command"];
+  // mapped to a specific command. Each term in the command is an independent
+  // string in the list. An example of a command in the in-toto metadata field
+  // is:
+  // "command": ["git", "clone", "https://github.com/in-toto/demo-project.git"]
+  repeated string command = 1 [json_name="command"];
 
   // Materials are the supply chain artifacts that go into the step and are used
-  // for the operation performed.
-  map<string, google.protobuf.Struct> materials = 4 [json_name="materials"];
+  // for the operation performed. The key of the map is the path of the artifact
+  // and the structure contains the recorded hash information. An example is:
+  // "materials": {
+  //   "foo/bar": {
+  //     "sha256": "ebebf..."
+  //   }
+  // }
+  map<string, google.protobuf.Struct> materials = 2 [json_name="materials"];
 
   // Products are the supply chain artifacts generated as a result of the step.
-  map<string, google.protobuf.Struct> products = 5 [json_name="products"];
+  // The structure is identical to that of materials.
+  map<string, google.protobuf.Struct> products = 3 [json_name="products"];
 
   // By Products are made up of the data that is generated as part of a software
   // supply chain step, but are not the actual result of the step.
-  ByProductObject byproducts = 6 [json_name="byproducts"];
+  ByProductObject byproducts = 4 [json_name="byproducts"];
 
   // This is a field that can be used to capture information about the
-  // environment.
-  map<string, string> environment = 7 [json_name="environment"];
+  // environment. It is recommended for this field to contain information that
+  // details environment variables, filesystem information, and the present
+  // working directory. The structure of this field is:
+  // "environment": {
+  //   "variables": "<ENV>",
+  //   "filesystem": "<FS>",
+  //   "workdir": "<CWD>"
+  // }
+  map<string, google.protobuf.Struct> environment = 5 [json_name="environment"];
 }
 
 // This corresponds to a full signed attestation - it is made up of one or more
-// signatures and the core link attestation itself.
-message InToto {
+// signatures and the core link attestation itself. This is used for occurrences
+// of an in-toto note.
+message Details {
   repeated Signature signatures = 1 [json_name="signatures"];
-
   Link link = 2 [json_name="signed"];
+}
+
+// This contains the private and public portions of a key. The private portion
+// must be empty for a public key.
+message KeyValue {
+  string private = 1;
+  string public = 2;
+}
+
+// This defines the format used to record keys used in the software supply
+// chain. An in-toto link is attested by a functionary using one or more keys
+// defined in the in-toto layout.
+message FunctionaryKey {
+  string keyid = 1;
+  repeated string keyid_hash_algorithms = 2;
+  string keytype = 3;
+  KeyValue keyval = 4;
+  string scheme = 5;
+}
+
+message InToto {
+  string step_name = 1;
+  repeated FunctionaryKey signing_keys = 2;
 }
