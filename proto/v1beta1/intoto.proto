@@ -85,7 +85,7 @@ message Link {
 
 // This corresponds to a full signed attestation - it is made up of one or more
 // signatures and the core link attestation itself. This is used for occurrences
-// of an in-toto note.
+// of a Grafeas in-toto note.
 message Details {
   repeated Signature signatures = 1 [json_name="signatures"];
   Link link = 2 [json_name="signed"];
@@ -102,14 +102,44 @@ message KeyValue {
 // chain. An in-toto link is attested by a functionary using one or more keys
 // defined in the in-toto layout.
 message FunctionaryKey {
+  // keyid is an identifier for the signing key.
   string keyid = 1;
+
+  // This field identifies the hash algorithms used in the particular key.
   repeated string keyid_hash_algorithms = 2;
+
+  // This field identifies the specific signing method. Eg: RSASSA-PSS, ed25519,
+  // and ecdsa.
   string keytype = 3;
+
+  // This field contains the actual private and public portions of the key.
   KeyValue keyval = 4;
+
+  // This field contains the overall scheme used for the creation of the signing
+  // key. Eg: rsassa-pss-sha256
   string scheme = 5;
 }
 
+// This contains the core fields corresponding to a software supply chain step.
+// This information goes into a Grafeas note.
 message InToto {
+  // This field identifies the name of the step in the supply chain.
   string step_name = 1;
+
+  // This field contains the public keys that can be used to verify the
+  // signatures on the step metadata.
   repeated FunctionaryKey signing_keys = 2;
+
+  // The following fields contain in-toto artifact rules identifying the
+  // artifacts that enter this supply chain step, and exit the supply chain
+  // step, i.e. materials and products of the step.
+  repeated google.protobuf.ListValue expected_materials = 3;
+  repeated google.protobuf.ListValue expected_products = 4;
+
+  // This field contains the expected command used to perform the step.
+  repeated string expected_command = 5;
+
+  // This field contains a value that indicates the minimum number of keys that
+  // need to be used to sign the step's link metadata.
+  int32 threshold = 6;
 }
