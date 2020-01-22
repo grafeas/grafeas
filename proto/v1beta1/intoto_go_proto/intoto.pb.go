@@ -21,10 +21,280 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
+// This contains the fields corresponding to the definition of a software supply
+// chain step in an in-toto layout. This information goes into a Grafeas note.
+type InToto struct {
+	// This field identifies the name of the step in the supply chain.
+	StepName string `protobuf:"bytes,1,opt,name=step_name,json=stepName,proto3" json:"step_name,omitempty"`
+	// This field contains the public keys that can be used to verify the
+	// signatures on the step metadata.
+	SigningKeys []*FunctionaryKey `protobuf:"bytes,2,rep,name=signing_keys,json=signingKeys,proto3" json:"signing_keys,omitempty"`
+	// The following fields contain in-toto artifact rules identifying the
+	// artifacts that enter this supply chain step, and exit the supply chain
+	// step, i.e. materials and products of the step.
+	ExpectedMaterials []*_struct.ListValue `protobuf:"bytes,3,rep,name=expected_materials,json=expectedMaterials,proto3" json:"expected_materials,omitempty"`
+	ExpectedProducts  []*_struct.ListValue `protobuf:"bytes,4,rep,name=expected_products,json=expectedProducts,proto3" json:"expected_products,omitempty"`
+	// This field contains the expected command used to perform the step.
+	ExpectedCommand []string `protobuf:"bytes,5,rep,name=expected_command,json=expectedCommand,proto3" json:"expected_command,omitempty"`
+	// This field contains a value that indicates the minimum number of keys that
+	// need to be used to sign the step's in-toto attestation.
+	Threshold            int64    `protobuf:"varint,6,opt,name=threshold,proto3" json:"threshold,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *InToto) Reset()         { *m = InToto{} }
+func (m *InToto) String() string { return proto.CompactTextString(m) }
+func (*InToto) ProtoMessage()    {}
+func (*InToto) Descriptor() ([]byte, []int) {
+	return fileDescriptor_1442eade79a66571, []int{0}
+}
+
+func (m *InToto) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_InToto.Unmarshal(m, b)
+}
+func (m *InToto) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_InToto.Marshal(b, m, deterministic)
+}
+func (m *InToto) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_InToto.Merge(m, src)
+}
+func (m *InToto) XXX_Size() int {
+	return xxx_messageInfo_InToto.Size(m)
+}
+func (m *InToto) XXX_DiscardUnknown() {
+	xxx_messageInfo_InToto.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_InToto proto.InternalMessageInfo
+
+func (m *InToto) GetStepName() string {
+	if m != nil {
+		return m.StepName
+	}
+	return ""
+}
+
+func (m *InToto) GetSigningKeys() []*FunctionaryKey {
+	if m != nil {
+		return m.SigningKeys
+	}
+	return nil
+}
+
+func (m *InToto) GetExpectedMaterials() []*_struct.ListValue {
+	if m != nil {
+		return m.ExpectedMaterials
+	}
+	return nil
+}
+
+func (m *InToto) GetExpectedProducts() []*_struct.ListValue {
+	if m != nil {
+		return m.ExpectedProducts
+	}
+	return nil
+}
+
+func (m *InToto) GetExpectedCommand() []string {
+	if m != nil {
+		return m.ExpectedCommand
+	}
+	return nil
+}
+
+func (m *InToto) GetThreshold() int64 {
+	if m != nil {
+		return m.Threshold
+	}
+	return 0
+}
+
+// This defines the format used to record keys used in the software supply
+// chain. An in-toto link is attested using one or more keys defined in the
+// in-toto layout.
+type FunctionaryKey struct {
+	// key_id is an identifier for the signing key.
+	KeyId string `protobuf:"bytes,1,opt,name=key_id,json=keyId,proto3" json:"key_id,omitempty"`
+	// This field identifies the hash algorithms used in the particular key ID.
+	KeyIdHashAlgorithms []string `protobuf:"bytes,2,rep,name=key_id_hash_algorithms,json=keyIdHashAlgorithms,proto3" json:"key_id_hash_algorithms,omitempty"`
+	// This field identifies the specific signing method. Eg: "RSASSA-PSS",
+	// "ed25519", and "ecdsa".
+	KeyType string `protobuf:"bytes,3,opt,name=key_type,json=keyType,proto3" json:"key_type,omitempty"`
+	// This field contains the actual private and public portions of the key.
+	KeyValue *KeyValue `protobuf:"bytes,4,opt,name=key_value,json=keyValue,proto3" json:"key_value,omitempty"`
+	// This field contains the overall scheme used for the creation of the signing
+	// key. Eg: "rsassa-pss-sha256".
+	KeyScheme            string   `protobuf:"bytes,5,opt,name=key_scheme,json=keyScheme,proto3" json:"key_scheme,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *FunctionaryKey) Reset()         { *m = FunctionaryKey{} }
+func (m *FunctionaryKey) String() string { return proto.CompactTextString(m) }
+func (*FunctionaryKey) ProtoMessage()    {}
+func (*FunctionaryKey) Descriptor() ([]byte, []int) {
+	return fileDescriptor_1442eade79a66571, []int{1}
+}
+
+func (m *FunctionaryKey) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_FunctionaryKey.Unmarshal(m, b)
+}
+func (m *FunctionaryKey) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_FunctionaryKey.Marshal(b, m, deterministic)
+}
+func (m *FunctionaryKey) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_FunctionaryKey.Merge(m, src)
+}
+func (m *FunctionaryKey) XXX_Size() int {
+	return xxx_messageInfo_FunctionaryKey.Size(m)
+}
+func (m *FunctionaryKey) XXX_DiscardUnknown() {
+	xxx_messageInfo_FunctionaryKey.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_FunctionaryKey proto.InternalMessageInfo
+
+func (m *FunctionaryKey) GetKeyId() string {
+	if m != nil {
+		return m.KeyId
+	}
+	return ""
+}
+
+func (m *FunctionaryKey) GetKeyIdHashAlgorithms() []string {
+	if m != nil {
+		return m.KeyIdHashAlgorithms
+	}
+	return nil
+}
+
+func (m *FunctionaryKey) GetKeyType() string {
+	if m != nil {
+		return m.KeyType
+	}
+	return ""
+}
+
+func (m *FunctionaryKey) GetKeyValue() *KeyValue {
+	if m != nil {
+		return m.KeyValue
+	}
+	return nil
+}
+
+func (m *FunctionaryKey) GetKeyScheme() string {
+	if m != nil {
+		return m.KeyScheme
+	}
+	return ""
+}
+
+// This contains the private and public portions of a key. The private portion
+// must be empty when listing a public key.
+type KeyValue struct {
+	Private              string   `protobuf:"bytes,1,opt,name=private,proto3" json:"private,omitempty"`
+	Public               string   `protobuf:"bytes,2,opt,name=public,proto3" json:"public,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *KeyValue) Reset()         { *m = KeyValue{} }
+func (m *KeyValue) String() string { return proto.CompactTextString(m) }
+func (*KeyValue) ProtoMessage()    {}
+func (*KeyValue) Descriptor() ([]byte, []int) {
+	return fileDescriptor_1442eade79a66571, []int{2}
+}
+
+func (m *KeyValue) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_KeyValue.Unmarshal(m, b)
+}
+func (m *KeyValue) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_KeyValue.Marshal(b, m, deterministic)
+}
+func (m *KeyValue) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_KeyValue.Merge(m, src)
+}
+func (m *KeyValue) XXX_Size() int {
+	return xxx_messageInfo_KeyValue.Size(m)
+}
+func (m *KeyValue) XXX_DiscardUnknown() {
+	xxx_messageInfo_KeyValue.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_KeyValue proto.InternalMessageInfo
+
+func (m *KeyValue) GetPrivate() string {
+	if m != nil {
+		return m.Private
+	}
+	return ""
+}
+
+func (m *KeyValue) GetPublic() string {
+	if m != nil {
+		return m.Public
+	}
+	return ""
+}
+
+// This corresponds to a signed in-toto attestation - it is made up of one or
+// more signatures and the link attestation itself. This is used for occurrences
+// of a Grafeas in-toto note.
+type Details struct {
+	Signatures           []*Signature `protobuf:"bytes,1,rep,name=signatures,proto3" json:"signatures,omitempty"`
+	Link                 *Link        `protobuf:"bytes,2,opt,name=link,json=signed,proto3" json:"link,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}     `json:"-"`
+	XXX_unrecognized     []byte       `json:"-"`
+	XXX_sizecache        int32        `json:"-"`
+}
+
+func (m *Details) Reset()         { *m = Details{} }
+func (m *Details) String() string { return proto.CompactTextString(m) }
+func (*Details) ProtoMessage()    {}
+func (*Details) Descriptor() ([]byte, []int) {
+	return fileDescriptor_1442eade79a66571, []int{3}
+}
+
+func (m *Details) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Details.Unmarshal(m, b)
+}
+func (m *Details) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Details.Marshal(b, m, deterministic)
+}
+func (m *Details) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Details.Merge(m, src)
+}
+func (m *Details) XXX_Size() int {
+	return xxx_messageInfo_Details.Size(m)
+}
+func (m *Details) XXX_DiscardUnknown() {
+	xxx_messageInfo_Details.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Details proto.InternalMessageInfo
+
+func (m *Details) GetSignatures() []*Signature {
+	if m != nil {
+		return m.Signatures
+	}
+	return nil
+}
+
+func (m *Details) GetLink() *Link {
+	if m != nil {
+		return m.Link
+	}
+	return nil
+}
+
 // A signature object consists of the KeyID used and the signature itself.
 type Signature struct {
-	Keyid                string   `protobuf:"bytes,1,opt,name=keyid,proto3" json:"keyid,omitempty"`
-	Sig                  string   `protobuf:"bytes,2,opt,name=sig,proto3" json:"sig,omitempty"`
+	KeyId                string   `protobuf:"bytes,1,opt,name=key_id,json=keyid,proto3" json:"key_id,omitempty"`
+	Signature            string   `protobuf:"bytes,2,opt,name=signature,json=sig,proto3" json:"signature,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -34,7 +304,7 @@ func (m *Signature) Reset()         { *m = Signature{} }
 func (m *Signature) String() string { return proto.CompactTextString(m) }
 func (*Signature) ProtoMessage()    {}
 func (*Signature) Descriptor() ([]byte, []int) {
-	return fileDescriptor_1442eade79a66571, []int{0}
+	return fileDescriptor_1442eade79a66571, []int{4}
 }
 
 func (m *Signature) XXX_Unmarshal(b []byte) error {
@@ -55,109 +325,66 @@ func (m *Signature) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Signature proto.InternalMessageInfo
 
-func (m *Signature) GetKeyid() string {
+func (m *Signature) GetKeyId() string {
 	if m != nil {
-		return m.Keyid
+		return m.KeyId
 	}
 	return ""
 }
 
-func (m *Signature) GetSig() string {
+func (m *Signature) GetSignature() string {
 	if m != nil {
-		return m.Sig
+		return m.Signature
 	}
 	return ""
 }
 
-// An object defined to capture the by products of a step.
-type ByProductObject struct {
-	ReturnValue          int32    `protobuf:"varint,1,opt,name=return_value,json=return-value,proto3" json:"return_value,omitempty"`
-	Stderr               string   `protobuf:"bytes,2,opt,name=stderr,proto3" json:"stderr,omitempty"`
-	Stdout               string   `protobuf:"bytes,3,opt,name=stdout,proto3" json:"stdout,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ByProductObject) Reset()         { *m = ByProductObject{} }
-func (m *ByProductObject) String() string { return proto.CompactTextString(m) }
-func (*ByProductObject) ProtoMessage()    {}
-func (*ByProductObject) Descriptor() ([]byte, []int) {
-	return fileDescriptor_1442eade79a66571, []int{1}
-}
-
-func (m *ByProductObject) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ByProductObject.Unmarshal(m, b)
-}
-func (m *ByProductObject) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ByProductObject.Marshal(b, m, deterministic)
-}
-func (m *ByProductObject) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ByProductObject.Merge(m, src)
-}
-func (m *ByProductObject) XXX_Size() int {
-	return xxx_messageInfo_ByProductObject.Size(m)
-}
-func (m *ByProductObject) XXX_DiscardUnknown() {
-	xxx_messageInfo_ByProductObject.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ByProductObject proto.InternalMessageInfo
-
-func (m *ByProductObject) GetReturnValue() int32 {
-	if m != nil {
-		return m.ReturnValue
-	}
-	return 0
-}
-
-func (m *ByProductObject) GetStderr() string {
-	if m != nil {
-		return m.Stderr
-	}
-	return ""
-}
-
-func (m *ByProductObject) GetStdout() string {
-	if m != nil {
-		return m.Stdout
-	}
-	return ""
-}
-
-// This corrresponds to the core in-toto link attestation.
+// This corresponds to an in-toto link attestation.
 type Link struct {
-	// This field denotes the type of metadata being handled - in this case, the
-	// value is always "link".
-	XType string `protobuf:"bytes,1,opt,name=_type,proto3" json:"_type,omitempty"`
-	// This field contains the name of the step the link attestation was generated
-	// for.
-	Name string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	// This field contains the full command executed for the step. This can also
 	// be empty if attestations are generated for operations that aren't directly
-	// mapped to a specific command.
-	Command []string `protobuf:"bytes,3,rep,name=command,proto3" json:"command,omitempty"`
+	// mapped to a specific command. Each term in the command is an independent
+	// string in the list. An example of a command in the in-toto metadata field
+	// is:
+	// "command": ["git", "clone", "https://github.com/in-toto/demo-project.git"]
+	Command []string `protobuf:"bytes,1,rep,name=command,proto3" json:"command,omitempty"`
 	// Materials are the supply chain artifacts that go into the step and are used
-	// for the operation performed.
-	Materials map[string]*_struct.Struct `protobuf:"bytes,4,rep,name=materials,proto3" json:"materials,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	// for the operation performed. The key of the map is the path of the artifact
+	// and the structure contains the recorded hash information. An example is:
+	// "materials": {
+	//   "foo/bar": {
+	//     "sha256": "ebebf..."
+	//   }
+	// }
+	Materials map[string]*_struct.Struct `protobuf:"bytes,2,rep,name=materials,proto3" json:"materials,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 	// Products are the supply chain artifacts generated as a result of the step.
-	Products map[string]*_struct.Struct `protobuf:"bytes,5,rep,name=products,proto3" json:"products,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
-	// By Products are made up of the data that is generated as part of a software
-	// supply chain step, but are not the actual result of the step.
-	Byproducts *ByProductObject `protobuf:"bytes,6,opt,name=byproducts,proto3" json:"byproducts,omitempty"`
+	// The structure is identical to that of materials.
+	Products map[string]*_struct.Struct `protobuf:"bytes,3,rep,name=products,proto3" json:"products,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	// By Products are data generated as part of a software supply chain step, but
+	// are not the actual result of the step. The suggested fields are "stderr",
+	// "stdout", and "return-value".
+	Byproducts map[string]*_struct.Struct `protobuf:"bytes,4,rep,name=byproducts,proto3" json:"byproducts,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 	// This is a field that can be used to capture information about the
-	// environment.
-	Environment          map[string]string `protobuf:"bytes,7,rep,name=environment,proto3" json:"environment,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
-	XXX_NoUnkeyedLiteral struct{}          `json:"-"`
-	XXX_unrecognized     []byte            `json:"-"`
-	XXX_sizecache        int32             `json:"-"`
+	// environment. It is suggested for this field to contain information that
+	// details environment variables, filesystem information, and the present
+	// working directory. The recommended structure of this field is:
+	// "environment": {
+	//   "variables": "<ENV>",
+	//   "filesystem": "<FS>",
+	//   "workdir": "<CWD>",
+	//   "<ANY OTHER RELEVANT FIELDS>": "..."
+	// }
+	Environment          map[string]*_struct.Struct `protobuf:"bytes,5,rep,name=environment,proto3" json:"environment,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	XXX_NoUnkeyedLiteral struct{}                   `json:"-"`
+	XXX_unrecognized     []byte                     `json:"-"`
+	XXX_sizecache        int32                      `json:"-"`
 }
 
 func (m *Link) Reset()         { *m = Link{} }
 func (m *Link) String() string { return proto.CompactTextString(m) }
 func (*Link) ProtoMessage()    {}
 func (*Link) Descriptor() ([]byte, []int) {
-	return fileDescriptor_1442eade79a66571, []int{2}
+	return fileDescriptor_1442eade79a66571, []int{5}
 }
 
 func (m *Link) XXX_Unmarshal(b []byte) error {
@@ -177,20 +404,6 @@ func (m *Link) XXX_DiscardUnknown() {
 }
 
 var xxx_messageInfo_Link proto.InternalMessageInfo
-
-func (m *Link) GetXType() string {
-	if m != nil {
-		return m.XType
-	}
-	return ""
-}
-
-func (m *Link) GetName() string {
-	if m != nil {
-		return m.Name
-	}
-	return ""
-}
 
 func (m *Link) GetCommand() []string {
 	if m != nil {
@@ -213,113 +426,80 @@ func (m *Link) GetProducts() map[string]*_struct.Struct {
 	return nil
 }
 
-func (m *Link) GetByproducts() *ByProductObject {
+func (m *Link) GetByproducts() map[string]*_struct.Struct {
 	if m != nil {
 		return m.Byproducts
 	}
 	return nil
 }
 
-func (m *Link) GetEnvironment() map[string]string {
+func (m *Link) GetEnvironment() map[string]*_struct.Struct {
 	if m != nil {
 		return m.Environment
 	}
 	return nil
 }
 
-// This corresponds to a full signed attestation - it is made up of one or more
-// signatures and the core link attestation itself.
-type InToto struct {
-	Signatures           []*Signature `protobuf:"bytes,1,rep,name=signatures,proto3" json:"signatures,omitempty"`
-	Link                 *Link        `protobuf:"bytes,2,opt,name=link,json=signed,proto3" json:"link,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}     `json:"-"`
-	XXX_unrecognized     []byte       `json:"-"`
-	XXX_sizecache        int32        `json:"-"`
-}
-
-func (m *InToto) Reset()         { *m = InToto{} }
-func (m *InToto) String() string { return proto.CompactTextString(m) }
-func (*InToto) ProtoMessage()    {}
-func (*InToto) Descriptor() ([]byte, []int) {
-	return fileDescriptor_1442eade79a66571, []int{3}
-}
-
-func (m *InToto) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_InToto.Unmarshal(m, b)
-}
-func (m *InToto) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_InToto.Marshal(b, m, deterministic)
-}
-func (m *InToto) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_InToto.Merge(m, src)
-}
-func (m *InToto) XXX_Size() int {
-	return xxx_messageInfo_InToto.Size(m)
-}
-func (m *InToto) XXX_DiscardUnknown() {
-	xxx_messageInfo_InToto.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_InToto proto.InternalMessageInfo
-
-func (m *InToto) GetSignatures() []*Signature {
-	if m != nil {
-		return m.Signatures
-	}
-	return nil
-}
-
-func (m *InToto) GetLink() *Link {
-	if m != nil {
-		return m.Link
-	}
-	return nil
-}
-
 func init() {
+	proto.RegisterType((*InToto)(nil), "grafeas.v1beta1.intoto.InToto")
+	proto.RegisterType((*FunctionaryKey)(nil), "grafeas.v1beta1.intoto.FunctionaryKey")
+	proto.RegisterType((*KeyValue)(nil), "grafeas.v1beta1.intoto.KeyValue")
+	proto.RegisterType((*Details)(nil), "grafeas.v1beta1.intoto.Details")
 	proto.RegisterType((*Signature)(nil), "grafeas.v1beta1.intoto.Signature")
-	proto.RegisterType((*ByProductObject)(nil), "grafeas.v1beta1.intoto.ByProductObject")
 	proto.RegisterType((*Link)(nil), "grafeas.v1beta1.intoto.Link")
-	proto.RegisterMapType((map[string]string)(nil), "grafeas.v1beta1.intoto.Link.EnvironmentEntry")
+	proto.RegisterMapType((map[string]*_struct.Struct)(nil), "grafeas.v1beta1.intoto.Link.ByproductsEntry")
+	proto.RegisterMapType((map[string]*_struct.Struct)(nil), "grafeas.v1beta1.intoto.Link.EnvironmentEntry")
 	proto.RegisterMapType((map[string]*_struct.Struct)(nil), "grafeas.v1beta1.intoto.Link.MaterialsEntry")
 	proto.RegisterMapType((map[string]*_struct.Struct)(nil), "grafeas.v1beta1.intoto.Link.ProductsEntry")
-	proto.RegisterType((*InToto)(nil), "grafeas.v1beta1.intoto.InToto")
 }
 
 func init() { proto.RegisterFile("intoto.proto", fileDescriptor_1442eade79a66571) }
 
 var fileDescriptor_1442eade79a66571 = []byte{
-	// 498 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x53, 0x5d, 0x6b, 0xdb, 0x30,
-	0x14, 0xc5, 0x71, 0xe2, 0xce, 0x37, 0xdd, 0x56, 0x44, 0xe9, 0xbc, 0xd0, 0x87, 0xcc, 0x2f, 0x0b,
-	0x1b, 0x91, 0x69, 0xfa, 0x52, 0xf6, 0x30, 0x68, 0xa1, 0x2b, 0x85, 0x8d, 0x16, 0xb7, 0x7b, 0x19,
-	0x8c, 0xe0, 0x0f, 0xd5, 0xd3, 0x12, 0x4b, 0x41, 0x96, 0x03, 0x7e, 0xda, 0x7f, 0xd9, 0x6f, 0xdb,
-	0x0f, 0x19, 0x96, 0x64, 0xd7, 0x2d, 0x4d, 0x9e, 0xfa, 0x14, 0xdd, 0x9b, 0x73, 0x8e, 0x8f, 0x8e,
-	0xee, 0x85, 0x5d, 0xca, 0x24, 0x97, 0x1c, 0xaf, 0x04, 0x97, 0x1c, 0x1d, 0x64, 0x22, 0xba, 0x23,
-	0x51, 0x81, 0xd7, 0x47, 0x31, 0x91, 0xd1, 0x11, 0xd6, 0xff, 0x8e, 0x0e, 0x33, 0xce, 0xb3, 0x25,
-	0x09, 0x14, 0x2a, 0x2e, 0xef, 0x82, 0x42, 0x8a, 0x32, 0x91, 0x9a, 0xe5, 0x1f, 0x83, 0x7b, 0x43,
-	0x33, 0x16, 0xc9, 0x52, 0x10, 0xb4, 0x0f, 0x83, 0x05, 0xa9, 0x68, 0xea, 0x59, 0x63, 0x6b, 0xe2,
-	0x86, 0xba, 0x40, 0x7b, 0x60, 0x17, 0x34, 0xf3, 0x7a, 0xaa, 0x57, 0x1f, 0x7d, 0x02, 0xaf, 0xcf,
-	0xaa, 0x6b, 0xc1, 0xd3, 0x32, 0x91, 0x57, 0xf1, 0x6f, 0x92, 0x48, 0xe4, 0xc3, 0xae, 0x20, 0xb2,
-	0x14, 0x6c, 0xbe, 0x8e, 0x96, 0x25, 0x51, 0x0a, 0x83, 0xd0, 0xf4, 0xa6, 0xaa, 0x87, 0x0e, 0xc0,
-	0x29, 0x64, 0x4a, 0x84, 0x30, 0x5a, 0xa6, 0x32, 0x7d, 0x5e, 0x4a, 0xcf, 0x6e, 0xfb, 0xbc, 0x94,
-	0xfe, 0xbf, 0x3e, 0xf4, 0xbf, 0x52, 0xb6, 0xa8, 0x7d, 0xcd, 0x65, 0xb5, 0x22, 0x8d, 0x2f, 0x55,
-	0x20, 0x04, 0x7d, 0x16, 0xe5, 0xc4, 0x88, 0xa9, 0x33, 0xf2, 0x60, 0x27, 0xe1, 0x79, 0x1e, 0xb1,
-	0xd4, 0xb3, 0xc7, 0xf6, 0xc4, 0x0d, 0x9b, 0x12, 0x5d, 0x82, 0x9b, 0x47, 0x92, 0x08, 0x1a, 0x2d,
-	0x0b, 0xaf, 0x3f, 0xb6, 0x27, 0xc3, 0xd9, 0x47, 0xfc, 0x74, 0x64, 0xb8, 0xfe, 0x28, 0xfe, 0xd6,
-	0xa0, 0xcf, 0x99, 0x14, 0x55, 0x78, 0xcf, 0x46, 0x5f, 0xe0, 0xc5, 0x4a, 0x5f, 0xbe, 0xf0, 0x06,
-	0x4a, 0xe9, 0xc3, 0x56, 0x25, 0x93, 0x94, 0x11, 0x6a, 0xb9, 0xe8, 0x02, 0x20, 0xae, 0x5a, 0x25,
-	0x67, 0x6c, 0x4d, 0x86, 0xb3, 0xf7, 0x9b, 0x94, 0x1e, 0x05, 0x1e, 0x76, 0xa8, 0xe8, 0x0a, 0x86,
-	0x84, 0xad, 0xa9, 0xe0, 0x2c, 0x27, 0x4c, 0x7a, 0x3b, 0xca, 0xd3, 0x74, 0xab, 0xa7, 0xf3, 0x7b,
-	0xbc, 0xb6, 0xd5, 0x55, 0x18, 0x7d, 0x87, 0x57, 0x0f, 0xaf, 0x5f, 0x0f, 0xc1, 0x82, 0x54, 0xe6,
-	0x01, 0xea, 0x23, 0x9a, 0xc2, 0x40, 0x3f, 0x75, 0x4f, 0x19, 0x7f, 0x83, 0xf5, 0x9c, 0xe1, 0x66,
-	0xce, 0xf0, 0x8d, 0x9a, 0xb3, 0x50, 0xa3, 0x3e, 0xf5, 0x4e, 0xac, 0xd1, 0x2d, 0xbc, 0x7c, 0x90,
-	0xc5, 0xf3, 0xa8, 0x7e, 0x86, 0xbd, 0xc7, 0xb7, 0x79, 0x42, 0x78, 0xbf, 0x2b, 0xec, 0x76, 0xf8,
-	0xfe, 0x1f, 0x70, 0x2e, 0xd9, 0x6d, 0xbd, 0x42, 0xa7, 0x00, 0x45, 0xb3, 0x0c, 0x85, 0x67, 0xa9,
-	0x18, 0xdf, 0x6d, 0x8a, 0xb1, 0x5d, 0x9b, 0xb0, 0x43, 0x42, 0x33, 0xe8, 0x2f, 0x29, 0x5b, 0x18,
-	0xfb, 0x87, 0xdb, 0xde, 0x20, 0x74, 0x6a, 0x1e, 0x49, 0xcf, 0x7e, 0xc2, 0x5b, 0xca, 0x37, 0x20,
-	0xaf, 0xad, 0x1f, 0x27, 0x19, 0x95, 0xbf, 0xca, 0x18, 0x27, 0x3c, 0x0f, 0x0c, 0xa8, 0xfd, 0x55,
-	0xb1, 0x04, 0x86, 0x12, 0x68, 0xca, 0x3c, 0xe3, 0x73, 0xd5, 0xff, 0xdb, 0xb3, 0x2f, 0xc2, 0xd3,
-	0xd8, 0x51, 0xc5, 0xf1, 0xff, 0x00, 0x00, 0x00, 0xff, 0xff, 0x56, 0xe3, 0x7f, 0xc5, 0x2f, 0x04,
-	0x00, 0x00,
+	// 705 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x94, 0x4d, 0x4f, 0xdb, 0x48,
+	0x18, 0xc7, 0xe5, 0x38, 0x09, 0xf1, 0x13, 0x16, 0xd8, 0x59, 0x6d, 0xd6, 0x64, 0x59, 0x29, 0x9b,
+	0x43, 0x95, 0xbe, 0xe0, 0x88, 0x70, 0x41, 0xa8, 0x3d, 0x40, 0x0b, 0x34, 0x82, 0xb6, 0xc8, 0x50,
+	0x2a, 0x55, 0xaa, 0xac, 0x89, 0x3d, 0xd8, 0xa3, 0xf8, 0x4d, 0x9e, 0x71, 0x54, 0xdf, 0xfa, 0x59,
+	0xfa, 0x09, 0xfa, 0x45, 0x7a, 0xec, 0xf7, 0xa9, 0x3c, 0x63, 0x3b, 0x40, 0x49, 0x7a, 0xe1, 0x14,
+	0xcf, 0x7f, 0x9e, 0xff, 0x6f, 0x66, 0x9e, 0x97, 0xc0, 0x2a, 0x0d, 0x79, 0xc4, 0x23, 0x23, 0x4e,
+	0x22, 0x1e, 0xa1, 0x8e, 0x9b, 0xe0, 0x6b, 0x82, 0x99, 0x31, 0xdb, 0x99, 0x10, 0x8e, 0x77, 0x0c,
+	0xb9, 0xdb, 0xdd, 0x72, 0xa3, 0xc8, 0xf5, 0xc9, 0x50, 0x44, 0x4d, 0xd2, 0xeb, 0x21, 0xe3, 0x49,
+	0x6a, 0x73, 0xe9, 0xea, 0x7f, 0xaf, 0x41, 0x73, 0x1c, 0x5e, 0xe6, 0x80, 0x7f, 0x41, 0x63, 0x9c,
+	0xc4, 0x56, 0x88, 0x03, 0xa2, 0x2b, 0x3d, 0x65, 0xa0, 0x99, 0xad, 0x5c, 0x78, 0x8b, 0x03, 0x82,
+	0xc6, 0xb0, 0xca, 0xa8, 0x1b, 0xd2, 0xd0, 0xb5, 0xa6, 0x24, 0x63, 0x7a, 0xad, 0xa7, 0x0e, 0xda,
+	0xa3, 0x47, 0xc6, 0xfd, 0x87, 0x1a, 0xc7, 0x69, 0x68, 0x73, 0x1a, 0x85, 0x38, 0xc9, 0x4e, 0x49,
+	0x66, 0xb6, 0x0b, 0xef, 0x29, 0xc9, 0x18, 0x1a, 0x03, 0x22, 0x9f, 0x63, 0x62, 0x73, 0xe2, 0x58,
+	0x01, 0xe6, 0x24, 0xa1, 0xd8, 0x67, 0xba, 0x2a, 0x80, 0x5d, 0x43, 0xde, 0xd6, 0x28, 0x6f, 0x6b,
+	0x9c, 0x51, 0xc6, 0xaf, 0xb0, 0x9f, 0x12, 0xf3, 0xcf, 0xd2, 0xf5, 0xa6, 0x34, 0xa1, 0x13, 0xa8,
+	0x44, 0x2b, 0x4e, 0x22, 0x27, 0xb5, 0x39, 0xd3, 0xeb, 0xbf, 0x25, 0x6d, 0x94, 0xa6, 0xf3, 0xc2,
+	0x83, 0x1e, 0x43, 0xa5, 0x59, 0x76, 0x14, 0x04, 0x38, 0x74, 0xf4, 0x46, 0x4f, 0x1d, 0x68, 0xe6,
+	0x7a, 0xa9, 0xbf, 0x94, 0x32, 0xda, 0x02, 0x8d, 0x7b, 0x09, 0x61, 0x5e, 0xe4, 0x3b, 0x7a, 0xb3,
+	0xa7, 0x0c, 0x54, 0x73, 0x2e, 0xf4, 0x7f, 0x28, 0xb0, 0x76, 0xfb, 0xf1, 0xe8, 0x6f, 0x68, 0x4e,
+	0x49, 0x66, 0x51, 0xa7, 0x48, 0x6a, 0x63, 0x4a, 0xb2, 0xb1, 0x83, 0x76, 0xa1, 0x23, 0x65, 0xcb,
+	0xc3, 0xcc, 0xb3, 0xb0, 0xef, 0x46, 0x09, 0xe5, 0x5e, 0x20, 0x73, 0xab, 0x99, 0x7f, 0x89, 0xb0,
+	0xd7, 0x98, 0x79, 0x07, 0xd5, 0x16, 0xda, 0x84, 0x56, 0x6e, 0xe2, 0x59, 0x4c, 0x74, 0x55, 0xd0,
+	0x56, 0xa6, 0x24, 0xbb, 0xcc, 0x62, 0x82, 0x5e, 0x80, 0x96, 0x6f, 0xcd, 0xf2, 0x17, 0xea, 0xf5,
+	0x9e, 0x32, 0x68, 0x8f, 0x7a, 0x8b, 0xca, 0x73, 0x4a, 0x32, 0x99, 0x89, 0x9c, 0x26, 0xbe, 0xd0,
+	0x7f, 0x00, 0xb9, 0x9d, 0xd9, 0x1e, 0x09, 0x88, 0xde, 0x10, 0xec, 0x1c, 0x78, 0x21, 0x84, 0xfe,
+	0x73, 0x68, 0x95, 0x26, 0xa4, 0xc3, 0x4a, 0x9c, 0xd0, 0x19, 0xe6, 0x65, 0x9b, 0x94, 0x4b, 0xd4,
+	0x81, 0x66, 0x9c, 0x4e, 0x7c, 0x6a, 0xeb, 0x35, 0xb1, 0x51, 0xac, 0xfa, 0x5f, 0x14, 0x58, 0x79,
+	0x45, 0x38, 0xa6, 0x3e, 0x43, 0x07, 0x00, 0x79, 0x37, 0x60, 0x9e, 0x26, 0x84, 0xe9, 0x8a, 0x28,
+	0xd6, 0xff, 0x8b, 0x2e, 0x7a, 0x51, 0x46, 0x9a, 0x37, 0x4c, 0x68, 0x04, 0x75, 0x9f, 0x86, 0x53,
+	0x71, 0x48, 0x7b, 0xb4, 0xb5, 0xc8, 0x7c, 0x46, 0xc3, 0xa9, 0xd9, 0xcc, 0x7d, 0xc4, 0xe9, 0xef,
+	0x83, 0x56, 0xc1, 0xee, 0x2d, 0x09, 0x75, 0x50, 0x07, 0xb4, 0xea, 0x94, 0xe2, 0x05, 0x2a, 0xa3,
+	0x6e, 0xff, 0x5b, 0x03, 0xea, 0x39, 0x2c, 0x7f, 0x79, 0xd9, 0x1d, 0x8a, 0x28, 0x52, 0xb9, 0x44,
+	0x63, 0xd0, 0xe6, 0xbd, 0x2c, 0x87, 0xe3, 0xe9, 0xb2, 0x7b, 0x19, 0x55, 0x13, 0x1f, 0x85, 0x3c,
+	0xc9, 0xcc, 0xb9, 0x1b, 0x1d, 0x43, 0xab, 0xea, 0x65, 0x39, 0x15, 0x4f, 0x96, 0x92, 0xca, 0x26,
+	0x96, 0xa0, 0xca, 0x8b, 0xce, 0x00, 0x26, 0xd9, 0x9d, 0xa9, 0x78, 0xb6, 0x94, 0x74, 0x58, 0x85,
+	0x4b, 0xd6, 0x0d, 0x3f, 0x7a, 0x07, 0x6d, 0x12, 0xce, 0x68, 0x12, 0x85, 0x01, 0x09, 0xb9, 0x18,
+	0x8e, 0xf6, 0x68, 0x7b, 0x29, 0xee, 0x68, 0x1e, 0x2f, 0x79, 0x37, 0x09, 0xdd, 0xf7, 0xb0, 0x76,
+	0x3b, 0x07, 0x68, 0x03, 0xd4, 0x29, 0xc9, 0x8a, 0x92, 0xe4, 0x9f, 0x68, 0x1b, 0x1a, 0xb2, 0x9f,
+	0x65, 0xa5, 0xff, 0xf9, 0x65, 0xa6, 0x2f, 0xc4, 0x7f, 0x99, 0x29, 0xa3, 0xf6, 0x6b, 0x7b, 0x4a,
+	0xf7, 0x12, 0xfe, 0xb8, 0x95, 0x90, 0x87, 0xa1, 0x5e, 0xc1, 0xfa, 0x9d, 0xe4, 0x3c, 0x0c, 0xf7,
+	0x03, 0x6c, 0xdc, 0xcd, 0xd2, 0x83, 0x80, 0x0f, 0x3f, 0xc1, 0x26, 0x8d, 0x16, 0x54, 0xe7, 0x5c,
+	0xf9, 0xb8, 0xe7, 0x52, 0xee, 0xa5, 0x13, 0xc3, 0x8e, 0x82, 0x61, 0x11, 0x54, 0xfd, 0x0a, 0xea,
+	0xb0, 0xb0, 0x0c, 0xa5, 0xc5, 0x72, 0x23, 0x4b, 0xe8, 0x5f, 0x6b, 0xea, 0x89, 0x79, 0x30, 0x69,
+	0x8a, 0xc5, 0xee, 0xcf, 0x00, 0x00, 0x00, 0xff, 0xff, 0xc1, 0x8f, 0xce, 0xa9, 0x83, 0x06, 0x00,
+	0x00,
 }
