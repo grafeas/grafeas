@@ -70,19 +70,12 @@ message SigningKey {
   // "ed25519", and "ecdsa".
   string key_type = 3;
 
-  // This field contains the actual private and public portions of the key.
-  KeyValue key_value = 4;
+  // This field contains the actual public key.
+  string public_key_value = 4;
 
   // This field contains the overall scheme used for the creation of the signing
   // key. Eg: "rsassa-pss-sha256".
   string key_scheme = 5;
-}
-
-// This contains the private and public portions of a key. The private portion
-// must be empty when listing a public key.
-message KeyValue {
-  string private = 1;
-  string public = 2;
 }
 
 // This corresponds to a signed in-toto attestation - it is made up of one or
