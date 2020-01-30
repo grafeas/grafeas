@@ -27,6 +27,13 @@ creating notes and occurrences in Grafeas. There are client libraries available 
 * The authoritative API for grafeas is the [protobuf
 files](https://github.com/Grafeas/Grafeas/tree/master/proto/v1beta1).
 
+## Grafeas Architecture
+
+The diagram below shows the boundaries between Grafeas API, server, its storage
+backends and the clients:
+
+![Grafeas Architecture](docs/grafeas_architecture.png)
+
 ##  Storage Backends
 
 The following projects provide bindings for Grafeas API to different storage backends:
