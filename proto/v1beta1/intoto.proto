@@ -100,7 +100,7 @@ message Link {
   // string in the list. An example of a command in the in-toto metadata field
   // is:
   // "command": ["git", "clone", "https://github.com/in-toto/demo-project.git"]
-  repeated string command = 1;
+  repeated string effective_command = 1 [json_name="command"];
 
   // Materials are the supply chain artifacts that go into the step and are used
   // for the operation performed. The key of the map is the path of the artifact
