@@ -14,7 +14,7 @@ jobs:
         environment:
           POSTGRES_DB: postgres
           POSTGRES_USER: postgres
-          POSTGRES_DB: password
+          POSTGRES_PASSWORD: password
     #### TEMPLATE_NOTE: go expects specific checkout path representing url
     #### expecting it in the form of
     ####   /go/src/github.com/circleci/go-tool
