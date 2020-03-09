@@ -57,9 +57,24 @@ func NewPgSQLStore(config *config.PgSQLConfig) *PgSQLStore {
 		db.Close()
 		log.Fatal(err.Error())
 	}
+	paginationKey := config.PaginationKey
+	if paginationKey == "" {
+		log.Println("pagination key is empty, generating...")
+		var key fernet.Key
+		if err = key.Generate(); err != nil {
+			log.Fatal(err.Error())
+		}
+		paginationKey = key.Encode()
+	} else {
+		// Validate pagination key
+		_, err = fernet.DecodeKey(paginationKey)
+		if err != nil {
+			log.Fatal("Invalid Pagination key; must be 32-bit URL-safe base64")
+		}
+	}
 	return &PgSQLStore{
 		DB:            db,
-		paginationKey: config.PaginationKey,
+		paginationKey: paginationKey,
 	}
 }
 
