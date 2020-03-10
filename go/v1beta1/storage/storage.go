@@ -567,6 +567,60 @@ func DoTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 		}
 	})
 
+	t.Run("ListProjectsWithPaging", func(t *testing.T) {
+		_, gp, cleanUp := createStore(t)
+		defer cleanUp()
+
+		ctx := context.Background()
+		projCount := 20
+		wantProjectNames := make([]string, projCount)
+		for i := 0; i < projCount; i++ {
+			pID := fmt.Sprint("Project", i)
+			p := &prpb.Project{}
+			p.Name = name.FormatProject(pID)
+			p, err := gp.CreateProject(ctx, pID, p)
+			if err != nil {
+				t.Fatalf("CreateProject got %v want success", err)
+			}
+			wantProjectNames[i] = p.Name
+		}
+
+		filter := "filters_are_yet_to_be_implemented"
+		gotProjectNames := make([]string, 0)
+		pageToken := ""
+		pageSize := 10
+		for {
+			gotProjects, nextPageToken, err := gp.ListProjects(ctx, filter, pageSize, pageToken)
+			if err != nil {
+				t.Errorf("ListProjects got %v, want success", err)
+			}
+			if len(gotProjects) > pageSize {
+				t.Errorf("ListProjects got %v projects, want <= %v", len(gotProjects), pageSize)
+			}
+			for _, project := range gotProjects {
+				gotProjectNames = append(gotProjectNames, project.Name)
+			}
+			if nextPageToken == "" && len(gotProjectNames) < len(wantProjectNames) {
+				t.Errorf("ListProjects returned empty next page token before returning all results")
+			}
+
+			// no more data
+			if nextPageToken == "" {
+				break
+			}
+			if pageToken == nextPageToken {
+				t.Errorf("ListProjects returned the same page token as it received: %s", nextPageToken)
+			}
+			pageToken = nextPageToken
+		}
+		// Sort to handle that wantProjectNames are not guaranteed to be listed in insertion order
+		sort.Strings(wantProjectNames)
+		sort.Strings(gotProjectNames)
+		if !reflect.DeepEqual(gotProjectNames, wantProjectNames) {
+			t.Errorf("ListProjects got %v want %v", gotProjectNames, wantProjectNames)
+		}
+	})
+
 	t.Run("ListNotes", func(t *testing.T) {
 		g, gp, cleanUp := createStore(t)
 		defer cleanUp()

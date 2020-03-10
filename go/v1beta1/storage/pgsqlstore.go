@@ -16,6 +16,7 @@ package storage
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"log"
 	"strconv"
@@ -41,41 +42,40 @@ type PgSQLStore struct {
 	paginationKey string
 }
 
-func NewPgSQLStore(config *config.PgSQLConfig) *PgSQLStore {
-	err := createDatabase(CreateSourceString(config.User, config.Password, config.Host, "postgres", config.SSLMode), config.DbName)
-	if err != nil {
-		log.Fatal(err.Error())
-	}
-	db, err := sql.Open("postgres", CreateSourceString(config.User, config.Password, config.Host, config.DbName, config.SSLMode))
-	if err != nil {
-		log.Fatal(err.Error())
-	}
-	if db.Ping() != nil {
-		log.Fatal("Database server is not alive")
-	}
-	if _, err := db.Exec(createTables); err != nil {
-		db.Close()
-		log.Fatal(err.Error())
-	}
+func NewPgSQLStore(config *config.PgSQLConfig) (*PgSQLStore, error) {
 	paginationKey := config.PaginationKey
 	if paginationKey == "" {
 		log.Println("pagination key is empty, generating...")
 		var key fernet.Key
-		if err = key.Generate(); err != nil {
-			log.Fatal(err.Error())
+		if err := key.Generate(); err != nil {
+			return nil, errors.New(fmt.Sprintf("failed to generate pagination key, %s", err))
 		}
 		paginationKey = key.Encode()
 	} else {
 		// Validate pagination key
-		_, err = fernet.DecodeKey(paginationKey)
+		_, err := fernet.DecodeKey(paginationKey)
 		if err != nil {
-			log.Fatal("Invalid Pagination key; must be 32-bit URL-safe base64")
+			return nil, errors.New("invalid pagination key; must be 32-bit URL-safe base64")
 		}
+	}
+	if err := createDatabase(CreateSourceString(config.User, config.Password, config.Host, "postgres", config.SSLMode), config.DbName); err != nil {
+		return nil, err
+	}
+	db, err := sql.Open("postgres", CreateSourceString(config.User, config.Password, config.Host, config.DbName, config.SSLMode))
+	if err != nil {
+		return nil, err
+	}
+	if db.Ping() != nil {
+		return nil, errors.New("database server is not alive")
+	}
+	if _, err := db.Exec(createTables); err != nil {
+		db.Close()
+		return nil, err
 	}
 	return &PgSQLStore{
 		DB:            db,
 		paginationKey: paginationKey,
-	}
+	}, nil
 }
 
 func createDatabase(source, dbName string) error {
