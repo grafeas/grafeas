@@ -107,7 +107,11 @@ func postgresStorageTypeProvider(storageType string, storageConfig *config.Stora
 		return nil, errors.New(fmt.Sprintf("Unable to create PgSQLConfig, %s", err))
 	}
 
-	s := NewPgSQLStore(&storeConfig)
+	s, err := NewPgSQLStore(&storeConfig)
+	if err != nil {
+		return nil, err
+	}
+
 	storage := &Storage{
 		Ps: s,
 		Gs: s,

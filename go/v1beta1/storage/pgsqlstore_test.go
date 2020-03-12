@@ -57,7 +57,10 @@ func TestBetaPgSQLStore(t *testing.T) {
 			SSLMode:       "disable",
 			PaginationKey: "XxoPtCUzrUv4JV5dS+yQ+MdW7yLEJnRMwigVY/bpgtQ=",
 		}
-		pg := storage.NewPgSQLStore(config)
+		pg, err := storage.NewPgSQLStore(config)
+		if err != nil {
+			t.Errorf("Error creating PgSQLStore, %s", err)
+		}
 		var g grafeas.Storage = pg
 		var gp project.Storage = pg
 		return g, gp, func() { dropDatabase(t, config); pg.Close() }
@@ -79,11 +82,58 @@ func TestPgSQLStoreWithUserAsEnv(t *testing.T) {
 		}
 		_ = os.Setenv("PGUSER", "postgres")
 		_ = os.Setenv("PGPASSWORD", "password")
-		pg := storage.NewPgSQLStore(config)
+		pg, err := storage.NewPgSQLStore(config)
+		if err != nil {
+			t.Errorf("Error creating PgSQLStore, %s", err)
+		}
 		var g grafeas.Storage = pg
 		var gp project.Storage = pg
 		return g, gp, func() { dropDatabase(t, config); pg.Close() }
 	}
 
 	storage.DoTestStorage(t, createPgSQLStore)
+}
+
+func TestBetaPgSQLStoreWithNoPaginationKey(t *testing.T) {
+	createPgSQLStore := func(t *testing.T) (grafeas.Storage, project.Storage, func()) {
+		t.Helper()
+		config := &config.PgSQLConfig{
+			Host:          "127.0.0.1:5432",
+			DbName:        "test_db",
+			User:          "postgres",
+			Password:      "password",
+			SSLMode:       "disable",
+			PaginationKey: "",
+		}
+		pg, err := storage.NewPgSQLStore(config)
+		if err != nil {
+			t.Errorf("Error creating PgSQLStore, %s", err)
+		}
+		var g grafeas.Storage = pg
+		var gp project.Storage = pg
+		return g, gp, func() { dropDatabase(t, config); pg.Close() }
+	}
+
+	storage.DoTestStorage(t, createPgSQLStore)
+}
+
+func TestBetaPgSQLStoreWithInvalidPaginationKey(t *testing.T) {
+	config := &config.PgSQLConfig{
+		Host:          "127.0.0.1:5432",
+		DbName:        "test_db",
+		User:          "postgres",
+		Password:      "password",
+		SSLMode:       "disable",
+		PaginationKey: "INVALID_VALUE",
+	}
+	pg, err := storage.NewPgSQLStore(config)
+	if pg != nil {
+		pg.Close()
+	}
+	if err == nil {
+		t.Errorf("expected error for invalid pagination key; got none")
+	}
+	if err.Error() != "invalid pagination key; must be 32-bit URL-safe base64" {
+		t.Errorf("expected error message about invalid pagination key; got: %s", err.Error())
+	}
 }
