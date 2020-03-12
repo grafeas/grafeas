@@ -5,7 +5,6 @@ v0.1.5:
   * Upgraded to golang 1.14.0
   * Addeded last_scan_time to discovery occurrences
   * Added support for Windows updates
-  * Added API config annotations
 
 v0.1.4:
   * Support for use of existing secret and certs in Helm chart, in addition to generating them.
