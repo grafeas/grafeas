@@ -1,6 +1,14 @@
 This is the changelog of Grafeas server releases. For more information on
 versionining, see [versioning](docs/versioning.md) document.
 
+v0.1.5:
+  * Upgraded to golang 1.14.0
+  * Addeded last_scan_time to discovery occurrences
+  * Added support for Windows updates
+  * Changed resource type API Group to top level domain
+  * Added API config annotations
+  * Removed UNKNOWN types
+
 v0.1.4:
   * Support for use of existing secret and certs in Helm chart, in addition to generating them.
   * Fix for handling http requests.
