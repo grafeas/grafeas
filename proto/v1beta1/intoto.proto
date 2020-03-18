@@ -29,7 +29,7 @@ import "google/protobuf/struct.proto";
 // the in-toto specification at
 // https://github.com/in-toto/docs/blob/master/in-toto-spec.md
 // There are two types of in-toto metadata - layouts and links. Layouts define
-// the structure of the software supply chain, while links are attestations of
+// the structure of the software supply chain, while links are signed records of
 // performing a step in the software supply chain.
 
 // This contains the fields corresponding to the definition of a software supply
@@ -52,7 +52,7 @@ message InToto {
   repeated string expected_command = 5;
 
   // This field contains a value that indicates the minimum number of keys that
-  // need to be used to sign the step's in-toto attestation.
+  // need to be used to sign the step's in-toto link.
   int64 threshold = 6;
 }
 
@@ -78,9 +78,9 @@ message SigningKey {
   string key_scheme = 5;
 }
 
-// This corresponds to a signed in-toto attestation - it is made up of one or
-// more signatures and the link attestation itself. This is used for occurrences
-// of a Grafeas in-toto note.
+// This corresponds to a signed in-toto link - it is made up of one or more
+// signatures and the in-toto link itself. This is used for occurrences of a
+// Grafeas in-toto note.
 message Details {
   repeated Signature signatures = 1;
   Link link = 2 [json_name="signed"];
@@ -92,13 +92,12 @@ message Signature {
   string signature = 2 [json_name="sig"];
 }
 
-// This corresponds to an in-toto link attestation.
+// This corresponds to an in-toto link.
 message Link {
   // This field contains the full command executed for the step. This can also
-  // be empty if attestations are generated for operations that aren't directly
-  // mapped to a specific command. Each term in the command is an independent
-  // string in the list. An example of a command in the in-toto metadata field
-  // is:
+  // be empty if links are generated for operations that aren't directly mapped
+  // to a specific command. Each term in the command is an independent string
+  // in the list. An example of a command in the in-toto metadata field is:
   // "command": ["git", "clone", "https://github.com/in-toto/demo-project.git"]
   repeated string effective_command = 1 [json_name="command"];
 

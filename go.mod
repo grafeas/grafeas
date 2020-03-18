@@ -7,7 +7,7 @@ require (
 	github.com/boltdb/bolt v1.3.1
 	github.com/cockroachdb/cmux v0.0.0-20170110192607-30d10be49292
 	github.com/fernet/fernet-go v0.0.0-20180830025343-9eac43b88a5e
-	github.com/golang/protobuf v1.3.2
+	github.com/golang/protobuf v1.3.5
 	github.com/google/go-cmp v0.3.1
 	github.com/google/logger v1.0.1
 	github.com/google/uuid v1.1.1

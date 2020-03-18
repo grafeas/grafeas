@@ -40,7 +40,7 @@ const (
 	NoteKind_DISCOVERY NoteKind = 6
 	// This represents a logical "role" that can attest to artifacts.
 	NoteKind_ATTESTATION NoteKind = 7
-	// This represents an in-toto link file.
+	// This represents an in-toto link.
 	NoteKind_INTOTO NoteKind = 8
 )
 

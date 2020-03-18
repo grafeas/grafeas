@@ -243,7 +243,7 @@ message Occurrence {
     grafeas.v1beta1.discovery.Details discovered = 13;
     // Describes an attestation of an artifact.
     grafeas.v1beta1.attestation.Details attestation = 14;
-    // Describes a specific in-toto attestation.
+    // Describes a specific in-toto link.
     grafeas.v1beta1.intoto.Details intoto = 15;
   }
 
