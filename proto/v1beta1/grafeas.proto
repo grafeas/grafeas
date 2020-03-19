@@ -34,10 +34,10 @@ import "proto/v1beta1/common.proto";
 import "proto/v1beta1/deployment.proto";
 import "proto/v1beta1/discovery.proto";
 import "proto/v1beta1/image.proto";
+import "proto/v1beta1/intoto.proto";
 import "proto/v1beta1/package.proto";
 import "proto/v1beta1/provenance.proto";
 import "proto/v1beta1/vulnerability.proto";
-import "proto/v1beta1/intoto.proto";
 
 // [Grafeas](grafeas.io) API.
 //
