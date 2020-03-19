@@ -101,6 +101,11 @@ message Link {
   // "command": ["git", "clone", "https://github.com/in-toto/demo-project.git"]
   repeated string effective_command = 1 [json_name="command"];
 
+  // Defines a hash object for use in Materials and Products.
+  message ArtifactHashObject {
+    string sha256 = 1;
+  }
+
   // Materials are the supply chain artifacts that go into the step and are used
   // for the operation performed. The key of the map is the path of the artifact
   // and the structure contains the recorded hash information. An example is:
@@ -109,11 +114,11 @@ message Link {
   //     "sha256": "ebebf..."
   //   }
   // }
-  map<string, google.protobuf.Struct> materials = 2;
+  map<string, ArtifactHashObject> materials = 2;
 
   // Products are the supply chain artifacts generated as a result of the step.
   // The structure is identical to that of materials.
-  map<string, google.protobuf.Struct> products = 3;
+  map<string, ArtifactHashObject> products = 3;
 
   // By Products are data generated as part of a software supply chain step, but
   // are not the actual result of the step. The suggested fields are "stderr",
