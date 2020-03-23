@@ -105,13 +105,13 @@ message Link {
   repeated string effective_command = 1 [json_name="command"];
 
   // Defines a hash object for use in Materials and Products.
-  message ArtifactHash {
+  message ArtifactHashes {
     string sha256 = 1;
   }
 
   message Artifact {
     string resource_uri = 1;
-    ArtifactHash hashes = 2;
+    ArtifactHashes hashes = 2;
   }
 
   // Materials are the supply chain artifacts that go into the step and are used
