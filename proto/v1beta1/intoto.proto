@@ -21,8 +21,6 @@ option java_multiple_files = true;
 option java_package = "io.grafeas.v1beta1.intoto";
 option objc_class_prefix = "GRA";
 
-import "google/protobuf/struct.proto";
-
 // This file defines the proto that matches the schema of in-toto metadata.
 // in-toto is a framework to protect a software supply chain. You can read more
 // about in-toto at https://in-toto.io/ and you can find the current version of
@@ -42,11 +40,16 @@ message InToto {
   // signatures on the step metadata.
   repeated SigningKey signing_keys = 2;
 
+  // Defines an object to declare an in-toto artifact rule
+  message ArtifactRule {
+    repeated string artifact_rule = 1;
+  }
+
   // The following fields contain in-toto artifact rules identifying the
   // artifacts that enter this supply chain step, and exit the supply chain
   // step, i.e. materials and products of the step.
-  repeated google.protobuf.ListValue expected_materials = 3;
-  repeated google.protobuf.ListValue expected_products = 4;
+  repeated ArtifactRule expected_materials = 3;
+  repeated ArtifactRule expected_products = 4;
 
   // This field contains the expected command used to perform the step.
   repeated string expected_command = 5;
@@ -102,8 +105,13 @@ message Link {
   repeated string effective_command = 1 [json_name="command"];
 
   // Defines a hash object for use in Materials and Products.
-  message ArtifactHashObject {
+  message ArtifactHash {
     string sha256 = 1;
+  }
+
+  message Artifact {
+    string resource_uri = 1;
+    ArtifactHash hashes = 2;
   }
 
   // Materials are the supply chain artifacts that go into the step and are used
@@ -114,16 +122,16 @@ message Link {
   //     "sha256": "ebebf..."
   //   }
   // }
-  map<string, ArtifactHashObject> materials = 2;
+  repeated Artifact materials = 2;
 
   // Products are the supply chain artifacts generated as a result of the step.
   // The structure is identical to that of materials.
-  map<string, ArtifactHashObject> products = 3;
+  repeated Artifact products = 3;
 
   // By Products are data generated as part of a software supply chain step, but
   // are not the actual result of the step. The suggested fields are "stderr",
   // "stdout", and "return-value".
-  map<string, google.protobuf.Struct> byproducts = 4;
+  map<string, string> byproducts = 4;
 
   // This is a field that can be used to capture information about the
   // environment. It is suggested for this field to contain information that
@@ -135,5 +143,5 @@ message Link {
   //   "workdir": "<CWD>",
   //   "<ANY OTHER RELEVANT FIELDS>": "..."
   // }
-  map<string, google.protobuf.Struct> environment = 5;
+  map<string, string> environment = 5;
 }
