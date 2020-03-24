@@ -1,0 +1,23 @@
+{
+    "name": "projects/occurrence_example/occurences/exampleDeploymentOccurrence",
+    "resource": {
+        "name": "some name",
+        "uri": "https://gcr.io/project/image@sha256:foo"
+    },
+    "note_name": "projects/provider_example/notes/exampleDeploymentNote",
+    "kind": "DEPLOYMENT",
+    "deployment": {
+        "deployment":{
+            "userEmail": "user_email",
+            "address": "address",
+            "resourceUri":[
+                "resource_uri",
+                "resource_uri"
+            ],
+            "undeployTime": "2000-01-23T04:56:07.000+00:00",
+            "deployTime": "2000-01-23T04:56:07.000+00:00",
+            "config": "config",
+            "platform": "CUSTOM"
+        }
+    }
+}

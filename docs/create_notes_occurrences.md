@@ -76,6 +76,11 @@ command:
 ```bash
 curl http://localhost:8080/v1beta1/projects/provider_example/notes
 ```
+#### Further examples
+Examples of deployment and build notes are contained within the [json_examples](json_examples/) folder
+
+### Using Postman
+If you're familiar with [Postman](https://www.postman.com), then you can use the script contained in the [postman](postman/) folder to create projects, create and get example notes create and read example occurrences for deployment, vulnerability and build types.
 
 ### Using Java
 
@@ -195,6 +200,9 @@ curl http://localhost:8080/v1beta1/projects/occurrence_example/occurrences
 
 You can find information about other available actions in the
 [Grafeas API documentation](https://github.com/grafeas/grafeas/blob/669d9cdc0ca804bf7d29dcf6d66bb9d8e94b08b6/v1alpha1/docs/GrafeasApi.md).
+
+#### Further examples
+Examples of deployment and build occurrences are contained within the [json_examples](json_examples/) folder
 
 ### Using Java
 
