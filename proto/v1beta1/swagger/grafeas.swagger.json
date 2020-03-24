@@ -708,7 +708,7 @@
           }
         }
       },
-      "description": "Defines an object for the byproducts field in in-toto links."
+      "description": "Defines an object for the byproducts field in in-toto links. The suggested\nfields are \"stderr\", \"stdout\", and \"return-value\"."
     },
     "LinkEnvironment": {
       "type": "object",
@@ -720,7 +720,7 @@
           }
         }
       },
-      "description": "Defines an object for the environment field in in-toto links."
+      "description": "Defines an object for the environment field in in-toto links. The suggested\nfields are \"variables\", \"filesystem\", and \"workdir\"."
     },
     "VersionVersionKind": {
       "type": "string",
@@ -1208,7 +1208,7 @@
         },
         "byproducts": {
           "$ref": "#/definitions/LinkByProducts",
-          "description": "By Products are data generated as part of a software supply chain step, but\nare not the actual result of the step. The suggested fields are \"stderr\",\n\"stdout\", and \"return-value\"."
+          "description": "ByProducts are data generated as part of a software supply chain step, but\nare not the actual result of the step."
         },
         "environment": {
           "$ref": "#/definitions/LinkEnvironment",
@@ -1235,16 +1235,9 @@
           "type": "string",
           "description": "key_id is an identifier for the signing key."
         },
-        "key_id_hash_algorithms": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "description": "This field identifies the hash algorithms used in the particular key ID."
-        },
         "key_type": {
           "type": "string",
-          "description": "This field identifies the specific signing method. Eg: \"RSASSA-PSS\",\n\"ed25519\", and \"ecdsa\"."
+          "description": "This field identifies the specific signing method. Eg: \"rsa\", \"ed25519\",\nand \"ecdsa\"."
         },
         "public_key_value": {
           "type": "string",
@@ -1252,10 +1245,10 @@
         },
         "key_scheme": {
           "type": "string",
-          "description": "This field contains the overall scheme used for the creation of the signing\nkey. Eg: \"rsassa-pss-sha256\"."
+          "description": "This field contains the corresponding signature scheme.\nEg: \"rsassa-pss-sha256\"."
         }
       },
-      "description": "This defines the format used to record keys used in the software supply\nchain. An in-toto link is attested using one or more keys defined in the\nin-toto layout."
+      "description": "This defines the format used to record keys used in the software supply\nchain. An in-toto link is attested using one or more keys defined in the\nin-toto layout. An example of this is:\n{\n  \"key_id\": \"776a00e29f3559e0141b3b096f696abc6cfb0c657ab40f441132b345b0...\",\n  \"key_type\": \"rsa\",\n  \"public_key_value\": \"-----BEGIN PUBLIC KEY-----\\nMIIBojANBgkqhkiG9w0B...\",\n  \"key_scheme\": \"rsassa-pss-sha256\"\n}\nThe format for in-toto's key definition can be found in section 4.2 of the\nin-toto specification."
     },
     "packageArchitecture": {
       "type": "string",
