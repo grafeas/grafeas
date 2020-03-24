@@ -61,24 +61,29 @@ message InToto {
 
 // This defines the format used to record keys used in the software supply
 // chain. An in-toto link is attested using one or more keys defined in the
-// in-toto layout.
+// in-toto layout. An example of this is:
+// {
+//   "key_id": "776a00e29f3559e0141b3b096f696abc6cfb0c657ab40f441132b345b0...",
+//   "key_type": "rsa",
+//   "public_key_value": "-----BEGIN PUBLIC KEY-----\nMIIBojANBgkqhkiG9w0B...",
+//   "key_scheme": "rsassa-pss-sha256"
+// }
+// The format for in-toto's key definition can be found in section 4.2 of the
+// in-toto specification.
 message SigningKey {
   // key_id is an identifier for the signing key.
   string key_id = 1;
 
-  // This field identifies the hash algorithms used in the particular key ID.
-  repeated string key_id_hash_algorithms = 2;
-
-  // This field identifies the specific signing method. Eg: "RSASSA-PSS",
-  // "ed25519", and "ecdsa".
-  string key_type = 3;
+  // This field identifies the specific signing method. Eg: "rsa", "ed25519",
+  // and "ecdsa".
+  string key_type = 2;
 
   // This field contains the actual public key.
-  string public_key_value = 4;
+  string public_key_value = 3;
 
-  // This field contains the overall scheme used for the creation of the signing
-  // key. Eg: "rsassa-pss-sha256".
-  string key_scheme = 5;
+  // This field contains the corresponding signature scheme.
+  // Eg: "rsassa-pss-sha256".
+  string key_scheme = 4;
 }
 
 // This corresponds to a signed in-toto link - it is made up of one or more
@@ -132,17 +137,18 @@ message Link {
   // The structure is identical to that of materials.
   repeated Artifact products = 3;
 
-  // Defines an object for the byproducts field in in-toto links.
+  // Defines an object for the byproducts field in in-toto links. The suggested
+  // fields are "stderr", "stdout", and "return-value".
   message ByProducts {
     map<string, string> custom_values = 1;
   }
 
-  // By Products are data generated as part of a software supply chain step, but
-  // are not the actual result of the step. The suggested fields are "stderr",
-  // "stdout", and "return-value".
+  // ByProducts are data generated as part of a software supply chain step, but
+  // are not the actual result of the step.
   ByProducts byproducts = 4;
 
-  // Defines an object for the environment field in in-toto links.
+  // Defines an object for the environment field in in-toto links. The suggested
+  // fields are "variables", "filesystem", and "workdir".
   message Environment {
     map<string, string> custom_values = 1;
   }
