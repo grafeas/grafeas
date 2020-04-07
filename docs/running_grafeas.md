@@ -18,6 +18,7 @@ To check out this repository:
 2. Clone it to your machine:
 
   ```bash
+  GOPATH=$(go env GOPATH)
   mkdir -p ${GOPATH}/src/github.com/grafeas
   cd ${GOPATH}/src/github.com/grafeas
   git clone git@github.com:${YOUR_GITHUB_USERNAME}/grafeas.git
