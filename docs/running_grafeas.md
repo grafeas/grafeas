@@ -59,6 +59,11 @@ docker build --tag=grafeas .
 docker run -p 8080:8080 --name grafeas grafeas
 ```
 
+In case you see some error during the build which is related to https://github.com/golang/go/issues/37436, you can bypass the kernel issue with 
+```
+docker build --ulimit memlock=-1 --tag=grafeas .
+```
+
 ### Using Docker Compose with PostgreSQL
 
 [grafeas-pgsql](https://github.com/grafeas/grafeas-pgsql) provides a way to run
@@ -73,6 +78,13 @@ Run the following:
 cd ~/go/src/github.com/grafeas/grafeas
 cd go/v1beta1
 go run main/main.go
+```
+
+### Testing with `curl`
+
+Run the following in a separate terminal:
+```bash
+curl https://localhost:8080/v1beta1/projects
 ```
 
 ### Use Grafeas with self-signed certificate
@@ -104,6 +116,11 @@ _NOTE: The steps described in this section is meant for development environments
     cafile: ca.crt
     keyfile: server.key
     certfile: server.crt
+    ```
+1. Run Grafeas server with the key/cert:
+
+    ```
+    go run main/main.go --config config.yaml
     ```
 
 ## Access Grafeas API endpoints
