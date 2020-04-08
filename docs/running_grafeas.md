@@ -59,7 +59,8 @@ docker build --tag=grafeas .
 docker run -p 8080:8080 --name grafeas grafeas
 ```
 
-In case you see some error during the build which is related to https://github.com/golang/go/issues/37436, you can bypass the kernel issue with 
+In case you see some error during the build which is related to https://github.com/golang/go/issues/37436, you can bypass the kernel issue with:
+
 ```
 docker build --ulimit memlock=-1 --tag=grafeas .
 ```
