@@ -19,6 +19,7 @@ package attestation
 import (
 	"errors"
 	"fmt"
+	"strings"
 
 	gpb "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto"
 )
@@ -69,6 +70,8 @@ func validateSignatures(signatures []*gpb.Signature) []error {
 	for _, s := range signatures {
 		if s.GetPublicKeyId() == "" {
 			errs = append(errs, errors.New("public key ID is required"))
+		} else if !strings.ContainsRune(s.GetPublicKeyId(), ':') {
+			errs = append(errs, errors.New("public key ID must be an RFC3986 conformant URI"))
 		}
 		if s.GetSignature() == nil {
 			errs = append(errs, errors.New("signature is required"))
