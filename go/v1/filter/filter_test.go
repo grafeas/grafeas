@@ -4,6 +4,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/golang/protobuf/proto"
 	"github.com/google/go-cmp/cmp"
 	"github.com/grafeas/grafeas/go/v1/filter"
 	gpb "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto"
@@ -13,13 +14,13 @@ import (
 )
 
 func TestFilter(t *testing.T) {
-	byID := func(ctx context.Context, projID string, filter, pageToken string, pageSize int32) (filter.Resource, string, bool, error) {
+	byID := func(ctx context.Context, baseResourceName, filter, pageToken string, pageSize int32) (filter.Resource, string, bool, error) {
 		if strings.HasPrefix(filter, "noteId = ") {
 			return []*gpb.Note{{Name: "CVE-UH-OH-01"}}, "", true, nil
 		}
 		return nil, "", false, nil
 	}
-	defaultHandler := func(ctx context.Context, projID string, filter, pageToken string, pageSize int32) (filter.Resource, string, bool, error) {
+	defaultHandler := func(ctx context.Context, baseResourceName, filter, pageToken string, pageSize int32) (filter.Resource, string, bool, error) {
 		return []*gpb.Note{{Name: "CVE-UH-OH-99"}}, "", true, nil
 	}
 
@@ -57,27 +58,27 @@ func TestFilter(t *testing.T) {
 		t.Run(tt.desc, func(t *testing.T) {
 			ctx := context.Background()
 
-			resources, _, err := f.Filter(ctx, "my-proj", tt.filter, "", 0)
+			resources, _, err := f.Filter(ctx, "projects/my-proj", tt.filter, "", 0)
 			if err != nil {
-				t.Fatalf(`Filter("my-proj", %q, "", 0) failed with: %v`, tt.filter, err)
+				t.Fatalf(`Filter("projects/my-proj", %q, "", 0) failed with: %v`, tt.filter, err)
 			}
 			notes := resources.([]*gpb.Note)
 
-			if diff := cmp.Diff(tt.wantNotes, notes); diff != "" {
-				t.Errorf("Filter(\"my-proj\", %q, \"\", 0) returned diff -want +got\n%s", tt.filter, diff)
+			if diff := cmp.Diff(tt.wantNotes, notes, cmp.Comparer(proto.Equal)); diff != "" {
+				t.Errorf("Filter(\"projects/my-proj\", %q, \"\", 0) returned diff -want +got\n%s", tt.filter, diff)
 			}
 		})
 	}
 }
 
 func TestFilterErrors(t *testing.T) {
-	byID := func(ctx context.Context, projID string, filter, pageToken string, pageSize int32) (filter.Resource, string, bool, error) {
+	byID := func(ctx context.Context, baseResourceName, filter, pageToken string, pageSize int32) (filter.Resource, string, bool, error) {
 		if strings.HasPrefix(filter, "noteId = ") {
 			return nil, "", true, status.Errorf(codes.Internal, "error executing filter")
 		}
 		return nil, "", false, nil
 	}
-	defaultHandler := func(ctx context.Context, projID string, filter, pageToken string, pageSize int32) (filter.Resource, string, bool, error) {
+	defaultHandler := func(ctx context.Context, baseResourceName, filter, pageToken string, pageSize int32) (filter.Resource, string, bool, error) {
 		return nil, "", true, status.Errorf(codes.InvalidArgument, "argument not valid")
 	}
 
@@ -107,9 +108,9 @@ func TestFilterErrors(t *testing.T) {
 		t.Run(tt.desc, func(t *testing.T) {
 			ctx := context.Background()
 
-			_, _, err := f.Filter(ctx, "my-proj", tt.filter, "", 0)
+			_, _, err := f.Filter(ctx, "projects/my-proj", tt.filter, "", 0)
 			if c := status.Code(err); c != tt.wantErrCode {
-				t.Errorf(`Filter("my-proj", %q, "", 0) got error code %v, want %v`, tt.filter, c, tt.wantErrCode)
+				t.Errorf(`Filter("projects/my-proj", %q, "", 0) got error code %v, want %v`, tt.filter, c, tt.wantErrCode)
 			}
 		})
 	}

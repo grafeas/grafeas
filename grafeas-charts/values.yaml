@@ -1,28 +1,41 @@
 replicaCount: 1
 
+secret:
+  enabled: false
+
+## Grafeas image version
 image:
   repository: us.gcr.io/grafeas
   name: grafeas-server
-  tag: v0.1.1
+  tag: v0.1.5
   pullPolicy: IfNotPresent
 
 nameOverride: "grafeas-server"
 fullnameOverride: "grafeas-server"
 
-# The name of persistent volume to use
-# persistent volume is used for storing the embedded grafeas data
-persistentVolumeClaimName: "grafeas"
-
-# The type of storage used, supported options: memstore or embedded
-# REMARK: embedded storage requires a persistent volume
-storageType: "memstore"
-
+## Specify a service type
+## ClusterIP is default
+## ref: http://kubernetes.io/docs/user-guide/services/
+##
 service:
   type: ClusterIP
   port: 8080
 
 container:
   port: 8080
+
+## Persist data to a persistent volume. This is both a volume for certificates, Grafeas config and data volume.
+## enabled: false results in no persistent volumes and persistent volume claims being created
+## ref: https://kubernetes.io/docs/concepts/storage/persistent-volumes/
+##
+persistence:
+  enabled: false
+  # The name of persistent volume to use
+  # persistent volume is used for storing the embedded grafeas data
+  claimName: "grafeas"
+  # The type of storage used, supported options: memstore or embedded
+  # REMARK: embedded storage requires a persistent volume
+  storageType: "memstore"
 
 # Certificates for mutual authentication
 certificates:
@@ -41,6 +54,8 @@ certificates:
       ...
       -----END RSA PRIVATE KEY-----
 
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 resources:
   limits:
     cpu: 100m
@@ -49,12 +64,17 @@ resources:
     cpu: 100m
     memory: 128Mi
 
+## Customize liveness, readiness and startup probes
 livenessprobe:
-  initialDelaySeconds: 15 # Value based on pod startup average of ~12 seconds using default limits above
+  # Initial delay for liveness probe - value based on pod startup average of ~12 seconds using default resource limits above
+  initialDelaySeconds: 15
   periodSeconds: 10
-  failureThreshold: 3 # initialDelaySeconds + (failureThreshold * periodSeconds) based on worst case startup time of 45 seconds
+  # Failure threshold is calculated as initialDelaySeconds + (failureThreshold * periodSeconds) based on worst case startup time of 45 seconds
+  failureThreshold: 3
 
 readinessprobe:
-  initialDelaySeconds: 15 # Value based on pod startup average of ~12 seconds using default limits above
+  # Initial delay for readiness probe - value based on pod startup average of ~12 seconds using default resource limits above
+  initialDelaySeconds: 15
   periodSeconds: 10
-  failureThreshold: 3 # initialDelaySeconds + (failureThreshold * periodSeconds) based on worst case startup time of 45 seconds
+  # Failure threshold is calculated as initialDelaySeconds + (failureThreshold * periodSeconds) based on worst case startup time of 45 seconds
+  failureThreshold: 3

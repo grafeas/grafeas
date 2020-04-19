@@ -117,7 +117,7 @@ func TestValidateOccurrence(t *testing.T) {
 				SerializedPayload: []byte("bar"),
 				Signatures: []*gpb.Signature{
 					{
-						PublicKeyId: "public-key",
+						PublicKeyId: "openpgp4fpr:74FAF3B861BDA0870C7B6DEF607E48D2A663AEEA",
 					},
 				},
 			},
@@ -130,10 +130,27 @@ func TestValidateOccurrence(t *testing.T) {
 				Signatures: []*gpb.Signature{
 					{
 						Signature:   []byte("foo"),
-						PublicKeyId: "public-key",
+						PublicKeyId: "openpgp4fpr:74FAF3B861BDA0870C7B6DEF607E48D2A663AEEA",
+					},
+					{
+						Signature:   []byte("foo"),
+						PublicKeyId: "ni:///sha-256;cD9o9Cq6LG3jD0iKXqEi_vdjJGecm_iXkbqVoScViaU",
 					},
 					{
 						Signature: []byte("foo"),
+					},
+				},
+			},
+			wantErrs: true,
+		},
+		{
+			desc: "invalid public key format, want errors",
+			a: &gpb.AttestationOccurrence{
+				SerializedPayload: []byte("bar"),
+				Signatures: []*gpb.Signature{
+					{
+						Signature:   []byte("foo"),
+						PublicKeyId: "74FAF3B861BDA0870C7B6DEF607E48D2A663AEEA",
 					},
 				},
 			},
@@ -146,7 +163,7 @@ func TestValidateOccurrence(t *testing.T) {
 				Signatures: []*gpb.Signature{
 					{
 						Signature:   []byte("foo"),
-						PublicKeyId: "public-key",
+						PublicKeyId: "openpgp4fpr:74FAF3B861BDA0870C7B6DEF607E48D2A663AEEA",
 					},
 				},
 			},

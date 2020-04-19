@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/golang/protobuf/proto"
 	"github.com/google/go-cmp/cmp"
 	gpb "github.com/grafeas/grafeas/proto/v1beta1/grafeas_go_proto"
 	pkgpb "github.com/grafeas/grafeas/proto/v1beta1/package_go_proto"
@@ -51,11 +52,13 @@ func TestGetOccurrence(t *testing.T) {
 	}
 	gotOcc, err := g.GetOccurrence(ctx, req)
 	if err != nil {
-		t.Errorf("Got err %v, want success", err)
+		t.Fatalf("Got err %v, want success", err)
 	}
 
-	opt := cmp.FilterPath(func(p cmp.Path) bool { return p.String() == "Name" }, cmp.Ignore())
-	if diff := cmp.Diff(o, gotOcc, opt); diff != "" {
+	// TODO: migrate to protocolbuffers/protobuf-go when it is stable so we can use
+	// protocmp.IgnoreFields instead.
+	gotOcc.Name = ""
+	if diff := cmp.Diff(o, gotOcc, cmp.Comparer(proto.Equal)); diff != "" {
 		t.Errorf("GetOccurrence(%v) returned diff (want -> got):\n%s", req, diff)
 	}
 }
@@ -137,11 +140,16 @@ func TestListOccurrences(t *testing.T) {
 	}
 	resp, err := g.ListOccurrences(ctx, req)
 	if err != nil {
-		t.Errorf("Got err %v, want success", err)
+		t.Fatalf("Got err %v, want success", err)
 	}
 
-	opt := cmp.FilterPath(func(p cmp.Path) bool { return p.String() == "Name" }, cmp.Ignore())
-	if diff := cmp.Diff(o, resp.Occurrences[0], opt); diff != "" {
+	if len(resp.Occurrences) != 1 {
+		t.Fatalf("Got occurrences of len %d, want 1", len(resp.Occurrences))
+	}
+	// TODO: migrate to protocolbuffers/protobuf-go when it is stable so we can use
+	// protocmp.IgnoreFields instead.
+	resp.Occurrences[0].Name = ""
+	if diff := cmp.Diff(o, resp.Occurrences[0], cmp.Comparer(proto.Equal)); diff != "" {
 		t.Errorf("ListOccurrences(%v) returned diff (want -> got):\n%s", req, diff)
 	}
 }
@@ -223,13 +231,15 @@ func TestCreateOccurrence(t *testing.T) {
 		Parent:     "projects/consumer1",
 		Occurrence: vulnzOcc(t, "consumer1", "projects/goog-vulnz/notes/CVE-UH-OH", "debian"),
 	}
-	o, err := g.CreateOccurrence(ctx, req)
+	createdOcc, err := g.CreateOccurrence(ctx, req)
 	if err != nil {
-		t.Errorf("Got err %v, want success", err)
+		t.Fatalf("Got err %v, want success", err)
 	}
 
-	opt := cmp.FilterPath(func(p cmp.Path) bool { return p.String() == "Name" }, cmp.Ignore())
-	if diff := cmp.Diff(req.Occurrence, o, opt); diff != "" {
+	// TODO: migrate to protocolbuffers/protobuf-go when it is stable so we can use
+	// protocmp.IgnoreFields instead.
+	createdOcc.Name = ""
+	if diff := cmp.Diff(req.Occurrence, createdOcc, cmp.Comparer(proto.Equal)); diff != "" {
 		t.Errorf("CreateOccurrence(%v) returned diff (want -> got):\n%s", req, diff)
 	}
 }
@@ -332,14 +342,16 @@ func TestBatchCreateOccurrences(t *testing.T) {
 	}
 	resp, err := g.BatchCreateOccurrences(ctx, req)
 	if err != nil {
-		t.Errorf("Got err %v, want success", err)
+		t.Fatalf("Got err %v, want success", err)
 	}
 
 	if len(resp.Occurrences) != 1 {
-		t.Errorf("Got created occurrences of len %d, want 1", len(resp.Occurrences))
+		t.Fatalf("Got created occurrences of len %d, want 1", len(resp.Occurrences))
 	}
-	opt := cmp.FilterPath(func(p cmp.Path) bool { return p.String() == "Name" }, cmp.Ignore())
-	if diff := cmp.Diff(req.Occurrences[0], resp.Occurrences[0], opt); diff != "" {
+	// TODO: migrate to protocolbuffers/protobuf-go when it is stable so we can use
+	// protocmp.IgnoreFields instead.
+	resp.Occurrences[0].Name = ""
+	if diff := cmp.Diff(req.Occurrences[0], resp.Occurrences[0], cmp.Comparer(proto.Equal)); diff != "" {
 		t.Errorf("BatchCreateOccurrences(%v) returned diff (want -> got):\n%s", req, diff)
 	}
 }
@@ -491,11 +503,13 @@ func TestUpdateOccurrence(t *testing.T) {
 	}
 	updatedOcc, err := g.UpdateOccurrence(ctx, req)
 	if err != nil {
-		t.Errorf("Got err %v, want success", err)
+		t.Fatalf("Got err %v, want success", err)
 	}
 
-	opt := cmp.FilterPath(func(p cmp.Path) bool { return p.String() == "Name" }, cmp.Ignore())
-	if diff := cmp.Diff(o, updatedOcc, opt); diff != "" {
+	// TODO: migrate to protocolbuffers/protobuf-go when it is stable so we can use
+	// protocmp.IgnoreFields instead.
+	updatedOcc.Name = ""
+	if diff := cmp.Diff(o, updatedOcc, cmp.Comparer(proto.Equal)); diff != "" {
 		t.Errorf("UpdateOccurrence(%v) returned diff (want -> got):\n%s", req, diff)
 	}
 }
@@ -718,11 +732,16 @@ func TestListNoteOccurrences(t *testing.T) {
 	}
 	resp, err := g.ListNoteOccurrences(ctx, req)
 	if err != nil {
-		t.Errorf("ListNoteOccurrences(%v) got err %v, want success", req, err)
+		t.Fatalf("ListNoteOccurrences(%v) got err %v, want success", req, err)
 	}
 
-	opt := cmp.FilterPath(func(p cmp.Path) bool { return p.String() == "Name" }, cmp.Ignore())
-	if diff := cmp.Diff(createdOcc, resp.Occurrences[0], opt); diff != "" {
+	if len(resp.Occurrences) != 1 {
+		t.Fatalf("Got occurrences of len %d, want 1", len(resp.Occurrences))
+	}
+	// TODO: migrate to protocolbuffers/protobuf-go when it is stable so we can use
+	// protocmp.IgnoreFields instead.
+	resp.Occurrences[0].Name = ""
+	if diff := cmp.Diff(createdOcc, resp.Occurrences[0], cmp.Comparer(proto.Equal)); diff != "" {
 		t.Errorf("ListNoteOccurrences(%v) returned diff (want -> got):\n%s", req, diff)
 	}
 }
@@ -825,11 +844,10 @@ func TestGetVulnerabilityOccurrencesSummary(t *testing.T) {
 	}
 	resp, err := g.GetVulnerabilityOccurrencesSummary(ctx, req)
 	if err != nil {
-		t.Errorf("GetVulnerabilityOccurrencesSummaryRequest(%v) got err %v, want success", req, err)
+		t.Fatalf("GetVulnerabilityOccurrencesSummaryRequest(%v) got err %v, want success", req, err)
 	}
 
-	opt := cmp.FilterPath(func(p cmp.Path) bool { return p.String() == "Name" }, cmp.Ignore())
-	if diff := cmp.Diff(wantSummary, resp, opt); diff != "" {
+	if diff := cmp.Diff(wantSummary, resp, cmp.Comparer(proto.Equal)); diff != "" {
 		t.Errorf("GetVulnerabilityOccurrencesSummaryRequest(%v) returned diff (want -> got):\n%s", req, diff)
 	}
 }

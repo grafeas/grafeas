@@ -16,6 +16,7 @@ package storage
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"log"
 	"strconv"
@@ -41,26 +42,40 @@ type PgSQLStore struct {
 	paginationKey string
 }
 
-func NewPgSQLStore(config *config.PgSQLConfig) *PgSQLStore {
-	err := createDatabase(CreateSourceString(config.User, config.Password, config.Host, "postgres", config.SSLMode), config.DbName)
-	if err != nil {
-		log.Fatal(err.Error())
+func NewPgSQLStore(config *config.PgSQLConfig) (*PgSQLStore, error) {
+	paginationKey := config.PaginationKey
+	if paginationKey == "" {
+		log.Println("pagination key is empty, generating...")
+		var key fernet.Key
+		if err := key.Generate(); err != nil {
+			return nil, errors.New(fmt.Sprintf("failed to generate pagination key, %s", err))
+		}
+		paginationKey = key.Encode()
+	} else {
+		// Validate pagination key
+		_, err := fernet.DecodeKey(paginationKey)
+		if err != nil {
+			return nil, errors.New("invalid pagination key; must be 32-bit URL-safe base64")
+		}
+	}
+	if err := createDatabase(CreateSourceString(config.User, config.Password, config.Host, "postgres", config.SSLMode), config.DbName); err != nil {
+		return nil, err
 	}
 	db, err := sql.Open("postgres", CreateSourceString(config.User, config.Password, config.Host, config.DbName, config.SSLMode))
 	if err != nil {
-		log.Fatal(err.Error())
+		return nil, err
 	}
 	if db.Ping() != nil {
-		log.Fatal("Database server is not alive")
+		return nil, errors.New("database server is not alive")
 	}
 	if _, err := db.Exec(createTables); err != nil {
 		db.Close()
-		log.Fatal(err.Error())
+		return nil, err
 	}
 	return &PgSQLStore{
 		DB:            db,
-		paginationKey: config.PaginationKey,
-	}
+		paginationKey: paginationKey,
+	}, nil
 }
 
 func createDatabase(source, dbName string) error {
@@ -253,7 +268,7 @@ func (pg *PgSQLStore) UpdateOccurrence(ctx context.Context, pID, oID string, o *
 	}
 
 	updatedOcc.UpdateTime = ptypes.TimestampNow()
-	result, err := pg.DB.Exec(updateOccurrence, pID, oID, proto.MarshalTextString(updatedOcc))
+	result, err := pg.DB.Exec(updateOccurrence, proto.MarshalTextString(updatedOcc), pID, oID)
 	if err != nil {
 		return nil, status.Error(codes.Internal, "Failed to update Occurrence")
 	}
@@ -403,7 +418,7 @@ func (pg *PgSQLStore) UpdateNote(ctx context.Context, pID, nID string, n *pb.Not
 	updatedNote.Name = nName
 	updatedNote.UpdateTime = ptypes.TimestampNow()
 
-	result, err := pg.DB.Exec(updateNote, pID, nID, proto.MarshalTextString(updatedNote))
+	result, err := pg.DB.Exec(updateNote, proto.MarshalTextString(updatedNote), pID, nID)
 	if err != nil {
 		return nil, status.Error(codes.Internal, "Failed to update Note")
 	}

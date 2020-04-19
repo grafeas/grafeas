@@ -1,0 +1,169 @@
+// Copyright 2020 The Grafeas Authors. All rights reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto3";
+
+package grafeas.v1beta1.intoto;
+
+option go_package = "github.com/grafeas/grafeas/proto/v1beta1/intoto_go_proto";
+option java_multiple_files = true;
+option java_package = "io.grafeas.v1beta1.intoto";
+option objc_class_prefix = "GRA";
+
+// This file defines the proto that matches the schema of in-toto metadata.
+// in-toto is a framework to protect a software supply chain. You can read more
+// about in-toto at https://in-toto.io/ and you can find the current version of
+// the in-toto specification at
+// https://github.com/in-toto/docs/blob/master/in-toto-spec.md
+// There are two types of in-toto metadata - layouts and links. Layouts define
+// the structure of the software supply chain, while links are signed records of
+// performing a step in the software supply chain.
+
+// This contains the fields corresponding to the definition of a software supply
+// chain step in an in-toto layout. This information goes into a Grafeas note.
+message InToto {
+  // This field identifies the name of the step in the supply chain.
+  string step_name = 1;
+
+  // This field contains the public keys that can be used to verify the
+  // signatures on the step metadata.
+  repeated SigningKey signing_keys = 2;
+
+  // Defines an object to declare an in-toto artifact rule
+  message ArtifactRule {
+    repeated string artifact_rule = 1;
+  }
+
+  // The following fields contain in-toto artifact rules identifying the
+  // artifacts that enter this supply chain step, and exit the supply chain
+  // step, i.e. materials and products of the step.
+  repeated ArtifactRule expected_materials = 3;
+  repeated ArtifactRule expected_products = 4;
+
+  // This field contains the expected command used to perform the step.
+  repeated string expected_command = 5;
+
+  // This field contains a value that indicates the minimum number of keys that
+  // need to be used to sign the step's in-toto link.
+  int64 threshold = 6;
+}
+
+// This defines the format used to record keys used in the software supply
+// chain. An in-toto link is attested using one or more keys defined in the
+// in-toto layout. An example of this is:
+// {
+//   "key_id": "776a00e29f3559e0141b3b096f696abc6cfb0c657ab40f441132b345b0...",
+//   "key_type": "rsa",
+//   "public_key_value": "-----BEGIN PUBLIC KEY-----\nMIIBojANBgkqhkiG9w0B...",
+//   "key_scheme": "rsassa-pss-sha256"
+// }
+// The format for in-toto's key definition can be found in section 4.2 of the
+// in-toto specification.
+message SigningKey {
+  // key_id is an identifier for the signing key.
+  string key_id = 1;
+
+  // This field identifies the specific signing method. Eg: "rsa", "ed25519",
+  // and "ecdsa".
+  string key_type = 2;
+
+  // This field contains the actual public key.
+  string public_key_value = 3;
+
+  // This field contains the corresponding signature scheme.
+  // Eg: "rsassa-pss-sha256".
+  string key_scheme = 4;
+}
+
+// This corresponds to a signed in-toto link - it is made up of one or more
+// signatures and the in-toto link itself. This is used for occurrences of a
+// Grafeas in-toto note.
+message Details {
+  repeated Signature signatures = 1;
+  Link link = 2 [json_name="signed"];
+}
+
+// A signature object consists of the KeyID used and the signature itself.
+message Signature {
+  string key_id = 1 [json_name="keyid"];
+  string signature = 2 [json_name="sig"];
+}
+
+// This corresponds to an in-toto link.
+message Link {
+  // This field contains the full command executed for the step. This can also
+  // be empty if links are generated for operations that aren't directly mapped
+  // to a specific command. Each term in the command is an independent string
+  // in the list. An example of a command in the in-toto metadata field is:
+  // "command": ["git", "clone", "https://github.com/in-toto/demo-project.git"]
+  repeated string effective_command = 1 [json_name="command"];
+
+  // Defines a hash object for use in Materials and Products.
+  message ArtifactHashes {
+    string sha256 = 1;
+  }
+
+  message Artifact {
+    string resource_uri = 1;
+    ArtifactHashes hashes = 2;
+  }
+
+  // Materials are the supply chain artifacts that go into the step and are used
+  // for the operation performed. The key of the map is the path of the artifact
+  // and the structure contains the recorded hash information. An example is:
+  // "materials": [
+  //   {
+  //     "resource_uri": "foo/bar",
+  //     "hashes": {
+  //       "sha256": "ebebf...",
+  //       <OTHER HASH ALGORITHMS>: <HASH VALUE>
+  //     }
+  //   }
+  // ]
+  repeated Artifact materials = 2;
+
+  // Products are the supply chain artifacts generated as a result of the step.
+  // The structure is identical to that of materials.
+  repeated Artifact products = 3;
+
+  // Defines an object for the byproducts field in in-toto links. The suggested
+  // fields are "stderr", "stdout", and "return-value".
+  message ByProducts {
+    map<string, string> custom_values = 1;
+  }
+
+  // ByProducts are data generated as part of a software supply chain step, but
+  // are not the actual result of the step.
+  ByProducts byproducts = 4;
+
+  // Defines an object for the environment field in in-toto links. The suggested
+  // fields are "variables", "filesystem", and "workdir".
+  message Environment {
+    map<string, string> custom_values = 1;
+  }
+
+  // This is a field that can be used to capture information about the
+  // environment. It is suggested for this field to contain information that
+  // details environment variables, filesystem information, and the present
+  // working directory. The recommended structure of this field is:
+  // "environment": {
+  //   "custom_values": {
+  //     "variables": "<ENV>",
+  //     "filesystem": "<FS>",
+  //     "workdir": "<CWD>",
+  //     "<ANY OTHER RELEVANT FIELDS>": "..."
+  //   }
+  // }
+ Environment environment = 5;
+}

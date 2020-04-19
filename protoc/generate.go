@@ -4,6 +4,6 @@
 //go:generate rm -rf bin
 //go:generate rm -rf readme.txt
 //go:generate rm -rf protoc.zip
-//go:generate curl https://github.com/google/protobuf/releases/download/v3.8.0/protoc-3.8.0-linux-x86_64.zip -o protoc.zip -L
+//go:generate ./downloadProtoc.sh
 //go:generate unzip protoc.zip -d .
 package protoc

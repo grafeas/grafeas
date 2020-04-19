@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/golang/protobuf/proto"
 	"github.com/google/go-cmp/cmp"
 	gpb "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto"
 	"golang.org/x/net/context"
@@ -38,13 +39,15 @@ func TestCreateNote(t *testing.T) {
 		NoteId: "CVE-UH-OH",
 		Note:   vulnzNote(t),
 	}
-	n := &gpb.Note{}
-	if err := g.CreateNote(ctx, req, n); err != nil {
-		t.Errorf("Got err %v, want success", err)
+	createdNote := &gpb.Note{}
+	if err := g.CreateNote(ctx, req, createdNote); err != nil {
+		t.Fatalf("Got err %v, want success", err)
 	}
 
-	opt := cmp.FilterPath(func(p cmp.Path) bool { return p.String() == "Name" }, cmp.Ignore())
-	if diff := cmp.Diff(req.Note, n, opt); diff != "" {
+	// TODO: migrate to protocolbuffers/protobuf-go when it is stable so we can use
+	// protocmp.IgnoreFields instead.
+	createdNote.Name = ""
+	if diff := cmp.Diff(req.Note, createdNote, cmp.Comparer(proto.Equal)); diff != "" {
 		t.Errorf("CreateNote(%v) returned diff (want -> got):\n%s", req, diff)
 	}
 }
@@ -178,14 +181,16 @@ func TestBatchCreateNotes(t *testing.T) {
 	}
 	resp := &gpb.BatchCreateNotesResponse{}
 	if err := g.BatchCreateNotes(ctx, req, resp); err != nil {
-		t.Errorf("Got err %v, want success", err)
+		t.Fatalf("Got err %v, want success", err)
 	}
 
 	if len(resp.Notes) != 1 {
-		t.Errorf("Got created notes of len %d, want 1", len(resp.Notes))
+		t.Fatalf("Got created notes of len %d, want 1", len(resp.Notes))
 	}
-	opt := cmp.FilterPath(func(p cmp.Path) bool { return p.String() == "Name" }, cmp.Ignore())
-	if diff := cmp.Diff(req.Notes["CVE-UH-OH"], resp.Notes[0], opt); diff != "" {
+	// TODO: migrate to protocolbuffers/protobuf-go when it is stable so we can use
+	// protocmp.IgnoreFields instead.
+	resp.Notes[0].Name = ""
+	if diff := cmp.Diff(req.Notes["CVE-UH-OH"], resp.Notes[0], cmp.Comparer(proto.Equal)); diff != "" {
 		t.Errorf("BatchCreateNotes(%v) returned diff (want -> got):\n%s", req, diff)
 	}
 }
@@ -357,11 +362,13 @@ func TestGetNote(t *testing.T) {
 	}
 	gotN := &gpb.Note{}
 	if err := g.GetNote(ctx, req, gotN); err != nil {
-		t.Errorf("Got err %v, want success", err)
+		t.Fatalf("Got err %v, want success", err)
 	}
 
-	opt := cmp.FilterPath(func(p cmp.Path) bool { return p.String() == "Name" }, cmp.Ignore())
-	if diff := cmp.Diff(n, gotN, opt); diff != "" {
+	// TODO: migrate to protocolbuffers/protobuf-go when it is stable so we can use
+	// protocmp.IgnoreFields instead.
+	gotN.Name = ""
+	if diff := cmp.Diff(n, gotN, cmp.Comparer(proto.Equal)); diff != "" {
 		t.Errorf("GetNote(%v) returned diff (want -> got):\n%s", req, diff)
 	}
 }
@@ -445,11 +452,13 @@ func TestListNotes(t *testing.T) {
 	}
 	resp := &gpb.ListNotesResponse{}
 	if err := g.ListNotes(ctx, req, resp); err != nil {
-		t.Errorf("Got err %v, want success", err)
+		t.Fatalf("Got err %v, want success", err)
 	}
 
-	opt := cmp.FilterPath(func(p cmp.Path) bool { return p.String() == "Name" }, cmp.Ignore())
-	if diff := cmp.Diff(n, resp.Notes[0], opt); diff != "" {
+	// TODO: migrate to protocolbuffers/protobuf-go when it is stable so we can use
+	// protocmp.IgnoreFields instead.
+	resp.Notes[0].Name = ""
+	if diff := cmp.Diff(n, resp.Notes[0], cmp.Comparer(proto.Equal)); diff != "" {
 		t.Errorf("ListNotes(%v) returned diff (want -> got):\n%s", req, diff)
 	}
 }
@@ -536,11 +545,13 @@ func TestUpdateNote(t *testing.T) {
 	}
 	updatedN := &gpb.Note{}
 	if err := g.UpdateNote(ctx, req, updatedN); err != nil {
-		t.Errorf("Got err %v, want success", err)
+		t.Fatalf("Got err %v, want success", err)
 	}
 
-	opt := cmp.FilterPath(func(p cmp.Path) bool { return p.String() == "Name" }, cmp.Ignore())
-	if diff := cmp.Diff(n, updatedN, opt); diff != "" {
+	// TODO: migrate to protocolbuffers/protobuf-go when it is stable so we can use
+	// protocmp.IgnoreFields instead.
+	updatedN.Name = ""
+	if diff := cmp.Diff(n, updatedN, cmp.Comparer(proto.Equal)); diff != "" {
 		t.Errorf("UpdateNote(%v) returned diff (want -> got):\n%s", req, diff)
 	}
 }
@@ -737,11 +748,13 @@ func TestGetOccurrenceNote(t *testing.T) {
 	}
 	gotN := &gpb.Note{}
 	if err := g.GetOccurrenceNote(ctx, req, gotN); err != nil {
-		t.Errorf("GetOccurrenceNote(%v): got err %v, want success", req, err)
+		t.Fatalf("GetOccurrenceNote(%v): got err %v, want success", req, err)
 	}
 
-	opt := cmp.FilterPath(func(p cmp.Path) bool { return p.String() == "Name" }, cmp.Ignore())
-	if diff := cmp.Diff(n, gotN, opt); diff != "" {
+	// TODO: migrate to protocolbuffers/protobuf-go when it is stable so we can use
+	// protocmp.IgnoreFields instead.
+	gotN.Name = ""
+	if diff := cmp.Diff(n, gotN, cmp.Comparer(proto.Equal)); diff != "" {
 		t.Errorf("GetOccurrenceNote(%v): returned diff (want -> got):\n%s", req, diff)
 	}
 }

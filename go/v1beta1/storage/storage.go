@@ -12,7 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package storage_test
+// Package to export utility functions used in testing for use by other projects.
+package storage
 
 import (
 	"fmt"
@@ -24,7 +25,7 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/grafeas/grafeas/go/name"
-	grafeas "github.com/grafeas/grafeas/go/v1beta1/api"
+	"github.com/grafeas/grafeas/go/v1beta1/api"
 	"github.com/grafeas/grafeas/go/v1beta1/project"
 	"github.com/grafeas/grafeas/go/v1beta1/storage"
 	cpb "github.com/grafeas/grafeas/proto/v1beta1/common_go_proto"
@@ -66,7 +67,7 @@ var (
 // a corresponding cleanUp function that will be run at the end of each
 // test case.
 // TODO: add testing for CreateTime and UpdateTime
-func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage, project.Storage, func())) {
+func DoTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage, project.Storage, func())) {
 	t.Run("CreateProject", func(t *testing.T) {
 		_, gp, cleanUp := createStore(t)
 		defer cleanUp()
@@ -134,6 +135,32 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 			t.Errorf("CreateNote got success, want Error")
 		} else if s, _ := status.FromError(err); s.Code() != codes.AlreadyExists {
 			t.Errorf("CreateNote got code %v want %v", s.Code(), codes.AlreadyExists)
+		}
+	})
+
+	t.Run("CreateSameNoteTwiceInDifferentProjects", func(t *testing.T) {
+		g, gp, cleanUp := createStore(t)
+		defer cleanUp()
+
+		ctx := context.Background()
+		nPID1 := "vulnerability-scanner-a"
+		if _, err := gp.CreateProject(ctx, nPID1, &prpb.Project{}); err != nil {
+			t.Errorf("CreateProject got %v want success", err)
+		}
+
+		nPID2 := "vulnerability-scanner-b"
+		if _, err := gp.CreateProject(ctx, nPID2, &prpb.Project{}); err != nil {
+			t.Errorf("CreateProject got %v want success", err)
+		}
+
+		n1 := createTestNote(nPID1)
+		if _, err := g.CreateNote(ctx, nPID1, testNoteID, "userID", n1); err != nil {
+			t.Errorf("CreateNote got %v want success", err)
+		}
+
+		n2 := createTestNote(nPID2)
+		if _, err := g.CreateNote(ctx, nPID2, testNoteID, "userID", n2); err != nil {
+			t.Errorf("CreateNote got %v want success", err)
 		}
 	})
 
@@ -316,7 +343,7 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 			t.Fatalf("Error parsing note %v", err)
 		}
 		if err := g.DeleteNote(ctx, pID, nID); err == nil {
-			t.Error("Deleting nonexistant note got success, want error")
+			t.Error("Deleting nonexistent note got success, want error")
 		}
 		if _, err := g.CreateNote(ctx, pID, nID, "userID", n); err != nil {
 			t.Fatalf("CreateNote got %v want success", err)
@@ -532,6 +559,60 @@ func doTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 		gotProjectNames := make([]string, len(gotProjects))
 		for i, project := range gotProjects {
 			gotProjectNames[i] = project.Name
+		}
+		// Sort to handle that wantProjectNames are not guaranteed to be listed in insertion order
+		sort.Strings(wantProjectNames)
+		sort.Strings(gotProjectNames)
+		if !reflect.DeepEqual(gotProjectNames, wantProjectNames) {
+			t.Errorf("ListProjects got %v want %v", gotProjectNames, wantProjectNames)
+		}
+	})
+
+	t.Run("ListProjectsWithPaging", func(t *testing.T) {
+		_, gp, cleanUp := createStore(t)
+		defer cleanUp()
+
+		ctx := context.Background()
+		projCount := 20
+		wantProjectNames := make([]string, projCount)
+		for i := 0; i < projCount; i++ {
+			pID := fmt.Sprint("Project", i)
+			p := &prpb.Project{}
+			p.Name = name.FormatProject(pID)
+			p, err := gp.CreateProject(ctx, pID, p)
+			if err != nil {
+				t.Fatalf("CreateProject got %v want success", err)
+			}
+			wantProjectNames[i] = p.Name
+		}
+
+		filter := "filters_are_yet_to_be_implemented"
+		gotProjectNames := make([]string, 0)
+		pageToken := ""
+		pageSize := 10
+		for {
+			gotProjects, nextPageToken, err := gp.ListProjects(ctx, filter, pageSize, pageToken)
+			if err != nil {
+				t.Errorf("ListProjects got %v, want success", err)
+			}
+			if len(gotProjects) > pageSize {
+				t.Errorf("ListProjects got %v projects, want <= %v", len(gotProjects), pageSize)
+			}
+			for _, project := range gotProjects {
+				gotProjectNames = append(gotProjectNames, project.Name)
+			}
+			if nextPageToken == "" && len(gotProjectNames) < len(wantProjectNames) {
+				t.Errorf("ListProjects returned empty next page token before returning all results")
+			}
+
+			// no more data
+			if nextPageToken == "" {
+				break
+			}
+			if pageToken == nextPageToken {
+				t.Errorf("ListProjects returned the same page token as it received: %s", nextPageToken)
+			}
+			pageToken = nextPageToken
 		}
 		// Sort to handle that wantProjectNames are not guaranteed to be listed in insertion order
 		sort.Strings(wantProjectNames)

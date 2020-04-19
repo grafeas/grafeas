@@ -32,13 +32,15 @@ spec:
           volumeMounts:
           - name: config-volume
             mountPath: /etc/config
+{{- if .Values.persistence.enabled }}
 {{- if eq .Values.certificates.enabled true }}
           - name: certificates
             mountPath: /certificates
 {{- end }}
-{{- if eq .Values.storageType "embedded" }}
+{{- if eq .Values.persistence.storageType "embedded" }}
           - name: persistent-volume
             mountPath: /data
+{{- end }}
 {{- end }}
           resources:
 {{- toYaml .Values.resources | nindent 12 }}
@@ -61,14 +63,18 @@ spec:
             items:
             - key: config
               path: config.yaml
+{{- if .Values.persistence.enabled }}
+{{- if .Values.certificates.enabled }}
         - name: certificates
           secret:
             secretName: {{ .Values.certificates.name }}
-{{- if eq .Values.storageType "embedded" }}
+{{- end }}
+{{- if eq .Values.persistence.storageType "embedded" }}
         - name: persistent-volume
           persistentVolumeClaim:
-            claimName: {{ .Values.persistentVolumeClaimName }}
+            claimName: {{ .Values.persistence.claimName }}
 {{- end}}
+{{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
