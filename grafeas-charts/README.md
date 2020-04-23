@@ -9,7 +9,7 @@ The setup will run a Greafeas instance backed by memstore by default, or embedde
 * [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
 * [Helm](https://helm.sh/)
 
-## Running the chart locally
+## Running the chart
 
 * Basic example, without certificate.
 ```
@@ -27,7 +27,7 @@ $ curl http://localhost:4000/v1beta1/projects
 
 * Basic example, with certificate.
 
-Generate self-signed certificates by following [instructions](../docs/running_grafeas.md#use-grafeas-with-self-signed-certificate).
+First, generate self-signed certificates by following [instructions](../docs/running_grafeas.md#use-grafeas-with-self-signed-certificate).
 
 ```
 $ helm install  grafeas ./grafeas-charts/ --set container.port=5000 --set secret.enabled=true  --set certificates.enabled=true --set service.port=5000 --set certificates.name="foo" --set certificates.ca="$(cat ca.crt)" --set certificates.cert="$(cat server.crt)" --set "certificates.key=$(cat server.key)"
