@@ -20,8 +20,6 @@ import (
 	gpb "github.com/grafeas/grafeas/proto/v1beta1/grafeas_go_proto"
 	"golang.org/x/net/context"
 	fieldmaskpb "google.golang.org/genproto/protobuf/field_mask"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 const (
@@ -140,17 +138,18 @@ type API struct {
 	EnforceValidation bool
 }
 
+// TODO(liupen): remove this after duplicating it to validator package
 // validatePageSize returns the default page size if the specified page size is 0, otherwise it
 // validates the specified page size.
-func validatePageSize(ps int32) (int32, error) {
-	switch {
-	case ps == 0:
-		return defaultPageSize, nil
-	case ps > maxPageSize:
-		return 0, status.Errorf(codes.InvalidArgument, "page size %d cannot be large than max page size %d", ps, maxPageSize)
-	case ps < 0:
-		return 0, status.Errorf(codes.InvalidArgument, "page size %d cannot be negative", ps)
-	}
+// func validatePageSize(ps int32) (int32, error) {
+// 	switch {
+// 	case ps == 0:
+// 		return defaultPageSize, nil
+// 	case ps > maxPageSize:
+// 		return 0, status.Errorf(codes.InvalidArgument, "page size %d cannot be large than max page size %d", ps, maxPageSize)
+// 	case ps < 0:
+// 		return 0, status.Errorf(codes.InvalidArgument, "page size %d cannot be negative", ps)
+// 	}
 
-	return ps, nil
-}
+// 	return ps, nil
+// }

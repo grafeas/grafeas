@@ -15,11 +15,9 @@
 package grafeas
 
 import (
-	"fmt"
-
 	emptypb "github.com/golang/protobuf/ptypes/empty"
 	"github.com/grafeas/grafeas/go/name"
-	"github.com/grafeas/grafeas/go/v1beta1/api/validators/grafeas"
+	validator "github.com/grafeas/grafeas/go/v1beta1/api/validators/grafeas"
 	gpb "github.com/grafeas/grafeas/proto/v1beta1/grafeas_go_proto"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc/codes"
@@ -35,21 +33,15 @@ func (g *API) CreateNote(ctx context.Context, req *gpb.CreateNoteRequest) (*gpb.
 
 	ctx = g.Logger.PrepareCtx(ctx, pID)
 
-	if err := g.Auth.CheckAccessAndProject(ctx, pID, "", NotesCreate); err != nil {
-		return nil, err
-	}
-
-	if req.NoteId == "" {
-		return nil, status.Errorf(codes.InvalidArgument, "a noteId must be specified")
-	}
-	if req.Note == nil {
-		return nil, status.Errorf(codes.InvalidArgument, "a note must be specified")
-	}
-	if err := grafeas.ValidateNote(req.Note); err != nil {
+	if err := validator.ValidateCreateNoteRequest(req); err != nil {
 		if g.EnforceValidation {
 			return nil, err
 		}
-		g.Logger.Warningf(ctx, "CreateNote %+v for project %q: invalid note, fail open, would have failed with: %v", req.Note, pID, err)
+		g.Logger.Warningf(ctx, "Error in validating CreateNoteRequest %+v for project %q: %v", req, pID, err)
+	}
+
+	if err := g.Auth.CheckAccessAndProject(ctx, pID, "", NotesCreate); err != nil {
+		return nil, err
 	}
 
 	uID, err := g.Auth.EndUserID(ctx)
@@ -74,27 +66,15 @@ func (g *API) BatchCreateNotes(ctx context.Context, req *gpb.BatchCreateNotesReq
 
 	ctx = g.Logger.PrepareCtx(ctx, pID)
 
-	if err := g.Auth.CheckAccessAndProject(ctx, pID, "", NotesCreate); err != nil {
-		return nil, err
+	if err := validator.ValidateBatchCreateNotesRequest(req); err != nil {
+		if g.EnforceValidation {
+			return nil, status.Errorf(codes.InvalidArgument, "one or more notes are invalid, no notes were created: %v", err)
+		}
+		g.Logger.Warningf(ctx, "Error in validating BatchCreateNotesRequest %+v for project %q: %v", req, pID, err)
 	}
 
-	if len(req.Notes) == 0 {
-		return nil, status.Errorf(codes.InvalidArgument, "at least one note must be specified")
-	}
-	if len(req.Notes) > maxBatchSize {
-		return nil, status.Errorf(codes.InvalidArgument, "%d is too many notes to batch create, a maximum of %d notes is allowed per batch create", len(req.Notes), maxBatchSize)
-	}
-	validationErrs := []error{}
-	for i, n := range req.Notes {
-		if err := grafeas.ValidateNote(n); err != nil {
-			validationErrs = append(validationErrs, fmt.Errorf("notes[%q]: %v", i, err))
-		}
-	}
-	if len(validationErrs) > 0 {
-		if g.EnforceValidation {
-			return nil, status.Errorf(codes.InvalidArgument, "one or more notes are invalid, no notes were created: %v", validationErrs)
-		}
-		g.Logger.Warningf(ctx, "BatchCreateNotes %+v for project %q: invalid note(s), fail open, would have failed with: %v", req.Notes, pID, validationErrs)
+	if err := g.Auth.CheckAccessAndProject(ctx, pID, "", NotesCreate); err != nil {
+		return nil, err
 	}
 
 	uID, err := g.Auth.EndUserID(ctx)
@@ -123,6 +103,13 @@ func (g *API) GetNote(ctx context.Context, req *gpb.GetNoteRequest) (*gpb.Note, 
 
 	ctx = g.Logger.PrepareCtx(ctx, pID)
 
+	if err := validator.ValidateGetNoteRequest(req); err != nil {
+		if g.EnforceValidation {
+			return nil, err
+		}
+		g.Logger.Warningf(ctx, "Error in validating GetNoteRequest %+v in project %q: %v", req, pID, err)
+	}
+
 	if err := g.Auth.CheckAccessAndProject(ctx, pID, nID, NotesGet); err != nil {
 		return nil, err
 	}
@@ -144,12 +131,15 @@ func (g *API) UpdateNote(ctx context.Context, req *gpb.UpdateNoteRequest) (*gpb.
 
 	ctx = g.Logger.PrepareCtx(ctx, pID)
 
-	if err := g.Auth.CheckAccessAndProject(ctx, pID, nID, NotesUpdate); err != nil {
-		return nil, err
+	if err := validator.ValidateUpdateNoteRequest(req); err != nil {
+		if g.EnforceValidation {
+			return nil, err
+		}
+		g.Logger.Warningf(ctx, "Error in validating UpdateNoteRequest %+v for project %q: %v", req, pID, err)
 	}
 
-	if req.Note == nil {
-		return nil, status.Errorf(codes.InvalidArgument, "an note must be specified")
+	if err := g.Auth.CheckAccessAndProject(ctx, pID, nID, NotesUpdate); err != nil {
+		return nil, err
 	}
 
 	n, err := g.Storage.UpdateNote(ctx, pID, nID, req.Note, req.UpdateMask)
@@ -168,6 +158,13 @@ func (g *API) DeleteNote(ctx context.Context, req *gpb.DeleteNoteRequest) (*empt
 	}
 
 	ctx = g.Logger.PrepareCtx(ctx, pID)
+
+	if err := validator.ValidateDeleteNoteRequest(req); err != nil {
+		if g.EnforceValidation {
+			return nil, err
+		}
+		g.Logger.Warningf(ctx, "Error in validating DeleteNoteRequest %+v in project %q: %v", req, pID, err)
+	}
 
 	if err := g.Auth.CheckAccessAndProject(ctx, pID, nID, NotesDelete); err != nil {
 		return nil, err
@@ -195,18 +192,26 @@ func (g *API) ListNotes(ctx context.Context, req *gpb.ListNotesRequest) (*gpb.Li
 
 	ctx = g.Logger.PrepareCtx(ctx, pID)
 
-	if err := g.Auth.CheckAccessAndProject(ctx, pID, "", NotesList); err != nil {
-		return nil, err
+	if err := validator.ValidateListNotesRequest(req); err != nil {
+		if g.EnforceValidation {
+			return nil, err
+		}
+		g.Logger.Warningf(ctx, "Error in validating ListNotesRequest %+v in project %q: %v", req, pID, err)
 	}
 
-	ps, err := validatePageSize(req.PageSize)
-	if err != nil {
-		return nil, err
-	}
 	if err := g.Filter.Validate(req.Filter); err != nil {
 		return nil, err
 	}
 
+	if err := g.Auth.CheckAccessAndProject(ctx, pID, "", NotesList); err != nil {
+		return nil, err
+	}
+
+	// The following call is not for validation purpose. Instead, its main goal is to get an adjusted PageSize value.
+	ps, err := validator.ValidatePageSize(req.PageSize)
+	if err != nil {
+		return nil, err
+	}
 	notes, npt, err := g.Storage.ListNotes(ctx, pID, req.Filter, req.PageToken, ps)
 	if err != nil {
 		return nil, err
@@ -227,6 +232,13 @@ func (g *API) GetOccurrenceNote(ctx context.Context, req *gpb.GetOccurrenceNoteR
 	}
 
 	ctx = g.Logger.PrepareCtx(ctx, pID)
+
+	if err := validator.ValidateGetOccurrenceNoteRequest(req); err != nil {
+		if g.EnforceValidation {
+			return nil, err
+		}
+		g.Logger.Warningf(ctx, "Error in validating GetOccurrenceNoteRequest %+v in project %q: %v", req, pID, err)
+	}
 
 	if err := g.Auth.CheckAccessAndProject(ctx, pID, oID, OccurrencesGet); err != nil {
 		return nil, err
