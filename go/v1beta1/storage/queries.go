@@ -14,6 +14,73 @@
 
 package storage
 
+//mysql queries
+var mysqlCreateTables = []string{`
+	CREATE TABLE IF NOT EXISTS projects (
+		id INT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE PRIMARY KEY,
+		name VARCHAR(512) NOT NULL UNIQUE
+	);`,
+	`CREATE TABLE IF NOT EXISTS notes (
+		id INT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE PRIMARY KEY,
+		project_name VARCHAR(512) NOT NULL,
+		note_name VARCHAR(512) NOT NULL,
+		data JSON,
+		UNIQUE (project_name, note_name)
+	);`,
+	`CREATE TABLE IF NOT EXISTS occurrences (
+		id INT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE PRIMARY KEY,
+		project_name VARCHAR(512) NOT NULL,
+		occurrence_name VARCHAR(512) NOT NULL,
+		data JSON,
+		note_id INT UNSIGNED NOT NULL REFERENCES notes(id),
+		UNIQUE (project_name, occurrence_name)
+	);`,
+// This table was carried over from the pgsql tables creation, but I don't see
+// queries that access this table so I surmise it's not needed here. 
+//	`CREATE TABLE IF NOT EXISTS operations (
+//		id INT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE PRIMARY KEY,
+//		project_name VARCHAR(512) NOT NULL,
+//		operation_name VARCHAR(512) NOT NULL,
+//		data JSON,
+//		UNIQUE (project_name, operation_name)
+//	);`
+	 }
+const (
+	mysqlInsertProject = `INSERT INTO projects (name) VALUES (?)`
+	mysqlProjectExists = `SELECT EXISTS (SELECT 1 FROM projects WHERE name = ?)`
+	mysqlDeleteProject = `DELETE FROM projects WHERE name = ?`
+	mysqlListProjects  = `SELECT id, name FROM projects WHERE id > ? LIMIT ?`
+	mysqlProjectCount  = `SELECT COUNT(*) FROM projects`
+
+	mysqlInsertOccurrence = `INSERT INTO occurrences(project_name, occurrence_name, note_id, data)
+					  VALUES (?, ?, (SELECT id FROM notes WHERE project_name = ? AND note_name = ?), ?)`
+	mysqlSearchOccurrence = `SELECT data FROM occurrences WHERE project_name = ? AND occurrence_name = ?`
+	mysqlUpdateOccurrence = `UPDATE occurrences SET data = ? WHERE project_name = ? AND occurrence_name = ?`
+	mysqlDeleteOccurrence = `DELETE FROM occurrences WHERE project_name = ? AND occurrence_name = ?`
+	mysqlListOccurrences  = `SELECT id, data FROM occurrences WHERE project_name = ? %s AND id > ? LIMIT ?`
+	mysqlOccurrenceCount  = `SELECT COUNT(*) FROM occurrences WHERE project_name = ? %s`
+	mysqlInsertNote          = `INSERT INTO notes(project_name, note_name, data) VALUES (?, ?, ?)`
+	mysqlSearchNote          = `SELECT data FROM notes WHERE project_name = ? AND note_name = ?`
+	mysqlUpdateNote			= `UPDATE notes SET data = ? WHERE project_name = ? AND note_name = ?`
+	mysqlDeleteNote          = `DELETE FROM notes WHERE project_name = ? AND note_name = ?`
+	mysqlListNotes           = `SELECT id, data FROM notes WHERE project_name = ? %s AND id > ? LIMIT ? `
+	mysqlNoteCount           = `SELECT COUNT(*) FROM notes WHERE project_name = ? %s`
+	mysqlListNoteOccurrences = `SELECT o.id, o.data FROM occurrences as o, notes as n
+							WHERE n.id = o.note_id
+							AND n.project_name = ?
+							AND n.note_name = ?
+                            %s
+							AND o.id > ?
+							LIMIT ?`
+
+	mysqlNoteOccurrencesCount = `SELECT COUNT(*) FROM occurrences as o, notes as n
+	                         WHERE n.id = o.note_id
+	                           AND n.project_name = ?
+	                           AND n.note_name = ?
+                              %s`
+)
+
+// postgre queries
 const (
 	createTables = `
 		CREATE TABLE IF NOT EXISTS projects (

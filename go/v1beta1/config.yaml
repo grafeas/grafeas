@@ -11,7 +11,7 @@ grafeas:
     cors_allowed_origins:
       # - "http://example.net"
   # Supported storage types are "memstore" and "postgres"
-  storage_type: "memstore"
+  storage_type: "mysql"
   # Postgres options
   # Note: due to storage_type being set to memstore, the below config is a
   # no-op and only preserved here as an example.
@@ -31,3 +31,20 @@ grafeas:
     # If one is not provided, it will be generated.
     # Multiple grafeas instances in the same cluster need the same value.
     paginationkey:
+  mysql:
+    # Database host
+    host: "127.0.0.1:3306"
+    # Dabase name
+    dbname: "grafeas"
+    # Database username
+    user: "root"
+    # Database password
+    password: "root"
+    # Valid sslmodes disable, allow, prefer, require, verify-ca, verify-full.
+    # See https://www.postgresql.org/docs/current/static/libpq-connect.html for details
+    sslmode: "require"
+    # 32-bit URL-safe base64 key used to encrypt pagination tokens
+    # If one is not provided, it will be generated.
+    # Multiple grafeas instances in the same cluster need the same value.
+    paginationkey:
+
