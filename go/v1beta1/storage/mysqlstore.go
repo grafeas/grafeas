@@ -143,7 +143,7 @@ func (pg *MySQLStore) DeleteProject(ctx context.Context, pID string) error {
 func (pg *MySQLStore) GetProject(ctx context.Context, pID string) (*prpb.Project, error) {
 	pName := name.FormatProject(pID)
 	var exists bool
-	err := pg.DB.QueryRow(projectExists, pName).Scan(&exists)
+	err := pg.DB.QueryRow(mysqlProjectExists, pName).Scan(&exists)
 	if err != nil {
 		return nil, status.Error(codes.Internal, "Failed to query Project from database")
 	}
@@ -158,11 +158,11 @@ func (pg *MySQLStore) GetProject(ctx context.Context, pID string) (*prpb.Project
 func (pg *MySQLStore) ListProjects(ctx context.Context, filter string, pageSize int, pageToken string) ([]*prpb.Project, string, error) {
 	var rows *sql.Rows
 	id := decryptInt64(pageToken, pg.paginationKey, 0)
-    rows, err := pg.DB.Query(listProjects, id, pageSize)
+    rows, err := pg.DB.Query(mysqlListProjects, id, pageSize)
 	if err != nil {
 		return nil, "", status.Error(codes.Internal, "Failed to list Projects from database")
 	}
-	count, err := pg.count(projectCount)
+	count, err := pg.count(mysqlProjectCount)
 	if err != nil {
 		return nil, "", status.Error(codes.Internal, "Failed to count Projects from database")
 	}
@@ -208,7 +208,7 @@ func (pg *MySQLStore) CreateOccurrence(ctx context.Context, pID, uID string, o *
     if err != nil {
 		log.Println("failed to marshal note")
 	}
-	_, err = pg.DB.Exec(insertOccurrence, pID, id, nPID, nID, occ)
+	_, err = pg.DB.Exec(mysqlInsertOccurrence, pID, id, nPID, nID, occ)
 	if err != nil {
 		log.Println("Failed to insert Occurrence in database", err, occ)
 		return nil, status.Error(codes.Internal, "Failed to insert Occurrence in database")
@@ -241,7 +241,7 @@ func (pg *MySQLStore) BatchCreateOccurrences(ctx context.Context, pID string, uI
 
 // DeleteOccurrence deletes the occurrence with the given pID and oID
 func (pg *MySQLStore) DeleteOccurrence(ctx context.Context, pID, oID string) error {
-	result, err := pg.DB.Exec(deleteOccurrence, pID, oID)
+	result, err := pg.DB.Exec(mysqlDeleteOccurrence, pID, oID)
 	if err != nil {
 		return status.Error(codes.Internal, "Failed to delete Occurrence from database")
 	}
@@ -264,7 +264,7 @@ func (pg *MySQLStore) UpdateOccurrence(ctx context.Context, pID, oID string, o *
     if err != nil {
 		log.Println("failed to marshal note")
 	}
-	result, err := pg.DB.Exec(updateOccurrence, occ, pID, oID)
+	result, err := pg.DB.Exec(mysqlUpdateOccurrence, occ, pID, oID)
 	if err != nil {
 		return nil, status.Error(codes.Internal, "Failed to update Occurrence")
 	}
@@ -281,7 +281,7 @@ func (pg *MySQLStore) UpdateOccurrence(ctx context.Context, pID, oID string, o *
 // GetOccurrence returns the occurrence with pID and oID
 func (pg *MySQLStore) GetOccurrence(ctx context.Context, pID, oID string) (*pb.Occurrence, error) {
 	var data string
-	err := pg.DB.QueryRow(searchOccurrence, pID, oID).Scan(&data)
+	err := pg.DB.QueryRow(mysqlSearchOccurrence, pID, oID).Scan(&data)
 	switch {
 	case err == sql.ErrNoRows:
 		return nil, status.Errorf(codes.NotFound, "Occurrence with name %q/%q does not Exist", pID, oID)
@@ -311,13 +311,13 @@ func (pg *MySQLStore) ListOccurrences(ctx context.Context, pID, filter, pageToke
         filter_query = ""
     }
     // apply the filter to the list:
-    query = fmt.Sprintf(listOccurrences, filter_query)
+    query = fmt.Sprintf(mysqlListOccurrences, filter_query)
 	rows, err := pg.DB.Query(query, pID, id, pageSize)
 	if err != nil {
 		return nil, "", status.Error(codes.Internal, "Failed to list Occurrences from database")
 	}
     // apply the filter to the count:
-    query = fmt.Sprintf(occurrenceCount, filter_query)
+    query = fmt.Sprintf(mysqlOccurrenceCount, filter_query)
 	count, err := pg.count(query, pID)
 	if err != nil {
 		return nil, "", status.Error(codes.Internal, "Failed to count Occurrences from database")
@@ -357,7 +357,7 @@ func (pg *MySQLStore) CreateNote(ctx context.Context, pID, nID, uID string, n *p
     if err != nil {
 		log.Println("failed to marshal note")
 	}
-	_, err = pg.DB.Exec(insertNote, pID, nID, note)
+	_, err = pg.DB.Exec(mysqlInsertNote, pID, nID, note)
 	if err != nil {
 		log.Println("Failed to insert Note in database", err)
 		return nil, status.Error(codes.Internal, "Failed to insert Note in database")
@@ -391,7 +391,7 @@ func (pg *MySQLStore) BatchCreateNotes(ctx context.Context, pID, uID string, not
 
 // DeleteNote deletes the note with the given pID and nID
 func (pg *MySQLStore) DeleteNote(ctx context.Context, pID, nID string) error {
-	result, err := pg.DB.Exec(deleteNote, pID, nID)
+	result, err := pg.DB.Exec(mysqlDeleteNote, pID, nID)
 	if err != nil {
 		return status.Error(codes.Internal, "Failed to delete Note from database")
 	}
@@ -416,7 +416,7 @@ func (pg *MySQLStore) UpdateNote(ctx context.Context, pID, nID string, n *pb.Not
     if err != nil {
 		log.Println("failed to marshal note")
 	}
-	result, err := pg.DB.Exec(updateNote, note, pID, nID)
+	result, err := pg.DB.Exec(mysqlUpdateNote, note, pID, nID)
 	if err != nil {
 		return nil, status.Error(codes.Internal, "Failed to update Note")
 	}
@@ -433,7 +433,7 @@ func (pg *MySQLStore) UpdateNote(ctx context.Context, pID, nID string, n *pb.Not
 // GetNote returns the note with project (pID) and note ID (nID)
 func (pg *MySQLStore) GetNote(ctx context.Context, pID, nID string) (*pb.Note, error) {
 	var data string
-	err := pg.DB.QueryRow(searchNote, pID, nID).Scan(&data)
+	err := pg.DB.QueryRow(mysqlSearchNote, pID, nID).Scan(&data)
 	switch {
 	case err == sql.ErrNoRows:
 		return nil, status.Errorf(codes.NotFound, "Note with name %q/%q does not Exist", pID, nID)
@@ -483,13 +483,13 @@ func (pg *MySQLStore) ListNotes(ctx context.Context, pID, filter, pageToken stri
         filter_query = ""
     }
     // apply the filter to the list
-    query = fmt.Sprintf(listNotes, filter_query)
+    query = fmt.Sprintf(mysqlListNotes, filter_query)
 	rows, err := pg.DB.Query(query, pID, id, pageSize)
 	if err != nil {
 		return nil, "", status.Error(codes.Internal, "Failed to list Notes from database")
 	}
     // apply the filter to the count
-    query = fmt.Sprintf(noteCount, filter_query)
+    query = fmt.Sprintf(mysqlNoteCount, filter_query)
 	count, err := pg.count(query, pID)
 	if err != nil {
 		return nil, "", status.Error(codes.Internal, "Failed to count Notes from database")
@@ -535,12 +535,12 @@ func (pg *MySQLStore) ListNoteOccurrences(ctx context.Context, pID, nID, filter,
     } else {
         query = ""
     }
-    query = fmt.Sprintf(listNoteOccurrences, filter_query)
+    query = fmt.Sprintf(mysqlListNoteOccurrences, filter_query)
 	rows, err := pg.DB.Query(query, pID, nID, id, pageSize)
 	if err != nil {
 		return nil, "", status.Error(codes.Internal, "Failed to list Occurrences from database")
 	}
-    query = fmt.Sprintf(noteOccurrencesCount, filter_query)
+    query = fmt.Sprintf(mysqlNoteOccurrencesCount, filter_query)
 	count, err := pg.count(query, pID, nID)
 	if err != nil {
 		return nil, "", status.Error(codes.Internal, "Failed to count Occurrences from database")
