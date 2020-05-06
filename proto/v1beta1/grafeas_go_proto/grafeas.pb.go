@@ -1173,6 +1173,7 @@ type CreateNoteRequest struct {
 	// the note is to be created.
 	Parent string `protobuf:"bytes,1,opt,name=parent,proto3" json:"parent,omitempty"`
 	// The ID to use for this note.
+	// constraint: length <= 128.
 	NoteId string `protobuf:"bytes,2,opt,name=note_id,json=noteId,proto3" json:"note_id,omitempty"`
 	// The note to create.
 	Note                 *Note    `protobuf:"bytes,3,opt,name=note,proto3" json:"note,omitempty"`

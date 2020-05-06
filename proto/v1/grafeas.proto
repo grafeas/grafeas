@@ -444,6 +444,7 @@ message CreateNoteRequest {
     (google.api.resource_reference).type = "grafeas.io/Project"
   ];
   // The ID to use for this note.
+  // constraint: length <= 128.
   string note_id = 2 [(google.api.field_behavior) = REQUIRED];
   // The note to create.
   Note note = 3 [(google.api.field_behavior) = REQUIRED];

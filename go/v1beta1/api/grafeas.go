@@ -28,6 +28,7 @@ const (
 	defaultPageSize = 20
 	maxPageSize     = 1000
 	maxBatchSize    = 1000
+	maxNoteIDLength = 128
 
 	// NotesGet is the permission to get a note.
 	NotesGet = iam.Permission("notes.get")

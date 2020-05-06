@@ -20,6 +20,7 @@ import (
 	emptypb "github.com/golang/protobuf/ptypes/empty"
 	"github.com/grafeas/grafeas/go/name"
 	"github.com/grafeas/grafeas/go/v1beta1/api/validators/grafeas"
+	vlib "github.com/grafeas/grafeas/go/validationlib"
 	gpb "github.com/grafeas/grafeas/proto/v1beta1/grafeas_go_proto"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc/codes"
@@ -42,6 +43,11 @@ func (g *API) CreateNote(ctx context.Context, req *gpb.CreateNoteRequest) (*gpb.
 	if req.NoteId == "" {
 		return nil, status.Errorf(codes.InvalidArgument, "a noteId must be specified")
 	}
+	if len(req.NoteId) > vlib.MaxNoteIDLength {
+		// TODO(test)
+		return nil, status.Errorf(codes.InvalidArgument, fmt.Sprintf("The length of noteId must be <= %d", vlib.MaxNoteIDLength))
+	}
+
 	if req.Note == nil {
 		return nil, status.Errorf(codes.InvalidArgument, "a note must be specified")
 	}

@@ -20,6 +20,7 @@ import (
 
 	"github.com/golang/protobuf/proto"
 	"github.com/google/go-cmp/cmp"
+	vlib "github.com/grafeas/grafeas/go/validationlib"
 	gpb "github.com/grafeas/grafeas/proto/v1beta1/grafeas_go_proto"
 	vpb "github.com/grafeas/grafeas/proto/v1beta1/vulnerability_go_proto"
 	"golang.org/x/net/context"
@@ -80,6 +81,15 @@ func TestCreateNoteErrors(t *testing.T) {
 			req: &gpb.CreateNoteRequest{
 				Parent: "projects/goog-vulnz",
 				NoteId: "",
+				Note:   vulnzNote(t),
+			},
+			wantErrStatus: codes.InvalidArgument,
+		},
+		{
+			desc: "length of note ID exceeds limit",
+			req: &gpb.CreateNoteRequest{
+				Parent: "projects/goog-vulnz",
+				NoteId: vlib.NewInputGenerator().GenStringAlpha(vlib.MaxNoteIDLength + 1),
 				Note:   vulnzNote(t),
 			},
 			wantErrStatus: codes.InvalidArgument,

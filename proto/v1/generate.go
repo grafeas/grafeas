@@ -1,5 +1,7 @@
 // This generates the protocol buffer code in go for the v1 proto spec.
 
+package v1
+
 //go:generate rm -rf grafeas_go_proto
 //go:generate mkdir grafeas_go_proto
 //go:generate -command protoc ../../protoc/bin/protoc -I ../../ -I ./ -I ../../protodeps/grpc-gateway/third_party/googleapis -I ../../protodeps/grpc-gateway -I ../../protodeps/googleapis --go_out=plugins=grpc,paths=source_relative:.  --grpc-gateway_out=logtostderr=true,paths=source_relative:.
@@ -28,4 +30,3 @@
 //go:generate mv vulnerability.pb.go grafeas_go_proto
 //go:generate protoc upgrade.proto
 //go:generate mv upgrade.pb.go grafeas_go_proto
-package v1
