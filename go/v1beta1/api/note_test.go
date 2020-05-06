@@ -257,6 +257,26 @@ func TestBatchCreateNotesErrors(t *testing.T) {
 			wantErrStatus: codes.InvalidArgument,
 		},
 		{
+			desc: "notes[$i].$key is not a valid note_id (too long)",
+			req: &gpb.BatchCreateNotesRequest{
+				Parent: "projects/goog-vulnz",
+				Notes: map[string]*gpb.Note{
+					vlib.NewInputGenerator().GenStringURLFriendly(vlib.MaxNoteIDLength + 1): vulnzNote(t),
+				},
+			},
+			wantErrStatus: codes.InvalidArgument,
+		},
+		{
+			desc: "notes[$i].$key is not a valid note_id (not URL friendly)",
+			req: &gpb.BatchCreateNotesRequest{
+				Parent: "projects/goog-vulnz",
+				Notes: map[string]*gpb.Note{
+					"a@": vulnzNote(t),
+				},
+			},
+			wantErrStatus: codes.InvalidArgument,
+		},
+		{
 			desc: "auth error",
 			req: &gpb.BatchCreateNotesRequest{
 				Parent: "projects/goog-vulnz",

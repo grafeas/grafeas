@@ -503,6 +503,8 @@ message BatchCreateNotesRequest {
   ];
 
   // The notes to create. Max allowed length is 1000.
+  // constraint: each key in notes should be a valid note id, same as 'note_id' in CreateNoteRequest.
+  // See 'note_id' in CreateNoteRequest for more details about the constraint.
   map<string, Note> notes = 2 [(google.api.field_behavior) = REQUIRED];
 }
 

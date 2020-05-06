@@ -92,9 +92,15 @@ func (g *API) BatchCreateNotes(ctx context.Context, req *gpb.BatchCreateNotesReq
 		return nil, status.Errorf(codes.InvalidArgument, "%d is too many notes to batch create, a maximum of %d notes is allowed per batch create", len(req.Notes), maxBatchSize)
 	}
 	validationErrs := []error{}
-	for i, n := range req.Notes {
+	for noteID, n := range req.Notes {
+		if len(noteID) > vlib.MaxNoteIDLength {
+			return nil, status.Errorf(codes.InvalidArgument, fmt.Sprintf("the length of note_id %s exceeds the limit %d", noteID, vlib.MaxNoteIDLength))
+		}
+		if !vlib.IsURLFriendly(noteID) {
+			return nil, status.Errorf(codes.InvalidArgument, fmt.Sprintf("noteId %s is not URL friendly. See here: https://tools.ietf.org/html/rfc3986#appendix-A", noteID))
+		}
 		if err := grafeas.ValidateNote(n); err != nil {
-			validationErrs = append(validationErrs, fmt.Errorf("notes[%q]: %v", i, err))
+			validationErrs = append(validationErrs, fmt.Errorf("notes[%q]: %v", noteID, err))
 		}
 	}
 	if len(validationErrs) > 0 {
