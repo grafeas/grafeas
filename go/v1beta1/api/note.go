@@ -44,10 +44,8 @@ func (g *API) CreateNote(ctx context.Context, req *gpb.CreateNoteRequest) (*gpb.
 		return nil, status.Errorf(codes.InvalidArgument, "a noteId must be specified")
 	}
 	if len(req.NoteId) > vlib.MaxNoteIDLength {
-		// TODO(test)
-		return nil, status.Errorf(codes.InvalidArgument, fmt.Sprintf("The length of noteId must be <= %d", vlib.MaxNoteIDLength))
+		return nil, status.Errorf(codes.InvalidArgument, fmt.Sprintf("The length of note_id must be <= %d", vlib.MaxNoteIDLength))
 	}
-
 	if req.Note == nil {
 		return nil, status.Errorf(codes.InvalidArgument, "a note must be specified")
 	}
