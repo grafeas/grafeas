@@ -41,7 +41,6 @@ The following projects provide bindings for Grafeas API to different storage bac
 * [grafeas-pgsql](https://github.com/grafeas/grafeas-pgsql)
 * [grafeas-oracle](https://github.com/judavi/grafeas-oracle)
 
-
 ## Support
 
 If you have questions, reach out to us on
