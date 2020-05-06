@@ -445,6 +445,11 @@ message CreateNoteRequest {
   ];
   // The ID to use for this note.
   // constraint: length <= 128.
+  // constraint: note_id needs to be URL friendly.
+  // In more details, API style says that resource IDs should use URL-friendly
+	// resource IDs. See here: https://cloud.google.com/apis/design/resource_names#resource_id.
+	// The official spec allows ALPHA / DIGIT / "-" / "." / "_" / "~" as a subset
+	// See here: https://tools.ietf.org/html/rfc3986#appendix-A
   string note_id = 2 [(google.api.field_behavior) = REQUIRED];
   // The note to create.
   Note note = 3 [(google.api.field_behavior) = REQUIRED];

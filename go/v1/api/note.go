@@ -45,6 +45,9 @@ func (g *API) CreateNote(ctx context.Context, req *gpb.CreateNoteRequest, resp *
 	if len(req.NoteId) > vlib.MaxNoteIDLength {
 		return status.Errorf(codes.InvalidArgument, fmt.Sprintf("The length of noteId must be <= %d", vlib.MaxNoteIDLength))
 	}
+	if !vlib.IsURLFriendly(req.NoteId) {
+		return status.Errorf(codes.InvalidArgument, "noteId must be URL friendly. See here: https://tools.ietf.org/html/rfc3986#appendix-A")
+	}
 	if req.Note == nil {
 		return status.Errorf(codes.InvalidArgument, "a note must be specified")
 	}

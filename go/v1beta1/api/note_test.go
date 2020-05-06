@@ -95,6 +95,15 @@ func TestCreateNoteErrors(t *testing.T) {
 			wantErrStatus: codes.InvalidArgument,
 		},
 		{
+			desc: "note ID is not URL friendly",
+			req: &gpb.CreateNoteRequest{
+				Parent: "projects/goog-vulnz",
+				NoteId: "a@b",
+				Note:   vulnzNote(t),
+			},
+			wantErrStatus: codes.InvalidArgument,
+		},
+		{
 			desc: "nil note",
 			req: &gpb.CreateNoteRequest{
 				Parent: "projects/goog-vulnz",
