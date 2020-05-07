@@ -21,6 +21,12 @@ import (
 const (
 	// MaxNoteIDLength stands for the max length allowed for a note_id field.
 	MaxNoteIDLength = 128
+	// MaxResourceURILength stands for the max length allowed for a resource uri, url etc.
+	MaxResourceURILength = 2048
+	// MaxDescriptionLength stands for the max length allowed for a description.
+	MaxDescriptionLength = 5000
+	// MaxCollectionSize stands for the max size allowed for a collection such as array or dict.
+	MaxCollectionSize = 5000
 	// AlphaCharset accounts for alphabetic characters.
 	AlphaCharset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 	// AlphaNumCharset accounts for the alphabetic and numeric characters.

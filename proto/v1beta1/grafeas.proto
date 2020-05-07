@@ -217,6 +217,7 @@ message Occurrence {
   grafeas.v1beta1.NoteKind kind = 4;
 
   // A description of actions that can be taken to remedy the note.
+  // constraint: length <= 5000
   string remediation = 5;
 
   // Output only. The time this occurrence was created.

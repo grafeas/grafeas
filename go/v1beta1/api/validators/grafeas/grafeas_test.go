@@ -17,6 +17,7 @@ package grafeas
 import (
 	"testing"
 
+	vlib "github.com/grafeas/grafeas/go/validationlib"
 	apb "github.com/grafeas/grafeas/proto/v1beta1/attestation_go_proto"
 	bpb "github.com/grafeas/grafeas/proto/v1beta1/build_go_proto"
 	deploymentpb "github.com/grafeas/grafeas/proto/v1beta1/deployment_go_proto"
@@ -234,6 +235,18 @@ func TestValidateOccurrence(t *testing.T) {
 				Details: &gpb.Occurrence_Attestation{
 					Attestation: &apb.Details{},
 				},
+			},
+			wantErr: true,
+		},
+		{
+			desc: "remediation is too long, want error",
+			o: &gpb.Occurrence{
+				Resource: &gpb.Resource{
+					Uri: "goog://foo/bar",
+				},
+				NoteName:    "projects/goog-vulnz/notes/CVE-UH-OH",
+				Details:     &gpb.Occurrence_Vulnerability{},
+				Remediation: vlib.NewInputGenerator().GenStringAlpha(vlib.MaxDescriptionLength + 1),
 			},
 			wantErr: true,
 		},

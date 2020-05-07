@@ -25,8 +25,9 @@ import (
 	"github.com/grafeas/grafeas/go/v1beta1/api/validators/deployment"
 	"github.com/grafeas/grafeas/go/v1beta1/api/validators/discovery"
 	"github.com/grafeas/grafeas/go/v1beta1/api/validators/image"
-	"github.com/grafeas/grafeas/go/v1beta1/api/validators/package"
+	pkg "github.com/grafeas/grafeas/go/v1beta1/api/validators/package"
 	"github.com/grafeas/grafeas/go/v1beta1/api/validators/vulnerability"
+	vlib "github.com/grafeas/grafeas/go/validationlib"
 	gpb "github.com/grafeas/grafeas/proto/v1beta1/grafeas_go_proto"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -103,6 +104,10 @@ func ValidateOccurrence(o *gpb.Occurrence) error {
 
 	if o.GetNoteName() == "" {
 		errs = append(errs, errors.New("note_name is required"))
+	}
+
+	if l := len(o.GetRemediation()); l > vlib.MaxDescriptionLength {
+		errs = append(errs, fmt.Errorf("remediation %s exceeds the limit %d", o.GetRemediation(), vlib.MaxDescriptionLength))
 	}
 
 	if o.GetDetails() == nil {

@@ -27,6 +27,7 @@ import (
 	"github.com/grafeas/grafeas/go/v1/api/validators/image"
 	pkg "github.com/grafeas/grafeas/go/v1/api/validators/package"
 	"github.com/grafeas/grafeas/go/v1/api/validators/vulnerability"
+	vlib "github.com/grafeas/grafeas/go/validationlib"
 	gpb "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -93,12 +94,20 @@ func ValidateNote(n *gpb.Note) error {
 func ValidateOccurrence(o *gpb.Occurrence) error {
 	errs := []error{}
 
+	if l := len(o.GetResourceUri()); l > vlib.MaxResourceURILength {
+		errs = append(errs, fmt.Errorf("resource_uri %s exceeds the limit %d", o.GetResourceUri(), vlib.MaxResourceURILength))
+	}
+
 	if o.GetResourceUri() == "" {
 		errs = append(errs, errors.New("resource_uri is required"))
 	}
 
 	if o.GetNoteName() == "" {
 		errs = append(errs, errors.New("note_name is required"))
+	}
+
+	if l := len(o.GetRemediation()); l > vlib.MaxDescriptionLength {
+		errs = append(errs, fmt.Errorf("remediation %s exceeds the limit %d", o.GetRemediation(), vlib.MaxDescriptionLength))
 	}
 
 	if o.GetDetails() == nil {

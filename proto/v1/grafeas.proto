@@ -196,6 +196,7 @@ message Occurrence {
   // Required. Immutable. A URI that represents the resource for which the
   // occurrence applies. For example,
   // `https://gcr.io/project/image@sha256:123abc` for a Docker image.
+  // constraint: length <= 2048
   string resource_uri = 2;
 
   // Required. Immutable. The analysis note associated with this occurrence, in
@@ -208,6 +209,7 @@ message Occurrence {
   grafeas.v1.NoteKind kind = 4;
 
   // A description of actions that can be taken to remedy the note.
+  // constraint: length <= 5000
   string remediation = 5;
 
   // Output only. The time this occurrence was created.
