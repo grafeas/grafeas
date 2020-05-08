@@ -1698,7 +1698,7 @@
           "additionalProperties": {
             "$ref": "#/definitions/v1beta1Note"
           },
-          "description": "The notes to create. Max allowed length is 1000."
+          "description": "The notes to create. Max allowed length is 1000.\nconstraint: each key in notes should be a valid note id, same as 'note_id' in CreateNoteRequest.\nSee 'note_id' in CreateNoteRequest for more details about the constraint."
         }
       },
       "description": "Request to create notes in batch."
@@ -1807,11 +1807,11 @@
         },
         "short_description": {
           "type": "string",
-          "description": "A one sentence description of this note."
+          "title": "A one sentence description of this note.\nconstraint: length \u003c= 1000"
         },
         "long_description": {
           "type": "string",
-          "description": "A detailed description of this note."
+          "title": "A detailed description of this note.\nconstraint: length \u003c= 5000"
         },
         "kind": {
           "$ref": "#/definitions/v1beta1NoteKind",
@@ -1823,7 +1823,7 @@
           "items": {
             "$ref": "#/definitions/v1beta1RelatedUrl"
           },
-          "description": "URLs associated with this note."
+          "description": "URLs associated with this note.\nconstraint: size of related_url \u003c= 5000\nconstraint: len(related_url[i].url) \u003c= 2048 for any i.\nconstraint: len(related_url[i].label) \u003c= 5000 for any i."
         },
         "expiration_time": {
           "type": "string",
@@ -1847,7 +1847,7 @@
           "items": {
             "type": "string"
           },
-          "description": "Other notes related to this note."
+          "description": "Other notes related to this note.\nconstraint: size of related_note_names \u003c= 5000\nconstraint: len(related_note_names[i]) \u003c= 2048 for any i."
         },
         "vulnerability": {
           "$ref": "#/definitions/vulnerabilityVulnerability",
@@ -1923,7 +1923,7 @@
         },
         "remediation": {
           "type": "string",
-          "description": "A description of actions that can be taken to remedy the note."
+          "title": "A description of actions that can be taken to remedy the note.\nconstraint: length \u003c= 5000"
         },
         "create_time": {
           "type": "string",

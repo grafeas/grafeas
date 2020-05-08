@@ -15,6 +15,7 @@
 package grafeas
 
 import (
+	"strings"
 	"testing"
 
 	vlib "github.com/grafeas/grafeas/go/validationlib"
@@ -94,6 +95,199 @@ func TestValidateNote(t *testing.T) {
 				Type: &gpb.Note_Attestation{
 					Attestation: &gpb.AttestationNote{
 						Hint: &gpb.AttestationNote_Hint{},
+					},
+				},
+			},
+			wantErr: true,
+		},
+		{
+			desc: "related_note_names is valid, want success",
+			n: &gpb.Note{
+				// strings.Split(a_string, "") breaks a_string as an array.
+				RelatedNoteNames: strings.Split(vlib.NewInputGenerator().GenStringAlpha(vlib.MaxCollectionSize), ""),
+
+				Type: &gpb.Note_Vulnerability{
+					Vulnerability: &gpb.VulnerabilityNote{
+						Severity: gpb.Severity_CRITICAL,
+						Details: []*gpb.VulnerabilityNote_Detail{
+							&gpb.VulnerabilityNote_Detail{
+								SeverityName:    "LOW",
+								AffectedCpeUri:  "cpe:/o:debian:debian_linux:7",
+								AffectedPackage: "debian",
+							},
+						},
+					},
+				},
+			},
+			wantErr: false,
+		},
+		{
+			desc: "size of related_note_names is too large, want error",
+			n: &gpb.Note{
+				// strings.Split(a_string, "") breaks a_string as an array.
+				RelatedNoteNames: strings.Split(vlib.NewInputGenerator().GenStringAlpha(vlib.MaxCollectionSize+1), ""),
+				Type: &gpb.Note_Vulnerability{
+					Vulnerability: &gpb.VulnerabilityNote{
+						Severity: gpb.Severity_CRITICAL,
+						Details: []*gpb.VulnerabilityNote_Detail{
+							&gpb.VulnerabilityNote_Detail{
+								SeverityName:    "LOW",
+								AffectedCpeUri:  "cpe:/o:debian:debian_linux:7",
+								AffectedPackage: "debian",
+							},
+						},
+					},
+				},
+			},
+			wantErr: true,
+		},
+		{
+			desc: "related_note_names[i] is too long, want error",
+			n: &gpb.Note{
+				RelatedNoteNames: []string{
+					vlib.NewInputGenerator().GenStringAlpha(vlib.MaxResourceURILength + 1),
+				},
+				Type: &gpb.Note_Vulnerability{
+					Vulnerability: &gpb.VulnerabilityNote{
+						Severity: gpb.Severity_CRITICAL,
+						Details: []*gpb.VulnerabilityNote_Detail{
+							&gpb.VulnerabilityNote_Detail{
+								SeverityName:    "LOW",
+								AffectedCpeUri:  "cpe:/o:debian:debian_linux:7",
+								AffectedPackage: "debian",
+							},
+						},
+					},
+				},
+			},
+			wantErr: true,
+		},
+		{
+			desc: "short_description is too long, want error",
+			n: &gpb.Note{
+				ShortDescription: vlib.NewInputGenerator().GenStringAlpha(vlib.MaxShortDescriptionLength + 1),
+				Type: &gpb.Note_Vulnerability{
+					Vulnerability: &gpb.VulnerabilityNote{
+						Severity: gpb.Severity_CRITICAL,
+						Details: []*gpb.VulnerabilityNote_Detail{
+							&gpb.VulnerabilityNote_Detail{
+								SeverityName:    "LOW",
+								AffectedCpeUri:  "cpe:/o:debian:debian_linux:7",
+								AffectedPackage: "debian",
+							},
+						},
+					},
+				},
+			},
+			wantErr: true,
+		},
+		{
+			desc: "long_description is too long, want error",
+			n: &gpb.Note{
+				LongDescription: vlib.NewInputGenerator().GenStringAlpha(vlib.MaxDescriptionLength + 1),
+				Type: &gpb.Note_Vulnerability{
+					Vulnerability: &gpb.VulnerabilityNote{
+						Severity: gpb.Severity_CRITICAL,
+						Details: []*gpb.VulnerabilityNote_Detail{
+							&gpb.VulnerabilityNote_Detail{
+								SeverityName:    "LOW",
+								AffectedCpeUri:  "cpe:/o:debian:debian_linux:7",
+								AffectedPackage: "debian",
+							},
+						},
+					},
+				},
+			},
+			wantErr: true,
+		},
+		{
+			desc: "valid related_url, want success",
+			n: &gpb.Note{
+				RelatedUrl: []*gpb.RelatedUrl{
+					&gpb.RelatedUrl{
+						Url:   "abcd",
+						Label: "abcd",
+					},
+				},
+				Type: &gpb.Note_Vulnerability{
+					Vulnerability: &gpb.VulnerabilityNote{
+						Severity: gpb.Severity_CRITICAL,
+						Details: []*gpb.VulnerabilityNote_Detail{
+							&gpb.VulnerabilityNote_Detail{
+								SeverityName:    "LOW",
+								AffectedCpeUri:  "cpe:/o:debian:debian_linux:7",
+								AffectedPackage: "debian",
+							},
+						},
+					},
+				},
+			},
+			wantErr: false,
+		},
+		{
+			desc: "size of related_url is too long, want error",
+			n: &gpb.Note{
+				// an array full of nil elements.
+				// before we access each element, the size checking fails first.
+				RelatedUrl: make([]*gpb.RelatedUrl, vlib.MaxCollectionSize+1),
+				Type: &gpb.Note_Vulnerability{
+					Vulnerability: &gpb.VulnerabilityNote{
+						Severity: gpb.Severity_CRITICAL,
+						Details: []*gpb.VulnerabilityNote_Detail{
+							&gpb.VulnerabilityNote_Detail{
+								SeverityName:    "LOW",
+								AffectedCpeUri:  "cpe:/o:debian:debian_linux:7",
+								AffectedPackage: "debian",
+							},
+						},
+					},
+				},
+			},
+			wantErr: true,
+		},
+		{
+			desc: "related_url[i].url is too long, want error",
+			n: &gpb.Note{
+				RelatedUrl: []*gpb.RelatedUrl{
+					&gpb.RelatedUrl{
+						Url:   vlib.NewInputGenerator().GenStringAlpha(vlib.MaxResourceURILength + 1),
+						Label: "abcd",
+					},
+				},
+				Type: &gpb.Note_Vulnerability{
+					Vulnerability: &gpb.VulnerabilityNote{
+						Severity: gpb.Severity_CRITICAL,
+						Details: []*gpb.VulnerabilityNote_Detail{
+							&gpb.VulnerabilityNote_Detail{
+								SeverityName:    "LOW",
+								AffectedCpeUri:  "cpe:/o:debian:debian_linux:7",
+								AffectedPackage: "debian",
+							},
+						},
+					},
+				},
+			},
+			wantErr: true,
+		},
+		{
+			desc: "related_url[i].label is too long, want error",
+			n: &gpb.Note{
+				RelatedUrl: []*gpb.RelatedUrl{
+					&gpb.RelatedUrl{
+						Url:   "abcd",
+						Label: vlib.NewInputGenerator().GenStringAlpha(vlib.MaxDescriptionLength + 1),
+					},
+				},
+				Type: &gpb.Note_Vulnerability{
+					Vulnerability: &gpb.VulnerabilityNote{
+						Severity: gpb.Severity_CRITICAL,
+						Details: []*gpb.VulnerabilityNote_Detail{
+							&gpb.VulnerabilityNote_Detail{
+								SeverityName:    "LOW",
+								AffectedCpeUri:  "cpe:/o:debian:debian_linux:7",
+								AffectedPackage: "debian",
+							},
+						},
 					},
 				},
 			},

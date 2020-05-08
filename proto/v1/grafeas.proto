@@ -254,9 +254,11 @@ message Note {
   string name = 1;
 
   // A one sentence description of this note.
+  // constraint: length <= 1000
   string short_description = 2;
 
   // A detailed description of this note.
+  // constraint: length <= 1000
   string long_description = 3;
 
   // Output only. The type of analysis. This field can be used as a filter in
@@ -264,6 +266,9 @@ message Note {
   grafeas.v1.NoteKind kind = 4;
 
   // URLs associated with this note.
+  // constraint: size of related_url <= 5000
+  // constraint: len(related_url[i].url) <= 2048 for any i.
+  // constraint: len(related_url[i].label) <= 5000 for any i.
   repeated grafeas.v1.RelatedUrl related_url = 5;
 
   // Time of expiration for this note. Empty if note does not expire.
@@ -278,6 +283,8 @@ message Note {
   google.protobuf.Timestamp update_time = 8;
 
   // Other notes related to this note.
+  // constraint: size of related_note_names <= 5000
+  // constraint: len(related_note_names[i]) <= 2048 for any i.
   repeated string related_note_names = 9;
 
   // Required. Immutable. The type of analysis this note represents.

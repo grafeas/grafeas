@@ -25,6 +25,8 @@ const (
 	MaxResourceURILength = 2048
 	// MaxDescriptionLength stands for the max length allowed for a description.
 	MaxDescriptionLength = 5000
+	// MaxShortDescriptionLength stands for the max length allowed for a 'short description'.
+	MaxShortDescriptionLength = 1000
 	// MaxCollectionSize stands for the max size allowed for a collection such as array or dict.
 	MaxCollectionSize = 5000
 	// AlphaCharset accounts for alphabetic characters.
