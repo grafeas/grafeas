@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package validation
+package validators
 
 import (
 	"strings"
@@ -22,135 +22,131 @@ import (
 func TestIsAlpha(t *testing.T) {
 	tests := []struct {
 		input   string
-		isalpha bool
+		isAlpha bool
 	}{
 		{
 			input:   strings.Repeat("a", 0),
-			isalpha: true,
+			isAlpha: true,
 		},
 		{
 			input:   strings.Repeat("a", 100),
-			isalpha: true,
+			isAlpha: true,
 		},
 		{
 			input:   strings.Repeat("a", 1000000),
-			isalpha: true,
+			isAlpha: true,
 		},
 		{
 			input:   "你好",
-			isalpha: false,
+			isAlpha: false,
 		},
 		{
 			input:   "\b5Ὂg̀9! ℃ᾭG",
-			isalpha: false,
+			isAlpha: false,
 		},
 	}
 
 	for _, tt := range tests {
-		if IsAlpha(tt.input) != tt.isalpha {
-			modifier := " "
-			if !tt.isalpha {
-				modifier = " not "
+		t.Run(tt.input, func(t *testing.T) {
+			if isAlpha := IsAlpha(tt.input); isAlpha != tt.isAlpha {
+				t.Errorf("IsAlpha(%q) = %t, want %t", tt.input, isAlpha, tt.isAlpha)
 			}
-			t.Errorf("%s is expected to be%salphabetic", tt.input, modifier)
-		}
+		})
 	}
 }
 
 func TestIsURLFriendly(t *testing.T) {
 	tests := []struct {
 		input         string
-		isurlfriendly bool
+		isURLFriendly bool
 	}{
 		{
 			input:         strings.Repeat("a", 0),
-			isurlfriendly: true,
+			isURLFriendly: true,
 		},
 		{
 			input:         strings.Repeat("a", 100),
-			isurlfriendly: true,
+			isURLFriendly: true,
 		},
 		{
 			input:         strings.Repeat("a", 1000000),
-			isurlfriendly: true,
+			isURLFriendly: true,
 		},
 		{
 			input:         "a~",
-			isurlfriendly: true,
+			isURLFriendly: true,
 		},
 		{
 			input:         "a-b",
-			isurlfriendly: true,
+			isURLFriendly: true,
 		},
 		{
 			input:         "a.b",
-			isurlfriendly: true,
+			isURLFriendly: true,
 		},
 		{
 			input:         "a_",
-			isurlfriendly: true,
+			isURLFriendly: true,
 		},
 		{
 			input:         "19a",
-			isurlfriendly: true,
+			isURLFriendly: true,
 		},
 		{
 			input:         "你好",
-			isurlfriendly: false,
+			isURLFriendly: false,
 		},
 		{
 			input:         "\b5Ὂg̀9! ℃ᾭG",
-			isurlfriendly: false,
+			isURLFriendly: false,
 		},
 		{
 			input:         "a!",
-			isurlfriendly: false,
+			isURLFriendly: false,
 		},
 		{
 			input:         "a@",
-			isurlfriendly: false,
+			isURLFriendly: false,
 		},
 		{
 			input:         "a#",
-			isurlfriendly: false,
+			isURLFriendly: false,
 		},
 		{
 			input:         "a$",
-			isurlfriendly: false,
+			isURLFriendly: false,
 		},
 		{
 			input:         "a%",
-			isurlfriendly: false,
+			isURLFriendly: false,
 		},
 		{
 			input:         "a^",
-			isurlfriendly: false,
+			isURLFriendly: false,
 		},
 		{
 			input:         "a&",
-			isurlfriendly: false,
+			isURLFriendly: false,
 		},
 		{
 			input:         "a*",
-			isurlfriendly: false,
+			isURLFriendly: false,
 		},
 		{
 			input:         "a(",
-			isurlfriendly: false,
+			isURLFriendly: false,
 		},
 		{
 			input:         "a)",
-			isurlfriendly: false,
+			isURLFriendly: false,
 		},
 	}
 
 	for _, tt := range tests {
-		if IsURLFriendly(tt.input) != tt.isurlfriendly {
-			modifier := " "
-			if !tt.isurlfriendly {
-				modifier = " not "
+		t.Run(tt.input, func(t *testing.T) {
+			if isURLFriendly := IsURLFriendly(tt.input); isURLFriendly != tt.isURLFriendly {
+				t.Errorf("IsURLFriendly(%q) = %t, want %t", tt.input, isURLFriendly, tt.isURLFriendly)
 			}
-			t.Errorf("%s is expected to be%sURL friendly", tt.input, modifier)
-		}
+		})
 	}
 }
