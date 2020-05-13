@@ -5,8 +5,8 @@ grafeas:
     address: "0.0.0.0:8080"
     # PKI configuration (optional)
     cafile: ca.crt
-    keyfile: ca.key
-    certfile: ca.crt
+    keyfile: server.key
+    certfile: server.crt
     # CORS configuration (optional)
     cors_allowed_origins:
       # - "http://example.net"

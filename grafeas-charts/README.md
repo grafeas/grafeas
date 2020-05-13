@@ -9,15 +9,39 @@ The setup will run a Greafeas instance backed by memstore by default, or embedde
 * [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
 * [Helm](https://helm.sh/)
 
-## Running the chart locally
+## Running the chart
 
-Generate self-signed certificates by following [instructions](../docs/running_grafeas.md#use-grafeas-with-self-signed-certificate).
+* Basic example, without certificate.
+```
+$ helm install  grafeas ./grafeas-charts/ --set container.port=4000 --set certificates.enabled=false
+$ export POD_NAME=$(kubectl get pods --namespace default -l "app.kubernetes.io/name=grafeas-server,app.kubernetes.io/instance=grafeas" -o jsonpath="{.items[0].metadata.name}")
+$ kubectl --namespace default port-forward $POD_NAME 4000
+```
+Note: this basically forwards your localhost:4000 to port 4000 of the pod.
 
-If using in-memory store, do:
+Now open another terminal:
+```
+$ curl http://localhost:4000/v1beta1/projects
+{"projects":[],"nextPageToken":""}%  
+```
+
+* Basic example, with certificate.
+
+First, generate self-signed certificates by following [instructions](../docs/running_grafeas.md#use-grafeas-with-self-signed-certificate).
 
 ```
-helm install --name grafeas ./grafeas-charts/ --set container.port=443 --set certificates.enabled=true --set service.port=443 --set certificates.ca="$(cat ca.crt)" --set certificates.cert="$(cat server.crt)" --set "certificates.key=$(cat server.key)"
+$ helm install  grafeas ./grafeas-charts/ --set container.port=5000 --set secret.enabled=true  --set certificates.enabled=true --set service.port=5000 --set certificates.name="foo" --set certificates.ca="$(cat ca.crt)" --set certificates.cert="$(cat server.crt)" --set "certificates.key=$(cat server.key)"
+$ export POD_NAME=$(kubectl get pods --namespace default -l "app.kubernetes.io/name=grafeas-server,app.kubernetes.io/instance=grafeas" -o jsonpath="{.items[0].metadata.name}")
+$ kubectl --namespace default port-forward $POD_NAME 5000
+```     
+Now open another terminal:
 ```
+$ curl -k --cert server.pem https://localhost:5000/v1beta1/projects
+Enter PEM pass phrase:
+{"projects":[],"nextPageToken":""}%
+```
+Note that in the above basic examples, we used the in-memory store.
+
 
 If using embedded boltdb, create a local persistent volume and a claim:
 
