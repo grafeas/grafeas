@@ -158,7 +158,7 @@ type Signature struct {
 	Signature []byte `protobuf:"bytes,1,opt,name=signature,proto3" json:"signature,omitempty"`
 	// The identifier for the public key that verifies this signature.
 	//   * The `public_key_id` is required.
-	//   * The `public_key_id` MUST be an RFC3986 conformant URI.
+	//   * The `public_key_id` SHOULD be an RFC3986 conformant URI.
 	//   * When possible, the `public_key_id` SHOULD be an immutable reference,
 	//     such as a cryptographic digest.
 	//
