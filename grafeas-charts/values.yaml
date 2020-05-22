@@ -1,0 +1,63 @@
+replicaCount: 1
+
+secret:
+  enabled: false
+
+image:
+  repository: us.gcr.io/grafeas
+  name: grafeas-server
+  tag: v0.1.5
+  pullPolicy: IfNotPresent
+
+nameOverride: "grafeas-server"
+fullnameOverride: "grafeas-server"
+
+# The name of persistent volume to use
+# persistent volume is used for storing the embedded grafeas data
+persistentVolumeClaimName: "grafeas"
+
+# The type of storage used, supported options: memstore or embedded
+# REMARK: embedded storage requires a persistent volume
+storageType: "memstore"
+
+service:
+  type: ClusterIP
+  port: 8080
+
+container:
+  port: 8080
+
+# Certificates for mutual authentication
+certificates:
+  enabled: false
+  name: grafeas-ssl-certs
+  ca: |-
+      -----BEGIN CERTIFICATE-----
+      ...
+      -----END CERTIFICATE-----
+  cert: |-
+      -----BEGIN CERTIFICATE-----
+      ...
+      -----END CERTIFICATE-----
+  key: |-
+      -----BEGIN RSA PRIVATE KEY-----
+      ...
+      -----END RSA PRIVATE KEY-----
+
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+livenessprobe:
+  initialDelaySeconds: 15 # Value based on pod startup average of ~12 seconds using default limits above
+  periodSeconds: 10
+  failureThreshold: 3 # initialDelaySeconds + (failureThreshold * periodSeconds) based on worst case startup time of 45 seconds
+
+readinessprobe:
+  initialDelaySeconds: 15 # Value based on pod startup average of ~12 seconds using default limits above
+  periodSeconds: 10
+  failureThreshold: 3 # initialDelaySeconds + (failureThreshold * periodSeconds) based on worst case startup time of 45 seconds

@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafeas
+data:
+  config: |
+    grafeas:
+      # Grafeas api server config
+      api:
+        # Endpoint address
+        address: "0.0.0.0:{{ .Values.container.port }}"
+{{- if eq .Values.certificates.enabled true }}
+        # PKI configuration
+        cafile: /certificates/ca.crt
+        keyfile: /certificates/server.key
+        certfile: /certificates/server.crt
+{{- end }}
+        cors_allowed_origins:
+        # - "http://example.net"
+      storage_type: {{ .Values.storageType }}
+      embedded:
+        # Path to embedded database
+        path: "/data/grafeas.db"
