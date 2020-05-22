@@ -282,7 +282,12 @@ func (g *API) ListNoteOccurrences(ctx context.Context, req *gpb.ListNoteOccurren
 		return nil, err
 	}
 
-	occs, npt, err := g.Storage.ListNoteOccurrences(ctx, pID, nID, req.Filter, req.PageToken, req.PageSize)
+	ps, err := validatePageSize(req.PageSize)
+	if err != nil {
+		return nil, err
+	}
+
+	occs, npt, err := g.Storage.ListNoteOccurrences(ctx, pID, nID, req.Filter, req.PageToken, ps)
 	if err != nil {
 		return nil, err
 	}

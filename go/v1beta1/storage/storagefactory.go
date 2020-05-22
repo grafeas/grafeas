@@ -120,6 +120,32 @@ func postgresStorageTypeProvider(storageType string, storageConfig *config.Stora
 	return storage, nil
 }
 
+func mysqlStorageTypeProvider(storageType string, storageConfig *config.StorageConfiguration) (*Storage, error) {
+	if storageType != "mysql" {
+		return nil, errors.New(fmt.Sprintf("Unknown storage type %s, must be 'postgres'", storageType))
+	}
+
+	var storeConfig config.MySQLConfig
+
+	err := config.ConvertGenericConfigToSpecificType(storageConfig, &storeConfig)
+	if err != nil {
+		return nil, errors.New(fmt.Sprintf("Unable to create MySQLConfig, %s", err))
+	}
+
+	s, err := NewMySQLStore(&storeConfig)
+	if err != nil {
+		return nil, err
+	}
+
+	storage := &Storage{
+		Ps: s,
+		Gs: s,
+	}
+
+	return storage, nil
+}
+
+
 // RegisterDefaultStorageTypeProviders adds support for memstore, embedded and Postgres storage types
 // TODO(#341) remove support for Postgres and move to a separate Register...() implementation in a separate project
 func RegisterDefaultStorageTypeProviders() error {
@@ -135,6 +161,12 @@ func RegisterDefaultStorageTypeProviders() error {
 
 	// TODO(#341) move this function invocation to a separate function within a separate project
 	err = RegisterStorageTypeProvider("postgres", postgresStorageTypeProvider)
+	if err != nil {
+		return err
+	}
+
+	// just testing this one.
+	err = RegisterStorageTypeProvider("mysql", mysqlStorageTypeProvider)
 	if err != nil {
 		return err
 	}
