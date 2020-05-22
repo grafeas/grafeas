@@ -25,7 +25,7 @@ import (
 )
 
 const (
-	defaultPageSize = 20
+	defaultPageSize = 1000
 	maxPageSize     = 1000
 	maxBatchSize    = 1000
 

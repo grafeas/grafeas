@@ -4,9 +4,9 @@ grafeas:
     # Endpoint address
     address: "0.0.0.0:8080"
     # PKI configuration (optional)
-    cafile: ca.crt
-    keyfile: ca.key
-    certfile: ca.crt
+    # cafile: ca.crt
+    # keyfile: ca.key
+    # certfile: ca.crt
     # CORS configuration (optional)
     cors_allowed_origins:
       # - "http://example.net"
@@ -42,9 +42,8 @@ grafeas:
     password: "root"
     # Valid sslmodes disable, allow, prefer, require, verify-ca, verify-full.
     # See https://www.postgresql.org/docs/current/static/libpq-connect.html for details
-    sslmode: "require"
+    sslmode: "disable"
     # 32-bit URL-safe base64 key used to encrypt pagination tokens
     # If one is not provided, it will be generated.
     # Multiple grafeas instances in the same cluster need the same value.
     paginationkey:
-

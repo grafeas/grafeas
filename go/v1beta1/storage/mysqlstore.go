@@ -15,12 +15,13 @@ package storage
 
 import (
 	"database/sql"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
-	"encoding/json"
 
 	"github.com/fernet/fernet-go"
+	"github.com/go-sql-driver/mysql"
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes"
 	"github.com/google/uuid"
@@ -28,7 +29,6 @@ import (
 	"github.com/grafeas/grafeas/go/name"
 	pb "github.com/grafeas/grafeas/proto/v1beta1/grafeas_go_proto"
 	prpb "github.com/grafeas/grafeas/proto/v1beta1/project_go_proto"
-	"github.com/go-sql-driver/mysql"
 	"golang.org/x/net/context"
 	fieldmaskpb "google.golang.org/genproto/protobuf/field_mask"
 	"google.golang.org/grpc/codes"
@@ -66,13 +66,13 @@ func NewMySQLStore(config *config.MySQLConfig) (*MySQLStore, error) {
 	if db.Ping() != nil {
 		return nil, errors.New("database server is not alive")
 	}
-    for _, query := range mysqlCreateTables {
-        if _, err := db.Exec(query); err != nil {
-            db.Close()
+	for _, query := range mysqlCreateTables {
+		if _, err := db.Exec(query); err != nil {
+			db.Close()
 			log.Printf("error executing %s: %s", query, err)
-            return nil, err
-        }
-    }
+			return nil, err
+		}
+	}
 	log.Printf("MySQL db connection created: %v\n", db)
 	return &MySQLStore{
 		DB:            db,
@@ -91,10 +91,10 @@ func myscreateDatabase(source, dbName string) error {
 		fmt.Sprintf("select count(*) from information_schema.schemata where schema_name = '%s'", dbName))
 	if err != nil {
 		return err
-	} 
+	}
 	if err, ok := err.(*mysql.MySQLError); ok {
 		return err
-	} 
+	}
 	var rowCnt int
 	res.Next()
 	res.Scan(&rowCnt)
@@ -158,7 +158,7 @@ func (pg *MySQLStore) GetProject(ctx context.Context, pID string) (*prpb.Project
 func (pg *MySQLStore) ListProjects(ctx context.Context, filter string, pageSize int, pageToken string) ([]*prpb.Project, string, error) {
 	var rows *sql.Rows
 	id := decryptInt64(pageToken, pg.paginationKey, 0)
-    rows, err := pg.DB.Query(mysqlListProjects, id, pageSize)
+	rows, err := pg.DB.Query(mysqlListProjects, id, pageSize)
 	if err != nil {
 		return nil, "", status.Error(codes.Internal, "Failed to list Projects from database")
 	}
@@ -205,7 +205,7 @@ func (pg *MySQLStore) CreateOccurrence(ctx context.Context, pID, uID string, o *
 		return nil, status.Error(codes.InvalidArgument, "Invalid note name")
 	}
 	occ, err := json.Marshal(o)
-    if err != nil {
+	if err != nil {
 		log.Println("failed to marshal note")
 	}
 	_, err = pg.DB.Exec(mysqlInsertOccurrence, pID, id, nPID, nID, occ)
@@ -261,7 +261,7 @@ func (pg *MySQLStore) UpdateOccurrence(ctx context.Context, pID, oID string, o *
 	o.UpdateTime = ptypes.TimestampNow()
 
 	occ, err := json.Marshal(o)
-    if err != nil {
+	if err != nil {
 		log.Println("failed to marshal note")
 	}
 	result, err := pg.DB.Exec(mysqlUpdateOccurrence, occ, pID, oID)
@@ -303,21 +303,21 @@ func (pg *MySQLStore) GetOccurrence(ctx context.Context, pID, oID string) (*pb.O
 func (pg *MySQLStore) ListOccurrences(ctx context.Context, pID, filter, pageToken string, pageSize int32) ([]*pb.Occurrence, string, error) {
 	var rows *sql.Rows
 	id := decryptInt64(pageToken, pg.paginationKey, 0)
-    var filter_query, query string
-    if filter != "" {
-        var fs MysqlFilterSql
-        filter_query = "AND " +fs.ParseFilter(filter)
-    } else {
-        filter_query = ""
-    }
-    // apply the filter to the list:
-    query = fmt.Sprintf(mysqlListOccurrences, filter_query)
+	var filter_query, query string
+	if filter != "" {
+		var fs MysqlFilterSql
+		filter_query = "AND " + fs.ParseFilter(filter, "")
+	} else {
+		filter_query = ""
+	}
+	// apply the filter to the list:
+	query = fmt.Sprintf(mysqlListOccurrences, filter_query)
 	rows, err := pg.DB.Query(query, pID, id, pageSize)
 	if err != nil {
 		return nil, "", status.Error(codes.Internal, "Failed to list Occurrences from database")
 	}
-    // apply the filter to the count:
-    query = fmt.Sprintf(mysqlOccurrenceCount, filter_query)
+	// apply the filter to the count:
+	query = fmt.Sprintf(mysqlOccurrenceCount, filter_query)
 	count, err := pg.count(query, pID)
 	if err != nil {
 		return nil, "", status.Error(codes.Internal, "Failed to count Occurrences from database")
@@ -354,7 +354,7 @@ func (pg *MySQLStore) CreateNote(ctx context.Context, pID, nID, uID string, n *p
 	n.Name = nName
 	n.CreateTime = ptypes.TimestampNow()
 	note, err := json.Marshal(n)
-    if err != nil {
+	if err != nil {
 		log.Println("failed to marshal note")
 	}
 	_, err = pg.DB.Exec(mysqlInsertNote, pID, nID, note)
@@ -413,7 +413,7 @@ func (pg *MySQLStore) UpdateNote(ctx context.Context, pID, nID string, n *pb.Not
 	n.UpdateTime = ptypes.TimestampNow()
 
 	note, err := json.Marshal(n)
-    if err != nil {
+	if err != nil {
 		log.Println("failed to marshal note")
 	}
 	result, err := pg.DB.Exec(mysqlUpdateNote, note, pID, nID)
@@ -475,21 +475,21 @@ func (pg *MySQLStore) GetOccurrenceNote(ctx context.Context, pID, oID string) (*
 func (pg *MySQLStore) ListNotes(ctx context.Context, pID, filter, pageToken string, pageSize int32) ([]*pb.Note, string, error) {
 	var rows *sql.Rows
 	id := decryptInt64(pageToken, pg.paginationKey, 0)
-    var filter_query, query string
-    if filter != "" {
-        var fs MysqlFilterSql
-        filter_query = "AND " +fs.ParseFilter(filter)
-    } else {
-        filter_query = ""
-    }
-    // apply the filter to the list
-    query = fmt.Sprintf(mysqlListNotes, filter_query)
+	var filter_query, query string
+	if filter != "" {
+		var fs MysqlFilterSql
+		filter_query = "AND " + fs.ParseFilter(filter, "")
+	} else {
+		filter_query = ""
+	}
+	// apply the filter to the list
+	query = fmt.Sprintf(mysqlListNotes, filter_query)
 	rows, err := pg.DB.Query(query, pID, id, pageSize)
 	if err != nil {
 		return nil, "", status.Error(codes.Internal, "Failed to list Notes from database")
 	}
-    // apply the filter to the count
-    query = fmt.Sprintf(mysqlNoteCount, filter_query)
+	// apply the filter to the count
+	query = fmt.Sprintf(mysqlNoteCount, filter_query)
 	count, err := pg.count(query, pID)
 	if err != nil {
 		return nil, "", status.Error(codes.Internal, "Failed to count Notes from database")
@@ -528,19 +528,17 @@ func (pg *MySQLStore) ListNoteOccurrences(ctx context.Context, pID, nID, filter,
 	}
 	var rows *sql.Rows
 	id := decryptInt64(pageToken, pg.paginationKey, 0)
-    var filter_query, query string
-    if filter != "" {
-        var fs MysqlFilterSql
-        filter_query = "AND " +fs.ParseFilter(filter)
-    } else {
-        query = ""
-    }
-    query = fmt.Sprintf(mysqlListNoteOccurrences, filter_query)
+	var filter_query, query string
+	if filter != "" {
+		var fs MysqlFilterSql
+		filter_query = "AND " + fs.ParseFilter(filter, "o.")
+	}
+	query = fmt.Sprintf(mysqlListNoteOccurrences, filter_query)
 	rows, err := pg.DB.Query(query, pID, nID, id, pageSize)
 	if err != nil {
 		return nil, "", status.Error(codes.Internal, "Failed to list Occurrences from database")
 	}
-    query = fmt.Sprintf(mysqlNoteOccurrencesCount, filter_query)
+	query = fmt.Sprintf(mysqlNoteOccurrencesCount, filter_query)
 	count, err := pg.count(query, pID, nID)
 	if err != nil {
 		return nil, "", status.Error(codes.Internal, "Failed to count Occurrences from database")
@@ -580,7 +578,7 @@ func (pg *MySQLStore) GetVulnerabilityOccurrencesSummary(ctx context.Context, pr
 // %s:%s@tcp(%s)/%s
 func MySCreateSourceString(user, password, host, dbName, SSLMode string) string {
 	if user == "" {
-		return fmt.Sprintf("tcp(%s)/%s",host, dbName)
+		return fmt.Sprintf("tcp(%s)/%s", host, dbName)
 	}
 	return fmt.Sprintf("%s:%s@tcp(%s)/%s", user, password, host, dbName)
 }
@@ -595,5 +593,3 @@ func (pg *MySQLStore) count(query string, args ...interface{}) (int64, error) {
 	}
 	return count, err
 }
-
-

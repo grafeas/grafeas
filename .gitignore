@@ -19,3 +19,8 @@ server.csr
 server.key
 server.p12
 server.pem
+go/v1beta1/main/grafeas-server
+
+**/.idea/**
+**/.circleci/**
+**/.vscode/**
