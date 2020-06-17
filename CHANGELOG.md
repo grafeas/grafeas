@@ -1,6 +1,10 @@
 This is the changelog of Grafeas server releases. For more information on
 versionining, see [versioning](docs/versioning.md) document.
 
+v0.1.6:
+  * Added support for in-toto.
+  * Added JWT support to attestation notes.
+
 v0.1.5:
   * Upgraded to golang 1.14.0
   * Addeded last_scan_time to discovery occurrences
