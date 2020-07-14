@@ -50,8 +50,8 @@ func validateHint(h *gpb.AttestationNote_Hint) []error {
 func ValidateOccurrence(a *gpb.AttestationOccurrence) []error {
 	errs := []error{}
 
-	if sp := a.GetSerializedPayload(); sp == nil {
-		errs = append(errs, errors.New("serialized payload is required"))
+	if a.GetSerializedPayload() == nil && a.GetJwts() == nil {
+		errs = append(errs, errors.New("one of \"serialized payload\" or \"jwts\" is required"))
 	}
 
 	if s := a.GetSignatures(); s != nil {
