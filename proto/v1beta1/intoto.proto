@@ -19,6 +19,7 @@ package grafeas.v1beta1.intoto;
 option go_package = "github.com/grafeas/grafeas/proto/v1beta1/intoto_go_proto";
 option java_multiple_files = true;
 option java_package = "io.grafeas.v1beta1.intoto";
+option java_outer_classname = "InTotoOuterClass";
 option objc_class_prefix = "GRA";
 
 // This file defines the proto that matches the schema of in-toto metadata.
