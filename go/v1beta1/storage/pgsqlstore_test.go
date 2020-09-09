@@ -133,7 +133,7 @@ func TestBetaPgSQLStoreWithInvalidPaginationKey(t *testing.T) {
 	if err == nil {
 		t.Errorf("expected error for invalid pagination key; got none")
 	}
-	if err.Error() != "invalid pagination key; must be 32-bit URL-safe base64" {
+	if err.Error() != "invalid pagination key; must be 256-bit URL-safe base64" {
 		t.Errorf("expected error message about invalid pagination key; got: %s", err.Error())
 	}
 }
