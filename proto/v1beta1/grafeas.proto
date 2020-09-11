@@ -530,7 +530,7 @@ message BatchCreateNotesRequest {
     (google.api.resource_reference).type = "cloudresourcemanager.googleapis.com/Project"
   ];
 
-  // The notes to create. Max allowed length is 1000.
+  // The notes to create, the key is expected to be the note ID. Max allowed length is 1000.
   map<string, Note> notes = 2 [(google.api.field_behavior) = REQUIRED];
 }
 
