@@ -27,6 +27,7 @@ import (
 	"github.com/grafeas/grafeas/go/v1/api/validators/image"
 	pkg "github.com/grafeas/grafeas/go/v1/api/validators/package"
 	"github.com/grafeas/grafeas/go/v1/api/validators/vulnerability"
+	vlib "github.com/grafeas/grafeas/go/validationlib"
 	gpb "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -38,6 +39,37 @@ func ValidateNote(n *gpb.Note) error {
 
 	if n.GetType() == nil {
 		errs = append(errs, errors.New("type is required"))
+	}
+
+	if l := len(n.GetShortDescription()); l > vlib.MaxShortDescriptionLength {
+		errs = append(errs, fmt.Errorf("short_description %s exceeds the limit %d", n.GetShortDescription(), vlib.MaxShortDescriptionLength))
+	}
+
+	if l := len(n.GetLongDescription()); l > vlib.MaxDescriptionLength {
+		errs = append(errs, fmt.Errorf("long_description %s exceeds the limit %d", n.GetLongDescription(), vlib.MaxDescriptionLength))
+	}
+
+	if len(n.GetRelatedNoteNames()) > vlib.MaxCollectionSize {
+		errs = append(errs, fmt.Errorf("size of related_note_names exceeds limit %d", vlib.MaxCollectionSize))
+	}
+
+	if len(n.GetRelatedUrl()) > vlib.MaxCollectionSize {
+		errs = append(errs, fmt.Errorf("size of related_url exceeds limit %d", vlib.MaxCollectionSize))
+	}
+
+	for i, relatedURL := range n.GetRelatedUrl() {
+		if url := relatedURL.GetUrl(); len(url) > vlib.MaxResourceURILength {
+			errs = append(errs, fmt.Errorf("length of related_url[%d].url=%s exceeds limit %d", i, url, vlib.MaxResourceURILength))
+		}
+		if label := relatedURL.GetLabel(); len(label) > vlib.MaxDescriptionLength {
+			errs = append(errs, fmt.Errorf("length of related_url[%d].label=%s exceeds limit %d", i, label, vlib.MaxDescriptionLength))
+		}
+	}
+
+	for _, noteName := range n.GetRelatedNoteNames() {
+		if len(noteName) > vlib.MaxResourceURILength {
+			errs = append(errs, fmt.Errorf("length of %s exceeds limit %d", noteName, vlib.MaxResourceURILength))
+		}
 	}
 
 	if v := n.GetVulnerability(); v != nil {
@@ -93,12 +125,20 @@ func ValidateNote(n *gpb.Note) error {
 func ValidateOccurrence(o *gpb.Occurrence) error {
 	errs := []error{}
 
+	if l := len(o.GetResourceUri()); l > vlib.MaxResourceURILength {
+		errs = append(errs, fmt.Errorf("resource_uri %s exceeds the limit %d", o.GetResourceUri(), vlib.MaxResourceURILength))
+	}
+
 	if o.GetResourceUri() == "" {
 		errs = append(errs, errors.New("resource_uri is required"))
 	}
 
 	if o.GetNoteName() == "" {
 		errs = append(errs, errors.New("note_name is required"))
+	}
+
+	if l := len(o.GetRemediation()); l > vlib.MaxDescriptionLength {
+		errs = append(errs, fmt.Errorf("remediation %s exceeds the limit %d", o.GetRemediation(), vlib.MaxDescriptionLength))
 	}
 
 	if o.GetDetails() == nil {

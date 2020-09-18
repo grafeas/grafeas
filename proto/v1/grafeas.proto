@@ -196,6 +196,7 @@ message Occurrence {
   // Required. Immutable. A URI that represents the resource for which the
   // occurrence applies. For example,
   // `https://gcr.io/project/image@sha256:123abc` for a Docker image.
+  // constraint: length <= 2048
   string resource_uri = 2;
 
   // Required. Immutable. The analysis note associated with this occurrence, in
@@ -208,6 +209,7 @@ message Occurrence {
   grafeas.v1.NoteKind kind = 4;
 
   // A description of actions that can be taken to remedy the note.
+  // constraint: length <= 5000
   string remediation = 5;
 
   // Output only. The time this occurrence was created.
@@ -252,9 +254,11 @@ message Note {
   string name = 1;
 
   // A one sentence description of this note.
+  // constraint: length <= 1000
   string short_description = 2;
 
   // A detailed description of this note.
+  // constraint: length <= 1000
   string long_description = 3;
 
   // Output only. The type of analysis. This field can be used as a filter in
@@ -262,6 +266,9 @@ message Note {
   grafeas.v1.NoteKind kind = 4;
 
   // URLs associated with this note.
+  // constraint: size of related_url <= 5000
+  // constraint: len(related_url[i].url) <= 2048 for any i.
+  // constraint: len(related_url[i].label) <= 5000 for any i.
   repeated grafeas.v1.RelatedUrl related_url = 5;
 
   // Time of expiration for this note. Empty if note does not expire.
@@ -276,6 +283,8 @@ message Note {
   google.protobuf.Timestamp update_time = 8;
 
   // Other notes related to this note.
+  // constraint: size of related_note_names <= 5000
+  // constraint: len(related_note_names[i]) <= 2048 for any i.
   repeated string related_note_names = 9;
 
   // Required. Immutable. The type of analysis this note represents.
@@ -444,6 +453,12 @@ message CreateNoteRequest {
     (google.api.resource_reference).type = "grafeas.io/Project"
   ];
   // The ID to use for this note.
+  // constraint: length <= 128.
+  // constraint: note_id needs to be URL friendly.
+  // In more details, API style says that resource IDs should use URL-friendly
+	// resource IDs. See here: https://cloud.google.com/apis/design/resource_names#resource_id.
+	// The official spec allows ALPHA / DIGIT / "-" / "." / "_" / "~" as a subset
+	// See here: https://tools.ietf.org/html/rfc3986#appendix-A
   string note_id = 2 [(google.api.field_behavior) = REQUIRED];
   // The note to create.
   Note note = 3 [(google.api.field_behavior) = REQUIRED];
@@ -497,6 +512,8 @@ message BatchCreateNotesRequest {
   ];
 
   // The notes to create. Max allowed length is 1000.
+  // constraint: each key in notes should be a valid note id, same as 'note_id' in CreateNoteRequest.
+  // See 'note_id' in CreateNoteRequest for more details about the constraint.
   map<string, Note> notes = 2 [(google.api.field_behavior) = REQUIRED];
 }
 

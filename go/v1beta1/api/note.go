@@ -20,6 +20,7 @@ import (
 	emptypb "github.com/golang/protobuf/ptypes/empty"
 	"github.com/grafeas/grafeas/go/name"
 	"github.com/grafeas/grafeas/go/v1beta1/api/validators/grafeas"
+	vlib "github.com/grafeas/grafeas/go/validationlib"
 	gpb "github.com/grafeas/grafeas/proto/v1beta1/grafeas_go_proto"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc/codes"
@@ -41,6 +42,12 @@ func (g *API) CreateNote(ctx context.Context, req *gpb.CreateNoteRequest) (*gpb.
 
 	if req.NoteId == "" {
 		return nil, status.Errorf(codes.InvalidArgument, "a noteId must be specified")
+	}
+	if len(req.NoteId) > vlib.MaxNoteIDLength {
+		return nil, status.Errorf(codes.InvalidArgument, fmt.Sprintf("The length of note_id must be <= %d", vlib.MaxNoteIDLength))
+	}
+	if !vlib.IsURLFriendly(req.NoteId) {
+		return nil, status.Errorf(codes.InvalidArgument, "noteId must be URL friendly. See here: https://tools.ietf.org/html/rfc3986#appendix-A")
 	}
 	if req.Note == nil {
 		return nil, status.Errorf(codes.InvalidArgument, "a note must be specified")
@@ -85,9 +92,15 @@ func (g *API) BatchCreateNotes(ctx context.Context, req *gpb.BatchCreateNotesReq
 		return nil, status.Errorf(codes.InvalidArgument, "%d is too many notes to batch create, a maximum of %d notes is allowed per batch create", len(req.Notes), maxBatchSize)
 	}
 	validationErrs := []error{}
-	for i, n := range req.Notes {
+	for noteID, n := range req.Notes {
+		if len(noteID) > vlib.MaxNoteIDLength {
+			return nil, status.Errorf(codes.InvalidArgument, fmt.Sprintf("the length of note_id %s exceeds the limit %d", noteID, vlib.MaxNoteIDLength))
+		}
+		if !vlib.IsURLFriendly(noteID) {
+			return nil, status.Errorf(codes.InvalidArgument, fmt.Sprintf("noteId %s is not URL friendly. See here: https://tools.ietf.org/html/rfc3986#appendix-A", noteID))
+		}
 		if err := grafeas.ValidateNote(n); err != nil {
-			validationErrs = append(validationErrs, fmt.Errorf("notes[%q]: %v", i, err))
+			validationErrs = append(validationErrs, fmt.Errorf("notes[%q]: %v", noteID, err))
 		}
 	}
 	if len(validationErrs) > 0 {

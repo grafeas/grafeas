@@ -51,6 +51,7 @@ type Occurrence struct {
 	// specified. This field can be used as a filter in list requests.
 	Kind common_go_proto.NoteKind `protobuf:"varint,4,opt,name=kind,proto3,enum=grafeas.v1beta1.NoteKind" json:"kind,omitempty"`
 	// A description of actions that can be taken to remedy the note.
+	// constraint: length <= 5000
 	Remediation string `protobuf:"bytes,5,opt,name=remediation,proto3" json:"remediation,omitempty"`
 	// Output only. The time this occurrence was created.
 	CreateTime *timestamp.Timestamp `protobuf:"bytes,6,opt,name=create_time,json=createTime,proto3" json:"create_time,omitempty"`
@@ -350,13 +351,18 @@ type Note struct {
 	// `projects/[PROVIDER_ID]/notes/[NOTE_ID]`.
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	// A one sentence description of this note.
+	// constraint: length <= 1000
 	ShortDescription string `protobuf:"bytes,2,opt,name=short_description,json=shortDescription,proto3" json:"short_description,omitempty"`
 	// A detailed description of this note.
+	// constraint: length <= 5000
 	LongDescription string `protobuf:"bytes,3,opt,name=long_description,json=longDescription,proto3" json:"long_description,omitempty"`
 	// Output only. The type of analysis. This field can be used as a filter in
 	// list requests.
 	Kind common_go_proto.NoteKind `protobuf:"varint,4,opt,name=kind,proto3,enum=grafeas.v1beta1.NoteKind" json:"kind,omitempty"`
 	// URLs associated with this note.
+	// constraint: size of related_url <= 5000
+	// constraint: len(related_url[i].url) <= 2048 for any i.
+	// constraint: len(related_url[i].label) <= 5000 for any i.
 	RelatedUrl []*common_go_proto.RelatedUrl `protobuf:"bytes,5,rep,name=related_url,json=relatedUrl,proto3" json:"related_url,omitempty"`
 	// Time of expiration for this note. Empty if note does not expire.
 	ExpirationTime *timestamp.Timestamp `protobuf:"bytes,6,opt,name=expiration_time,json=expirationTime,proto3" json:"expiration_time,omitempty"`
@@ -367,6 +373,8 @@ type Note struct {
 	// a filter in list requests.
 	UpdateTime *timestamp.Timestamp `protobuf:"bytes,8,opt,name=update_time,json=updateTime,proto3" json:"update_time,omitempty"`
 	// Other notes related to this note.
+	// constraint: size of related_note_names <= 5000
+	// constraint: len(related_note_names[i]) <= 2048 for any i.
 	RelatedNoteNames []string `protobuf:"bytes,9,rep,name=related_note_names,json=relatedNoteNames,proto3" json:"related_note_names,omitempty"`
 	// Required. Immutable. The type of analysis this note represents.
 	//
@@ -1173,6 +1181,12 @@ type CreateNoteRequest struct {
 	// the note is to be created.
 	Parent string `protobuf:"bytes,1,opt,name=parent,proto3" json:"parent,omitempty"`
 	// The ID to use for this note.
+	// constraint: length <= 128.
+	// constraint: note_id needs to be URL friendly.
+	// In more details, API style says that resource IDs should use URL-friendly
+	// resource IDs. See here: https://cloud.google.com/apis/design/resource_names#resource_id.
+	// The official spec allows ALPHA / DIGIT / "-" / "." / "_" / "~" as a subset
+	// See here: https://tools.ietf.org/html/rfc3986#appendix-A
 	NoteId string `protobuf:"bytes,2,opt,name=note_id,json=noteId,proto3" json:"note_id,omitempty"`
 	// The note to create.
 	Note                 *Note    `protobuf:"bytes,3,opt,name=note,proto3" json:"note,omitempty"`
@@ -1412,6 +1426,8 @@ type BatchCreateNotesRequest struct {
 	// the notes are to be created.
 	Parent string `protobuf:"bytes,1,opt,name=parent,proto3" json:"parent,omitempty"`
 	// The notes to create. Max allowed length is 1000.
+	// constraint: each key in notes should be a valid note id, same as 'note_id' in CreateNoteRequest.
+	// See 'note_id' in CreateNoteRequest for more details about the constraint.
 	Notes                map[string]*Note `protobuf:"bytes,2,rep,name=notes,proto3" json:"notes,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 	XXX_NoUnkeyedLiteral struct{}         `json:"-"`
 	XXX_unrecognized     []byte           `json:"-"`
