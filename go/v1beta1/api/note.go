@@ -183,7 +183,7 @@ func (g *API) DeleteNote(ctx context.Context, req *gpb.DeleteNoteRequest) (*empt
 		g.Logger.Warningf(ctx, "Error deleting policies for note %q in project %q: %v", nID, pID, err)
 	}
 
-	return nil, nil
+	return &emptypb.Empty{}, nil
 }
 
 // ListNotes lists notes for the specified project.
