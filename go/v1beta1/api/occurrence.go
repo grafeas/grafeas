@@ -262,7 +262,7 @@ func (g *API) DeleteOccurrence(ctx context.Context, req *gpb.DeleteOccurrenceReq
 		g.Logger.Warningf(ctx, "Error deleting policies for occurrence %q in project %q: %v", oID, pID, err)
 	}
 
-	return nil, nil
+	return &emptypb.Empty{}, nil
 }
 
 // ListNoteOccurrences lists occurrences for the specified note.
