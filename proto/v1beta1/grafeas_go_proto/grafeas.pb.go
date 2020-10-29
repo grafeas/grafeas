@@ -1411,7 +1411,7 @@ type BatchCreateNotesRequest struct {
 	// The name of the project in the form of `projects/[PROJECT_ID]`, under which
 	// the notes are to be created.
 	Parent string `protobuf:"bytes,1,opt,name=parent,proto3" json:"parent,omitempty"`
-	// The notes to create. Max allowed length is 1000.
+	// The notes to create, the key is expected to be the note ID. Max allowed length is 1000.
 	Notes                map[string]*Note `protobuf:"bytes,2,rep,name=notes,proto3" json:"notes,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 	XXX_NoUnkeyedLiteral struct{}         `json:"-"`
 	XXX_unrecognized     []byte           `json:"-"`

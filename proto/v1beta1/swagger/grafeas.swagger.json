@@ -1698,7 +1698,7 @@
           "additionalProperties": {
             "$ref": "#/definitions/v1beta1Note"
           },
-          "description": "The notes to create. Max allowed length is 1000."
+          "description": "The notes to create, the key is expected to be the note ID. Max allowed length is 1000."
         }
       },
       "description": "Request to create notes in batch."

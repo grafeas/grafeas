@@ -77,6 +77,10 @@ func (s *fakeStorage) ListOccurrences(ctx context.Context, pID, filter, pageToke
 	if s.listOccsErr {
 		return nil, "", status.Errorf(codes.Internal, "failed to list occurrences for project %q", pID)
 	}
+	validatedPageSize, err := validatePageSize(pageSize)
+	if err != nil || pageSize != validatedPageSize {
+		return nil, "", status.Errorf(codes.Internal, "received non validated pageSize: %v", pageSize)
+	}
 
 	// Create project if it doesn't exist.
 	if _, ok := s.occurrences[pID]; !ok {
@@ -207,6 +211,10 @@ func (s *fakeStorage) GetNote(ctx context.Context, pID, nID string) (*gpb.Note, 
 func (s *fakeStorage) ListNotes(ctx context.Context, pID, filter, pageToken string, pageSize int32) ([]*gpb.Note, string, error) {
 	if s.listNotesErr {
 		return nil, "", status.Errorf(codes.Internal, "failed to list notes for project %q", pID)
+	}
+	validatedPageSize, err := validatePageSize(pageSize)
+	if err != nil || pageSize != validatedPageSize {
+		return nil, "", status.Errorf(codes.Internal, "received non validated pageSize: %v", pageSize)
 	}
 
 	// Create project if it doesn't exist.
@@ -359,6 +367,10 @@ func (s *fakeStorage) GetOccurrenceNote(ctx context.Context, pID, oID string) (*
 func (s *fakeStorage) ListNoteOccurrences(ctx context.Context, pID, nID, filter, pageToken string, pageSize int32) ([]*gpb.Occurrence, string, error) {
 	if s.listNoteOccsErr {
 		return nil, "", status.Errorf(codes.Internal, "failed to get occurrences for note %q", nID)
+	}
+	validatedPageSize, err := validatePageSize(pageSize)
+	if err != nil || pageSize != validatedPageSize {
+		return nil, "", status.Errorf(codes.Internal, "received non validated pageSize: %v", pageSize)
 	}
 
 	// Create project if it doesn't exist.
