@@ -92,23 +92,25 @@ func TestGetOccurrenceErrors(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		s := newFakeStorage()
-		s.getOccErr = tt.internalStorageErr
-		g := &API{
-			Storage:           s,
-			Auth:              &fakeAuth{authErr: tt.authErr},
-			EnforceValidation: true,
-		}
+		t.Run(tt.desc, func(t *testing.T) {
+			s := newFakeStorage()
+			s.getOccErr = tt.internalStorageErr
+			g := &API{
+				Storage:           s,
+				Auth:              &fakeAuth{authErr: tt.authErr},
+				EnforceValidation: true,
+			}
 
-		req := &gpb.GetOccurrenceRequest{
-			Name: tt.occName,
-		}
-		gotOcc := &gpb.Occurrence{}
-		err := g.GetOccurrence(ctx, req, gotOcc)
-		t.Logf("%q: error: %v", tt.desc, err)
-		if status.Code(err) != tt.wantErrStatus {
-			t.Errorf("%q: got error status %v, want %v", tt.desc, status.Code(err), tt.wantErrStatus)
-		}
+			req := &gpb.GetOccurrenceRequest{
+				Name: tt.occName,
+			}
+			gotOcc := &gpb.Occurrence{}
+			err := g.GetOccurrence(ctx, req, gotOcc)
+			t.Logf("%q: error: %v", tt.desc, err)
+			if status.Code(err) != tt.wantErrStatus {
+				t.Errorf("%q: got error status %v, want %v", tt.desc, status.Code(err), tt.wantErrStatus)
+			}
+		})
 	}
 }
 
@@ -181,24 +183,26 @@ func TestListOccurrencesErrors(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		s := newFakeStorage()
-		s.listOccsErr = tt.internalStorageErr
-		g := &API{
-			Storage:           s,
-			Auth:              &fakeAuth{authErr: tt.authErr},
-			EnforceValidation: true,
-		}
+		t.Run(tt.desc, func(t *testing.T) {
+			s := newFakeStorage()
+			s.listOccsErr = tt.internalStorageErr
+			g := &API{
+				Storage:           s,
+				Auth:              &fakeAuth{authErr: tt.authErr},
+				EnforceValidation: true,
+			}
 
-		req := &gpb.ListOccurrencesRequest{
-			Parent:   tt.parent,
-			PageSize: tt.pageSize,
-		}
-		resp := &gpb.ListOccurrencesResponse{}
-		err := g.ListOccurrences(ctx, req, resp)
-		t.Logf("%q: error: %v", tt.desc, err)
-		if status.Code(err) != tt.wantErrStatus {
-			t.Errorf("%q: got error status %v, want %v", tt.desc, status.Code(err), tt.wantErrStatus)
-		}
+			req := &gpb.ListOccurrencesRequest{
+				Parent:   tt.parent,
+				PageSize: tt.pageSize,
+			}
+			resp := &gpb.ListOccurrencesResponse{}
+			err := g.ListOccurrences(ctx, req, resp)
+			t.Logf("%q: error: %v", tt.desc, err)
+			if status.Code(err) != tt.wantErrStatus {
+				t.Errorf("%q: got error status %v, want %v", tt.desc, status.Code(err), tt.wantErrStatus)
+			}
+		})
 	}
 }
 
@@ -285,24 +289,26 @@ func TestCreateOccurrenceErrors(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		s := newFakeStorage()
-		s.createOccErr = tt.internalStorageErr
-		g := &API{
-			Storage:           s,
-			Auth:              &fakeAuth{authErr: tt.authErr, endUserIDErr: tt.endUserIDErr},
-			EnforceValidation: true,
-		}
+		t.Run(tt.desc, func(t *testing.T) {
+			s := newFakeStorage()
+			s.createOccErr = tt.internalStorageErr
+			g := &API{
+				Storage:           s,
+				Auth:              &fakeAuth{authErr: tt.authErr, endUserIDErr: tt.endUserIDErr},
+				EnforceValidation: true,
+			}
 
-		req := &gpb.CreateOccurrenceRequest{
-			Parent:     tt.parent,
-			Occurrence: tt.occ,
-		}
-		o := &gpb.Occurrence{}
-		err := g.CreateOccurrence(ctx, req, o)
-		t.Logf("%q: error: %v", tt.desc, err)
-		if status.Code(err) != tt.wantErrStatus {
-			t.Errorf("%q: got error status %v, want %v", tt.desc, status.Code(err), tt.wantErrStatus)
-		}
+			req := &gpb.CreateOccurrenceRequest{
+				Parent:     tt.parent,
+				Occurrence: tt.occ,
+			}
+			o := &gpb.Occurrence{}
+			err := g.CreateOccurrence(ctx, req, o)
+			t.Logf("%q: error: %v", tt.desc, err)
+			if status.Code(err) != tt.wantErrStatus {
+				t.Errorf("%q: got error status %v, want %v", tt.desc, status.Code(err), tt.wantErrStatus)
+			}
+		})
 	}
 }
 
@@ -436,24 +442,26 @@ func TestBatchCreateOccurrencesErrors(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		s := newFakeStorage()
-		s.batchCreateOccsErr = tt.internalStorageErr
-		g := &API{
-			Storage:           s,
-			Auth:              &fakeAuth{authErr: tt.authErr, endUserIDErr: tt.endUserIDErr},
-			EnforceValidation: true,
-		}
+		t.Run(tt.desc, func(t *testing.T) {
+			s := newFakeStorage()
+			s.batchCreateOccsErr = tt.internalStorageErr
+			g := &API{
+				Storage:           s,
+				Auth:              &fakeAuth{authErr: tt.authErr, endUserIDErr: tt.endUserIDErr},
+				EnforceValidation: true,
+			}
 
-		req := &gpb.BatchCreateOccurrencesRequest{
-			Parent:      tt.parent,
-			Occurrences: tt.occs,
-		}
-		resp := &gpb.BatchCreateOccurrencesResponse{}
-		err := g.BatchCreateOccurrences(ctx, req, resp)
-		t.Logf("%q: error: %v", tt.desc, err)
-		if status.Code(err) != tt.wantErrStatus {
-			t.Errorf("%q: got error status %v, want %v", tt.desc, status.Code(err), tt.wantErrStatus)
-		}
+			req := &gpb.BatchCreateOccurrencesRequest{
+				Parent:      tt.parent,
+				Occurrences: tt.occs,
+			}
+			resp := &gpb.BatchCreateOccurrencesResponse{}
+			err := g.BatchCreateOccurrences(ctx, req, resp)
+			t.Logf("%q: error: %v", tt.desc, err)
+			if status.Code(err) != tt.wantErrStatus {
+				t.Errorf("%q: got error status %v, want %v", tt.desc, status.Code(err), tt.wantErrStatus)
+			}
+		})
 	}
 }
 
@@ -542,24 +550,26 @@ func TestUpdateOccurrenceErrors(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		s := newFakeStorage()
-		s.updateOccErr = tt.internalStorageErr
-		g := &API{
-			Storage:           s,
-			Auth:              &fakeAuth{authErr: tt.authErr},
-			EnforceValidation: true,
-		}
+		t.Run(tt.desc, func(t *testing.T) {
+			s := newFakeStorage()
+			s.updateOccErr = tt.internalStorageErr
+			g := &API{
+				Storage:           s,
+				Auth:              &fakeAuth{authErr: tt.authErr},
+				EnforceValidation: true,
+			}
 
-		req := &gpb.UpdateOccurrenceRequest{
-			Name:       tt.occName,
-			Occurrence: tt.occ,
-		}
-		o := &gpb.Occurrence{}
-		err := g.UpdateOccurrence(ctx, req, o)
-		t.Logf("%q: error: %v", tt.desc, err)
-		if status.Code(err) != tt.wantErrStatus {
-			t.Errorf("%q: got error status %v, want %v", tt.desc, status.Code(err), tt.wantErrStatus)
-		}
+			req := &gpb.UpdateOccurrenceRequest{
+				Name:       tt.occName,
+				Occurrence: tt.occ,
+			}
+			o := &gpb.Occurrence{}
+			err := g.UpdateOccurrence(ctx, req, o)
+			t.Logf("%q: error: %v", tt.desc, err)
+			if status.Code(err) != tt.wantErrStatus {
+				t.Errorf("%q: got error status %v, want %v", tt.desc, status.Code(err), tt.wantErrStatus)
+			}
+		})
 	}
 }
 
@@ -574,26 +584,28 @@ func TestDeleteOccurrence(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		s := newFakeStorage()
-		g := &API{
-			Storage:           s,
-			Auth:              &fakeAuth{},
-			EnforceValidation: true,
-		}
+		t.Run(tt.noteName, func(t *testing.T) {
+			s := newFakeStorage()
+			g := &API{
+				Storage:           s,
+				Auth:              &fakeAuth{},
+				EnforceValidation: true,
+			}
 
-		// Create the occurrence to delete.
-		o := vulnzOcc(t, "consumer1", tt.noteName, "debian")
-		createdOcc, err := s.CreateOccurrence(ctx, "consumer1", "", o)
-		if err != nil {
-			t.Fatalf("Failed to create occurrence %+v", o)
-		}
+			// Create the occurrence to delete.
+			o := vulnzOcc(t, "consumer1", tt.noteName, "debian")
+			createdOcc, err := s.CreateOccurrence(ctx, "consumer1", "", o)
+			if err != nil {
+				t.Fatalf("Failed to create occurrence %+v", o)
+			}
 
-		req := &gpb.DeleteOccurrenceRequest{
-			Name: createdOcc.Name,
-		}
-		if err := g.DeleteOccurrence(ctx, req, nil); err != nil {
-			t.Errorf("Got err %v, want success", err)
-		}
+			req := &gpb.DeleteOccurrenceRequest{
+				Name: createdOcc.Name,
+			}
+			if err := g.DeleteOccurrence(ctx, req, nil); err != nil {
+				t.Errorf("Got err %v, want success", err)
+			}
+		})
 	}
 }
 
@@ -644,36 +656,38 @@ func TestDeleteOccurrenceErrors(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		s := newFakeStorage()
-		s.deleteOccErr = tt.internalStorageErr
-		g := &API{
-			Storage:           s,
-			Auth:              &fakeAuth{authErr: tt.authErr, purgeErr: tt.purgeErr},
-			EnforceValidation: true,
-		}
-
-		var createdOcc *gpb.Occurrence
-		if tt.existingOcc != nil {
-			var err error
-			createdOcc, err = s.CreateOccurrence(ctx, "consumer1", "", tt.existingOcc)
-			if err != nil {
-				t.Fatalf("Failed to create occurrence %+v: %v", tt.existingOcc, err)
+		t.Run(tt.desc, func(t *testing.T) {
+			s := newFakeStorage()
+			s.deleteOccErr = tt.internalStorageErr
+			g := &API{
+				Storage:           s,
+				Auth:              &fakeAuth{authErr: tt.authErr, purgeErr: tt.purgeErr},
+				EnforceValidation: true,
 			}
-		}
 
-		occToDelete := createdOcc.GetName()
-		if tt.occToDeleteOverride != "" {
-			occToDelete = tt.occToDeleteOverride
-		}
+			var createdOcc *gpb.Occurrence
+			if tt.existingOcc != nil {
+				var err error
+				createdOcc, err = s.CreateOccurrence(ctx, "consumer1", "", tt.existingOcc)
+				if err != nil {
+					t.Fatalf("Failed to create occurrence %+v: %v", tt.existingOcc, err)
+				}
+			}
 
-		req := &gpb.DeleteOccurrenceRequest{
-			Name: occToDelete,
-		}
-		err := g.DeleteOccurrence(ctx, req, nil)
-		t.Logf("%q: error: %v", tt.desc, err)
-		if status.Code(err) != tt.wantErrStatus {
-			t.Errorf("%q: got error status %v, want %v", tt.desc, status.Code(err), tt.wantErrStatus)
-		}
+			occToDelete := createdOcc.GetName()
+			if tt.occToDeleteOverride != "" {
+				occToDelete = tt.occToDeleteOverride
+			}
+
+			req := &gpb.DeleteOccurrenceRequest{
+				Name: occToDelete,
+			}
+			err := g.DeleteOccurrence(ctx, req, nil)
+			t.Logf("%q: error: %v", tt.desc, err)
+			if status.Code(err) != tt.wantErrStatus {
+				t.Errorf("%q: got error status %v, want %v", tt.desc, status.Code(err), tt.wantErrStatus)
+			}
+		})
 	}
 }
 
@@ -752,24 +766,26 @@ func TestListNoteOccurrencesErrors(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		s := newFakeStorage()
-		s.listNoteOccsErr = tt.internalStorageErr
-		g := &API{
-			Storage:           s,
-			Auth:              &fakeAuth{authErr: tt.authErr},
-			EnforceValidation: true,
-		}
+		t.Run(tt.desc, func(t *testing.T) {
+			s := newFakeStorage()
+			s.listNoteOccsErr = tt.internalStorageErr
+			g := &API{
+				Storage:           s,
+				Auth:              &fakeAuth{authErr: tt.authErr},
+				EnforceValidation: true,
+			}
 
-		req := &gpb.ListNoteOccurrencesRequest{
-			Name:     tt.noteName,
-			PageSize: tt.pageSize,
-		}
-		resp := &gpb.ListNoteOccurrencesResponse{}
-		err := g.ListNoteOccurrences(ctx, req, resp)
-		t.Logf("%q: error: %v", tt.desc, err)
-		if status.Code(err) != tt.wantErrStatus {
-			t.Errorf("%q: got error status %v, want %v", tt.desc, status.Code(err), tt.wantErrStatus)
-		}
+			req := &gpb.ListNoteOccurrencesRequest{
+				Name:     tt.noteName,
+				PageSize: tt.pageSize,
+			}
+			resp := &gpb.ListNoteOccurrencesResponse{}
+			err := g.ListNoteOccurrences(ctx, req, resp)
+			t.Logf("%q: error: %v", tt.desc, err)
+			if status.Code(err) != tt.wantErrStatus {
+				t.Errorf("%q: got error status %v, want %v", tt.desc, status.Code(err), tt.wantErrStatus)
+			}
+		})
 	}
 }
 
