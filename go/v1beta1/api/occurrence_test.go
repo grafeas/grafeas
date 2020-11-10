@@ -527,7 +527,8 @@ func TestUpdateOccurrenceErrors(t *testing.T) {
 
 	tests := []struct {
 		desc                        string
-		occName                     string
+		occName                     string // Ignored if existingOcc is supplied
+		existingOcc                 *gpb.Occurrence
 		occ                         *gpb.Occurrence
 		internalStorageErr, authErr bool
 		wantErrStatus               codes.Code
@@ -541,17 +542,29 @@ func TestUpdateOccurrenceErrors(t *testing.T) {
 		{
 			desc:          "nil occurrence",
 			occName:       "projects/consumer1/occurrences/1234-abcd-3456-wxyz",
+			existingOcc:   vulnzOcc(t, "consumer1", "projects/goog-vulnz/notes/CVE-UH-OH", "debian"),
 			occ:           nil,
 			wantErrStatus: codes.InvalidArgument,
 		},
 		{
 			desc:          "invalid note name",
 			occName:       "projects/consumer1/occurrences/1234-abcd-3456-wxyz",
+			existingOcc:   vulnzOcc(t, "consumer1", "projects/goog-vulnz/notes/CVE-UH-OH", "debian"),
 			occ:           vulnzOcc(t, "consumer1", "projects/foobar", "debian"),
 			wantErrStatus: codes.InvalidArgument,
 		},
 		{
 			desc:          "auth error",
+			existingOcc:   vulnzOcc(t, "consumer1", "projects/goog-vulnz/notes/CVE-UH-OH", "debian"),
+			occ:           vulnzOcc(t, "consumer1", "projects/goog-vulnz/notes/CVE-UH-OH", "debian"),
+			authErr:       true,
+			wantErrStatus: codes.PermissionDenied,
+		},
+		{
+			// This test ensures that users lacking the update permission get PermissionDenied
+			// rather than a NotFound error on a missing occurrence (ensuring that we do not
+			// leak the existence of an occurrence to unauthorized users).
+			desc:          "auth error with no existing occurrence",
 			occName:       "projects/consumer1/occurrences/1234-abcd-3456-wxyz",
 			occ:           vulnzOcc(t, "consumer1", "projects/goog-vulnz/notes/CVE-UH-OH", "debian"),
 			authErr:       true,
@@ -560,6 +573,7 @@ func TestUpdateOccurrenceErrors(t *testing.T) {
 		{
 			desc:               "internal storage error",
 			occName:            "projects/consumer1/occurrences/1234-abcd-3456-wxyz",
+			existingOcc:        vulnzOcc(t, "consumer1", "projects/goog-vulnz/notes/CVE-UH-OH", "debian"),
 			occ:                vulnzOcc(t, "consumer1", "projects/goog-vulnz/notes/CVE-UH-OH", "debian"),
 			internalStorageErr: true,
 			wantErrStatus:      codes.Internal,
@@ -584,8 +598,18 @@ func TestUpdateOccurrenceErrors(t *testing.T) {
 				EnforceValidation: true,
 			}
 
+			occName := tt.occName
+			if tt.existingOcc != nil {
+				// Create the occurrence to update.
+				createdOcc, err := s.CreateOccurrence(ctx, "consumer1", "", tt.existingOcc)
+				if err != nil {
+					t.Fatalf("Failed to create occurrence %+v", tt.existingOcc)
+				}
+				occName = createdOcc.Name
+			}
+
 			req := &gpb.UpdateOccurrenceRequest{
-				Name:       tt.occName,
+				Name:       occName,
 				Occurrence: tt.occ,
 			}
 			_, err := g.UpdateOccurrence(ctx, req)
