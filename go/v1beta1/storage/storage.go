@@ -23,9 +23,10 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/golang/protobuf/proto"
 	"github.com/google/go-cmp/cmp"
 	"github.com/grafeas/grafeas/go/name"
-	"github.com/grafeas/grafeas/go/v1beta1/api"
+	grafeas "github.com/grafeas/grafeas/go/v1beta1/api"
 	"github.com/grafeas/grafeas/go/v1beta1/project"
 	cpb "github.com/grafeas/grafeas/proto/v1beta1/common_go_proto"
 	pb "github.com/grafeas/grafeas/proto/v1beta1/grafeas_go_proto"
@@ -35,6 +36,7 @@ import (
 	"golang.org/x/net/context"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/testing/protocmp"
 )
 
 const (
@@ -42,23 +44,11 @@ const (
 )
 
 var (
-	opt = cmp.FilterPath(
-		func(p cmp.Path) bool {
-			ignoreCreate := p.String() == "CreateTime"
-			ignoreUpdate := p.String() == "UpdateTime"
-			// Remove ignoring of the fields below once go-cmp is able to ignore generated fields.
-			// See https://github.com/google/go-cmp/issues/153
-			ignoreXXXCache :=
-				p.String() == "XXX_sizecache" ||
-					p.String() == "Resource.XXX_sizecache" ||
-					p.String() == "Details.Vulnerability.XXX_sizecache" ||
-					p.String() == "Details.Vulnerability.PackageIssue.XXX_sizecache" ||
-					p.String() == "Details.Vulnerability.PackageIssue.AffectedLocation.XXX_sizecache" ||
-					p.String() == "Details.Vulnerability.PackageIssue.AffectedLocation.Version.XXX_sizecache" ||
-					p.String() == "Details.Vulnerability.PackageIssue.FixedLocation.XXX_sizecache" ||
-					p.String() == "Details.Vulnerability.PackageIssue.FixedLocation.Version.XXX_sizecache"
-			return ignoreCreate || ignoreUpdate || ignoreXXXCache
-		}, cmp.Ignore())
+	opt = cmp.Options{
+		protocmp.Transform(),
+		protocmp.IgnoreFields(proto.MessageV2(&pb.Note{}), "create_time", "update_time"),
+		protocmp.IgnoreFields(proto.MessageV2(&pb.Occurrence{}), "create_time", "update_time"),
+	}
 )
 
 // Tests implementations of grafeas.Storage and project.Storage
