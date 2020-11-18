@@ -51,7 +51,7 @@ make test
 ```
 
 :warning: These tests will not run correctly unless you have [checked out your fork into your `$GOPATH`](#checkout-your-fork).
-:warning: Some tests currently fail, see [GH issue #237](https://github.com/grafeas/grafeas/issues/237) for more details.
+:warning: Ensure that [`$GOPATH/bin` is on your system `$PATH`](https://github.com/golang/protobuf/issues/795#issuecomment-564523540)
 
 ## Creating a PR
 
