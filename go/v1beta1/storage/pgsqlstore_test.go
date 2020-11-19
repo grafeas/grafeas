@@ -15,7 +15,9 @@
 package storage_test
 
 import (
+	"archive/tar"
 	"archive/zip"
+	"compress/gzip"
 	"crypto/tls"
 	"database/sql"
 	"fmt"
@@ -93,12 +95,20 @@ func downloadFile(filepath string, url string) error {
 	return err
 }
 
-func unzip(src string, dest string) ([]string, error) {
-	var filenames []string
+func unarchive(src string, dest string) error {
+	if strings.HasSuffix(src, ".zip") {
+		return unZip(src, dest)
+	} else if strings.HasSuffix(src, ".tar.gz") {
+		return unTar(src, dest)
+	}
 
+	return fmt.Errorf("Unable to unarchive %s; unsupported format", src)
+}
+
+func unZip(src string, dest string) error {
 	r, err := zip.OpenReader(src)
 	if err != nil {
-		return filenames, err
+		return err
 	}
 	defer r.Close()
 
@@ -109,10 +119,8 @@ func unzip(src string, dest string) ([]string, error) {
 
 		// Check for ZipSlip. More Info: http://bit.ly/2MsjAWE
 		if !strings.HasPrefix(fpath, filepath.Clean(dest)+string(os.PathSeparator)) {
-			return filenames, fmt.Errorf("%s: illegal file path", fpath)
+			return fmt.Errorf("%s: illegal file path", fpath)
 		}
-
-		filenames = append(filenames, fpath)
 
 		if f.FileInfo().IsDir() {
 			// Make Folder
@@ -122,17 +130,17 @@ func unzip(src string, dest string) ([]string, error) {
 
 		// Make File
 		if err = os.MkdirAll(filepath.Dir(fpath), os.ModePerm); err != nil {
-			return filenames, err
+			return err
 		}
 
 		outFile, err := os.OpenFile(fpath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, f.Mode())
 		if err != nil {
-			return filenames, err
+			return err
 		}
 
 		rc, err := f.Open()
 		if err != nil {
-			return filenames, err
+			return err
 		}
 
 		_, err = io.Copy(outFile, rc)
@@ -142,10 +150,74 @@ func unzip(src string, dest string) ([]string, error) {
 		rc.Close()
 
 		if err != nil {
-			return filenames, err
+			return err
 		}
 	}
-	return filenames, nil
+	return nil
+}
+
+func unTar(src string, dest string) error {
+	tarFile, err := os.Open(src)
+	defer tarFile.Close()
+	if err != nil {
+		return err
+	}
+
+	tarReader := tar.NewReader(tarFile)
+	if strings.HasSuffix(src, ".gz") {
+		gz, err := gzip.NewReader(tarFile)
+		if err != nil {
+			return err
+		}
+		defer gz.Close()
+		tarReader = tar.NewReader(gz)
+	}
+
+	dest, err = filepath.Abs(dest)
+	if err != nil {
+		return err
+	}
+
+	for {
+		hdr, err := tarReader.Next()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return err
+		}
+		finfo := hdr.FileInfo()
+		fileName := hdr.Name
+		absFileName := filepath.Join(dest, fileName)
+
+		// if it's a dir, create it, then go to next segment
+		if finfo.Mode().IsDir() {
+			if err := os.MkdirAll(absFileName, 0755); err != nil {
+				return err
+			}
+			continue
+		}
+		// create new files with original file mode
+		file, err := os.OpenFile(
+			absFileName,
+			os.O_RDWR|os.O_CREATE|os.O_TRUNC,
+			finfo.Mode().Perm(),
+		)
+		if err != nil {
+			return err
+		}
+		n, copyErr := io.Copy(file, tarReader)
+		if closeErr := file.Close(); closeErr != nil {
+			return err
+		}
+		if copyErr != nil {
+			return copyErr
+		}
+		if n != finfo.Size() {
+			return fmt.Errorf("wrote %d, want %d", n, finfo.Size())
+		}
+	}
+	return nil
 }
 
 func startupPostgres(pgData *testPgHelper) error {
@@ -267,36 +339,41 @@ func setup() (pgData *testPgHelper, err error) {
 		}
 	}
 
+	os.Setenv("GOOS", "linux")
 	if pgData.pgBinPath == "" {
 		os.MkdirAll(basepath, 0755)
 
 		fileNameBase := "postgresql-10.15.1"
-		postgresZipFileName := filepath.Join(basepath, fmt.Sprintf("%s.zip", fileNameBase))
+		fileNameExt := "zip"
+		if os.Getenv("GOOS") == "linux" {
+			fileNameExt = "tar.gz"
+		}
+		postgresBinaryArchiveFileName := filepath.Join(basepath, fmt.Sprintf("%s.%s", fileNameBase, fileNameExt))
 
-		postgresZipFound := false
-		if _, err := os.Stat(postgresZipFileName); !os.IsNotExist(err) {
-			postgresZipFound = true
+		postgresBinaryArchiveFound := false
+		if _, err := os.Stat(postgresBinaryArchiveFileName); !os.IsNotExist(err) {
+			postgresBinaryArchiveFound = true
 		}
 
-		if !postgresZipFound {
+		if !postgresBinaryArchiveFound {
 			//URLs from https://www.enterprisedb.com/download-postgresql-binaries
 			postgresUrl := ""
-			switch runtime.GOOS {
+			switch os.Getenv("GOOS") {
 			case "darwin":
-				postgresUrl = "https://sbp.enterprisedb.com/getfile.jsp?fileid=1257418&_ga=2.59164973.1284458936.1605634932-924989421.1605634932"
+				postgresUrl = "https://get.enterprisedb.com/postgresql/postgresql-10.15-1-osx-binaries.zip"
 			case "linux":
 				switch runtime.GOARCH {
 				case "386":
-					postgresUrl = "https://sbp.enterprisedb.com/getfile.jsp?fileid=1257416&_ga=2.255110536.1284458936.1605634932-924989421.1605634932"
+					postgresUrl = "https://get.enterprisedb.com/postgresql/postgresql-10.15-1-linux-binaries.tar.gz"
 				case "amd64":
-					postgresUrl = "https://sbp.enterprisedb.com/getfile.jsp?fileid=1257417&_ga=2.59164973.1284458936.1605634932-924989421.1605634932"
+					postgresUrl = "https://get.enterprisedb.com/postgresql/postgresql-10.15-1-linux-x64-binaries.tar.gz"
 				}
 			case "windows":
 				switch runtime.GOARCH {
 				case "386":
-					postgresUrl = "https://sbp.enterprisedb.com/getfile.jsp?fileid=1257419&_ga=2.255110536.1284458936.1605634932-924989421.1605634932"
+					postgresUrl = "https://get.enterprisedb.com/postgresql/postgresql-10.15-1-windows-binaries.zip"
 				case "amd64":
-					postgresUrl = "https://sbp.enterprisedb.com/getfile.jsp?fileid=1257420&_ga=2.255110536.1284458936.1605634932-924989421.1605634932"
+					postgresUrl = "https://get.enterprisedb.com/postgresql/postgresql-10.15-1-windows-x64-binaries.zip"
 				}
 			}
 
@@ -305,40 +382,40 @@ func setup() (pgData *testPgHelper, err error) {
 			}
 
 			//Download postgres
-			postgresTempZipFile, err := ioutil.TempFile("", fmt.Sprintf("%s-*.zip", fileNameBase))
+			postgresTempBinaryArchive, err := ioutil.TempFile("", fmt.Sprintf("%s-*.%s", fileNameBase, fileNameExt))
 			if err != nil {
 				return pgData, err
 			}
 
 			fmt.Fprintln(os.Stderr, "testing: downloading", postgresUrl)
-			if err := downloadFile(postgresTempZipFile.Name(), postgresUrl); err != nil {
+			if err := downloadFile(postgresTempBinaryArchive.Name(), postgresUrl); err != nil {
 				return pgData, err
 			}
 
 			//Move fully downloaded tempfile to relative location to prevent repeated downloads
-			if err := os.Rename(postgresTempZipFile.Name(), postgresZipFileName); err != nil {
+			if err := os.Rename(postgresTempBinaryArchive.Name(), postgresBinaryArchiveFileName); err != nil {
 				return pgData, err
 			}
 		}
 
-		//Extract the zip file
-		fmt.Fprintln(os.Stderr, "testing: unzipping", postgresZipFileName)
-		unzipPath, err := ioutil.TempDir("", fmt.Sprintf("%s-*", fileNameBase))
+		//Extract the archive file
+		fmt.Fprintln(os.Stderr, "testing: unarchiving", postgresBinaryArchiveFileName)
+		unarchivePath, err := ioutil.TempDir("", fmt.Sprintf("%s-*", fileNameBase))
 		if err != nil {
 			return pgData, err
 		}
 
-		if _, err := unzip(postgresZipFileName, unzipPath); err != nil {
+		if err := unarchive(postgresBinaryArchiveFileName, unarchivePath); err != nil {
 			return pgData, err
 		}
 
-		//Move fully extracted zip folder to relative location to prevent repeated unzipping
-		if err := os.Rename(filepath.Join(unzipPath, "pgsql"), testPgPath); err != nil {
+		//Move fully extracted archive folder to relative location to prevent repeated unarchiving
+		if err := os.Rename(filepath.Join(unarchivePath, "pgsql"), testPgPath); err != nil {
 			return pgData, err
 		}
 
-		//Remove the zip file
-		if err := os.Remove(postgresZipFileName); err != nil {
+		//Remove the archive file
+		if err := os.Remove(postgresBinaryArchiveFileName); err != nil {
 			return pgData, err
 		}
 
