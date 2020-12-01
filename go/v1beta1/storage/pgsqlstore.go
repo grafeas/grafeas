@@ -106,7 +106,7 @@ func createDatabase(source, dbName string) error {
 
 // CreateProject adds the specified project to the store
 func (pg *PgSQLStore) CreateProject(ctx context.Context, pID string, p *prpb.Project) (*prpb.Project, error) {
-	_, err := pg.DB.Exec(insertProject, name.FormatProject(pID))
+	_, err := pg.DB.ExecContext(ctx, insertProject, name.FormatProject(pID))
 	if err, ok := err.(*pq.Error); ok {
 		// Check for unique_violation
 		if err.Code == "23505" {
@@ -122,7 +122,7 @@ func (pg *PgSQLStore) CreateProject(ctx context.Context, pID string, p *prpb.Pro
 // DeleteProject deletes the project with the given pID from the store
 func (pg *PgSQLStore) DeleteProject(ctx context.Context, pID string) error {
 	pName := name.FormatProject(pID)
-	result, err := pg.DB.Exec(deleteProject, pName)
+	result, err := pg.DB.ExecContext(ctx, deleteProject, pName)
 	if err != nil {
 		return status.Error(codes.Internal, "Failed to delete Project from database")
 	}
@@ -140,7 +140,7 @@ func (pg *PgSQLStore) DeleteProject(ctx context.Context, pID string) error {
 func (pg *PgSQLStore) GetProject(ctx context.Context, pID string) (*prpb.Project, error) {
 	pName := name.FormatProject(pID)
 	var exists bool
-	err := pg.DB.QueryRow(projectExists, pName).Scan(&exists)
+	err := pg.DB.QueryRowContext(ctx, projectExists, pName).Scan(&exists)
 	if err != nil {
 		return nil, status.Error(codes.Internal, "Failed to query Project from database")
 	}
@@ -153,15 +153,14 @@ func (pg *PgSQLStore) GetProject(ctx context.Context, pID string) (*prpb.Project
 // ListProjects returns up to pageSize number of projects beginning at pageToken (or from
 // start if pageToken is the empty string).
 func (pg *PgSQLStore) ListProjects(ctx context.Context, filter string, pageSize int, pageToken string) ([]*prpb.Project, string, error) {
-	var rows *sql.Rows
-	id := decryptInt64(pageToken, pg.paginationKey, 0)
-	rows, err := pg.DB.Query(listProjects, id, pageSize)
-	if err != nil {
-		return nil, "", status.Error(codes.Internal, "Failed to list Projects from database")
-	}
-	count, err := pg.count(projectCount)
+	count, err := pg.count(ctx, projectCount)
 	if err != nil {
 		return nil, "", status.Error(codes.Internal, "Failed to count Projects from database")
+	}
+	id := decryptInt64(pageToken, pg.paginationKey, 0)
+	rows, err := pg.DB.QueryContext(ctx, listProjects, id, pageSize)
+	if err != nil {
+		return nil, "", status.Error(codes.Internal, "Failed to list Projects from database")
 	}
 	var projects []*prpb.Project
 	var lastID int64
@@ -201,7 +200,7 @@ func (pg *PgSQLStore) CreateOccurrence(ctx context.Context, pID, uID string, o *
 		log.Printf("Invalid note name: %v", o.NoteName)
 		return nil, status.Error(codes.InvalidArgument, "Invalid note name")
 	}
-	_, err = pg.DB.Exec(insertOccurrence, pID, id, nPID, nID, proto.MarshalTextString(o))
+	_, err = pg.DB.ExecContext(ctx, insertOccurrence, pID, id, nPID, nID, proto.MarshalTextString(o))
 	if err, ok := err.(*pq.Error); ok {
 		// Check for unique_violation
 		if err.Code == "23505" {
@@ -239,7 +238,7 @@ func (pg *PgSQLStore) BatchCreateOccurrences(ctx context.Context, pID string, uI
 
 // DeleteOccurrence deletes the occurrence with the given pID and oID
 func (pg *PgSQLStore) DeleteOccurrence(ctx context.Context, pID, oID string) error {
-	result, err := pg.DB.Exec(deleteOccurrence, pID, oID)
+	result, err := pg.DB.ExecContext(ctx, deleteOccurrence, pID, oID)
 	if err != nil {
 		return status.Error(codes.Internal, "Failed to delete Occurrence from database")
 	}
@@ -259,7 +258,7 @@ func (pg *PgSQLStore) UpdateOccurrence(ctx context.Context, pID, oID string, o *
 	// TODO(#312): implement the update operation
 	o.UpdateTime = ptypes.TimestampNow()
 
-	result, err := pg.DB.Exec(updateOccurrence, proto.MarshalTextString(o), pID, oID)
+	result, err := pg.DB.ExecContext(ctx, updateOccurrence, proto.MarshalTextString(o), pID, oID)
 	if err != nil {
 		return nil, status.Error(codes.Internal, "Failed to update Occurrence")
 	}
@@ -276,7 +275,7 @@ func (pg *PgSQLStore) UpdateOccurrence(ctx context.Context, pID, oID string, o *
 // GetOccurrence returns the occurrence with pID and oID
 func (pg *PgSQLStore) GetOccurrence(ctx context.Context, pID, oID string) (*pb.Occurrence, error) {
 	var data string
-	err := pg.DB.QueryRow(searchOccurrence, pID, oID).Scan(&data)
+	err := pg.DB.QueryRowContext(ctx, searchOccurrence, pID, oID).Scan(&data)
 	switch {
 	case err == sql.ErrNoRows:
 		return nil, status.Errorf(codes.NotFound, "Occurrence with name %q/%q does not Exist", pID, oID)
@@ -296,16 +295,16 @@ func (pg *PgSQLStore) GetOccurrence(ctx context.Context, pID, oID string) (*pb.O
 // ListOccurrences returns up to pageSize number of occurrences for this project beginning
 // at pageToken, or from start if pageToken is the empty string.
 func (pg *PgSQLStore) ListOccurrences(ctx context.Context, pID, filter, pageToken string, pageSize int32) ([]*pb.Occurrence, string, error) {
-	var rows *sql.Rows
-	id := decryptInt64(pageToken, pg.paginationKey, 0)
-	rows, err := pg.DB.Query(listOccurrences, pID, id, pageSize)
-	if err != nil {
-		return nil, "", status.Error(codes.Internal, "Failed to list Occurrences from database")
-	}
-	count, err := pg.count(occurrenceCount, pID)
+	count, err := pg.count(ctx, occurrenceCount, pID)
 	if err != nil {
 		return nil, "", status.Error(codes.Internal, "Failed to count Occurrences from database")
 	}
+	id := decryptInt64(pageToken, pg.paginationKey, 0)
+	rows, err := pg.DB.QueryContext(ctx, listOccurrences, pID, id, pageSize)
+	if err != nil {
+		return nil, "", status.Error(codes.Internal, "Failed to list Occurrences from database")
+	}
+
 	var os []*pb.Occurrence
 	var lastID int64
 	for rows.Next() {
@@ -338,7 +337,7 @@ func (pg *PgSQLStore) CreateNote(ctx context.Context, pID, nID, uID string, n *p
 	n.Name = nName
 	n.CreateTime = ptypes.TimestampNow()
 
-	_, err := pg.DB.Exec(insertNote, pID, nID, proto.MarshalTextString(n))
+	_, err := pg.DB.ExecContext(ctx, insertNote, pID, nID, proto.MarshalTextString(n))
 	if err, ok := err.(*pq.Error); ok {
 		// Check for unique_violation
 		if err.Code == "23505" {
@@ -377,7 +376,7 @@ func (pg *PgSQLStore) BatchCreateNotes(ctx context.Context, pID, uID string, not
 
 // DeleteNote deletes the note with the given pID and nID
 func (pg *PgSQLStore) DeleteNote(ctx context.Context, pID, nID string) error {
-	result, err := pg.DB.Exec(deleteNote, pID, nID)
+	result, err := pg.DB.ExecContext(ctx, deleteNote, pID, nID)
 	if err != nil {
 		return status.Error(codes.Internal, "Failed to delete Note from database")
 	}
@@ -399,7 +398,7 @@ func (pg *PgSQLStore) UpdateNote(ctx context.Context, pID, nID string, n *pb.Not
 	// TODO(#312): implement the update operation
 	n.UpdateTime = ptypes.TimestampNow()
 
-	result, err := pg.DB.Exec(updateNote, proto.MarshalTextString(n), pID, nID)
+	result, err := pg.DB.ExecContext(ctx, updateNote, proto.MarshalTextString(n), pID, nID)
 	if err != nil {
 		return nil, status.Error(codes.Internal, "Failed to update Note")
 	}
@@ -416,7 +415,7 @@ func (pg *PgSQLStore) UpdateNote(ctx context.Context, pID, nID string, n *pb.Not
 // GetNote returns the note with project (pID) and note ID (nID)
 func (pg *PgSQLStore) GetNote(ctx context.Context, pID, nID string) (*pb.Note, error) {
 	var data string
-	err := pg.DB.QueryRow(searchNote, pID, nID).Scan(&data)
+	err := pg.DB.QueryRowContext(ctx, searchNote, pID, nID).Scan(&data)
 	switch {
 	case err == sql.ErrNoRows:
 		return nil, status.Errorf(codes.NotFound, "Note with name %q/%q does not Exist", pID, nID)
@@ -456,16 +455,16 @@ func (pg *PgSQLStore) GetOccurrenceNote(ctx context.Context, pID, oID string) (*
 // ListNotes returns up to pageSize number of notes for this project (pID) beginning
 // at pageToken (or from start if pageToken is the empty string).
 func (pg *PgSQLStore) ListNotes(ctx context.Context, pID, filter, pageToken string, pageSize int32) ([]*pb.Note, string, error) {
-	var rows *sql.Rows
-	id := decryptInt64(pageToken, pg.paginationKey, 0)
-	rows, err := pg.DB.Query(listNotes, pID, id, pageSize)
-	if err != nil {
-		return nil, "", status.Error(codes.Internal, "Failed to list Notes from database")
-	}
-	count, err := pg.count(noteCount, pID)
+	count, err := pg.count(ctx, noteCount, pID)
 	if err != nil {
 		return nil, "", status.Error(codes.Internal, "Failed to count Notes from database")
 	}
+	id := decryptInt64(pageToken, pg.paginationKey, 0)
+	rows, err := pg.DB.QueryContext(ctx, listNotes, pID, id, pageSize)
+	if err != nil {
+		return nil, "", status.Error(codes.Internal, "Failed to list Notes from database")
+	}
+
 	var ns []*pb.Note
 	var lastID int64
 	for rows.Next() {
@@ -498,16 +497,16 @@ func (pg *PgSQLStore) ListNoteOccurrences(ctx context.Context, pID, nID, filter,
 	if _, err := pg.GetNote(ctx, pID, nID); err != nil {
 		return nil, "", err
 	}
-	var rows *sql.Rows
-	id := decryptInt64(pageToken, pg.paginationKey, 0)
-	rows, err := pg.DB.Query(listNoteOccurrences, pID, nID, id, pageSize)
-	if err != nil {
-		return nil, "", status.Error(codes.Internal, "Failed to list Occurrences from database")
-	}
-	count, err := pg.count(noteOccurrencesCount, pID, nID)
+	count, err := pg.count(ctx, noteOccurrencesCount, pID, nID)
 	if err != nil {
 		return nil, "", status.Error(codes.Internal, "Failed to count Occurrences from database")
 	}
+	id := decryptInt64(pageToken, pg.paginationKey, 0)
+	rows, err := pg.DB.QueryContext(ctx, listNoteOccurrences, pID, nID, id, pageSize)
+	if err != nil {
+		return nil, "", status.Error(codes.Internal, "Failed to list Occurrences from database")
+	}
+
 	var os []*pb.Occurrence
 	var lastID int64
 	for rows.Next() {
@@ -547,8 +546,8 @@ func CreateSourceString(user, password, host, dbName, SSLMode string) string {
 }
 
 // count returns the total number of entries for the specified query (assuming SELECT(*) is used)
-func (pg *PgSQLStore) count(query string, args ...interface{}) (int64, error) {
-	row := pg.DB.QueryRow(query, args...)
+func (pg *PgSQLStore) count(ctx context.Context, query string, args ...interface{}) (int64, error) {
+	row := pg.DB.QueryRowContext(ctx, query, args...)
 	var count int64
 	err := row.Scan(&count)
 	if err != nil {
