@@ -160,7 +160,7 @@ func setup() (pgData *testPgHelper, err error) {
 
 	//Check for a global installation
 	if pgData.pgBinPath, err = getPostgresBinPathFromSystemPath(); err != nil {
-		err = fmt.Errorf("Unable to find a running Postgres instance or Postgres binaries necessary for testing on the system PATH: %w", err)
+		err = fmt.Errorf("Unable to find a running Postgres instance or Postgres binaries necessary for testing on the system PATH: %v", err)
 		return
 	}
 
