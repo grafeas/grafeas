@@ -51,7 +51,8 @@ make test
 ```
 
 :warning: These tests will not run correctly unless you have [checked out your fork into your `$GOPATH`](#checkout-your-fork).
-:warning: Ensure that [`$GOPATH/bin` is on your system `$PATH`](https://github.com/golang/protobuf/issues/795#issuecomment-564523540)
+:warning: Ensure that [`$GOPATH/bin` is on your system `$PATH`](https://github.com/golang/protobuf/issues/795#issuecomment-564523540).
+:warning: These test require either a running Postgres instance (with appropriate credentials) or having the Postgres bin directory on your system `PATH`.
 
 ## Creating a PR
 

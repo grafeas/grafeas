@@ -15,24 +15,18 @@
 package storage_test
 
 import (
-	"archive/tar"
-	"archive/zip"
-	"compress/gzip"
-	"crypto/tls"
 	"database/sql"
 	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
 	"net"
-	"net/http"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"runtime"
-	"strings"
 	"testing"
-	"time"
 
 	"github.com/grafeas/grafeas/go/config"
 	grafeas "github.com/grafeas/grafeas/go/v1beta1/api"
@@ -52,175 +46,14 @@ var (
 	pgsqlstoreTestPgConfig *testPgHelper
 )
 
-func downloadFile(filepath string, url string) error {
-	tlsConfig := &tls.Config{
-		InsecureSkipVerify: false,
-	}
-
-	// Based off of http.DefaultTransport
-	var transport http.RoundTripper = &http.Transport{
-		Proxy: http.ProxyFromEnvironment,
-		DialContext: (&net.Dialer{
-			Timeout:   30 * time.Second,
-			KeepAlive: 30 * time.Second,
-			DualStack: true,
-		}).DialContext,
-		MaxIdleConns:          100,
-		IdleConnTimeout:       90 * time.Second,
-		TLSHandshakeTimeout:   10 * time.Second,
-		TLSClientConfig:       tlsConfig,
-		ExpectContinueTimeout: 1 * time.Second,
-	}
-
-	httpClient := &http.Client{Transport: transport}
-
-	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		return err
-	}
-
-	resp, err := httpClient.Do(req)
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
-
-	out, err := os.Create(filepath)
-	if err != nil {
-		return err
-	}
-	defer out.Close()
-
-	_, err = io.Copy(out, resp.Body)
-	return err
-}
-
-func unarchive(src string, dest string) error {
-	if strings.HasSuffix(src, ".zip") {
-		return unZip(src, dest)
-	} else if strings.HasSuffix(src, ".tar.gz") {
-		return unTar(src, dest)
-	}
-
-	return fmt.Errorf("Unable to unarchive %s; unsupported format", src)
-}
-
-func unZip(src string, dest string) error {
-	r, err := zip.OpenReader(src)
-	if err != nil {
-		return err
-	}
-	defer r.Close()
-
-	for _, f := range r.File {
-
-		// Store filename/path for returning and using later on
-		fpath := filepath.Join(dest, f.Name)
-
-		// Check for ZipSlip. More Info: http://bit.ly/2MsjAWE
-		if !strings.HasPrefix(fpath, filepath.Clean(dest)+string(os.PathSeparator)) {
-			return fmt.Errorf("%s: illegal file path", fpath)
-		}
-
-		if f.FileInfo().IsDir() {
-			// Make Folder
-			os.MkdirAll(fpath, os.ModePerm)
-			continue
-		}
-
-		// Make File
-		if err = os.MkdirAll(filepath.Dir(fpath), os.ModePerm); err != nil {
-			return err
-		}
-
-		outFile, err := os.OpenFile(fpath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, f.Mode())
-		if err != nil {
-			return err
-		}
-
-		rc, err := f.Open()
-		if err != nil {
-			return err
-		}
-
-		_, err = io.Copy(outFile, rc)
-
-		// Close the file without defer to close before next iteration of loop
-		outFile.Close()
-		rc.Close()
-
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-func unTar(src string, dest string) error {
-	tarFile, err := os.Open(src)
-	defer tarFile.Close()
-	if err != nil {
-		return err
-	}
-
-	tarReader := tar.NewReader(tarFile)
-	if strings.HasSuffix(src, ".gz") {
-		gz, err := gzip.NewReader(tarFile)
-		if err != nil {
-			return err
-		}
-		defer gz.Close()
-		tarReader = tar.NewReader(gz)
-	}
-
-	dest, err = filepath.Abs(dest)
-	if err != nil {
-		return err
-	}
-
-	for {
-		hdr, err := tarReader.Next()
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			return err
-		}
-		finfo := hdr.FileInfo()
-		fileName := hdr.Name
-		absFileName := filepath.Join(dest, fileName)
-
-		// if it's a dir, create it, then go to next segment
-		if finfo.Mode().IsDir() {
-			if err := os.MkdirAll(absFileName, 0755); err != nil {
-				return err
-			}
-			continue
-		}
-		// create new files with original file mode
-		file, err := os.OpenFile(
-			absFileName,
-			os.O_RDWR|os.O_CREATE|os.O_TRUNC,
-			finfo.Mode().Perm(),
-		)
-		if err != nil {
-			return err
-		}
-		n, copyErr := io.Copy(file, tarReader)
-		if closeErr := file.Close(); closeErr != nil {
-			return err
-		}
-		if copyErr != nil {
-			return copyErr
-		}
-		if n != finfo.Size() {
-			return fmt.Errorf("wrote %d, want %d", n, finfo.Size())
-		}
-	}
-	return nil
-}
-
 func startupPostgres(pgData *testPgHelper) error {
+	//Create a test database instance directory
+	if pgDataPath, err := ioutil.TempDir("", "pg-data-*"); err != nil {
+		return err
+	} else {
+		pgData.pgDataPath = filepath.ToSlash(pgDataPath)
+	}
+
 	//Make password file
 	passwordTempFile, err := ioutil.TempFile("", "pgpassword-*")
 	if err != nil {
@@ -294,8 +127,16 @@ func getPostgresBinPathFromSystemPath() (binPath string, err error) {
 	cmd := exec.Command("which", "pg_ctl")
 	output, err := cmd.Output()
 	if output != nil && err == nil {
-		binPath = filepath.Dir(string(output))
+		binPath = filepath.ToSlash(filepath.Dir(string(output)))
 	}
+
+	//Deal with "which" Linux-style output on Windows, a bit of a corner case
+	regex := regexp.MustCompile("^/([a-z])/(.*)$")
+	regexMatches := regex.FindStringSubmatch(binPath)
+	if runtime.GOOS == "windows" && regexMatches != nil && len(regexMatches) == 3 {
+		binPath = fmt.Sprintf("%s:/%s", regexMatches[1], regexMatches[2])
+	}
+
 	return
 }
 
@@ -317,128 +158,22 @@ func setup() (pgData *testPgHelper, err error) {
 		return
 	}
 
-	workingDir, err := os.Getwd()
-	if err != nil {
-		return pgData, err
-	}
-	//The root is 3 levels up. Not an ideal means of getting this, but since there are multiple
-	//ways of starting the tests, os.Executable and runtime.Caller don't seem like viable options
-	basepath := filepath.Dir(filepath.Dir(filepath.Dir(workingDir)))
-	basepath = filepath.Join(basepath, "test", "utilities")
-
-	pgData.pgBinPath = ""
-	testPgPath := filepath.Join(basepath, "pgsql")
-	testPgBinPath := filepath.Join(testPgPath, "bin")
-	if _, err := os.Stat(testPgBinPath); !os.IsNotExist(err) {
-		pgData.pgBinPath = testPgBinPath
-	} else {
-		//Check for a global installation
-		globalPgBinPath, err := getPostgresBinPathFromSystemPath()
-		if err == nil && globalPgBinPath != "" {
-			pgData.pgBinPath = globalPgBinPath
-		}
-	}
-
-	os.Setenv("GOOS", "linux")
-	if pgData.pgBinPath == "" {
-		os.MkdirAll(basepath, 0755)
-
-		fileNameBase := "postgresql-10.15.1"
-		fileNameExt := "zip"
-		if os.Getenv("GOOS") == "linux" {
-			fileNameExt = "tar.gz"
-		}
-		postgresBinaryArchiveFileName := filepath.Join(basepath, fmt.Sprintf("%s.%s", fileNameBase, fileNameExt))
-
-		postgresBinaryArchiveFound := false
-		if _, err := os.Stat(postgresBinaryArchiveFileName); !os.IsNotExist(err) {
-			postgresBinaryArchiveFound = true
-		}
-
-		if !postgresBinaryArchiveFound {
-			//URLs from https://www.enterprisedb.com/download-postgresql-binaries
-			postgresUrl := ""
-			switch os.Getenv("GOOS") {
-			case "darwin":
-				postgresUrl = "https://get.enterprisedb.com/postgresql/postgresql-10.15-1-osx-binaries.zip"
-			case "linux":
-				switch runtime.GOARCH {
-				case "386":
-					postgresUrl = "https://get.enterprisedb.com/postgresql/postgresql-10.15-1-linux-binaries.tar.gz"
-				case "amd64":
-					postgresUrl = "https://get.enterprisedb.com/postgresql/postgresql-10.15-1-linux-x64-binaries.tar.gz"
-				}
-			case "windows":
-				switch runtime.GOARCH {
-				case "386":
-					postgresUrl = "https://get.enterprisedb.com/postgresql/postgresql-10.15-1-windows-binaries.zip"
-				case "amd64":
-					postgresUrl = "https://get.enterprisedb.com/postgresql/postgresql-10.15-1-windows-x64-binaries.zip"
-				}
-			}
-
-			if postgresUrl == "" {
-				return pgData, fmt.Errorf("Unable to test on %s with architecture %s", runtime.GOOS, runtime.GOARCH)
-			}
-
-			//Download postgres
-			postgresTempBinaryArchive, err := ioutil.TempFile("", fmt.Sprintf("%s-*.%s", fileNameBase, fileNameExt))
-			if err != nil {
-				return pgData, err
-			}
-
-			fmt.Fprintln(os.Stderr, "testing: downloading", postgresUrl)
-			if err := downloadFile(postgresTempBinaryArchive.Name(), postgresUrl); err != nil {
-				return pgData, err
-			}
-
-			//Move fully downloaded tempfile to relative location to prevent repeated downloads
-			if err := os.Rename(postgresTempBinaryArchive.Name(), postgresBinaryArchiveFileName); err != nil {
-				return pgData, err
-			}
-		}
-
-		//Extract the archive file
-		fmt.Fprintln(os.Stderr, "testing: unarchiving", postgresBinaryArchiveFileName)
-		unarchivePath, err := ioutil.TempDir("", fmt.Sprintf("%s-*", fileNameBase))
-		if err != nil {
-			return pgData, err
-		}
-
-		if err := unarchive(postgresBinaryArchiveFileName, unarchivePath); err != nil {
-			return pgData, err
-		}
-
-		//Move fully extracted archive folder to relative location to prevent repeated unarchiving
-		if err := os.Rename(filepath.Join(unarchivePath, "pgsql"), testPgPath); err != nil {
-			return pgData, err
-		}
-
-		//Remove the archive file
-		if err := os.Remove(postgresBinaryArchiveFileName); err != nil {
-			return pgData, err
-		}
-
-		pgData.pgBinPath = testPgBinPath
+	//Check for a global installation
+	if pgData.pgBinPath, err = getPostgresBinPathFromSystemPath(); err != nil {
+		err = fmt.Errorf("Unable to find a running Postgres instance or Postgres binaries necessary for testing on the system PATH: %w", err)
+		return
 	}
 
 	//Startup postgres
-	pgDataPath, err := ioutil.TempDir("", "pg-data-*")
-	if err != nil {
-		return nil, err
-	}
-
-	pgData.pgDataPath = pgDataPath
-
-	if err := startupPostgres(pgData); err != nil {
-		return pgData, err
+	if err = startupPostgres(pgData); err != nil {
+		return
 	}
 
 	return pgData, nil
 }
 
 func stopPostgres(pgData *testPgHelper) error {
-	if pgData.startedPg {
+	if pgData != nil && pgData.startedPg {
 		//Stop postgres
 		pgCtl := filepath.Join(pgData.pgBinPath, "pg_ctl")
 
