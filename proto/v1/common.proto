@@ -23,7 +23,7 @@ option objc_class_prefix = "GRA";
 
 // Kind represents the kinds of notes supported.
 enum NoteKind {
-  // Unknown.
+  // Default value. This value is unused.
   NOTE_KIND_UNSPECIFIED = 0;
   // The note and occurrence represent a package vulnerability.
   VULNERABILITY = 1;
