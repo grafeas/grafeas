@@ -22,6 +22,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/grafeas/grafeas/go/iam"
 	"github.com/grafeas/grafeas/go/name"
+	validator "github.com/grafeas/grafeas/go/v1beta1/api/validators/grafeas"
 	gpb "github.com/grafeas/grafeas/proto/v1beta1/grafeas_go_proto"
 	provpb "github.com/grafeas/grafeas/proto/v1beta1/provenance_go_proto"
 	vulnpb "github.com/grafeas/grafeas/proto/v1beta1/vulnerability_go_proto"
@@ -510,7 +511,7 @@ func TestValidatePageSize(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		ps, err := validatePageSize(tt.ps)
+		ps, err := validator.ValidatePageSize(tt.ps)
 		if err != nil {
 			t.Errorf("%q: validatePageSize(%d): got error %v, want success", tt.desc, tt.ps, err)
 		}
@@ -549,7 +550,7 @@ func TestValidatePageSizeErrors(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		_, err := validatePageSize(tt.ps)
+		_, err := validator.ValidatePageSize(tt.ps)
 		t.Logf("%q: error: %v", tt.desc, err)
 		if err == nil {
 			t.Errorf("%q: validatePageSize(%d): got success, want error code %q", tt.desc, tt.ps, tt.wantErrCode)
