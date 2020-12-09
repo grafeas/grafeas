@@ -313,8 +313,10 @@ func TestDeleteProject(t *testing.T) {
 	req := &prpb.DeleteProjectRequest{
 		Name: "projects/1234",
 	}
-	if _, err := gp.DeleteProject(ctx, req); err != nil {
+	if p, err := gp.DeleteProject(ctx, req); err != nil {
 		t.Errorf("Got err %v, want success", err)
+	} else if p == nil {
+		t.Error("expected response to not be nil")
 	}
 }
 
