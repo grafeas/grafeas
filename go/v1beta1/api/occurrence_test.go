@@ -652,8 +652,10 @@ func TestDeleteOccurrence(t *testing.T) {
 			req := &gpb.DeleteOccurrenceRequest{
 				Name: createdOcc.Name,
 			}
-			if _, err := g.DeleteOccurrence(ctx, req); err != nil {
+			if oc, err := g.DeleteOccurrence(ctx, req); err != nil {
 				t.Errorf("Got err %v, want success", err)
+			} else if oc == nil {
+				t.Error("expected response to not be nil")
 			}
 		})
 	}
