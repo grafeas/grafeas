@@ -656,7 +656,7 @@ message Note {
   // This must be 1:1 with members of our oneofs, it can be used for filtering
   // Note and Occurrence on their kind.
   enum Kind {
-    // Unknown
+    // Default value. This value is unused.
     KIND_UNSPECIFIED = 0;
 
     // The note and occurrence represent a package vulnerability.

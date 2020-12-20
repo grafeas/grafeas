@@ -43,7 +43,7 @@ const _ = proto.ProtoPackageIsVersion4
 type NoteKind int32
 
 const (
-	// Unknown.
+	// Default value. This value is unused.
 	NoteKind_NOTE_KIND_UNSPECIFIED NoteKind = 0
 	// The note and occurrence represent a package vulnerability.
 	NoteKind_VULNERABILITY NoteKind = 1
