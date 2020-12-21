@@ -39,8 +39,8 @@ func TestCreateNote(t *testing.T) {
 		NoteId: "CVE-UH-OH",
 		Note:   vulnzNote(t),
 	}
-	createdNote := &gpb.Note{}
-	if err := g.CreateNote(ctx, req, createdNote); err != nil {
+	createdNote, err := g.CreateNote(ctx, req)
+	if err != nil {
 		t.Fatalf("Got err %v, want success", err)
 	}
 
@@ -156,8 +156,7 @@ func TestCreateNoteErrors(t *testing.T) {
 			}
 		}
 
-		n := &gpb.Note{}
-		err := g.CreateNote(ctx, tt.req, n)
+		_, err := g.CreateNote(ctx, tt.req)
 		t.Logf("%q: error: %v", tt.desc, err)
 		if status.Code(err) != tt.wantErrStatus {
 			t.Errorf("%q: got error status %v, want %v", tt.desc, status.Code(err), tt.wantErrStatus)
@@ -179,8 +178,8 @@ func TestBatchCreateNotes(t *testing.T) {
 			"CVE-UH-OH": vulnzNote(t),
 		},
 	}
-	resp := &gpb.BatchCreateNotesResponse{}
-	if err := g.BatchCreateNotes(ctx, req, resp); err != nil {
+	resp, err := g.BatchCreateNotes(ctx, req)
+	if err != nil {
 		t.Fatalf("Got err %v, want success", err)
 	}
 
@@ -333,8 +332,7 @@ func TestBatchCreateNotesErrors(t *testing.T) {
 			}
 		}
 
-		resp := &gpb.BatchCreateNotesResponse{}
-		err := g.BatchCreateNotes(ctx, tt.req, resp)
+		_, err := g.BatchCreateNotes(ctx, tt.req)
 		t.Logf("%q: error: %v", tt.desc, err)
 		if status.Code(err) != tt.wantErrStatus {
 			t.Errorf("%q: got error status %v, want %v", tt.desc, status.Code(err), tt.wantErrStatus)
@@ -360,8 +358,9 @@ func TestGetNote(t *testing.T) {
 	req := &gpb.GetNoteRequest{
 		Name: "projects/goog-vulnz/notes/CVE-UH-OH",
 	}
-	gotN := &gpb.Note{}
-	if err := g.GetNote(ctx, req, gotN); err != nil {
+
+	gotN, err := g.GetNote(ctx, req)
+	if err != nil {
 		t.Fatalf("Got err %v, want success", err)
 	}
 
@@ -423,8 +422,7 @@ func TestGetNoteErrors(t *testing.T) {
 			EnforceValidation: true,
 		}
 
-		n := &gpb.Note{}
-		err := g.GetNote(ctx, tt.req, n)
+		_, err := g.GetNote(ctx, tt.req)
 		t.Logf("%q: error: %v", tt.desc, err)
 		if status.Code(err) != tt.wantErrStatus {
 			t.Errorf("%q: got error status %v, want %v", tt.desc, status.Code(err), tt.wantErrStatus)
@@ -450,8 +448,8 @@ func TestListNotes(t *testing.T) {
 	req := &gpb.ListNotesRequest{
 		Parent: "projects/goog-vulnz",
 	}
-	resp := &gpb.ListNotesResponse{}
-	if err := g.ListNotes(ctx, req, resp); err != nil {
+	resp, err := g.ListNotes(ctx, req)
+	if err != nil {
 		t.Fatalf("Got err %v, want success", err)
 	}
 
@@ -514,8 +512,7 @@ func TestListNotesErrors(t *testing.T) {
 			EnforceValidation: true,
 		}
 
-		resp := &gpb.ListNotesResponse{}
-		err := g.ListNotes(ctx, tt.req, resp)
+		_, err := g.ListNotes(ctx, tt.req)
 		t.Logf("%q: error: %v", tt.desc, err)
 		if status.Code(err) != tt.wantErrStatus {
 			t.Errorf("%q: got error status %v, want %v", tt.desc, status.Code(err), tt.wantErrStatus)
@@ -543,8 +540,8 @@ func TestUpdateNote(t *testing.T) {
 		Name: "projects/goog-vulnz/notes/CVE-UH-OH",
 		Note: n,
 	}
-	updatedN := &gpb.Note{}
-	if err := g.UpdateNote(ctx, req, updatedN); err != nil {
+	updatedN, err := g.UpdateNote(ctx, req)
+	if err != nil {
 		t.Fatalf("Got err %v, want success", err)
 	}
 
@@ -617,8 +614,7 @@ func TestUpdateNoteErrors(t *testing.T) {
 			EnforceValidation: true,
 		}
 
-		n := &gpb.Note{}
-		err := g.UpdateNote(ctx, tt.req, n)
+		_, err := g.UpdateNote(ctx, tt.req)
 		t.Logf("%q: error: %v", tt.desc, err)
 		if status.Code(err) != tt.wantErrStatus {
 			t.Errorf("%q: got error status %v, want %v", tt.desc, status.Code(err), tt.wantErrStatus)
@@ -644,7 +640,8 @@ func TestDeleteNote(t *testing.T) {
 	req := &gpb.DeleteNoteRequest{
 		Name: "projects/goog-vulnz/notes/CVE-UH-OH",
 	}
-	if err := g.DeleteNote(ctx, req, nil); err != nil {
+	_, err := g.DeleteNote(ctx, req)
+	if err != nil {
 		t.Errorf("Got err %v, want success", err)
 	}
 }
@@ -715,7 +712,7 @@ func TestDeleteNoteErrors(t *testing.T) {
 			t.Fatalf("Failed to create note %+v", n)
 		}
 
-		err := g.DeleteNote(ctx, tt.req, nil)
+		_, err := g.DeleteNote(ctx, tt.req)
 		t.Logf("%q: error: %v", tt.desc, err)
 		if status.Code(err) != tt.wantErrStatus {
 			t.Errorf("%q: got error status %v, want %v", tt.desc, status.Code(err), tt.wantErrStatus)
@@ -746,8 +743,8 @@ func TestGetOccurrenceNote(t *testing.T) {
 	req := &gpb.GetOccurrenceNoteRequest{
 		Name: createdOcc.Name,
 	}
-	gotN := &gpb.Note{}
-	if err := g.GetOccurrenceNote(ctx, req, gotN); err != nil {
+	gotN, err := g.GetOccurrenceNote(ctx, req)
+	if err != nil {
 		t.Fatalf("GetOccurrenceNote(%v): got err %v, want success", req, err)
 	}
 
@@ -809,8 +806,7 @@ func TestGetOccurrenceNoteErrors(t *testing.T) {
 			EnforceValidation: true,
 		}
 
-		n := &gpb.Note{}
-		err := g.GetOccurrenceNote(ctx, tt.req, n)
+		_, err := g.GetOccurrenceNote(ctx, tt.req)
 		t.Logf("%q: error: %v", tt.desc, err)
 		if status.Code(err) != tt.wantErrStatus {
 			t.Errorf("%q: got error status %v, want %v", tt.desc, status.Code(err), tt.wantErrStatus)
