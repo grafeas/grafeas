@@ -28,113 +28,112 @@ import (
 )
 
 // GetOccurrence gets the specified occurrence.
-func (g *API) GetOccurrence(ctx context.Context, req *gpb.GetOccurrenceRequest, resp *gpb.Occurrence) error {
+func (g *API) GetOccurrence(ctx context.Context, req *gpb.GetOccurrenceRequest) (*gpb.Occurrence, error) {
 	pID, oID, err := name.ParseOccurrence(req.Name)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if err := g.Auth.CheckAccessAndProject(ctx, pID, oID, OccurrencesGet); err != nil {
-		return err
+		return nil, err
 	}
 
 	o, err := g.Storage.GetOccurrence(ctx, pID, oID)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	*resp = *o
 
-	return nil
+	return o, nil
 }
 
 // ListOccurrences lists occurrences for the specified project.
-func (g *API) ListOccurrences(ctx context.Context, req *gpb.ListOccurrencesRequest, resp *gpb.ListOccurrencesResponse) error {
+func (g *API) ListOccurrences(ctx context.Context, req *gpb.ListOccurrencesRequest) (*gpb.ListOccurrencesResponse, error) {
 	pID, err := name.ParseProject(req.Parent)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if err := g.Auth.CheckAccessAndProject(ctx, pID, "", OccurrencesList); err != nil {
-		return err
+		return nil, err
 	}
 
 	ps, err := validatePageSize(req.PageSize)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	occs, npt, err := g.Storage.ListOccurrences(ctx, pID, req.Filter, req.PageToken, ps)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	resp.Occurrences = occs
-	resp.NextPageToken = npt
-
-	return nil
+	resp := &gpb.ListOccurrencesResponse{
+		Occurrences:   occs,
+		NextPageToken: npt,
+	}
+	return resp, nil
 }
 
 // CreateOccurrence creates the specified occurrence.
-func (g *API) CreateOccurrence(ctx context.Context, req *gpb.CreateOccurrenceRequest, resp *gpb.Occurrence) error {
+func (g *API) CreateOccurrence(ctx context.Context, req *gpb.CreateOccurrenceRequest) (*gpb.Occurrence, error) {
 	pID, err := name.ParseProject(req.Parent)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if req.Occurrence == nil {
-		return status.Errorf(codes.InvalidArgument, "an occurrence must be specified")
+		return nil, status.Errorf(codes.InvalidArgument, "an occurrence must be specified")
 	}
 
 	if err := g.Auth.CheckAccessAndProject(ctx, pID, "", OccurrencesCreate); err != nil {
-		return err
+		return nil, err
 	}
 
 	// Creating occurrences requires an additional notes attacher permissions check before we can
 	// continue validation.
 	notePID, nID, err := name.ParseNote(req.Occurrence.NoteName)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if err := g.Auth.CheckAccessAndProject(ctx, notePID, nID, NotesAttachOccurrence); err != nil {
-		return err
+		return nil, err
 	}
 
 	if err := grafeas.ValidateOccurrence(req.Occurrence); err != nil {
 		if g.EnforceValidation {
-			return err
+			return nil, err
 		}
 		logger.Warningf("CreateOccurrence %+v for project %q: invalid occurrence, fail open, would have failed with: %v", req.Occurrence, pID, err)
 	}
 
 	uID, err := g.Auth.EndUserID(ctx)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	o, err := g.Storage.CreateOccurrence(ctx, pID, uID, req.Occurrence)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	*resp = *o
 
-	return nil
+	return o, nil
 }
 
 // BatchCreateOccurrences batch creates the specified occurrences.
-func (g *API) BatchCreateOccurrences(ctx context.Context, req *gpb.BatchCreateOccurrencesRequest, resp *gpb.BatchCreateOccurrencesResponse) error {
+func (g *API) BatchCreateOccurrences(ctx context.Context, req *gpb.BatchCreateOccurrencesRequest) (*gpb.BatchCreateOccurrencesResponse, error) {
 	pID, err := name.ParseProject(req.Parent)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if err := g.Auth.CheckAccessAndProject(ctx, pID, "", OccurrencesCreate); err != nil {
-		return err
+		return nil, err
 	}
 
 	if len(req.Occurrences) == 0 {
-		return status.Errorf(codes.InvalidArgument, "at least one occurrence must be specified")
+		return nil, status.Errorf(codes.InvalidArgument, "at least one occurrence must be specified")
 	}
 	if len(req.Occurrences) > maxBatchSize {
-		return status.Errorf(codes.InvalidArgument, "%d is too many occurrence to batch create, a maximum of %d occurrence is allowed per batch create", len(req.Occurrences), maxBatchSize)
+		return nil, status.Errorf(codes.InvalidArgument, "%d is too many occurrence to batch create, a maximum of %d occurrence is allowed per batch create", len(req.Occurrences), maxBatchSize)
 	}
 
 	// Creating occurrences requires an additional notes attacher permissions check before we can
@@ -143,14 +142,14 @@ func (g *API) BatchCreateOccurrences(ctx context.Context, req *gpb.BatchCreateOc
 	for i, o := range req.Occurrences {
 		notePID, nID, err := name.ParseNote(o.NoteName)
 		if err != nil {
-			return err
+			return nil, err
 		}
 		if err := g.Auth.CheckAccessAndProject(ctx, notePID, nID, NotesAttachOccurrence); err != nil {
 			authErrs = append(authErrs, fmt.Errorf("occurrences[%d]: %s", i, err))
 		}
 	}
 	if len(authErrs) > 0 {
-		return status.Errorf(codes.PermissionDenied, "one or more occurrences had auth errors, no occurrences were created: %v", authErrs)
+		return nil, status.Errorf(codes.PermissionDenied, "one or more occurrences had auth errors, no occurrences were created: %v", authErrs)
 	}
 
 	validationErrs := []error{}
@@ -161,84 +160,85 @@ func (g *API) BatchCreateOccurrences(ctx context.Context, req *gpb.BatchCreateOc
 	}
 	if len(validationErrs) > 0 {
 		if g.EnforceValidation {
-			return status.Errorf(codes.InvalidArgument, "one or more occurrences are invalid, no occurrences were created: %v", validationErrs)
+			return nil, status.Errorf(codes.InvalidArgument, "one or more occurrences are invalid, no occurrences were created: %v", validationErrs)
 		}
 		logger.Warningf("BatchCreateOccurrences %+v for project %q: invalid occurrences(s), fail open, would have failed with: %v", req.Occurrences, pID, validationErrs)
 	}
 
 	uID, err := g.Auth.EndUserID(ctx)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	created, errs := g.Storage.BatchCreateOccurrences(ctx, pID, uID, req.Occurrences)
-	resp.Occurrences = created
 	if len(errs) != 0 {
 		// Report any storage layer errors as invalid argument for now, find a better way to do this.
-		return status.Errorf(codes.InvalidArgument, "errors encountered when batch creating occurrences: %d of %d occurrences failed: %v", len(errs), len(req.Occurrences), errs)
+		return nil, status.Errorf(codes.InvalidArgument, "errors encountered when batch creating occurrences: %d of %d occurrences failed: %v", len(errs), len(req.Occurrences), errs)
 	}
 
-	return nil
+	resp := &gpb.BatchCreateOccurrencesResponse{
+		Occurrences: created,
+	}
+	return resp, nil
 }
 
 // UpdateOccurrence updates the specified occurrence.
-func (g *API) UpdateOccurrence(ctx context.Context, req *gpb.UpdateOccurrenceRequest, resp *gpb.Occurrence) error {
+func (g *API) UpdateOccurrence(ctx context.Context, req *gpb.UpdateOccurrenceRequest) (*gpb.Occurrence, error) {
 	pID, oID, err := name.ParseOccurrence(req.Name)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if req.Occurrence == nil {
-		return status.Errorf(codes.InvalidArgument, "an occurrence must be specified")
+		return nil, status.Errorf(codes.InvalidArgument, "an occurrence must be specified")
 	}
 
 	if err := g.Auth.CheckAccessAndProject(ctx, pID, oID, OccurrencesUpdate); err != nil {
-		return err
+		return nil, err
 	}
 	notePID, nID, err := name.ParseNote(req.Occurrence.NoteName)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if err := g.Auth.CheckAccessAndProject(ctx, notePID, nID, NotesAttachOccurrence); err != nil {
-		return err
+		return nil, err
 	}
 
 	o, err := g.Storage.UpdateOccurrence(ctx, pID, oID, req.Occurrence, req.UpdateMask)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	*resp = *o
 
-	return nil
+	return o, nil
 }
 
 // DeleteOccurrence deletes the specified occurrence.
-func (g *API) DeleteOccurrence(ctx context.Context, req *gpb.DeleteOccurrenceRequest, _ *emptypb.Empty) error {
+func (g *API) DeleteOccurrence(ctx context.Context, req *gpb.DeleteOccurrenceRequest) (*emptypb.Empty, error) {
 	pID, oID, err := name.ParseOccurrence(req.Name)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if err := g.Auth.CheckAccessAndProject(ctx, pID, oID, OccurrencesDelete); err != nil {
-		return err
+		return nil, err
 	}
 
 	o, err := g.Storage.GetOccurrence(ctx, pID, oID)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if o.NoteName != "" {
 		notePID, nID, err := name.ParseNote(o.NoteName)
 		if err != nil {
-			return err
+			return nil, err
 		}
 		if err := g.Auth.CheckAccessAndProject(ctx, notePID, nID, NotesAttachOccurrence); err != nil {
-			return err
+			return nil, err
 		}
 	}
 
 	if err := g.Storage.DeleteOccurrence(ctx, pID, oID); err != nil {
-		return err
+		return nil, err
 	}
 
 	// Purge any IAM policies set on this entity.
@@ -247,31 +247,32 @@ func (g *API) DeleteOccurrence(ctx context.Context, req *gpb.DeleteOccurrenceReq
 		logger.Warningf("Error deleting policies for occurrence %q in project %q: %v", oID, pID, err)
 	}
 
-	return nil
+	return &emptypb.Empty{}, nil
 }
 
 // ListNoteOccurrences lists occurrences for the specified note.
-func (g *API) ListNoteOccurrences(ctx context.Context, req *gpb.ListNoteOccurrencesRequest, resp *gpb.ListNoteOccurrencesResponse) error {
+func (g *API) ListNoteOccurrences(ctx context.Context, req *gpb.ListNoteOccurrencesRequest) (*gpb.ListNoteOccurrencesResponse, error) {
 	pID, nID, err := name.ParseNote(req.Name)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if err := g.Auth.CheckAccessAndProject(ctx, pID, nID, NotesListOccurrences); err != nil {
-		return err
+		return nil, err
 	}
 
 	ps, err := validatePageSize(req.PageSize)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	occs, npt, err := g.Storage.ListNoteOccurrences(ctx, pID, nID, req.Filter, req.PageToken, ps)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	resp.Occurrences = occs
-	resp.NextPageToken = npt
-
-	return nil
+	resp := &gpb.ListNoteOccurrencesResponse{
+		Occurrences:   occs,
+		NextPageToken: npt,
+	}
+	return resp, nil
 }

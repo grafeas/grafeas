@@ -36,7 +36,7 @@ import (
 	"github.com/grafeas/grafeas/go/v1beta1/storage"
 	pb "github.com/grafeas/grafeas/proto/v1beta1/grafeas_go_proto"
 	prpb "github.com/grafeas/grafeas/proto/v1beta1/project_go_proto"
-	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/rs/cors"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -207,7 +207,7 @@ func newGrpcGatewayServer(ctx context.Context, listenerAddr string, tlsConfig *t
 	}
 
 	// changes json serializer to include empty fields with default values
-	jsonOpt := runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.JSONPb{EmitDefaults: true})
+	jsonOpt := runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.JSONPb{})
 	gwmux := runtime.NewServeMux(jsonOpt)
 
 	conn, err := grpc.DialContext(ctx, listenerAddr, gwOpts...)

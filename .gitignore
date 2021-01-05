@@ -18,3 +18,4 @@ server.csr
 server.key
 server.p12
 server.pem
+test/utilities
