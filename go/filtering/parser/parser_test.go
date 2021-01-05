@@ -18,6 +18,7 @@ package parser
 import (
 	"fmt"
 	"io/ioutil"
+	"runtime"
 	"strings"
 	"testing"
 
@@ -93,21 +94,26 @@ func verifyBaseline(t *testing.T, baseline baseline) {
 }
 
 func newTestBaselines(filename string) ([]baseline, error) {
+	lineSeparator := "\n"
+	if runtime.GOOS == "windows" {
+		lineSeparator = "\r\n"
+	}
+
 	bytes, err := ioutil.ReadFile(fmt.Sprintf("testdata/%s.baseline", filename))
 	if err != nil {
 		panic(fmt.Sprintf("Could not read provided file: %s", filename))
 	}
-	testCases := strings.Split(string(bytes), TestCaseDelimiter)
+	testCases := strings.Split(string(bytes), strings.ReplaceAll(TestCaseDelimiter, "\n", lineSeparator))
 	baselines := make([]baseline, len(testCases))
 	for i, testCase := range testCases {
 		testCaseName := fmt.Sprintf("%s[%d]", filename, i)
-		inputOutput := strings.Split(testCase, InputOutputDelimiter)
+		inputOutput := strings.Split(testCase, strings.ReplaceAll(InputOutputDelimiter, "\n", lineSeparator))
 		input, output := inputOutput[0], inputOutput[1]
 		baselines[i] = baseline{
 			source:   common.NewStringSource(input, testCaseName),
 			expected: &expr.ParsedExpr{},
 		}
-		resultOrError := strings.Split(output, DiagnosticsDelimiter)
+		resultOrError := strings.Split(output, strings.ReplaceAll(DiagnosticsDelimiter, "\n", lineSeparator))
 		result := resultOrError[0]
 		if result != NoResult {
 			if err := pb.UnmarshalText(output, baselines[i].expected); err != nil {
