@@ -683,7 +683,7 @@ func TestUpdateOccurrencePermissions(t *testing.T) {
 			occProj:     "allowed-occurrence",
 			existingOcc: &gpb.Occurrence{Resource: &gpb.Resource{Uri: "old-uri"}, NoteName: "projects/forbidden-project/notes/my-note"},
 			occ:         &gpb.Occurrence{Resource: &gpb.Resource{Uri: "new-uri"}, NoteName: "projects/allowed-note/notes/my-note"},
-			wantStatus:  codes.OK, // TODO: Fix this; should return permission denied.
+			wantStatus:  codes.PermissionDenied,
 		},
 		{
 			desc:        "no permission on new note",
@@ -698,7 +698,7 @@ func TestUpdateOccurrencePermissions(t *testing.T) {
 			existingOcc: &gpb.Occurrence{Resource: &gpb.Resource{Uri: "old-uri"}, NoteName: "projects/forbidden-project/notes/my-note"},
 			occ:         &gpb.Occurrence{Resource: &gpb.Resource{Uri: "new-uri"}, NoteName: "projects/allowed-note/notes/my-note"},
 			updateMask:  &fieldmaskpb.FieldMask{Paths: []string{"resourceUri"}},
-			wantStatus:  codes.OK, // TODO: Fix this; should return permission denied.
+			wantStatus:  codes.PermissionDenied,
 		},
 		{
 			desc:        "no permission on new note with field mask including note",
