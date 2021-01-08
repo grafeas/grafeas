@@ -196,12 +196,33 @@ func (g *API) UpdateOccurrence(ctx context.Context, req *gpb.UpdateOccurrenceReq
 	if err := g.Auth.CheckAccessAndProject(ctx, pID, oID, OccurrencesUpdate); err != nil {
 		return nil, err
 	}
-	notePID, nID, err := name.ParseNote(req.Occurrence.NoteName)
+
+	// The user must have attach permissions on the note currently associated with the occurrence.
+	existing, err := g.Storage.GetOccurrence(ctx, pID, oID)
 	if err != nil {
 		return nil, err
 	}
-	if err := g.Auth.CheckAccessAndProject(ctx, notePID, nID, NotesAttachOccurrence); err != nil {
-		return nil, err
+
+	if existing.NoteName != "" {
+		notePID, nID, err := name.ParseNote(existing.NoteName)
+		if err != nil {
+			return nil, err
+		}
+		if err := g.Auth.CheckAccessAndProject(ctx, notePID, nID, NotesAttachOccurrence); err != nil {
+			return nil, err
+		}
+	}
+
+	// If the user is modifying the noteName, they must also have attach permissions
+	// on the newly-associated note.
+	if req.Occurrence.NoteName != existing.NoteName {
+		notePID, nID, err := name.ParseNote(req.Occurrence.NoteName)
+		if err != nil {
+			return nil, err
+		}
+		if err := g.Auth.CheckAccessAndProject(ctx, notePID, nID, NotesAttachOccurrence); err != nil {
+			return nil, err
+		}
 	}
 
 	o, err := g.Storage.UpdateOccurrence(ctx, pID, oID, req.Occurrence, req.UpdateMask)

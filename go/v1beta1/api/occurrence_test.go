@@ -25,6 +25,7 @@ import (
 	provpb "github.com/grafeas/grafeas/proto/v1beta1/provenance_go_proto"
 	vpb "github.com/grafeas/grafeas/proto/v1beta1/vulnerability_go_proto"
 	"golang.org/x/net/context"
+	fieldmaskpb "google.golang.org/genproto/protobuf/field_mask"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -616,6 +617,136 @@ func TestUpdateOccurrenceErrors(t *testing.T) {
 			t.Logf("%q: error: %v", tt.desc, err)
 			if status.Code(err) != tt.wantErrStatus {
 				t.Errorf("%q: got error status %v, want %v", tt.desc, status.Code(err), tt.wantErrStatus)
+			}
+		})
+	}
+}
+
+func TestUpdateOccurrencePermissions(t *testing.T) {
+	ctx := context.Background()
+	auth := allowListAuth{
+		allowList: []projectPermission{
+			{permission: NotesAttachOccurrence, projectID: "allowed-note"},
+			{permission: OccurrencesUpdate, projectID: "allowed-occurrence"},
+			{permission: OccurrencesGet, projectID: "read-only"},
+			{permission: OccurrencesList, projectID: "read-only"},
+			{permission: NotesGet, projectID: "read-only"},
+			{permission: NotesList, projectID: "read-only"},
+		},
+	}
+
+	tests := []struct {
+		desc        string
+		occProj     string
+		existingOcc *gpb.Occurrence
+		occ         *gpb.Occurrence
+		updateMask  *fieldmaskpb.FieldMask
+		wantStatus  codes.Code
+	}{
+		{
+			desc:        "allowed updates",
+			occProj:     "allowed-occurrence",
+			existingOcc: &gpb.Occurrence{Resource: &gpb.Resource{Uri: "old-uri"}, NoteName: "projects/allowed-note/notes/my-note"},
+			occ:         &gpb.Occurrence{Resource: &gpb.Resource{Uri: "new-uri"}, NoteName: "projects/allowed-note/notes/my-note"},
+			wantStatus:  codes.OK,
+		},
+		{
+			desc:        "no permission on occurrence",
+			occProj:     "forbidden-project",
+			existingOcc: &gpb.Occurrence{Resource: &gpb.Resource{Uri: "old-uri"}, NoteName: "projects/allowed-note/notes/my-note"},
+			occ:         &gpb.Occurrence{Resource: &gpb.Resource{Uri: "new-uri"}, NoteName: "projects/allowed-note/notes/my-note"},
+			wantStatus:  codes.PermissionDenied,
+		},
+		{
+			desc:        "no permission on note",
+			occProj:     "allowed-occurrence",
+			existingOcc: &gpb.Occurrence{Resource: &gpb.Resource{Uri: "old-uri"}, NoteName: "projects/forbidden-project/notes/my-note"},
+			occ:         &gpb.Occurrence{Resource: &gpb.Resource{Uri: "new-uri"}, NoteName: "projects/forbidden-project/notes/my-note"},
+			wantStatus:  codes.PermissionDenied,
+		},
+		{
+			desc:        "read-only permission on occurrence",
+			occProj:     "read-only",
+			existingOcc: &gpb.Occurrence{Resource: &gpb.Resource{Uri: "old-uri"}, NoteName: "projects/allowed-note/notes/my-note"},
+			occ:         &gpb.Occurrence{Resource: &gpb.Resource{Uri: "new-uri"}, NoteName: "projects/allowed-note/notes/my-note"},
+			wantStatus:  codes.PermissionDenied,
+		},
+		{
+			desc:        "read-only permission on note",
+			occProj:     "allowed-occurrence",
+			existingOcc: &gpb.Occurrence{Resource: &gpb.Resource{Uri: "old-uri"}, NoteName: "projects/forbidden-project/notes/my-note"},
+			occ:         &gpb.Occurrence{Resource: &gpb.Resource{Uri: "new-uri"}, NoteName: "projects/read-only/notes/my-note"},
+			wantStatus:  codes.PermissionDenied,
+		},
+		{
+			desc:        "no permission on existing note",
+			occProj:     "allowed-occurrence",
+			existingOcc: &gpb.Occurrence{Resource: &gpb.Resource{Uri: "old-uri"}, NoteName: "projects/forbidden-project/notes/my-note"},
+			occ:         &gpb.Occurrence{Resource: &gpb.Resource{Uri: "new-uri"}, NoteName: "projects/allowed-note/notes/my-note"},
+			wantStatus:  codes.PermissionDenied,
+		},
+		{
+			desc:        "no permission on new note",
+			occProj:     "allowed-occurrence",
+			existingOcc: &gpb.Occurrence{Resource: &gpb.Resource{Uri: "old-uri"}, NoteName: "projects/allowed-note/notes/my-note"},
+			occ:         &gpb.Occurrence{Resource: &gpb.Resource{Uri: "new-uri"}, NoteName: "projects/forbidden-project/notes/my-note"},
+			wantStatus:  codes.PermissionDenied,
+		},
+		{
+			desc:        "no permission on existing note with field mask",
+			occProj:     "allowed-occurrence",
+			existingOcc: &gpb.Occurrence{Resource: &gpb.Resource{Uri: "old-uri"}, NoteName: "projects/forbidden-project/notes/my-note"},
+			occ:         &gpb.Occurrence{Resource: &gpb.Resource{Uri: "new-uri"}, NoteName: "projects/allowed-note/notes/my-note"},
+			updateMask:  &fieldmaskpb.FieldMask{Paths: []string{"resourceUri"}},
+			wantStatus:  codes.PermissionDenied,
+		},
+		{
+			desc:        "no permission on new note with field mask including note",
+			occProj:     "allowed-occurrence",
+			existingOcc: &gpb.Occurrence{Resource: &gpb.Resource{Uri: "old-uri"}, NoteName: "projects/allowed-note/notes/my-note"},
+			occ:         &gpb.Occurrence{Resource: &gpb.Resource{Uri: "new-uri"}, NoteName: "projects/forbidden-project/notes/my-note"},
+			updateMask:  &fieldmaskpb.FieldMask{Paths: []string{"resourceUri", "noteName"}},
+			wantStatus:  codes.PermissionDenied,
+		},
+		{
+			desc:        "no permission on new note with field mask excluding note",
+			occProj:     "allowed-occurrence",
+			existingOcc: &gpb.Occurrence{Resource: &gpb.Resource{Uri: "old-uri"}, NoteName: "projects/allowed-note/notes/my-note"},
+			occ:         &gpb.Occurrence{Resource: &gpb.Resource{Uri: "new-uri"}, NoteName: "projects/forbidden-project/notes/my-note"},
+			updateMask:  &fieldmaskpb.FieldMask{Paths: []string{"resourceUri"}},
+			// In principle this could be allowed as the NoteName in the incoming occurrence is ignored, so
+			// there is no need to perform a permission check. But as this has been the behavior to date
+			// without any reported issues, it seems safer to leave this returning an error. If a use case for
+			// supporting this arises, it can be revisited.
+			wantStatus: codes.PermissionDenied,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.desc, func(t *testing.T) {
+			s := newFakeStorage()
+			g := &API{
+				Storage:           s,
+				Auth:              &auth,
+				Filter:            &fakeFilter{},
+				Logger:            &fakeLogger{},
+				EnforceValidation: true,
+			}
+
+			// Create the occurrence to update.
+			createdOcc, err := s.CreateOccurrence(ctx, tt.occProj, "", tt.existingOcc)
+			if err != nil {
+				t.Fatalf("Failed to create occurrence %+v", tt.existingOcc)
+			}
+
+			req := &gpb.UpdateOccurrenceRequest{
+				Name:       createdOcc.Name,
+				Occurrence: tt.occ,
+				UpdateMask: tt.updateMask,
+			}
+			_, err = g.UpdateOccurrence(ctx, req)
+			if status.Code(err) != tt.wantStatus {
+				t.Fatalf("UpdateOccurrence: got status %v, want %v", status.Code(err), tt.wantStatus)
 			}
 		})
 	}

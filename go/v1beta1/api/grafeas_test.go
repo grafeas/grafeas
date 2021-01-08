@@ -427,6 +427,35 @@ func (s *fakeStorage) GetVulnerabilityOccurrencesSummary(ctx context.Context, pr
 	}, nil
 }
 
+// projectPermission binds a permission to a project.
+type projectPermission struct {
+	permission iam.Permission
+	projectID  string
+}
+
+// allowListAuth implements grafeas.Auth, denying all access checks except those
+// in the specified allowList.
+type allowListAuth struct {
+	allowList []projectPermission
+}
+
+func (a *allowListAuth) CheckAccessAndProject(ctx context.Context, projectID string, entityID string, p iam.Permission) error {
+	for _, allowed := range a.allowList {
+		if allowed.permission == p && allowed.projectID == projectID {
+			return nil
+		}
+	}
+	return status.Errorf(codes.PermissionDenied, "permission %q denied for %q or %q", p, projectID, entityID)
+}
+
+func (a *allowListAuth) EndUserID(ctx context.Context) (string, error) {
+	return "42", nil
+}
+
+func (a *allowListAuth) PurgePolicy(ctx context.Context, projectID string, entityID string, r iam.Resource) error {
+	return nil
+}
+
 type fakeAuth struct {
 	// Whether auth calls return an error to exercise err code paths.
 	authErr, endUserIDErr, purgeErr bool
