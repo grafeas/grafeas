@@ -37,7 +37,7 @@ func TestBetaEmbeddedStore(t *testing.T) {
 	defer os.RemoveAll(dir)
 
 	var instance int32
-	doTestStorage(t, func(t *testing.T) (grafeas.Storage, project.Storage, func()) {
+	storage.DoTestStorage(t, func(t *testing.T) (grafeas.Storage, project.Storage, func()) {
 		testDir := filepath.Join(dir, strconv.Itoa(int(atomic.AddInt32(&instance, 1))))
 		s := storage.NewEmbeddedStore(&config.EmbeddedStoreConfig{Path: testDir})
 		var g grafeas.Storage = s

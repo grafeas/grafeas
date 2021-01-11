@@ -18,12 +18,12 @@ import (
 	"fmt"
 
 	emptypb "github.com/golang/protobuf/ptypes/empty"
-	"github.com/grafeas/grafeas/go/errors"
 	"github.com/grafeas/grafeas/go/name"
 	"github.com/grafeas/grafeas/go/v1beta1/api/validators/grafeas"
 	gpb "github.com/grafeas/grafeas/proto/v1beta1/grafeas_go_proto"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 // CreateNote creates the specified note.
@@ -40,10 +40,10 @@ func (g *API) CreateNote(ctx context.Context, req *gpb.CreateNoteRequest) (*gpb.
 	}
 
 	if req.NoteId == "" {
-		return nil, errors.Newf(codes.InvalidArgument, "a noteId must be specified")
+		return nil, status.Errorf(codes.InvalidArgument, "a noteId must be specified")
 	}
 	if req.Note == nil {
-		return nil, errors.Newf(codes.InvalidArgument, "a note must be specified")
+		return nil, status.Errorf(codes.InvalidArgument, "a note must be specified")
 	}
 	if err := grafeas.ValidateNote(req.Note); err != nil {
 		if g.EnforceValidation {
@@ -79,10 +79,10 @@ func (g *API) BatchCreateNotes(ctx context.Context, req *gpb.BatchCreateNotesReq
 	}
 
 	if len(req.Notes) == 0 {
-		return nil, errors.Newf(codes.InvalidArgument, "at least one note must be specified")
+		return nil, status.Errorf(codes.InvalidArgument, "at least one note must be specified")
 	}
 	if len(req.Notes) > maxBatchSize {
-		return nil, errors.Newf(codes.InvalidArgument, "%d is too many notes to batch create, a maximum of %d notes is allowed per batch create", len(req.Notes), maxBatchSize)
+		return nil, status.Errorf(codes.InvalidArgument, "%d is too many notes to batch create, a maximum of %d notes is allowed per batch create", len(req.Notes), maxBatchSize)
 	}
 	validationErrs := []error{}
 	for i, n := range req.Notes {
@@ -92,7 +92,7 @@ func (g *API) BatchCreateNotes(ctx context.Context, req *gpb.BatchCreateNotesReq
 	}
 	if len(validationErrs) > 0 {
 		if g.EnforceValidation {
-			return nil, errors.Newf(codes.InvalidArgument, "one or more notes are invalid, no notes were created: %v", validationErrs)
+			return nil, status.Errorf(codes.InvalidArgument, "one or more notes are invalid, no notes were created: %v", validationErrs)
 		}
 		g.Logger.Warningf(ctx, "BatchCreateNotes %+v for project %q: invalid note(s), fail open, would have failed with: %v", req.Notes, pID, validationErrs)
 	}
@@ -105,7 +105,7 @@ func (g *API) BatchCreateNotes(ctx context.Context, req *gpb.BatchCreateNotesReq
 	created, errs := g.Storage.BatchCreateNotes(ctx, pID, uID, req.Notes)
 	if len(errs) > 0 {
 		// Report any storage layer errors as invalid argument for now, find a better way to do this.
-		return nil, errors.Newf(codes.InvalidArgument, "errors encountered when batch creating notes: %d of %d notes failed: %v", len(errs), len(req.Notes), errs)
+		return nil, status.Errorf(codes.InvalidArgument, "errors encountered when batch creating notes: %d of %d notes failed: %v", len(errs), len(req.Notes), errs)
 	}
 
 	resp := &gpb.BatchCreateNotesResponse{
@@ -149,7 +149,7 @@ func (g *API) UpdateNote(ctx context.Context, req *gpb.UpdateNoteRequest) (*gpb.
 	}
 
 	if req.Note == nil {
-		return nil, errors.Newf(codes.InvalidArgument, "an note must be specified")
+		return nil, status.Errorf(codes.InvalidArgument, "an note must be specified")
 	}
 
 	n, err := g.Storage.UpdateNote(ctx, pID, nID, req.Note, req.UpdateMask)
@@ -183,7 +183,7 @@ func (g *API) DeleteNote(ctx context.Context, req *gpb.DeleteNoteRequest) (*empt
 		g.Logger.Warningf(ctx, "Error deleting policies for note %q in project %q: %v", nID, pID, err)
 	}
 
-	return nil, nil
+	return &emptypb.Empty{}, nil
 }
 
 // ListNotes lists notes for the specified project.

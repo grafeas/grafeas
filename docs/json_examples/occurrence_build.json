@@ -1,0 +1,41 @@
+{
+    "name": "projects/occurrence_example/occurrences/exampleBuildOccurrence",
+    "resource": {
+        "name": "some os",
+      "uri": "https://gcr.io/project/image@sha256:foo"
+    },
+    "note_name": "projects/provider_example/notes/exampleBuildNote",
+    "kind": "BUILD",
+    "build": {
+            "provenance":{
+            "id":"build identifier",
+            "project_id": "some project identifier",
+            "commands": [],
+            "built_artifacts": [
+                {
+                        "checksum": "123",
+                        "id": "some identifier for the artifact",
+                        "names": ["name of related artifact"]
+                }
+                ],
+            "create_time": "2020-03-12T14:01:39.728983Z",
+            "start_time": "2020-03-12T14:02:39.728983Z",
+            "end_time": "2020-03-12T14:03:39.728983Z",
+            "creator": "user initiating the build",
+            "logs_uri": "location of build logs",
+            "source_provenance": {
+                "artifact_storage_source_uri": "input binary artifacts from this build",
+                "context": {
+                    "git": {
+                        "url": "the git repo url",
+                        "revision_id": "git commit hash"
+                    },
+                    "labels": {}
+                }
+            },
+            "trigger_id": "triggered by code commit 123",
+            "builder_version": "some version of the builder"
+        },
+        "provenance_bytes":"Z3JhZmVhcw=="
+    }
+  }

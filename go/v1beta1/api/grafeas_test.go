@@ -20,7 +20,6 @@ import (
 
 	"github.com/golang/protobuf/proto"
 	"github.com/google/uuid"
-	"github.com/grafeas/grafeas/go/errors"
 	"github.com/grafeas/grafeas/go/iam"
 	"github.com/grafeas/grafeas/go/name"
 	gpb "github.com/grafeas/grafeas/proto/v1beta1/grafeas_go_proto"
@@ -56,7 +55,7 @@ func newFakeStorage() *fakeStorage {
 
 func (s *fakeStorage) GetOccurrence(ctx context.Context, pID, oID string) (*gpb.Occurrence, error) {
 	if s.getOccErr {
-		return nil, errors.Newf(codes.Internal, "failed to get occurrence %q", oID)
+		return nil, status.Errorf(codes.Internal, "failed to get occurrence %q", oID)
 	}
 
 	// Create project if it doesn't exist.
@@ -66,7 +65,7 @@ func (s *fakeStorage) GetOccurrence(ctx context.Context, pID, oID string) (*gpb.
 
 	o, ok := s.occurrences[pID][oID]
 	if !ok {
-		return nil, errors.Newf(codes.NotFound, "occurrence %q not found", oID)
+		return nil, status.Errorf(codes.NotFound, "occurrence %q not found", oID)
 	}
 
 	// Set the output-only field before returning
@@ -76,7 +75,11 @@ func (s *fakeStorage) GetOccurrence(ctx context.Context, pID, oID string) (*gpb.
 
 func (s *fakeStorage) ListOccurrences(ctx context.Context, pID, filter, pageToken string, pageSize int32) ([]*gpb.Occurrence, string, error) {
 	if s.listOccsErr {
-		return nil, "", errors.Newf(codes.Internal, "failed to list occurrences for project %q", pID)
+		return nil, "", status.Errorf(codes.Internal, "failed to list occurrences for project %q", pID)
+	}
+	validatedPageSize, err := validatePageSize(pageSize)
+	if err != nil || pageSize != validatedPageSize {
+		return nil, "", status.Errorf(codes.Internal, "received non validated pageSize: %v", pageSize)
 	}
 
 	// Create project if it doesn't exist.
@@ -98,7 +101,7 @@ func (s *fakeStorage) CreateOccurrence(ctx context.Context, pID string, userID s
 	o = proto.Clone(o).(*gpb.Occurrence)
 
 	if s.createOccErr {
-		return nil, errors.Newf(codes.Internal, "failed to create occurrence %+v", o)
+		return nil, status.Errorf(codes.Internal, "failed to create occurrence %+v", o)
 	}
 
 	// Create project if it doesn't exist.
@@ -123,7 +126,7 @@ func (s *fakeStorage) BatchCreateOccurrences(ctx context.Context, pID string, us
 	errs := []error{}
 	if s.batchCreateOccsErr {
 		for _, o := range occs {
-			errs = append(errs, errors.Newf(codes.Internal, "failed to create occurrence %+v", o))
+			errs = append(errs, status.Errorf(codes.Internal, "failed to create occurrence %+v", o))
 		}
 		return nil, errs
 	}
@@ -148,7 +151,7 @@ func (s *fakeStorage) UpdateOccurrence(ctx context.Context, pID, oID string, o *
 	o = proto.Clone(o).(*gpb.Occurrence)
 
 	if s.updateOccErr {
-		return nil, errors.Newf(codes.Internal, "failed to update occurrence %+v", o)
+		return nil, status.Errorf(codes.Internal, "failed to update occurrence %+v", o)
 	}
 
 	// Create project if it doesn't exist.
@@ -157,7 +160,7 @@ func (s *fakeStorage) UpdateOccurrence(ctx context.Context, pID, oID string, o *
 	}
 
 	if _, ok := s.occurrences[pID][oID]; !ok {
-		return nil, errors.Newf(codes.NotFound, "occurrence %q not found", oID)
+		return nil, status.Errorf(codes.NotFound, "occurrence %q not found", oID)
 	}
 
 	o.Name = name.FormatOccurrence(pID, oID)
@@ -168,7 +171,7 @@ func (s *fakeStorage) UpdateOccurrence(ctx context.Context, pID, oID string, o *
 
 func (s *fakeStorage) DeleteOccurrence(ctx context.Context, pID, oID string) error {
 	if s.deleteOccErr {
-		return errors.Newf(codes.Internal, "failed to delete occurrence %q", oID)
+		return status.Errorf(codes.Internal, "failed to delete occurrence %q", oID)
 	}
 
 	// Create project if it doesn't exist.
@@ -177,7 +180,7 @@ func (s *fakeStorage) DeleteOccurrence(ctx context.Context, pID, oID string) err
 	}
 
 	if _, ok := s.occurrences[pID][oID]; !ok {
-		return errors.Newf(codes.NotFound, "occurrence %q not found", oID)
+		return status.Errorf(codes.NotFound, "occurrence %q not found", oID)
 	}
 
 	delete(s.occurrences[pID], oID)
@@ -187,7 +190,7 @@ func (s *fakeStorage) DeleteOccurrence(ctx context.Context, pID, oID string) err
 
 func (s *fakeStorage) GetNote(ctx context.Context, pID, nID string) (*gpb.Note, error) {
 	if s.getNoteErr {
-		return nil, errors.Newf(codes.Internal, "failed to get note %q", nID)
+		return nil, status.Errorf(codes.Internal, "failed to get note %q", nID)
 	}
 
 	// Create project if it doesn't exist.
@@ -197,7 +200,7 @@ func (s *fakeStorage) GetNote(ctx context.Context, pID, nID string) (*gpb.Note, 
 
 	n, ok := s.notes[pID][nID]
 	if !ok {
-		return nil, errors.Newf(codes.NotFound, "note %q not found", nID)
+		return nil, status.Errorf(codes.NotFound, "note %q not found", nID)
 	}
 
 	// Set the output-only field before returning
@@ -207,7 +210,11 @@ func (s *fakeStorage) GetNote(ctx context.Context, pID, nID string) (*gpb.Note, 
 
 func (s *fakeStorage) ListNotes(ctx context.Context, pID, filter, pageToken string, pageSize int32) ([]*gpb.Note, string, error) {
 	if s.listNotesErr {
-		return nil, "", errors.Newf(codes.Internal, "failed to list notes for project %q", pID)
+		return nil, "", status.Errorf(codes.Internal, "failed to list notes for project %q", pID)
+	}
+	validatedPageSize, err := validatePageSize(pageSize)
+	if err != nil || pageSize != validatedPageSize {
+		return nil, "", status.Errorf(codes.Internal, "received non validated pageSize: %v", pageSize)
 	}
 
 	// Create project if it doesn't exist.
@@ -227,7 +234,7 @@ func (s *fakeStorage) CreateNote(ctx context.Context, pID, nID string, userID st
 	n = proto.Clone(n).(*gpb.Note)
 
 	if s.createNoteErr {
-		return nil, errors.Newf(codes.Internal, "failed to create note %+v", n)
+		return nil, status.Errorf(codes.Internal, "failed to create note %+v", n)
 	}
 
 	// Create project if it doesn't exist.
@@ -236,7 +243,7 @@ func (s *fakeStorage) CreateNote(ctx context.Context, pID, nID string, userID st
 	}
 
 	if _, ok := s.notes[pID][nID]; ok {
-		return nil, errors.Newf(codes.AlreadyExists, "note %q already exists", nID)
+		return nil, status.Errorf(codes.AlreadyExists, "note %q already exists", nID)
 	}
 
 	n.Name = name.FormatNote(pID, nID)
@@ -255,7 +262,7 @@ func (s *fakeStorage) BatchCreateNotes(ctx context.Context, pID string, uID stri
 	errs := []error{}
 	if s.batchCreateNotesErr {
 		for _, n := range notes {
-			errs = append(errs, errors.Newf(codes.Internal, "failed to create note %+v", n))
+			errs = append(errs, status.Errorf(codes.Internal, "failed to create note %+v", n))
 		}
 		return nil, errs
 	}
@@ -268,7 +275,7 @@ func (s *fakeStorage) BatchCreateNotes(ctx context.Context, pID string, uID stri
 	created := []*gpb.Note{}
 	for nID, n := range notes {
 		if _, ok := s.notes[pID][nID]; ok {
-			errs = append(errs, errors.Newf(codes.AlreadyExists, "note %q already exists", nID))
+			errs = append(errs, status.Errorf(codes.AlreadyExists, "note %q already exists", nID))
 			continue
 		}
 
@@ -284,7 +291,7 @@ func (s *fakeStorage) UpdateNote(ctx context.Context, pID, nID string, n *gpb.No
 	n = proto.Clone(n).(*gpb.Note)
 
 	if s.updateNoteErr {
-		return nil, errors.Newf(codes.Internal, "failed to update note %+v", n)
+		return nil, status.Errorf(codes.Internal, "failed to update note %+v", n)
 	}
 
 	// Create project if it doesn't exist.
@@ -293,7 +300,7 @@ func (s *fakeStorage) UpdateNote(ctx context.Context, pID, nID string, n *gpb.No
 	}
 
 	if _, ok := s.notes[pID][nID]; !ok {
-		return nil, errors.Newf(codes.NotFound, "note %q not found", nID)
+		return nil, status.Errorf(codes.NotFound, "note %q not found", nID)
 	}
 
 	s.notes[pID][nID] = n
@@ -304,7 +311,7 @@ func (s *fakeStorage) UpdateNote(ctx context.Context, pID, nID string, n *gpb.No
 
 func (s *fakeStorage) DeleteNote(ctx context.Context, pID, nID string) error {
 	if s.deleteNoteErr {
-		return errors.Newf(codes.Internal, "failed to delete note %q", nID)
+		return status.Errorf(codes.Internal, "failed to delete note %q", nID)
 	}
 
 	// Create project if it doesn't exist.
@@ -313,7 +320,7 @@ func (s *fakeStorage) DeleteNote(ctx context.Context, pID, nID string) error {
 	}
 
 	if _, ok := s.notes[pID][nID]; !ok {
-		return errors.Newf(codes.NotFound, "note %q not found", nID)
+		return status.Errorf(codes.NotFound, "note %q not found", nID)
 	}
 
 	delete(s.notes[pID], nID)
@@ -323,7 +330,7 @@ func (s *fakeStorage) DeleteNote(ctx context.Context, pID, nID string) error {
 
 func (s *fakeStorage) GetOccurrenceNote(ctx context.Context, pID, oID string) (*gpb.Note, error) {
 	if s.getOccNoteErr {
-		return nil, errors.Newf(codes.Internal, "failed to get note for occurrence %q", oID)
+		return nil, status.Errorf(codes.Internal, "failed to get note for occurrence %q", oID)
 	}
 
 	// Create project if it doesn't exist.
@@ -334,7 +341,7 @@ func (s *fakeStorage) GetOccurrenceNote(ctx context.Context, pID, oID string) (*
 	// Get the occurrence and parse its note name.
 	o, ok := s.occurrences[pID][oID]
 	if !ok {
-		return nil, errors.Newf(codes.NotFound, "occurrence %q not found", oID)
+		return nil, status.Errorf(codes.NotFound, "occurrence %q not found", oID)
 	}
 	provID, nID, err := name.ParseNote(o.NoteName)
 	if err != nil {
@@ -349,7 +356,7 @@ func (s *fakeStorage) GetOccurrenceNote(ctx context.Context, pID, oID string) (*
 	// Look up the note for the specified occurrence.
 	n, ok := s.notes[provID][nID]
 	if !ok {
-		return nil, errors.Newf(codes.NotFound, "note %q not found", nID)
+		return nil, status.Errorf(codes.NotFound, "note %q not found", nID)
 	}
 
 	// Set the output-only field before returning
@@ -359,7 +366,11 @@ func (s *fakeStorage) GetOccurrenceNote(ctx context.Context, pID, oID string) (*
 
 func (s *fakeStorage) ListNoteOccurrences(ctx context.Context, pID, nID, filter, pageToken string, pageSize int32) ([]*gpb.Occurrence, string, error) {
 	if s.listNoteOccsErr {
-		return nil, "", errors.Newf(codes.Internal, "failed to get occurrences for note %q", nID)
+		return nil, "", status.Errorf(codes.Internal, "failed to get occurrences for note %q", nID)
+	}
+	validatedPageSize, err := validatePageSize(pageSize)
+	if err != nil || pageSize != validatedPageSize {
+		return nil, "", status.Errorf(codes.Internal, "received non validated pageSize: %v", pageSize)
 	}
 
 	// Create project if it doesn't exist.
@@ -416,6 +427,35 @@ func (s *fakeStorage) GetVulnerabilityOccurrencesSummary(ctx context.Context, pr
 	}, nil
 }
 
+// projectPermission binds a permission to a project.
+type projectPermission struct {
+	permission iam.Permission
+	projectID  string
+}
+
+// allowListAuth implements grafeas.Auth, denying all access checks except those
+// in the specified allowList.
+type allowListAuth struct {
+	allowList []projectPermission
+}
+
+func (a *allowListAuth) CheckAccessAndProject(ctx context.Context, projectID string, entityID string, p iam.Permission) error {
+	for _, allowed := range a.allowList {
+		if allowed.permission == p && allowed.projectID == projectID {
+			return nil
+		}
+	}
+	return status.Errorf(codes.PermissionDenied, "permission %q denied for %q or %q", p, projectID, entityID)
+}
+
+func (a *allowListAuth) EndUserID(ctx context.Context) (string, error) {
+	return "42", nil
+}
+
+func (a *allowListAuth) PurgePolicy(ctx context.Context, projectID string, entityID string, r iam.Resource) error {
+	return nil
+}
+
 type fakeAuth struct {
 	// Whether auth calls return an error to exercise err code paths.
 	authErr, endUserIDErr, purgeErr bool
@@ -423,21 +463,21 @@ type fakeAuth struct {
 
 func (a *fakeAuth) CheckAccessAndProject(ctx context.Context, projectID string, entityID string, p iam.Permission) error {
 	if a.authErr {
-		return errors.Newf(codes.PermissionDenied, "permission %q denied for %q or %q", p, projectID, entityID)
+		return status.Errorf(codes.PermissionDenied, "permission %q denied for %q or %q", p, projectID, entityID)
 	}
 	return nil
 }
 
 func (a *fakeAuth) EndUserID(ctx context.Context) (string, error) {
 	if a.endUserIDErr {
-		return "", errors.Newf(codes.Internal, "failed to get user ID")
+		return "", status.Errorf(codes.Internal, "failed to get user ID")
 	}
 	return "23", nil
 }
 
 func (a *fakeAuth) PurgePolicy(ctx context.Context, projectID string, entityID string, r iam.Resource) error {
 	if a.purgeErr {
-		return errors.Newf(codes.Internal, "failed to purge policy for entity ID %q of resource type %q", entityID, r)
+		return status.Errorf(codes.Internal, "failed to purge policy for entity ID %q of resource type %q", entityID, r)
 	}
 	return nil
 }
@@ -449,7 +489,7 @@ type fakeFilter struct {
 
 func (f *fakeFilter) Validate(filter string) error {
 	if f.err {
-		return errors.Newf(codes.InvalidArgument, "failed to parse filter %q", filter)
+		return status.Errorf(codes.InvalidArgument, "failed to parse filter %q", filter)
 	}
 	return nil
 }

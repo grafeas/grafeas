@@ -1,0 +1,10 @@
+{
+    "shortDescription": "Gives an example deployment note",
+    "longDescription": "Shows the fields that need to be set in order to create a deployment note inside a project",
+    "kind": "DEPLOYMENT",
+    "deployable": {        
+            "resourceUri":[
+            "someurui"
+            ]
+    }
+}

@@ -15,6 +15,7 @@ control of different types of metadata.
 
 ## Getting Started
 
+* Watch the talk on [Software Supply Chain Management with Grafeas and Kritis](https://www.infoq.com/presentations/supply-grafeas-kritis/)
 * Read the Grafeas [announcement](https://grafeas.io/blog/introducing-grafeas)
 * Learn the [Grafeas concepts](docs/grafeas_concepts.md) and [core design
   principles](docs/design_principles.md)
@@ -25,6 +26,20 @@ use the [client libraries](https://github.com/grafeas) to experiment with
 creating notes and occurrences in Grafeas. There are client libraries available in Java, Go, Ruby, and Python.
 * The authoritative API for grafeas is the [protobuf
 files](https://github.com/Grafeas/Grafeas/tree/master/proto/v1beta1).
+
+## Grafeas Architecture
+
+The diagram below shows the boundaries between Grafeas API, server, its storage
+backends and the clients:
+
+![Grafeas Architecture](docs/grafeas_architecture.png)
+
+##  Storage Backends
+
+The following projects provide bindings for Grafeas API to different storage backends:
+
+* [grafeas-pgsql](https://github.com/grafeas/grafeas-pgsql)
+* [grafeas-oracle](https://github.com/judavi/grafeas-oracle)
 
 ## Support
 

@@ -86,3 +86,4 @@ the type of information each kind of note and occurrence contains.
 |IMAGE        |Information about the base image of a container|Information about layers included on top of the base image in a particular container|
 |PACKAGE      |Package descriptions                           |Filesystem locations detailing where the package is installed in a specific resource|
 |VULNERABILITY|CVE or vulnerability description and details including severity, versions|Affected packages/versions in a specific resource|
+|INTOTO|An in-toto step|Details of a particular in-toto link. The in-toto specification is available [here](https://github.com/in-toto/docs/blob/master/in-toto-spec.md)|

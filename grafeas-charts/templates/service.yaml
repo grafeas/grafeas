@@ -11,7 +11,7 @@ spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
-      targetPort: 443
+      targetPort: {{ .Values.container.port }}
       protocol: TCP
       name: grafeas
   selector:
