@@ -108,7 +108,7 @@ message Version {
   // insufficient - we also need to specify whether the version is included in
   // the range or is excluded from the range. This boolean is expected to be set
   // to true when the version is included in a range. 
-  bool inclusive = 4;
+  bool inclusive = 6;
 
   // Whether this is an ordinary package version or a sentinel MIN/MAX version.
   enum VersionKind {
