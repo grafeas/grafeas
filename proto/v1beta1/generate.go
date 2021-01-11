@@ -1,7 +1,7 @@
 // This generates the protocol buffer and swagger code in go for the v1beta1 proto spec.
 
-//go:generate -command protoc ../../protoc/bin/protoc -I ../../ -I ./ -I ../../protodeps/grpc-gateway/third_party/googleapis -I ../../protodeps/grpc-gateway -I ../../protodeps/googleapis --go_out=plugins=grpc,paths=source_relative:.  --grpc-gateway_out=logtostderr=true,paths=source_relative:.
-//go:generate -command swagger ../../protoc/bin/protoc -I ../../ -I ./ -I ../../protodeps/grpc-gateway/third_party/googleapis -I ../../protodeps/grpc-gateway -I ../../protodeps/googleapis --swagger_out=logtostderr=true:.
+//go:generate -command protoc ../../protoc/bin/protoc -I ../../ -I ./ -I ../../protodeps/grpc-gateway/third_party/googleapis -I ../../protodeps/grpc-gateway -I ../../protodeps/googleapis  --go_out=paths=source_relative:. --go-grpc_out=require_unimplemented_servers=false,paths=source_relative:. --grpc-gateway_out=logtostderr=true,paths=source_relative:.
+//go:generate -command swagger ../../protoc/bin/protoc -I ../../ -I ./ -I ../../protodeps/grpc-gateway/third_party/googleapis -I ../../protodeps/grpc-gateway -I ../../protodeps/googleapis --openapiv2_out=logtostderr=true:.
 //go:generate rm -rf swagger
 //go:generate mkdir swagger
 
@@ -30,6 +30,7 @@
 //go:generate rm -rf grafeas_go_proto
 //go:generate mkdir grafeas_go_proto
 //go:generate mv grafeas.pb.go grafeas_go_proto
+//go:generate mv grafeas_grpc.pb.go grafeas_go_proto
 //go:generate mv grafeas.pb.gw.go grafeas_go_proto
 //go:generate swagger grafeas.proto
 //go:generate mv grafeas.swagger.json swagger
@@ -90,10 +91,18 @@
 //go:generate swagger vulnerability.proto
 //go:generate mv vulnerability.swagger.json swagger
 
+//go:generate protoc intoto.proto
+//go:generate rm -rf intoto_go_proto
+//go:generate mkdir intoto_go_proto
+//go:generate mv intoto.pb.go intoto_go_proto
+//go:generate swagger intoto.proto
+//go:generate mv intoto.swagger.json swagger
+
 //go:generate protoc project.proto
 //go:generate rm -rf project_go_proto
 //go:generate mkdir project_go_proto
 //go:generate mv project.pb.go project_go_proto
+//go:generate mv project_grpc.pb.go project_go_proto
 //go:generate mv project.pb.gw.go project_go_proto
 //go:generate swagger project.proto
 //go:generate mv project.swagger.json swagger

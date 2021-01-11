@@ -375,6 +375,35 @@ func (s *fakeStorage) ListNoteOccurrences(ctx context.Context, pID, nID, filter,
 	return foundOccs, "", nil
 }
 
+// projectPermission binds a permission to a project.
+type projectPermission struct {
+	permission iam.Permission
+	projectID  string
+}
+
+// allowListAuth implements grafeas.Auth, denying all access checks except those
+// in the specified allowList.
+type allowListAuth struct {
+	allowList []projectPermission
+}
+
+func (a *allowListAuth) CheckAccessAndProject(ctx context.Context, projectID string, entityID string, p iam.Permission) error {
+	for _, allowed := range a.allowList {
+		if allowed.permission == p && allowed.projectID == projectID {
+			return nil
+		}
+	}
+	return status.Errorf(codes.PermissionDenied, "permission %q denied for %q or %q", p, projectID, entityID)
+}
+
+func (a *allowListAuth) EndUserID(ctx context.Context) (string, error) {
+	return "42", nil
+}
+
+func (a *allowListAuth) PurgePolicy(ctx context.Context, projectID string, entityID string, r iam.Resource) error {
+	return nil
+}
+
 type fakeAuth struct {
 	// Whether auth calls return an error to exercise err code paths.
 	authErr, endUserIDErr, purgeErr bool
@@ -400,30 +429,6 @@ func (a *fakeAuth) PurgePolicy(ctx context.Context, projectID string, entityID s
 	}
 	return nil
 }
-
-type fakeFilter struct {
-	// Whether filter calls return an error to exercise err code paths.
-	err bool
-}
-
-func (f *fakeFilter) Validate(filter string) error {
-	if f.err {
-		return status.Errorf(codes.InvalidArgument, "failed to parse filter %q", filter)
-	}
-	return nil
-}
-
-type fakeLogger struct{}
-
-func (fakeLogger) PrepareCtx(ctx context.Context, projectID string) context.Context {
-	return ctx
-}
-func (fakeLogger) Info(ctx context.Context, args ...interface{})                    {}
-func (fakeLogger) Infof(ctx context.Context, format string, args ...interface{})    {}
-func (fakeLogger) Warning(ctx context.Context, args ...interface{})                 {}
-func (fakeLogger) Warningf(ctx context.Context, format string, args ...interface{}) {}
-func (fakeLogger) Error(ctx context.Context, args ...interface{})                   {}
-func (fakeLogger) Errorf(ctx context.Context, format string, args ...interface{})   {}
 
 func TestValidatePageSize(t *testing.T) {
 	tests := []struct {

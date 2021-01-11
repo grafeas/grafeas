@@ -1,0 +1,415 @@
+{
+	"info": {
+		"_postman_id": "69f40175-9607-410f-995e-b42f60fec926",
+		"name": "Grafeas API",
+		"description": "Illustrates the different API calls to create and view projects, notes and occurrences.\nDifferent types of notes and occurrences are generated (build, vulnerability, deployment)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "create a project for the notes",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"name\":\"projects/provider_example\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{host}}/v1beta1/projects",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"v1beta1",
+						"projects"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create a project for the occurrences",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"name\":\"projects/occurrence_example\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{host}}/v1beta1/projects",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"v1beta1",
+						"projects"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "list all projects",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{host}}/v1beta1/projects",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"v1beta1",
+						"projects"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create note - vulnerability",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"shortDescription\": \"Gives an example vulnerability note\",\n    \"longDescription\": \"Shows the fields that need to be set in order to create a vulnerability note inside a project\",\n    \"kind\": \"VULNERABILITY\",\n    \"vulnerability\": {\n        \"details\": [\n        {\n            \"package\": \"libexempi3\",\n            \"cpeUri\": \"cpe:/o:debian:debian_linux:7\",\n            \"minAffectedVersion\": {\n              \"name\": \"2.5.7\",\n              \"revision\": \"1\",\n              \"kind\": \"NORMAL\"\n            }\n        }]\n    }\n}"
+				},
+				"url": {
+					"raw": "http://{{host}}/v1beta1/projects/provider_example/notes?note_id=exampleVulnerabilityNote",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"v1beta1",
+						"projects",
+						"provider_example",
+						"notes"
+					],
+					"query": [
+						{
+							"key": "note_id",
+							"value": "exampleVulnerabilityNote"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create note - deployment",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"shortDescription\": \"Gives an example deployment note\",\n    \"longDescription\": \"Shows the fields that need to be set in order to create a deployment note inside a project\",\n    \"kind\": \"DEPLOYMENT\",\n    \"deployable\": {\n            \"resourceUri\":[\n            \"someurui\"\n            ]\n    }\n}"
+				},
+				"url": {
+					"raw": "http://{{host}}/v1beta1/projects/provider_example/notes?note_id=exampleDeploymentNote",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"v1beta1",
+						"projects",
+						"provider_example",
+						"notes"
+					],
+					"query": [
+						{
+							"key": "note_id",
+							"value": "exampleDeploymentNote"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create note - build",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"shortDescription\": \"Gives an example build note\",\n    \"longDescription\": \"Shows the fields that need to be set in order to create a build note inside a project\",\n    \"kind\": \"BUILD\",\n    \"build\": {\n    \t\"builderVersion\": \"some version\",\n    \t\"signature\":{\n        \t\t\"publicKey\": \"some public key\",\n        \t\t\"signature\": \"Z3JhZmVhcw==\",\n        \t\t\"keyId\": \"some key identifier\",\n        \t\t\"keyType\": 0\n        \t\n    \t}\n    }\n}"
+				},
+				"url": {
+					"raw": "http://{{host}}/v1beta1/projects/provider_example/notes?note_id=exampleBuildNote",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"v1beta1",
+						"projects",
+						"provider_example",
+						"notes"
+					],
+					"query": [
+						{
+							"key": "note_id",
+							"value": "exampleBuildNote"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "list notes in a project",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{host}}/v1beta1/projects/provider_example/notes",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"v1beta1",
+						"projects",
+						"provider_example",
+						"notes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create occurrence - deployment",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"projects/occurrence_example/occurences/exampleDeploymentOccurrence\",\n    \"resource\": {\n  \t\"name\": \"some os\",\n    \"uri\": \"https://gcr.io/project/image@sha256:foo\"\n  },\n  \"noteName\": \"projects/provider_example/notes/exampleDeploymentNote\",\n  \"kind\": \"DEPLOYMENT\",\n  \"deployment\": {\n  \t\"deployment\": {\n  \t \"userEmail\": \"user_email\",\n            \"address\": \"address\",\n            \"resourceUri\":[\n                \"resource_uri\",\n                \"resource_uri\"\n            ],\n            \"undeployTime\": \"2000-01-23T04:56:07.000+00:00\",\n            \"deployTime\": \"2000-01-23T04:56:07.000+00:00\",\n            \"config\": \"config\",\n            \"platform\": \"CUSTOM\"\n\t}\n  }\n}"
+				},
+				"url": {
+					"raw": "http://{{host}}/v1beta1/projects/occurrence_example/occurrences",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"v1beta1",
+						"projects",
+						"occurrence_example",
+						"occurrences"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create occurrence - vulnerability",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"projects/occurrence_example/occurrences/examplevulnerabilityOccurrence\",\n  \"resource\": {\n    \"uri\": \"https://gcr.io/project/image@sha256:foo\"\n  },\n  \"noteName\": \"projects/provider_example/notes/exampleVulnerabilityNote\",\n  \"kind\": \"VULNERABILITY\",\n  \"vulnerability\": {\n    \"packageIssue\": [\n      {\n        \"affectedLocation\": {\n          \"cpeUri\": \"7\",\n          \"package\": \"a\",\n          \"version\": {\n            \"name\": \"v1.1.1\",\n            \"kind\": \"NORMAL\",\n            \"revision\": \"r\"\n          }\n        },\n        \"fixedLocation\": {\n          \"cpeUri\": \"cpe:/o:debian:debian_linux:7\",\n          \"package\": \"a\",\n          \"version\": {\n            \"name\": \"namestring\",\n            \"kind\": \"NORMAL\",\n            \"revision\": \"1\"\n          }\n        }\n      }\n    ]\n  }\n}"
+				},
+				"url": {
+					"raw": "http://{{host}}/v1beta1/projects/occurrence_example/occurrences",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"v1beta1",
+						"projects",
+						"occurrence_example",
+						"occurrences"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create occurrence - build",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"projects/occurrence_example/occurrences/exampleBuildOccurrence\",\n  \"resource\": {\n  \t\"name\": \"some os\",\n    \"uri\": \"https://gcr.io/project/image@sha256:foo\"\n  },\n  \"noteName\": \"projects/provider_example/notes/exampleBuildNote\",\n  \"kind\": \"BUILD\",\n  \"build\": {\n  \t\t\"provenance\":{\n  \t\t\"id\":\"build identifier\",\n  \t\t\"project_id\": \"some project identifier\",\n  \t\t\"commands\": [],\n  \t\t\"built_artifacts\": [\n  \t\t\t{\n  \t\t\t\t\t\"checksum\": \"123\",\n  \t\t\t\t\t\"id\": \"some identifier for the artifact\",\n  \t\t\t\t\t\"names\": [\"name of related artifact\"]\n  \t\t\t}\n  \t\t\t],\n  \t\t\"create_time\": \"2020-03-12T14:01:39.728983Z\",\n  \t\t\"start_time\": \"2020-03-12T14:02:39.728983Z\",\n  \t\t\"end_time\": \"2020-03-12T14:03:39.728983Z\",\n  \t\t\"creator\": \"user initiating the build\",\n  \t\t\"logs_uri\": \"location of build logs\",\n  \t\t\"source_provenance\": {\n  \t\t\t\"artifact_storage_source_uri\": \"input binary artifacts from this build\",\n  \t\t\t\"context\": {\n  \t\t\t\t\"git\": {\n  \t\t\t\t\t\"url\": \"the git repo url\",\n  \t\t\t\t\t\"revision_id\": \"git commit hash\"\n  \t\t\t\t},\n  \t\t\t\t\"labels\": {}\n  \t\t\t}\n  \t\t},\n  \t\t\"trigger_id\": \"triggered by code commit 123\",\n  \t\t\"builder_version\": \"some version of the builder\"\n  \t},\n  \t\"provenance_bytes\":\"Z3JhZmVhcw==\"\n  }\n}"
+				},
+				"url": {
+					"raw": "http://{{host}}/v1beta1/projects/occurrence_example/occurrences",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"v1beta1",
+						"projects",
+						"occurrence_example",
+						"occurrences"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "list occurrences",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{host}}/v1beta1/projects/occurrence_example/occurrences",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"v1beta1",
+						"projects",
+						"occurrence_example",
+						"occurrences"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete a note - build",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"projects/provider_example/notes/testBuildNote\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{host}}/v1beta1/projects/provider_example/notes/exampleBuildNote",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"v1beta1",
+						"projects",
+						"provider_example",
+						"notes",
+						"exampleBuildNote"
+					]
+				},
+				"description": "This gives an error when it runs but the note is deleted successfully."
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "bea7b432-197c-4843-bb6a-609ff6073a7d",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "9d3b2b11-04e2-46a6-98ef-2a85c541dda7",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "5157b649-068b-457f-aef6-5efea848e8d7",
+			"key": "host",
+			"value": "localhost:8080",
+			"type": "string"
+		}
+	],
+	"protocolProfileBehavior": {}
+}

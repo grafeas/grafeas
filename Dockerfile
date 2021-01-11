@@ -1,4 +1,4 @@
-FROM golang:1.12.5
+FROM golang:1.14.0
 RUN apt-get update && apt-get install unzip
 COPY . /go/src/github.com/grafeas/grafeas/
 WORKDIR /go/src/github.com/grafeas/grafeas

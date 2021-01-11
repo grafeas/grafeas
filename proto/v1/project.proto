@@ -22,6 +22,7 @@ option java_package = "io.grafeas.v1.project";
 option objc_class_prefix = "GRA";
 
 import "google/api/annotations.proto";
+import "google/api/resource.proto";
 import "google/protobuf/empty.proto";
 
 // [Projects](https://grafeas.io) API.
@@ -68,7 +69,7 @@ message CreateProjectRequest {
 // Request to get a project.
 message GetProjectRequest {
   // The name of the project in the form of `projects/{PROJECT_ID}`.
-  string name = 1;
+  string name = 1 [(google.api.resource_reference).type = "grafeas.io/Project"];
 }
 
 // Request to list projects.
@@ -86,7 +87,7 @@ message ListProjectsRequest {
 // Request to delete a project.
 message DeleteProjectRequest {
   // The name of the project in the form of `projects/{PROJECT_ID}`.
-  string name = 1;
+  string name = 1 [(google.api.resource_reference).type = "grafeas.io/Project"];
 }
 
 // Response for listing projects.
@@ -102,6 +103,11 @@ message ListProjectsResponse {
 
 // Describes a Grafeas project.
 message Project {
+  option (google.api.resource) = {
+    type: "grafeas.io/Project"
+    pattern: "projects/{project}"
+  };
+
   // The name of the project in the form of `projects/{PROJECT_ID}`.
   string name = 1;
 }

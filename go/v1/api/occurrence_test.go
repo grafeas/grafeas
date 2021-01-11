@@ -18,9 +18,11 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/golang/protobuf/proto"
 	"github.com/google/go-cmp/cmp"
 	gpb "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto"
 	"golang.org/x/net/context"
+	fieldmaskpb "google.golang.org/genproto/protobuf/field_mask"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -31,8 +33,6 @@ func TestGetOccurrence(t *testing.T) {
 	g := &API{
 		Storage:           s,
 		Auth:              &fakeAuth{},
-		Filter:            &fakeFilter{},
-		Logger:            &fakeLogger{},
 		EnforceValidation: true,
 	}
 
@@ -46,13 +46,15 @@ func TestGetOccurrence(t *testing.T) {
 	req := &gpb.GetOccurrenceRequest{
 		Name: createdOcc.Name,
 	}
-	gotOcc := &gpb.Occurrence{}
-	if err := g.GetOccurrence(ctx, req, gotOcc); err != nil {
-		t.Errorf("Got err %v, want success", err)
+	gotOcc, err := g.GetOccurrence(ctx, req)
+	if err != nil {
+		t.Fatalf("Got err %v, want success", err)
 	}
 
-	opt := cmp.FilterPath(func(p cmp.Path) bool { return p.String() == "Name" }, cmp.Ignore())
-	if diff := cmp.Diff(o, gotOcc, opt); diff != "" {
+	// TODO: migrate to protocolbuffers/protobuf-go when it is stable so we can use
+	// protocmp.IgnoreFields instead.
+	gotOcc.Name = ""
+	if diff := cmp.Diff(o, gotOcc, cmp.Comparer(proto.Equal)); diff != "" {
 		t.Errorf("GetOccurrence(%v) returned diff (want -> got):\n%s", req, diff)
 	}
 }
@@ -91,25 +93,24 @@ func TestGetOccurrenceErrors(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		s := newFakeStorage()
-		s.getOccErr = tt.internalStorageErr
-		g := &API{
-			Storage:           s,
-			Auth:              &fakeAuth{authErr: tt.authErr},
-			Filter:            &fakeFilter{},
-			Logger:            &fakeLogger{},
-			EnforceValidation: true,
-		}
+		t.Run(tt.desc, func(t *testing.T) {
+			s := newFakeStorage()
+			s.getOccErr = tt.internalStorageErr
+			g := &API{
+				Storage:           s,
+				Auth:              &fakeAuth{authErr: tt.authErr},
+				EnforceValidation: true,
+			}
 
-		req := &gpb.GetOccurrenceRequest{
-			Name: tt.occName,
-		}
-		gotOcc := &gpb.Occurrence{}
-		err := g.GetOccurrence(ctx, req, gotOcc)
-		t.Logf("%q: error: %v", tt.desc, err)
-		if status.Code(err) != tt.wantErrStatus {
-			t.Errorf("%q: got error status %v, want %v", tt.desc, status.Code(err), tt.wantErrStatus)
-		}
+			req := &gpb.GetOccurrenceRequest{
+				Name: tt.occName,
+			}
+			_, err := g.GetOccurrence(ctx, req)
+			t.Logf("%q: error: %v", tt.desc, err)
+			if status.Code(err) != tt.wantErrStatus {
+				t.Errorf("%q: got error status %v, want %v", tt.desc, status.Code(err), tt.wantErrStatus)
+			}
+		})
 	}
 }
 
@@ -119,8 +120,6 @@ func TestListOccurrences(t *testing.T) {
 	g := &API{
 		Storage:           s,
 		Auth:              &fakeAuth{},
-		Filter:            &fakeFilter{},
-		Logger:            &fakeLogger{},
 		EnforceValidation: true,
 	}
 
@@ -133,13 +132,18 @@ func TestListOccurrences(t *testing.T) {
 	req := &gpb.ListOccurrencesRequest{
 		Parent: "projects/consumer1",
 	}
-	resp := &gpb.ListOccurrencesResponse{}
-	if err := g.ListOccurrences(ctx, req, resp); err != nil {
-		t.Errorf("Got err %v, want success", err)
+	resp, err := g.ListOccurrences(ctx, req)
+	if err != nil {
+		t.Fatalf("Got err %v, want success", err)
 	}
 
-	opt := cmp.FilterPath(func(p cmp.Path) bool { return p.String() == "Name" }, cmp.Ignore())
-	if diff := cmp.Diff(o, resp.Occurrences[0], opt); diff != "" {
+	if len(resp.Occurrences) != 1 {
+		t.Fatalf("Got occurrences of len %d, want 1", len(resp.Occurrences))
+	}
+	// TODO: migrate to protocolbuffers/protobuf-go when it is stable so we can use
+	// protocmp.IgnoreFields instead.
+	resp.Occurrences[0].Name = ""
+	if diff := cmp.Diff(o, resp.Occurrences[0], cmp.Comparer(proto.Equal)); diff != "" {
 		t.Errorf("ListOccurrences(%v) returned diff (want -> got):\n%s", req, diff)
 	}
 }
@@ -148,11 +152,11 @@ func TestListOccurrencesErrors(t *testing.T) {
 	ctx := context.Background()
 
 	tests := []struct {
-		desc                                   string
-		parent                                 string
-		pageSize                               int32
-		internalStorageErr, authErr, filterErr bool
-		wantErrStatus                          codes.Code
+		desc                        string
+		parent                      string
+		pageSize                    int32
+		internalStorageErr, authErr bool
+		wantErrStatus               codes.Code
 	}{
 		{
 			desc:          "invalid parent name",
@@ -172,12 +176,6 @@ func TestListOccurrencesErrors(t *testing.T) {
 			wantErrStatus:      codes.Internal,
 		},
 		{
-			desc:          "filter parse error",
-			parent:        "projects/consumer1",
-			filterErr:     true,
-			wantErrStatus: codes.InvalidArgument,
-		},
-		{
 			desc:          "invalid page size error",
 			parent:        "projects/consumer1",
 			pageSize:      -1,
@@ -185,26 +183,25 @@ func TestListOccurrencesErrors(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		s := newFakeStorage()
-		s.listOccsErr = tt.internalStorageErr
-		g := &API{
-			Storage:           s,
-			Auth:              &fakeAuth{authErr: tt.authErr},
-			Filter:            &fakeFilter{err: tt.filterErr},
-			Logger:            &fakeLogger{},
-			EnforceValidation: true,
-		}
+		t.Run(tt.desc, func(t *testing.T) {
+			s := newFakeStorage()
+			s.listOccsErr = tt.internalStorageErr
+			g := &API{
+				Storage:           s,
+				Auth:              &fakeAuth{authErr: tt.authErr},
+				EnforceValidation: true,
+			}
 
-		req := &gpb.ListOccurrencesRequest{
-			Parent:   tt.parent,
-			PageSize: tt.pageSize,
-		}
-		resp := &gpb.ListOccurrencesResponse{}
-		err := g.ListOccurrences(ctx, req, resp)
-		t.Logf("%q: error: %v", tt.desc, err)
-		if status.Code(err) != tt.wantErrStatus {
-			t.Errorf("%q: got error status %v, want %v", tt.desc, status.Code(err), tt.wantErrStatus)
-		}
+			req := &gpb.ListOccurrencesRequest{
+				Parent:   tt.parent,
+				PageSize: tt.pageSize,
+			}
+			_, err := g.ListOccurrences(ctx, req)
+			t.Logf("%q: error: %v", tt.desc, err)
+			if status.Code(err) != tt.wantErrStatus {
+				t.Errorf("%q: got error status %v, want %v", tt.desc, status.Code(err), tt.wantErrStatus)
+			}
+		})
 	}
 }
 
@@ -213,8 +210,6 @@ func TestCreateOccurrence(t *testing.T) {
 	g := &API{
 		Storage:           newFakeStorage(),
 		Auth:              &fakeAuth{},
-		Filter:            &fakeFilter{},
-		Logger:            &fakeLogger{},
 		EnforceValidation: true,
 	}
 
@@ -222,13 +217,15 @@ func TestCreateOccurrence(t *testing.T) {
 		Parent:     "projects/consumer1",
 		Occurrence: vulnzOcc(t, "consumer1", "projects/goog-vulnz/notes/CVE-UH-OH", "debian"),
 	}
-	o := &gpb.Occurrence{}
-	if err := g.CreateOccurrence(ctx, req, o); err != nil {
-		t.Errorf("Got err %v, want success", err)
+	createdOcc, err := g.CreateOccurrence(ctx, req)
+	if err != nil {
+		t.Fatalf("Got err %v, want success", err)
 	}
 
-	opt := cmp.FilterPath(func(p cmp.Path) bool { return p.String() == "Name" }, cmp.Ignore())
-	if diff := cmp.Diff(req.Occurrence, o, opt); diff != "" {
+	// TODO: migrate to protocolbuffers/protobuf-go when it is stable so we can use
+	// protocmp.IgnoreFields instead.
+	createdOcc.Name = ""
+	if diff := cmp.Diff(req.Occurrence, createdOcc, cmp.Comparer(proto.Equal)); diff != "" {
 		t.Errorf("CreateOccurrence(%v) returned diff (want -> got):\n%s", req, diff)
 	}
 }
@@ -291,26 +288,25 @@ func TestCreateOccurrenceErrors(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		s := newFakeStorage()
-		s.createOccErr = tt.internalStorageErr
-		g := &API{
-			Storage:           s,
-			Auth:              &fakeAuth{authErr: tt.authErr, endUserIDErr: tt.endUserIDErr},
-			Filter:            &fakeFilter{},
-			Logger:            &fakeLogger{},
-			EnforceValidation: true,
-		}
+		t.Run(tt.desc, func(t *testing.T) {
+			s := newFakeStorage()
+			s.createOccErr = tt.internalStorageErr
+			g := &API{
+				Storage:           s,
+				Auth:              &fakeAuth{authErr: tt.authErr, endUserIDErr: tt.endUserIDErr},
+				EnforceValidation: true,
+			}
 
-		req := &gpb.CreateOccurrenceRequest{
-			Parent:     tt.parent,
-			Occurrence: tt.occ,
-		}
-		o := &gpb.Occurrence{}
-		err := g.CreateOccurrence(ctx, req, o)
-		t.Logf("%q: error: %v", tt.desc, err)
-		if status.Code(err) != tt.wantErrStatus {
-			t.Errorf("%q: got error status %v, want %v", tt.desc, status.Code(err), tt.wantErrStatus)
-		}
+			req := &gpb.CreateOccurrenceRequest{
+				Parent:     tt.parent,
+				Occurrence: tt.occ,
+			}
+			_, err := g.CreateOccurrence(ctx, req)
+			t.Logf("%q: error: %v", tt.desc, err)
+			if status.Code(err) != tt.wantErrStatus {
+				t.Errorf("%q: got error status %v, want %v", tt.desc, status.Code(err), tt.wantErrStatus)
+			}
+		})
 	}
 }
 
@@ -319,8 +315,6 @@ func TestBatchCreateOccurrences(t *testing.T) {
 	g := &API{
 		Storage:           newFakeStorage(),
 		Auth:              &fakeAuth{},
-		Filter:            &fakeFilter{},
-		Logger:            &fakeLogger{},
 		EnforceValidation: true,
 	}
 
@@ -330,16 +324,18 @@ func TestBatchCreateOccurrences(t *testing.T) {
 			vulnzOcc(t, "consumer1", "projects/goog-vulnz/notes/CVE-UH-OH", "debian"),
 		},
 	}
-	resp := &gpb.BatchCreateOccurrencesResponse{}
-	if err := g.BatchCreateOccurrences(ctx, req, resp); err != nil {
-		t.Errorf("Got err %v, want success", err)
+	resp, err := g.BatchCreateOccurrences(ctx, req)
+	if err != nil {
+		t.Fatalf("Got err %v, want success", err)
 	}
 
 	if len(resp.Occurrences) != 1 {
-		t.Errorf("Got created occurrences of len %d, want 1", len(resp.Occurrences))
+		t.Fatalf("Got created occurrences of len %d, want 1", len(resp.Occurrences))
 	}
-	opt := cmp.FilterPath(func(p cmp.Path) bool { return p.String() == "Name" }, cmp.Ignore())
-	if diff := cmp.Diff(req.Occurrences[0], resp.Occurrences[0], opt); diff != "" {
+	// TODO: migrate to protocolbuffers/protobuf-go when it is stable so we can use
+	// protocmp.IgnoreFields instead.
+	resp.Occurrences[0].Name = ""
+	if diff := cmp.Diff(req.Occurrences[0], resp.Occurrences[0], cmp.Comparer(proto.Equal)); diff != "" {
 		t.Errorf("BatchCreateOccurrences(%v) returned diff (want -> got):\n%s", req, diff)
 	}
 }
@@ -444,26 +440,25 @@ func TestBatchCreateOccurrencesErrors(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		s := newFakeStorage()
-		s.batchCreateOccsErr = tt.internalStorageErr
-		g := &API{
-			Storage:           s,
-			Auth:              &fakeAuth{authErr: tt.authErr, endUserIDErr: tt.endUserIDErr},
-			Filter:            &fakeFilter{},
-			Logger:            &fakeLogger{},
-			EnforceValidation: true,
-		}
+		t.Run(tt.desc, func(t *testing.T) {
+			s := newFakeStorage()
+			s.batchCreateOccsErr = tt.internalStorageErr
+			g := &API{
+				Storage:           s,
+				Auth:              &fakeAuth{authErr: tt.authErr, endUserIDErr: tt.endUserIDErr},
+				EnforceValidation: true,
+			}
 
-		req := &gpb.BatchCreateOccurrencesRequest{
-			Parent:      tt.parent,
-			Occurrences: tt.occs,
-		}
-		resp := &gpb.BatchCreateOccurrencesResponse{}
-		err := g.BatchCreateOccurrences(ctx, req, resp)
-		t.Logf("%q: error: %v", tt.desc, err)
-		if status.Code(err) != tt.wantErrStatus {
-			t.Errorf("%q: got error status %v, want %v", tt.desc, status.Code(err), tt.wantErrStatus)
-		}
+			req := &gpb.BatchCreateOccurrencesRequest{
+				Parent:      tt.parent,
+				Occurrences: tt.occs,
+			}
+			_, err := g.BatchCreateOccurrences(ctx, req)
+			t.Logf("%q: error: %v", tt.desc, err)
+			if status.Code(err) != tt.wantErrStatus {
+				t.Errorf("%q: got error status %v, want %v", tt.desc, status.Code(err), tt.wantErrStatus)
+			}
+		})
 	}
 }
 
@@ -473,8 +468,6 @@ func TestUpdateOccurrence(t *testing.T) {
 	g := &API{
 		Storage:           s,
 		Auth:              &fakeAuth{},
-		Filter:            &fakeFilter{},
-		Logger:            &fakeLogger{},
 		EnforceValidation: true,
 	}
 
@@ -490,13 +483,15 @@ func TestUpdateOccurrence(t *testing.T) {
 		Name:       createdOcc.Name,
 		Occurrence: o,
 	}
-	updatedOcc := &gpb.Occurrence{}
-	if err := g.UpdateOccurrence(ctx, req, updatedOcc); err != nil {
-		t.Errorf("Got err %v, want success", err)
+	updatedOcc, err := g.UpdateOccurrence(ctx, req)
+	if err != nil {
+		t.Fatalf("Got err %v, want success", err)
 	}
 
-	opt := cmp.FilterPath(func(p cmp.Path) bool { return p.String() == "Name" }, cmp.Ignore())
-	if diff := cmp.Diff(o, updatedOcc, opt); diff != "" {
+	// TODO: migrate to protocolbuffers/protobuf-go when it is stable so we can use
+	// protocmp.IgnoreFields instead.
+	updatedOcc.Name = ""
+	if diff := cmp.Diff(o, updatedOcc, cmp.Comparer(proto.Equal)); diff != "" {
 		t.Errorf("UpdateOccurrence(%v) returned diff (want -> got):\n%s", req, diff)
 	}
 }
@@ -506,7 +501,8 @@ func TestUpdateOccurrenceErrors(t *testing.T) {
 
 	tests := []struct {
 		desc                        string
-		occName                     string
+		occName                     string // Ignored if existingOcc is supplied
+		existingOcc                 *gpb.Occurrence
 		occ                         *gpb.Occurrence
 		internalStorageErr, authErr bool
 		wantErrStatus               codes.Code
@@ -520,17 +516,29 @@ func TestUpdateOccurrenceErrors(t *testing.T) {
 		{
 			desc:          "nil occurrence",
 			occName:       "projects/consumer1/occurrences/1234-abcd-3456-wxyz",
+			existingOcc:   vulnzOcc(t, "consumer1", "projects/goog-vulnz/notes/CVE-UH-OH", "debian"),
 			occ:           nil,
 			wantErrStatus: codes.InvalidArgument,
 		},
 		{
 			desc:          "invalid note name",
 			occName:       "projects/consumer1/occurrences/1234-abcd-3456-wxyz",
+			existingOcc:   vulnzOcc(t, "consumer1", "projects/goog-vulnz/notes/CVE-UH-OH", "debian"),
 			occ:           vulnzOcc(t, "consumer1", "projects/foobar", "debian"),
 			wantErrStatus: codes.InvalidArgument,
 		},
 		{
 			desc:          "auth error",
+			existingOcc:   vulnzOcc(t, "consumer1", "projects/goog-vulnz/notes/CVE-UH-OH", "debian"),
+			occ:           vulnzOcc(t, "consumer1", "projects/goog-vulnz/notes/CVE-UH-OH", "debian"),
+			authErr:       true,
+			wantErrStatus: codes.PermissionDenied,
+		},
+		{
+			// This test ensures that users lacking the update permission get PermissionDenied
+			// rather than a NotFound error on a missing occurrence (ensuring that we do not
+			// leak the existence of an occurrence to unauthorized users).
+			desc:          "auth error with no existing occurrence",
 			occName:       "projects/consumer1/occurrences/1234-abcd-3456-wxyz",
 			occ:           vulnzOcc(t, "consumer1", "projects/goog-vulnz/notes/CVE-UH-OH", "debian"),
 			authErr:       true,
@@ -539,6 +547,7 @@ func TestUpdateOccurrenceErrors(t *testing.T) {
 		{
 			desc:               "internal storage error",
 			occName:            "projects/consumer1/occurrences/1234-abcd-3456-wxyz",
+			existingOcc:        vulnzOcc(t, "consumer1", "projects/goog-vulnz/notes/CVE-UH-OH", "debian"),
 			occ:                vulnzOcc(t, "consumer1", "projects/goog-vulnz/notes/CVE-UH-OH", "debian"),
 			internalStorageErr: true,
 			wantErrStatus:      codes.Internal,
@@ -552,26 +561,163 @@ func TestUpdateOccurrenceErrors(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		s := newFakeStorage()
-		s.updateOccErr = tt.internalStorageErr
-		g := &API{
-			Storage:           s,
-			Auth:              &fakeAuth{authErr: tt.authErr},
-			Filter:            &fakeFilter{},
-			Logger:            &fakeLogger{},
-			EnforceValidation: true,
-		}
+		t.Run(tt.desc, func(t *testing.T) {
+			s := newFakeStorage()
+			s.updateOccErr = tt.internalStorageErr
+			g := &API{
+				Storage:           s,
+				Auth:              &fakeAuth{authErr: tt.authErr},
+				EnforceValidation: true,
+			}
 
-		req := &gpb.UpdateOccurrenceRequest{
-			Name:       tt.occName,
-			Occurrence: tt.occ,
-		}
-		o := &gpb.Occurrence{}
-		err := g.UpdateOccurrence(ctx, req, o)
-		t.Logf("%q: error: %v", tt.desc, err)
-		if status.Code(err) != tt.wantErrStatus {
-			t.Errorf("%q: got error status %v, want %v", tt.desc, status.Code(err), tt.wantErrStatus)
-		}
+			occName := tt.occName
+			if tt.existingOcc != nil {
+				// Create the occurrence to update.
+				createdOcc, err := s.CreateOccurrence(ctx, "consumer1", "", tt.existingOcc)
+				if err != nil {
+					t.Fatalf("Failed to create occurrence %+v", tt.existingOcc)
+				}
+				occName = createdOcc.Name
+			}
+
+			req := &gpb.UpdateOccurrenceRequest{
+				Name:       occName,
+				Occurrence: tt.occ,
+			}
+			_, err := g.UpdateOccurrence(ctx, req)
+			t.Logf("%q: error: %v", tt.desc, err)
+			if status.Code(err) != tt.wantErrStatus {
+				t.Errorf("%q: got error status %v, want %v", tt.desc, status.Code(err), tt.wantErrStatus)
+			}
+		})
+	}
+}
+
+func TestUpdateOccurrencePermissions(t *testing.T) {
+	ctx := context.Background()
+	auth := allowListAuth{
+		allowList: []projectPermission{
+			{permission: NotesAttachOccurrence, projectID: "allowed-note"},
+			{permission: OccurrencesUpdate, projectID: "allowed-occurrence"},
+			{permission: OccurrencesGet, projectID: "read-only"},
+			{permission: OccurrencesList, projectID: "read-only"},
+			{permission: NotesGet, projectID: "read-only"},
+			{permission: NotesList, projectID: "read-only"},
+		},
+	}
+
+	tests := []struct {
+		desc        string
+		occProj     string
+		existingOcc *gpb.Occurrence
+		occ         *gpb.Occurrence
+		updateMask  *fieldmaskpb.FieldMask
+		wantStatus  codes.Code
+	}{
+		{
+			desc:        "allowed updates",
+			occProj:     "allowed-occurrence",
+			existingOcc: &gpb.Occurrence{ResourceUri: "old-uri", NoteName: "projects/allowed-note/notes/my-note"},
+			occ:         &gpb.Occurrence{ResourceUri: "new-uri", NoteName: "projects/allowed-note/notes/my-note"},
+			wantStatus:  codes.OK,
+		},
+		{
+			desc:        "no permission on occurrence",
+			occProj:     "forbidden-project",
+			existingOcc: &gpb.Occurrence{ResourceUri: "old-uri", NoteName: "projects/allowed-note/notes/my-note"},
+			occ:         &gpb.Occurrence{ResourceUri: "new-uri", NoteName: "projects/allowed-note/notes/my-note"},
+			wantStatus:  codes.PermissionDenied,
+		},
+		{
+			desc:        "no permission on note",
+			occProj:     "allowed-occurrence",
+			existingOcc: &gpb.Occurrence{ResourceUri: "old-uri", NoteName: "projects/forbidden-project/notes/my-note"},
+			occ:         &gpb.Occurrence{ResourceUri: "new-uri", NoteName: "projects/forbidden-project/notes/my-note"},
+			wantStatus:  codes.PermissionDenied,
+		},
+		{
+			desc:        "read-only permission on occurrence",
+			occProj:     "read-only",
+			existingOcc: &gpb.Occurrence{ResourceUri: "old-uri", NoteName: "projects/allowed-note/notes/my-note"},
+			occ:         &gpb.Occurrence{ResourceUri: "new-uri", NoteName: "projects/allowed-note/notes/my-note"},
+			wantStatus:  codes.PermissionDenied,
+		},
+		{
+			desc:        "read-only permission on note",
+			occProj:     "allowed-occurrence",
+			existingOcc: &gpb.Occurrence{ResourceUri: "old-uri", NoteName: "projects/forbidden-project/notes/my-note"},
+			occ:         &gpb.Occurrence{ResourceUri: "new-uri", NoteName: "projects/read-only/notes/my-note"},
+			wantStatus:  codes.PermissionDenied,
+		},
+		{
+			desc:        "no permission on existing note",
+			occProj:     "allowed-occurrence",
+			existingOcc: &gpb.Occurrence{ResourceUri: "old-uri", NoteName: "projects/forbidden-project/notes/my-note"},
+			occ:         &gpb.Occurrence{ResourceUri: "new-uri", NoteName: "projects/allowed-note/notes/my-note"},
+			wantStatus:  codes.PermissionDenied,
+		},
+		{
+			desc:        "no permission on new note",
+			occProj:     "allowed-occurrence",
+			existingOcc: &gpb.Occurrence{ResourceUri: "old-uri", NoteName: "projects/allowed-note/notes/my-note"},
+			occ:         &gpb.Occurrence{ResourceUri: "new-uri", NoteName: "projects/forbidden-project/notes/my-note"},
+			wantStatus:  codes.PermissionDenied,
+		},
+		{
+			desc:        "no permission on existing note with field mask",
+			occProj:     "allowed-occurrence",
+			existingOcc: &gpb.Occurrence{ResourceUri: "old-uri", NoteName: "projects/forbidden-project/notes/my-note"},
+			occ:         &gpb.Occurrence{ResourceUri: "new-uri", NoteName: "projects/allowed-note/notes/my-note"},
+			updateMask:  &fieldmaskpb.FieldMask{Paths: []string{"resourceUri"}},
+			wantStatus:  codes.PermissionDenied,
+		},
+		{
+			desc:        "no permission on new note with field mask including note",
+			occProj:     "allowed-occurrence",
+			existingOcc: &gpb.Occurrence{ResourceUri: "old-uri", NoteName: "projects/allowed-note/notes/my-note"},
+			occ:         &gpb.Occurrence{ResourceUri: "new-uri", NoteName: "projects/forbidden-project/notes/my-note"},
+			updateMask:  &fieldmaskpb.FieldMask{Paths: []string{"resourceUri", "noteName"}},
+			wantStatus:  codes.PermissionDenied,
+		},
+		{
+			desc:        "no permission on new note with field mask excluding note",
+			occProj:     "allowed-occurrence",
+			existingOcc: &gpb.Occurrence{ResourceUri: "old-uri", NoteName: "projects/allowed-note/notes/my-note"},
+			occ:         &gpb.Occurrence{ResourceUri: "new-uri", NoteName: "projects/forbidden-project/notes/my-note"},
+			updateMask:  &fieldmaskpb.FieldMask{Paths: []string{"resourceUri"}},
+			// In principle this could be allowed as the NoteName in the incoming occurrence is ignored, so
+			// there is no need to perform a permission check. But as this has been the behavior to date
+			// without any reported issues, it seems safer to leave this returning an error. If a use case for
+			// supporting this arises, it can be revisited.
+			wantStatus: codes.PermissionDenied,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.desc, func(t *testing.T) {
+			s := newFakeStorage()
+			g := &API{
+				Storage:           s,
+				Auth:              &auth,
+				EnforceValidation: true,
+			}
+
+			// Create the occurrence to update.
+			createdOcc, err := s.CreateOccurrence(ctx, tt.occProj, "", tt.existingOcc)
+			if err != nil {
+				t.Fatalf("Failed to create occurrence %+v", tt.existingOcc)
+			}
+
+			req := &gpb.UpdateOccurrenceRequest{
+				Name:       createdOcc.Name,
+				Occurrence: tt.occ,
+				UpdateMask: tt.updateMask,
+			}
+			_, err = g.UpdateOccurrence(ctx, req)
+			if status.Code(err) != tt.wantStatus {
+				t.Fatalf("UpdateOccurrence: got status %v, want %v", status.Code(err), tt.wantStatus)
+			}
+		})
 	}
 }
 
@@ -586,28 +732,28 @@ func TestDeleteOccurrence(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		s := newFakeStorage()
-		g := &API{
-			Storage:           s,
-			Auth:              &fakeAuth{},
-			Filter:            &fakeFilter{},
-			Logger:            &fakeLogger{},
-			EnforceValidation: true,
-		}
+		t.Run(tt.noteName, func(t *testing.T) {
+			s := newFakeStorage()
+			g := &API{
+				Storage:           s,
+				Auth:              &fakeAuth{},
+				EnforceValidation: true,
+			}
 
-		// Create the occurrence to delete.
-		o := vulnzOcc(t, "consumer1", tt.noteName, "debian")
-		createdOcc, err := s.CreateOccurrence(ctx, "consumer1", "", o)
-		if err != nil {
-			t.Fatalf("Failed to create occurrence %+v", o)
-		}
+			// Create the occurrence to delete.
+			o := vulnzOcc(t, "consumer1", tt.noteName, "debian")
+			createdOcc, err := s.CreateOccurrence(ctx, "consumer1", "", o)
+			if err != nil {
+				t.Fatalf("Failed to create occurrence %+v", o)
+			}
 
-		req := &gpb.DeleteOccurrenceRequest{
-			Name: createdOcc.Name,
-		}
-		if err := g.DeleteOccurrence(ctx, req, nil); err != nil {
-			t.Errorf("Got err %v, want success", err)
-		}
+			req := &gpb.DeleteOccurrenceRequest{
+				Name: createdOcc.Name,
+			}
+			if _, err := g.DeleteOccurrence(ctx, req); err != nil {
+				t.Errorf("Got err %v, want success", err)
+			}
+		})
 	}
 }
 
@@ -658,38 +804,38 @@ func TestDeleteOccurrenceErrors(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		s := newFakeStorage()
-		s.deleteOccErr = tt.internalStorageErr
-		g := &API{
-			Storage:           s,
-			Auth:              &fakeAuth{authErr: tt.authErr, purgeErr: tt.purgeErr},
-			Filter:            &fakeFilter{},
-			Logger:            &fakeLogger{},
-			EnforceValidation: true,
-		}
-
-		var createdOcc *gpb.Occurrence
-		if tt.existingOcc != nil {
-			var err error
-			createdOcc, err = s.CreateOccurrence(ctx, "consumer1", "", tt.existingOcc)
-			if err != nil {
-				t.Fatalf("Failed to create occurrence %+v: %v", tt.existingOcc, err)
+		t.Run(tt.desc, func(t *testing.T) {
+			s := newFakeStorage()
+			s.deleteOccErr = tt.internalStorageErr
+			g := &API{
+				Storage:           s,
+				Auth:              &fakeAuth{authErr: tt.authErr, purgeErr: tt.purgeErr},
+				EnforceValidation: true,
 			}
-		}
 
-		occToDelete := createdOcc.GetName()
-		if tt.occToDeleteOverride != "" {
-			occToDelete = tt.occToDeleteOverride
-		}
+			var createdOcc *gpb.Occurrence
+			if tt.existingOcc != nil {
+				var err error
+				createdOcc, err = s.CreateOccurrence(ctx, "consumer1", "", tt.existingOcc)
+				if err != nil {
+					t.Fatalf("Failed to create occurrence %+v: %v", tt.existingOcc, err)
+				}
+			}
 
-		req := &gpb.DeleteOccurrenceRequest{
-			Name: occToDelete,
-		}
-		err := g.DeleteOccurrence(ctx, req, nil)
-		t.Logf("%q: error: %v", tt.desc, err)
-		if status.Code(err) != tt.wantErrStatus {
-			t.Errorf("%q: got error status %v, want %v", tt.desc, status.Code(err), tt.wantErrStatus)
-		}
+			occToDelete := createdOcc.GetName()
+			if tt.occToDeleteOverride != "" {
+				occToDelete = tt.occToDeleteOverride
+			}
+
+			req := &gpb.DeleteOccurrenceRequest{
+				Name: occToDelete,
+			}
+			_, err := g.DeleteOccurrence(ctx, req)
+			t.Logf("%q: error: %v", tt.desc, err)
+			if status.Code(err) != tt.wantErrStatus {
+				t.Errorf("%q: got error status %v, want %v", tt.desc, status.Code(err), tt.wantErrStatus)
+			}
+		})
 	}
 }
 
@@ -699,8 +845,6 @@ func TestListNoteOccurrences(t *testing.T) {
 	g := &API{
 		Storage:           s,
 		Auth:              &fakeAuth{},
-		Filter:            &fakeFilter{},
-		Logger:            &fakeLogger{},
 		EnforceValidation: true,
 	}
 
@@ -718,13 +862,18 @@ func TestListNoteOccurrences(t *testing.T) {
 	req := &gpb.ListNoteOccurrencesRequest{
 		Name: "projects/goog-vulnz/notes/CVE-UH-OH",
 	}
-	resp := &gpb.ListNoteOccurrencesResponse{}
-	if err := g.ListNoteOccurrences(ctx, req, resp); err != nil {
-		t.Errorf("ListNoteOccurrences(%v) got err %v, want success", req, err)
+	resp, err := g.ListNoteOccurrences(ctx, req)
+	if err != nil {
+		t.Fatalf("ListNoteOccurrences(%v) got err %v, want success", req, err)
 	}
 
-	opt := cmp.FilterPath(func(p cmp.Path) bool { return p.String() == "Name" }, cmp.Ignore())
-	if diff := cmp.Diff(createdOcc, resp.Occurrences[0], opt); diff != "" {
+	if len(resp.Occurrences) != 1 {
+		t.Fatalf("Got occurrences of len %d, want 1", len(resp.Occurrences))
+	}
+	// TODO: migrate to protocolbuffers/protobuf-go when it is stable so we can use
+	// protocmp.IgnoreFields instead.
+	resp.Occurrences[0].Name = ""
+	if diff := cmp.Diff(createdOcc, resp.Occurrences[0], cmp.Comparer(proto.Equal)); diff != "" {
 		t.Errorf("ListNoteOccurrences(%v) returned diff (want -> got):\n%s", req, diff)
 	}
 }
@@ -733,53 +882,57 @@ func TestListNoteOccurrencesErrors(t *testing.T) {
 	ctx := context.Background()
 
 	tests := []struct {
-		desc                                   string
-		noteName                               string
-		internalStorageErr, authErr, filterErr bool
-		wantErrStatus                          codes.Code
+		desc                        string
+		noteName                    string
+		pageSize                    int32
+		internalStorageErr, authErr bool
+		wantErrStatus               codes.Code
 	}{
 		{
 			desc:          "invalid note name",
 			noteName:      "projects/google-vulnz/notes/",
 			wantErrStatus: codes.InvalidArgument,
-		}, {
+		},
+		{
 			desc:          "auth error",
 			noteName:      "projects/goog-vulnz/notes/CVE-UH-OH",
 			authErr:       true,
 			wantErrStatus: codes.PermissionDenied,
-		}, {
+		},
+		{
 			desc:               "internal storage error",
 			noteName:           "projects/goog-vulnz/notes/CVE-UH-OH",
 			internalStorageErr: true,
 			wantErrStatus:      codes.Internal,
-		}, {
-			desc:          "filter parse error",
+		},
+		{
+			desc:          "invalid page size error",
 			noteName:      "projects/goog-vulnz/notes/CVE-UH-OH",
-			filterErr:     true,
+			pageSize:      -1,
 			wantErrStatus: codes.InvalidArgument,
 		},
 	}
 
 	for _, tt := range tests {
-		s := newFakeStorage()
-		s.listNoteOccsErr = tt.internalStorageErr
-		g := &API{
-			Storage:           s,
-			Auth:              &fakeAuth{authErr: tt.authErr},
-			Filter:            &fakeFilter{err: tt.filterErr},
-			Logger:            &fakeLogger{},
-			EnforceValidation: true,
-		}
+		t.Run(tt.desc, func(t *testing.T) {
+			s := newFakeStorage()
+			s.listNoteOccsErr = tt.internalStorageErr
+			g := &API{
+				Storage:           s,
+				Auth:              &fakeAuth{authErr: tt.authErr},
+				EnforceValidation: true,
+			}
 
-		req := &gpb.ListNoteOccurrencesRequest{
-			Name: tt.noteName,
-		}
-		resp := &gpb.ListNoteOccurrencesResponse{}
-		err := g.ListNoteOccurrences(ctx, req, resp)
-		t.Logf("%q: error: %v", tt.desc, err)
-		if status.Code(err) != tt.wantErrStatus {
-			t.Errorf("%q: got error status %v, want %v", tt.desc, status.Code(err), tt.wantErrStatus)
-		}
+			req := &gpb.ListNoteOccurrencesRequest{
+				Name:     tt.noteName,
+				PageSize: tt.pageSize,
+			}
+			_, err := g.ListNoteOccurrences(ctx, req)
+			t.Logf("%q: error: %v", tt.desc, err)
+			if status.Code(err) != tt.wantErrStatus {
+				t.Errorf("%q: got error status %v, want %v", tt.desc, status.Code(err), tt.wantErrStatus)
+			}
+		})
 	}
 }
 

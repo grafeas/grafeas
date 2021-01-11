@@ -52,14 +52,14 @@ const (
 	insertOccurrence = `INSERT INTO occurrences(project_name, occurrence_name, note_id, data)
                       VALUES ($1, $2, (SELECT id FROM notes WHERE project_name = $3 AND note_name = $4), $5)`
 	searchOccurrence = `SELECT data FROM occurrences WHERE project_name = $1 AND occurrence_name = $2`
-	updateOccurrence = `UPDATE occurrences SET data = $3 WHERE project_name = $1 AND occurrence_name = $2`
+	updateOccurrence = `UPDATE occurrences SET data = $1 WHERE project_name = $2 AND occurrence_name = $3`
 	deleteOccurrence = `DELETE FROM occurrences WHERE project_name = $1 AND occurrence_name = $2`
 	listOccurrences  = `SELECT id, data FROM occurrences WHERE project_name = $1 AND id > $2 LIMIT $3`
 	occurrenceCount  = `SELECT COUNT(*) FROM occurrences WHERE project_name = $1`
 
 	insertNote          = `INSERT INTO notes(project_name, note_name, data) VALUES ($1, $2, $3)`
 	searchNote          = `SELECT data FROM notes WHERE project_name = $1 AND note_name = $2`
-	updateNote          = `UPDATE notes SET data = $3 WHERE project_name = $1 AND note_name = $2`
+	updateNote          = `UPDATE notes SET data = $1 WHERE project_name = $2 AND note_name = $3`
 	deleteNote          = `DELETE FROM notes WHERE project_name = $1 AND note_name = $2`
 	listNotes           = `SELECT id, data FROM notes WHERE project_name = $1 AND id > $2 LIMIT $3`
 	noteCount           = `SELECT COUNT(*) FROM notes WHERE project_name = $1`

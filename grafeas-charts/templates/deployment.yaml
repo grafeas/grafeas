@@ -27,19 +27,35 @@ spec:
           args: ["--config=/etc/config/config.yaml"]
           ports:
             - name: grafeas
-              containerPort: 443
+              containerPort: {{ .Values.container.port }}
               protocol: TCP
           volumeMounts:
           - name: config-volume
             mountPath: /etc/config
+{{- if eq .Values.certificates.enabled true }}
           - name: certificates
             mountPath: /certificates
-{{- if eq .Values.storageType "embedded" }}
+{{- end }}
+{{- if .Values.persistence.enabled }}
+{{- if eq .Values.persistence.storageType "embedded" }}
           - name: persistent-volume
             mountPath: /data
 {{- end }}
+{{- end }}
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+{{- toYaml .Values.resources | nindent 12 }}
+          livenessProbe:
+             tcpSocket:
+               port: grafeas
+             initialDelaySeconds: {{ .Values.livenessprobe.initialDelaySeconds }}
+             periodSeconds: {{ .Values.livenessprobe.periodSeconds }}
+             failureThreshold: {{ .Values.livenessprobe.failureThreshold }}
+          readinessProbe:
+             tcpSocket:
+               port: grafeas
+             initialDelaySeconds: {{ .Values.readinessprobe.initialDelaySeconds }}
+             periodSeconds: {{ .Values.readinessprobe.periodSeconds }}
+             failureThreshold: {{ .Values.readinessprobe.failureThreshold }}
       volumes:
         - name: config-volume
           configMap:
@@ -47,14 +63,18 @@ spec:
             items:
             - key: config
               path: config.yaml
+{{- if .Values.certificates.enabled }}
         - name: certificates
           secret:
             secretName: {{ .Values.certificates.name }}
-{{- if eq .Values.storageType "embedded" }}
+{{- end }}
+{{- if .Values.persistence.enabled }}
+{{- if eq .Values.persistence.storageType "embedded" }}
         - name: persistent-volume
           persistentVolumeClaim:
-            claimName: {{ .Values.persistentVolumeClaimName }}
+            claimName: {{ .Values.persistence.claimName }}
 {{- end}}
+{{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
