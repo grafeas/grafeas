@@ -138,7 +138,7 @@ openssl pkcs12 -in server.p12 -out server.pem -clcerts
 Now, `curl` the endpoint:
 
 ```bash
-curl -k --cert server.pem https://localhost:8080/v1beta1/projects
+curl -k --key server.key --cacert ca.pem --cert server.pem https://localhost:8080/v1beta1/projects
 ```
 
 ### gRPC with a go client
