@@ -4,6 +4,6 @@
 //go:generate rm -rf bin
 //go:generate rm -rf readme.txt
 //go:generate rm -rf protoc.zip
-//go:generate ./downloadProtoc.sh
+//go:generate bash ./downloadProtoc.sh
 //go:generate unzip protoc.zip -d .
 package protoc

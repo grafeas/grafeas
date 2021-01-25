@@ -22,6 +22,7 @@ import (
 	"github.com/google/go-cmp/cmp"
 	gpb "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto"
 	"golang.org/x/net/context"
+	fieldmaskpb "google.golang.org/genproto/protobuf/field_mask"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -45,8 +46,8 @@ func TestGetOccurrence(t *testing.T) {
 	req := &gpb.GetOccurrenceRequest{
 		Name: createdOcc.Name,
 	}
-	gotOcc := &gpb.Occurrence{}
-	if err := g.GetOccurrence(ctx, req, gotOcc); err != nil {
+	gotOcc, err := g.GetOccurrence(ctx, req)
+	if err != nil {
 		t.Fatalf("Got err %v, want success", err)
 	}
 
@@ -104,8 +105,7 @@ func TestGetOccurrenceErrors(t *testing.T) {
 			req := &gpb.GetOccurrenceRequest{
 				Name: tt.occName,
 			}
-			gotOcc := &gpb.Occurrence{}
-			err := g.GetOccurrence(ctx, req, gotOcc)
+			_, err := g.GetOccurrence(ctx, req)
 			t.Logf("%q: error: %v", tt.desc, err)
 			if status.Code(err) != tt.wantErrStatus {
 				t.Errorf("%q: got error status %v, want %v", tt.desc, status.Code(err), tt.wantErrStatus)
@@ -132,8 +132,8 @@ func TestListOccurrences(t *testing.T) {
 	req := &gpb.ListOccurrencesRequest{
 		Parent: "projects/consumer1",
 	}
-	resp := &gpb.ListOccurrencesResponse{}
-	if err := g.ListOccurrences(ctx, req, resp); err != nil {
+	resp, err := g.ListOccurrences(ctx, req)
+	if err != nil {
 		t.Fatalf("Got err %v, want success", err)
 	}
 
@@ -196,8 +196,7 @@ func TestListOccurrencesErrors(t *testing.T) {
 				Parent:   tt.parent,
 				PageSize: tt.pageSize,
 			}
-			resp := &gpb.ListOccurrencesResponse{}
-			err := g.ListOccurrences(ctx, req, resp)
+			_, err := g.ListOccurrences(ctx, req)
 			t.Logf("%q: error: %v", tt.desc, err)
 			if status.Code(err) != tt.wantErrStatus {
 				t.Errorf("%q: got error status %v, want %v", tt.desc, status.Code(err), tt.wantErrStatus)
@@ -218,8 +217,8 @@ func TestCreateOccurrence(t *testing.T) {
 		Parent:     "projects/consumer1",
 		Occurrence: vulnzOcc(t, "consumer1", "projects/goog-vulnz/notes/CVE-UH-OH", "debian"),
 	}
-	createdOcc := &gpb.Occurrence{}
-	if err := g.CreateOccurrence(ctx, req, createdOcc); err != nil {
+	createdOcc, err := g.CreateOccurrence(ctx, req)
+	if err != nil {
 		t.Fatalf("Got err %v, want success", err)
 	}
 
@@ -302,8 +301,7 @@ func TestCreateOccurrenceErrors(t *testing.T) {
 				Parent:     tt.parent,
 				Occurrence: tt.occ,
 			}
-			o := &gpb.Occurrence{}
-			err := g.CreateOccurrence(ctx, req, o)
+			_, err := g.CreateOccurrence(ctx, req)
 			t.Logf("%q: error: %v", tt.desc, err)
 			if status.Code(err) != tt.wantErrStatus {
 				t.Errorf("%q: got error status %v, want %v", tt.desc, status.Code(err), tt.wantErrStatus)
@@ -326,8 +324,8 @@ func TestBatchCreateOccurrences(t *testing.T) {
 			vulnzOcc(t, "consumer1", "projects/goog-vulnz/notes/CVE-UH-OH", "debian"),
 		},
 	}
-	resp := &gpb.BatchCreateOccurrencesResponse{}
-	if err := g.BatchCreateOccurrences(ctx, req, resp); err != nil {
+	resp, err := g.BatchCreateOccurrences(ctx, req)
+	if err != nil {
 		t.Fatalf("Got err %v, want success", err)
 	}
 
@@ -455,8 +453,7 @@ func TestBatchCreateOccurrencesErrors(t *testing.T) {
 				Parent:      tt.parent,
 				Occurrences: tt.occs,
 			}
-			resp := &gpb.BatchCreateOccurrencesResponse{}
-			err := g.BatchCreateOccurrences(ctx, req, resp)
+			_, err := g.BatchCreateOccurrences(ctx, req)
 			t.Logf("%q: error: %v", tt.desc, err)
 			if status.Code(err) != tt.wantErrStatus {
 				t.Errorf("%q: got error status %v, want %v", tt.desc, status.Code(err), tt.wantErrStatus)
@@ -486,8 +483,8 @@ func TestUpdateOccurrence(t *testing.T) {
 		Name:       createdOcc.Name,
 		Occurrence: o,
 	}
-	updatedOcc := &gpb.Occurrence{}
-	if err := g.UpdateOccurrence(ctx, req, updatedOcc); err != nil {
+	updatedOcc, err := g.UpdateOccurrence(ctx, req)
+	if err != nil {
 		t.Fatalf("Got err %v, want success", err)
 	}
 
@@ -587,11 +584,138 @@ func TestUpdateOccurrenceErrors(t *testing.T) {
 				Name:       occName,
 				Occurrence: tt.occ,
 			}
-			o := &gpb.Occurrence{}
-			err := g.UpdateOccurrence(ctx, req, o)
+			_, err := g.UpdateOccurrence(ctx, req)
 			t.Logf("%q: error: %v", tt.desc, err)
 			if status.Code(err) != tt.wantErrStatus {
 				t.Errorf("%q: got error status %v, want %v", tt.desc, status.Code(err), tt.wantErrStatus)
+			}
+		})
+	}
+}
+
+func TestUpdateOccurrencePermissions(t *testing.T) {
+	ctx := context.Background()
+	auth := allowListAuth{
+		allowList: []projectPermission{
+			{permission: NotesAttachOccurrence, projectID: "allowed-note"},
+			{permission: OccurrencesUpdate, projectID: "allowed-occurrence"},
+			{permission: OccurrencesGet, projectID: "read-only"},
+			{permission: OccurrencesList, projectID: "read-only"},
+			{permission: NotesGet, projectID: "read-only"},
+			{permission: NotesList, projectID: "read-only"},
+		},
+	}
+
+	tests := []struct {
+		desc        string
+		occProj     string
+		existingOcc *gpb.Occurrence
+		occ         *gpb.Occurrence
+		updateMask  *fieldmaskpb.FieldMask
+		wantStatus  codes.Code
+	}{
+		{
+			desc:        "allowed updates",
+			occProj:     "allowed-occurrence",
+			existingOcc: &gpb.Occurrence{ResourceUri: "old-uri", NoteName: "projects/allowed-note/notes/my-note"},
+			occ:         &gpb.Occurrence{ResourceUri: "new-uri", NoteName: "projects/allowed-note/notes/my-note"},
+			wantStatus:  codes.OK,
+		},
+		{
+			desc:        "no permission on occurrence",
+			occProj:     "forbidden-project",
+			existingOcc: &gpb.Occurrence{ResourceUri: "old-uri", NoteName: "projects/allowed-note/notes/my-note"},
+			occ:         &gpb.Occurrence{ResourceUri: "new-uri", NoteName: "projects/allowed-note/notes/my-note"},
+			wantStatus:  codes.PermissionDenied,
+		},
+		{
+			desc:        "no permission on note",
+			occProj:     "allowed-occurrence",
+			existingOcc: &gpb.Occurrence{ResourceUri: "old-uri", NoteName: "projects/forbidden-project/notes/my-note"},
+			occ:         &gpb.Occurrence{ResourceUri: "new-uri", NoteName: "projects/forbidden-project/notes/my-note"},
+			wantStatus:  codes.PermissionDenied,
+		},
+		{
+			desc:        "read-only permission on occurrence",
+			occProj:     "read-only",
+			existingOcc: &gpb.Occurrence{ResourceUri: "old-uri", NoteName: "projects/allowed-note/notes/my-note"},
+			occ:         &gpb.Occurrence{ResourceUri: "new-uri", NoteName: "projects/allowed-note/notes/my-note"},
+			wantStatus:  codes.PermissionDenied,
+		},
+		{
+			desc:        "read-only permission on note",
+			occProj:     "allowed-occurrence",
+			existingOcc: &gpb.Occurrence{ResourceUri: "old-uri", NoteName: "projects/forbidden-project/notes/my-note"},
+			occ:         &gpb.Occurrence{ResourceUri: "new-uri", NoteName: "projects/read-only/notes/my-note"},
+			wantStatus:  codes.PermissionDenied,
+		},
+		{
+			desc:        "no permission on existing note",
+			occProj:     "allowed-occurrence",
+			existingOcc: &gpb.Occurrence{ResourceUri: "old-uri", NoteName: "projects/forbidden-project/notes/my-note"},
+			occ:         &gpb.Occurrence{ResourceUri: "new-uri", NoteName: "projects/allowed-note/notes/my-note"},
+			wantStatus:  codes.PermissionDenied,
+		},
+		{
+			desc:        "no permission on new note",
+			occProj:     "allowed-occurrence",
+			existingOcc: &gpb.Occurrence{ResourceUri: "old-uri", NoteName: "projects/allowed-note/notes/my-note"},
+			occ:         &gpb.Occurrence{ResourceUri: "new-uri", NoteName: "projects/forbidden-project/notes/my-note"},
+			wantStatus:  codes.PermissionDenied,
+		},
+		{
+			desc:        "no permission on existing note with field mask",
+			occProj:     "allowed-occurrence",
+			existingOcc: &gpb.Occurrence{ResourceUri: "old-uri", NoteName: "projects/forbidden-project/notes/my-note"},
+			occ:         &gpb.Occurrence{ResourceUri: "new-uri", NoteName: "projects/allowed-note/notes/my-note"},
+			updateMask:  &fieldmaskpb.FieldMask{Paths: []string{"resourceUri"}},
+			wantStatus:  codes.PermissionDenied,
+		},
+		{
+			desc:        "no permission on new note with field mask including note",
+			occProj:     "allowed-occurrence",
+			existingOcc: &gpb.Occurrence{ResourceUri: "old-uri", NoteName: "projects/allowed-note/notes/my-note"},
+			occ:         &gpb.Occurrence{ResourceUri: "new-uri", NoteName: "projects/forbidden-project/notes/my-note"},
+			updateMask:  &fieldmaskpb.FieldMask{Paths: []string{"resourceUri", "noteName"}},
+			wantStatus:  codes.PermissionDenied,
+		},
+		{
+			desc:        "no permission on new note with field mask excluding note",
+			occProj:     "allowed-occurrence",
+			existingOcc: &gpb.Occurrence{ResourceUri: "old-uri", NoteName: "projects/allowed-note/notes/my-note"},
+			occ:         &gpb.Occurrence{ResourceUri: "new-uri", NoteName: "projects/forbidden-project/notes/my-note"},
+			updateMask:  &fieldmaskpb.FieldMask{Paths: []string{"resourceUri"}},
+			// In principle this could be allowed as the NoteName in the incoming occurrence is ignored, so
+			// there is no need to perform a permission check. But as this has been the behavior to date
+			// without any reported issues, it seems safer to leave this returning an error. If a use case for
+			// supporting this arises, it can be revisited.
+			wantStatus: codes.PermissionDenied,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.desc, func(t *testing.T) {
+			s := newFakeStorage()
+			g := &API{
+				Storage:           s,
+				Auth:              &auth,
+				EnforceValidation: true,
+			}
+
+			// Create the occurrence to update.
+			createdOcc, err := s.CreateOccurrence(ctx, tt.occProj, "", tt.existingOcc)
+			if err != nil {
+				t.Fatalf("Failed to create occurrence %+v", tt.existingOcc)
+			}
+
+			req := &gpb.UpdateOccurrenceRequest{
+				Name:       createdOcc.Name,
+				Occurrence: tt.occ,
+				UpdateMask: tt.updateMask,
+			}
+			_, err = g.UpdateOccurrence(ctx, req)
+			if status.Code(err) != tt.wantStatus {
+				t.Fatalf("UpdateOccurrence: got status %v, want %v", status.Code(err), tt.wantStatus)
 			}
 		})
 	}
@@ -626,7 +750,7 @@ func TestDeleteOccurrence(t *testing.T) {
 			req := &gpb.DeleteOccurrenceRequest{
 				Name: createdOcc.Name,
 			}
-			if err := g.DeleteOccurrence(ctx, req, nil); err != nil {
+			if _, err := g.DeleteOccurrence(ctx, req); err != nil {
 				t.Errorf("Got err %v, want success", err)
 			}
 		})
@@ -706,7 +830,7 @@ func TestDeleteOccurrenceErrors(t *testing.T) {
 			req := &gpb.DeleteOccurrenceRequest{
 				Name: occToDelete,
 			}
-			err := g.DeleteOccurrence(ctx, req, nil)
+			_, err := g.DeleteOccurrence(ctx, req)
 			t.Logf("%q: error: %v", tt.desc, err)
 			if status.Code(err) != tt.wantErrStatus {
 				t.Errorf("%q: got error status %v, want %v", tt.desc, status.Code(err), tt.wantErrStatus)
@@ -738,8 +862,8 @@ func TestListNoteOccurrences(t *testing.T) {
 	req := &gpb.ListNoteOccurrencesRequest{
 		Name: "projects/goog-vulnz/notes/CVE-UH-OH",
 	}
-	resp := &gpb.ListNoteOccurrencesResponse{}
-	if err := g.ListNoteOccurrences(ctx, req, resp); err != nil {
+	resp, err := g.ListNoteOccurrences(ctx, req)
+	if err != nil {
 		t.Fatalf("ListNoteOccurrences(%v) got err %v, want success", req, err)
 	}
 
@@ -803,8 +927,7 @@ func TestListNoteOccurrencesErrors(t *testing.T) {
 				Name:     tt.noteName,
 				PageSize: tt.pageSize,
 			}
-			resp := &gpb.ListNoteOccurrencesResponse{}
-			err := g.ListNoteOccurrences(ctx, req, resp)
+			_, err := g.ListNoteOccurrences(ctx, req)
 			t.Logf("%q: error: %v", tt.desc, err)
 			if status.Code(err) != tt.wantErrStatus {
 				t.Errorf("%q: got error status %v, want %v", tt.desc, status.Code(err), tt.wantErrStatus)
