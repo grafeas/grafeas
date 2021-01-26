@@ -671,8 +671,10 @@ func TestDeleteNote(t *testing.T) {
 	req := &gpb.DeleteNoteRequest{
 		Name: "projects/goog-vulnz/notes/CVE-UH-OH",
 	}
-	if _, err := g.DeleteNote(ctx, req); err != nil {
+	if n, err := g.DeleteNote(ctx, req); err != nil {
 		t.Errorf("Got err %v, want success", err)
+	} else if n == nil {
+		t.Error("expected response to not be nil")
 	}
 }
 

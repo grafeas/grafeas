@@ -106,5 +106,5 @@ func (gp *API) DeleteProject(ctx context.Context, req *prpb.DeleteProjectRequest
 	if err := gp.Storage.DeleteProject(ctx, pID); err != nil {
 		return nil, err
 	}
-	return nil, nil
+	return &empty.Empty{}, nil
 }
