@@ -456,9 +456,14 @@ func TestValidatePageSize(t *testing.T) {
 			wantPS: 500,
 		},
 		{
-			desc:   "page size of 1000 (the max allowed), valid",
-			ps:     1000,
-			wantPS: 1000,
+			desc:   "page size of 5000, valid",
+			ps:     5000,
+			wantPS: 5000,
+		},
+		{
+			desc:   "page size of 10000 (the max allowed), valid",
+			ps:     10000,
+			wantPS: 10000,
 		},
 	}
 
@@ -490,13 +495,13 @@ func TestValidatePageSizeErrors(t *testing.T) {
 			wantErrCode: codes.InvalidArgument,
 		},
 		{
-			desc:        "page size of 1001 (larger than max allowed), want error",
-			ps:          1001,
+			desc:        "page size of 10001 (larger than max allowed), want error",
+			ps:          10001,
 			wantErrCode: codes.InvalidArgument,
 		},
 		{
-			desc:        "page size of 5000 (larger than max allowed), want error",
-			ps:          5000,
+			desc:        "page size of 50000 (larger than max allowed), want error",
+			ps:          50000,
 			wantErrCode: codes.InvalidArgument,
 		},
 	}
