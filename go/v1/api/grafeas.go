@@ -26,7 +26,7 @@ import (
 
 const (
 	defaultPageSize = 20
-	maxPageSize     = 1000
+	maxPageSize     = 10000
 	maxBatchSize    = 1000
 
 	// NotesGet is the permission to get a note.
