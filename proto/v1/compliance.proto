@@ -17,9 +17,9 @@ syntax = "proto3";
 package grafeas.v1;
 
 import "google/protobuf/timestamp.proto";
-import "third_party/grafeas/proto/v1/common.proto";
-import "third_party/grafeas/proto/v1/cvss.proto";
-import "third_party/grafeas/proto/v1/package.proto";
+import "proto/v1/cvss.proto";
+import "proto/v1/package.proto";
+import "proto/v1/vulnerability.proto";
 
 option go_package = "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto";
 option java_multiple_files = true;
@@ -28,7 +28,7 @@ option objc_class_prefix = "GRA";
 
 message ComplianceNote {
   // The OS and config versions the benchmark applies to.
-  repeated grafeas.v1.Version version = 2;
+  repeated grafeas.v1.ComplianceVersion version = 2;
   // The title that identifies this compliance check.
   string title = 3;
   // A description about this compliance check. 
@@ -39,7 +39,7 @@ message ComplianceNote {
   string remediation = 6;
   // A compliance check that is a CIS benchmark.
   message CisBenchmark {
-    int profile_level = 1;
+    int32 profile_level = 1;
     grafeas.v1.Severity severity = 2;
   }
   oneof compliance_type {
@@ -51,22 +51,13 @@ message ComplianceNote {
 
 // Describes the CIS benchmark version that is applicable to a given OS and 
 // os version. 
-message Version {
+message ComplianceVersion {
   // The CPE URI (https://cpe.mitre.org/specification/) this benchmark is
   // applicable to.
   string cpe_uri = 1;
   // The version of the benchmark. This is set to the version of the OS-specific
   // CIS document the benchmark is defined in.
   string version = 2;
-}
-
-// An indication of how severe a violation of a compliance check is.
-enum Severity {
-  UNSPECIFIED = 0;
-  LOW = 1;
-  MEDIUM = 2;
-  HIGH = 3;
-  CRITICAL = 4;
 }
 
 message ComplianceOccurrence {
