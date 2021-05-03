@@ -1,4 +1,4 @@
-// Copyright 2019 The Grafeas Authors. All rights reserved.
+// Copyright 2021 The Grafeas Authors. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -27,26 +27,26 @@ option java_package = "io.grafeas.v1";
 option objc_class_prefix = "GRA";
 
 message ComplianceNote {
-  // The OS and config versions the benchmark applies to.
-  repeated grafeas.v1.ComplianceVersion version = 2;
   // The title that identifies this compliance check.
-  string title = 3;
+  string title = 1;
   // A description about this compliance check. 
-  string description = 4;
+  string description = 2;
+  // The OS and config versions the benchmark applies to.
+  repeated grafeas.v1.ComplianceVersion version = 3;
   // A rationale for the existence of this compliance check.
-  string rationale = 5;
+  string rationale = 4;
   // A description of remediation steps if the compliance check fails.
-  string remediation = 6;
+  string remediation = 5;
   // A compliance check that is a CIS benchmark.
   message CisBenchmark {
     int32 profile_level = 1;
     grafeas.v1.Severity severity = 2;
   }
   oneof compliance_type {
-    CisBenchmark cis_benchmark = 7;
+    CisBenchmark cis_benchmark = 6;
   }
   // Serialized scan instructions with a predefined format.
-  bytes scan_instructions = 8;
+  bytes scan_instructions = 7;
 }
 
 // Describes the CIS benchmark version that is applicable to a given OS and 
@@ -60,9 +60,13 @@ message ComplianceVersion {
   string version = 2;
 }
 
+// An indication that the compliance checks in the associated ComplianceNote
+// were not satisfied for a particular resource.
 message ComplianceOccurrence {
   repeated NonCompliantFile non_compliant_files = 2;
 }
+
+// Details about files that caused a compliance check to fail.
 message NonCompliantFile {
   string path = 1; // Empty if `display_command` is set.
   string display_command = 2; // Command to display the non-compliant files.
