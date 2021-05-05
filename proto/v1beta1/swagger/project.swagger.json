@@ -4,10 +4,6 @@
     "title": "project.proto",
     "version": "version not set"
   },
-  "schemes": [
-    "http",
-    "https"
-  ],
   "consumes": [
     "application/json"
   ],
@@ -18,12 +14,18 @@
     "/v1beta1/projects": {
       "get": {
         "summary": "Lists projects.",
-        "operationId": "ListProjects",
+        "operationId": "Projects_ListProjects",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/projectListProjectsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
@@ -36,7 +38,7 @@
             "type": "string"
           },
           {
-            "name": "page_size",
+            "name": "pageSize",
             "description": "Number of projects to return in the list.",
             "in": "query",
             "required": false,
@@ -44,7 +46,7 @@
             "format": "int32"
           },
           {
-            "name": "page_token",
+            "name": "pageToken",
             "description": "Token to provide to skip to a particular spot in the list.",
             "in": "query",
             "required": false,
@@ -57,12 +59,18 @@
       },
       "post": {
         "summary": "Creates a new project.",
-        "operationId": "CreateProject",
+        "operationId": "Projects_CreateProject",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/projectProject"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
@@ -85,12 +93,18 @@
     "/v1beta1/{name=projects/*}": {
       "get": {
         "summary": "Gets the specified project.",
-        "operationId": "GetProject",
+        "operationId": "Projects_GetProject",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/projectProject"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
@@ -109,12 +123,18 @@
       },
       "delete": {
         "summary": "Deletes the specified project.",
-        "operationId": "DeleteProject",
+        "operationId": "Projects_DeleteProject",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "properties": {}
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
@@ -144,7 +164,7 @@
           },
           "description": "The projects requested."
         },
-        "next_page_token": {
+        "nextPageToken": {
           "type": "string",
           "description": "The next pagination token in the list response. It should be used as\n`page_token` for the following request. An empty value means no more\nresults."
         }
@@ -160,6 +180,36 @@
         }
       },
       "description": "Describes a Grafeas project."
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "typeUrl": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
     }
   }
 }
