@@ -37,6 +37,7 @@ import "proto/v1/image.proto";
 import "proto/v1/package.proto";
 import "proto/v1/upgrade.proto";
 import "proto/v1/vulnerability.proto";
+import "proto/v1/compliance.proto";
 
 // [Grafeas](https://grafeas.io) API.
 //
@@ -236,7 +237,8 @@ message Occurrence {
     grafeas.v1.AttestationOccurrence attestation = 14;
     // Describes an available package upgrade on the linked resource.
     grafeas.v1.UpgradeOccurrence upgrade = 15;
-
+    // Describes a compliance violation on a linked resource.
+    grafeas.v1.ComplianceOccurrence compliance = 16;
   }
 }
 
@@ -296,6 +298,8 @@ message Note {
     grafeas.v1.AttestationNote attestation = 16;
     // A note describing available package upgrades.
     grafeas.v1.UpgradeNote upgrade = 17;
+    // A note describing a compliance check.
+    grafeas.v1.ComplianceNote compliance = 18;
   }
 }
 
