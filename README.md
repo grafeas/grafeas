@@ -29,6 +29,16 @@ files](https://github.com/Grafeas/Grafeas/tree/master/proto/v1beta1).
 
 ## Grafeas Architecture
 
+Grafeas project consists of
+
+* the Grafeas API,
+* a reference server implementation,
+* [3 community contributed storage backends](https://github.com/grafeas/grafeas/tree/master/go/v1beta1/storage):
+PostgreSQL, BoltDB, and in-memory storage.
+
+Longer-term, these are to be extracted into separate projects (see
+[#341](https://github.com/grafeas/grafeas/issues/341)).
+
 The diagram below shows the boundaries between Grafeas API, server, its storage
 backends and the clients:
 
@@ -40,6 +50,11 @@ The following projects provide bindings for Grafeas API to different storage bac
 
 * [grafeas-pgsql](https://github.com/grafeas/grafeas-pgsql)
 * [grafeas-oracle](https://github.com/judavi/grafeas-oracle)
+
+## Roadmap
+
+Please see the [Grafeas roadmap](https://www.slideshare.net/aysylu/binary-authorization-in-kubernetes/65)
+for the future of the project development.
 
 ## Support
 
