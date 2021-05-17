@@ -895,6 +895,10 @@
         "source": {
           "type": "string",
           "description": "The source from which the information in this Detail was obtained."
+        },
+        "vendor": {
+          "type": "string",
+          "description": "The name of the vendor of the product."
         }
       },
       "title": "Identifies all appearances of this vulnerability in the package for a\nspecific distro/location. For example: glibc in\ncpe:/o:debian:debian_linux:8 for versions 2.1 - 2.2"
