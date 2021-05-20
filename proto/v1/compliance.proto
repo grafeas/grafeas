@@ -16,9 +16,6 @@ syntax = "proto3";
 
 package grafeas.v1;
 
-import "google/protobuf/timestamp.proto";
-import "proto/v1/cvss.proto";
-import "proto/v1/package.proto";
 import "proto/v1/vulnerability.proto";
 
 option go_package = "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto";
