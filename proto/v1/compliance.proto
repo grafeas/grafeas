@@ -58,9 +58,10 @@ message ComplianceVersion {
 }
 
 // An indication that the compliance checks in the associated ComplianceNote
-// were not satisfied for a particular resource.
+// were not satisfied for particular resources or a specified reason.
 message ComplianceOccurrence {
   repeated NonCompliantFile non_compliant_files = 2;
+  string non_compliance_reason = 3;
 }
 
 // Details about files that caused a compliance check to fail.
