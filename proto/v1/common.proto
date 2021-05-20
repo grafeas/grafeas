@@ -41,6 +41,8 @@ enum NoteKind {
   ATTESTATION = 7;
   // This represents an available package upgrade.
   UPGRADE = 8;
+  // This represents a Compliance Note
+  COMPLIANCE = 9;
 }
 
 // Metadata for any related URL information.
