@@ -143,7 +143,7 @@ curl -k --key server.key --cacert ca.pem --cert server.pem https://localhost:808
 
 ### gRPC with a go client
 
-[client.go](../go/v1beta1/example/client.go) contains a small example of a go
+[client.go](../go/v1beta1/example/client/client.go) contains a small example of a go
 client that connects to Grafeas and outputs the notes in `myproject`:
 
 ```bash
