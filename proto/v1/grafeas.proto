@@ -239,6 +239,8 @@ message Occurrence {
     grafeas.v1.UpgradeOccurrence upgrade = 15;
     // Describes a compliance violation on a linked resource.
     grafeas.v1.ComplianceOccurrence compliance = 16;
+    // https://github.com/secure-systems-lab/dsse
+    grafeas.v1.Envelope envelope = 17;
   }
 }
 
