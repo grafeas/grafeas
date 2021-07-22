@@ -50,5 +50,5 @@ message BuildOccurrence {
   string provenance_bytes = 2;
 
   // In-toto Provenance representation as defined in spec.
-  grafeas.v1.InTotoProvenance intoto_provenance = 3;
+  InTotoProvenance intoto_provenance = 3;
 }
