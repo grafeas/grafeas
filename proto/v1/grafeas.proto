@@ -240,11 +240,12 @@ message Occurrence {
     grafeas.v1.UpgradeOccurrence upgrade = 15;
     // Describes a compliance violation on a linked resource.
     grafeas.v1.ComplianceOccurrence compliance = 16;
-    // https://github.com/secure-systems-lab/dsse
+    // Describes an attestation of an artifact using dsse.
     grafeas.v1.DsseAttestationOccurrence dsse_attestation = 17;
-    // https://github.com/secure-systems-lab/dsse
-    grafeas.v1.Envelope envelope = 18;
   }
+
+  // https://github.com/secure-systems-lab/dsse
+  grafeas.v1.Envelope envelope = 18;
 }
 
 // A type of analysis that can be done for a resource.

@@ -43,10 +43,12 @@ message DSSEAttestationNote {
 message DsseAttestationOccurrence {
   // If doing something security critical, make sure to verify the signatures in this metadata.
   Envelope envelope = 1;
-  oneof decodedPayload {
+  oneof decoded_payload {
     InTotoStatement statement = 2;
   }
 }
+
+// Spec defined at https://github.com/in-toto/attestation/tree/main/spec#statement
 // The serialized InTotoStatement will be stored as Envelope.payload.
 // Envelope.payloadType is always "application/vnd.in-toto+json".
 message InTotoStatement {
