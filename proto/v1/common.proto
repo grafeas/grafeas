@@ -43,6 +43,8 @@ enum NoteKind {
   UPGRADE = 8;
   // This represents a Compliance Note
   COMPLIANCE = 9;
+  // This represents a DSSE attestation Note
+  DSSE_ATTESTATION = 10;
 }
 
 // Metadata for any related URL information.
@@ -103,3 +105,17 @@ message Signature {
   //   * "nih:///sha-256;703f68f42aba2c6de30f488a5ea122fef76324679c9bf89791ba95a1271589a5"
   string public_key_id = 2;
 }
+
+// MUST match https://github.com/secure-systems-lab/dsse/blob/master/envelope.proto.
+// An authenticated message of arbitrary type.
+message Envelope {
+  message Signature {
+    bytes sig = 1;
+    string keyid = 2;
+  }
+  bytes payload = 1;
+  string payloadType = 2;
+  repeated Signature signatures = 3;
+}
+
+

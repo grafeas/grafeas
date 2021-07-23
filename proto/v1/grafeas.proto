@@ -38,6 +38,7 @@ import "proto/v1/package.proto";
 import "proto/v1/upgrade.proto";
 import "proto/v1/vulnerability.proto";
 import "proto/v1/compliance.proto";
+import "proto/v1/dsse_attestation.proto";
 
 // [Grafeas](https://grafeas.io) API.
 //
@@ -239,7 +240,12 @@ message Occurrence {
     grafeas.v1.UpgradeOccurrence upgrade = 15;
     // Describes a compliance violation on a linked resource.
     grafeas.v1.ComplianceOccurrence compliance = 16;
+    // Describes an attestation of an artifact using dsse.
+    grafeas.v1.DsseAttestationOccurrence dsse_attestation = 17;
   }
+
+  // https://github.com/secure-systems-lab/dsse
+  grafeas.v1.Envelope envelope = 18;
 }
 
 // A type of analysis that can be done for a resource.
@@ -300,6 +306,8 @@ message Note {
     grafeas.v1.UpgradeNote upgrade = 17;
     // A note describing a compliance check.
     grafeas.v1.ComplianceNote compliance = 18;
+    // A note describing a dsse attestation note.
+    grafeas.v1.DSSEAttestationNote dsse_attestation = 19;
   }
 }
 
@@ -528,3 +536,4 @@ message BatchCreateOccurrencesResponse {
   // The occurrences that were created.
   repeated Occurrence occurrences = 1;
 }
+

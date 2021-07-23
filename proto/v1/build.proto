@@ -22,6 +22,7 @@ option java_package = "io.grafeas.v1";
 option objc_class_prefix = "GRA";
 
 import "proto/v1/provenance.proto";
+import "proto/v1/intoto_provenance.proto";
 
 // Note holding the version of the provider's builder and the signature of the
 // provenance message in the build details occurrence.
@@ -47,4 +48,7 @@ message BuildOccurrence {
   // provenance is marshalled to json as well to prevent incompatibilities with
   // future changes.
   string provenance_bytes = 2;
+
+  // In-toto Provenance representation as defined in spec.
+  InTotoProvenance intoto_provenance = 3;
 }

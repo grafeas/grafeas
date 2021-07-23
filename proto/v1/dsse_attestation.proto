@@ -1,0 +1,68 @@
+// Copyright 2021 The Grafeas Authors. All rights reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto3";
+
+package grafeas.v1;
+
+option go_package = "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto";
+option java_multiple_files = true;
+option java_package = "io.grafeas.v1";
+option objc_class_prefix = "GRA";
+
+import "proto/v1/common.proto";
+import "proto/v1/intoto_provenance.proto";
+
+message DSSEAttestationNote {
+  // This submessage provides human-readable hints about the purpose of the
+  // authority. Because the name of a note acts as its resource reference, it is
+  // important to disambiguate the canonical name of the Note (which might be a
+  // UUID for security purposes) from "readable" names more suitable for debug
+  // output. Note that these hints should not be used to look up authorities in
+  // security sensitive contexts, such as when looking up attestations to
+  // verify.
+  message Hint {
+    // Required. The human readable name of this attestation authority, for example "cloudbuild-prod".
+    string human_readable_name = 1;
+  }
+  // Hint hints at the purpose of the attestation authority.
+  Hint hint = 1;
+}
+
+message DsseAttestationOccurrence {
+  // If doing something security critical, make sure to verify the signatures in this metadata.
+  Envelope envelope = 1;
+  oneof decoded_payload {
+    InTotoStatement statement = 2;
+  }
+}
+
+// Spec defined at https://github.com/in-toto/attestation/tree/main/spec#statement
+// The serialized InTotoStatement will be stored as Envelope.payload.
+// Envelope.payloadType is always "application/vnd.in-toto+json".
+message InTotoStatement {
+  // Always "https://in-toto.io/Statement/v0.1".
+  string type = 1;
+  repeated Subject subject = 2;
+  // "https://in-toto.io/Provenance/v0.1" for InTotoProvenance.
+  string predicate_type = 3;
+  oneof predicate {
+    InTotoProvenance provenance = 4;
+  }
+}
+message Subject {
+  string name = 1;
+  // "<ALGORITHM>": "<HEX_VALUE>"
+  map<string, string> digest = 2;
+}
