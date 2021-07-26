@@ -32,12 +32,12 @@ message DSSEAttestationNote {
   // output. Note that these hints should not be used to look up authorities in
   // security sensitive contexts, such as when looking up attestations to
   // verify.
-  message Hint {
+  message DSSEHint {
     // Required. The human readable name of this attestation authority, for example "cloudbuild-prod".
     string human_readable_name = 1;
   }
-  // Hint hints at the purpose of the attestation authority.
-  Hint hint = 1;
+  // DSSEHint hints at the purpose of the attestation authority.
+  DSSEHint hint = 1;
 }
 
 message DsseAttestationOccurrence {
