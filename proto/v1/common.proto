@@ -109,13 +109,13 @@ message Signature {
 // MUST match https://github.com/secure-systems-lab/dsse/blob/master/envelope.proto.
 // An authenticated message of arbitrary type.
 message Envelope {
-  message Signature {
-    bytes sig = 1;
-    string keyid = 2;
-  }
   bytes payload = 1;
   string payload_type = 2;
-  repeated Signature signatures = 3;
+  repeated EnvelopeSignature signatures = 3;
 }
 
+message EnvelopeSignature {
+  bytes sig = 1;
+  string keyid = 2;
+}
 
