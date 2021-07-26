@@ -114,7 +114,7 @@ message Envelope {
     string keyid = 2;
   }
   bytes payload = 1;
-  string payloadType = 2;
+  string payload_type = 2;
   repeated Signature signatures = 3;
 }
 
