@@ -71,12 +71,12 @@ message Metadata {
   bool reproducible = 5;
 }
 
-message Builder {
+message BuilderConfig {
   string id = 1;
 }
 
 message InTotoProvenance {
-  Builder builder = 1; // required
+  BuilderConfig builder_config = 1; // required
   // Identifies the configuration used for the build.
   // When combined with materials, this SHOULD fully describe the build,
   // such that re-running this recipe results in bit-for-bit identical output
