@@ -40,7 +40,7 @@ message DSSEAttestationNote {
   DSSEHint hint = 1;
 }
 
-message DsseAttestationOccurrence {
+message DSSEAttestationOccurrence {
   // If doing something security critical, make sure to verify the signatures in this metadata.
   Envelope envelope = 1;
   oneof decoded_payload {
