@@ -2304,7 +2304,7 @@
         },
         "effectiveSeverity": {
           "$ref": "#/definitions/vulnerabilitySeverity",
-          "description": "The distro assigned severity for this vulnerability when it is\navailable, and note provider assigned severity when distro has not yet\nassigned a severity for this vulnerability."
+          "description": "The distro assigned severity for this vulnerability when it is\navailable, and note provider assigned severity when distro has not yet\nassigned a severity for this vulnerability.\n\nWhen there are multiple PackageIssues for this vulnerability, they can have\ndifferent effective severities because some might be provided by the distro\nwhile others are provided by the language ecosystem for a language pack.\nFor this reason, it is advised to use the effective severity on the\nPackageIssue level. In the case where multiple PackageIssues have differing\neffective severities, this field should be the highest severity for any of\nthe PackageIssues."
         }
       },
       "description": "Details of a vulnerability Occurrence."
@@ -2367,6 +2367,14 @@
         "severityName": {
           "type": "string",
           "description": "Deprecated, use Details.effective_severity instead\nThe severity (e.g., distro assigned severity) for this vulnerability."
+        },
+        "packageType": {
+          "type": "string",
+          "description": "The type of package (e.g. OS, MAVEN, GO)."
+        },
+        "effectiveSeverity": {
+          "$ref": "#/definitions/vulnerabilitySeverity",
+          "description": "The distro or language system assigned severity for this vulnerability\nwhen that is available and note provider assigned severity when it is not\navailable."
         }
       },
       "description": "This message wraps a location affected by a vulnerability and its\nassociated fix (if one is available)."
