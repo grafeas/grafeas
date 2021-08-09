@@ -39,9 +39,12 @@ func ValidateNote(b *gpb.BuildNote) []error {
 func ValidateOccurrence(d *gpb.BuildOccurrence) []error {
 	errs := []error{}
 
-	if p := d.GetProvenance(); p == nil {
-		errs = append(errs, errors.New("provenance is required"))
-	} else {
+	p := d.GetProvenance()
+	i := d.GetIntotoProvenance()
+	if p == nil && i == nil {
+		errs = append(errs, errors.New("either Provenance or intotoProvenance is required"))
+	}
+	if p != nil {
 		for _, err := range provenance.ValidateBuildProvenance(p) {
 			errs = append(errs, fmt.Errorf("provenance.%s", err))
 		}

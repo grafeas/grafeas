@@ -64,11 +64,18 @@ func TestValidateOccurrence(t *testing.T) {
 			wantErrs: true,
 		},
 		{
-			desc: "valid details, want success",
+			desc: "valid details with provenance, want success",
 			d: &gpb.BuildOccurrence{
 				Provenance: &gpb.BuildProvenance{
 					Id: "8c0b1847-f78b-4bf7-8b2e-38e1bb48b125",
 				},
+			},
+			wantErrs: false,
+		},
+		{
+			desc: "valid details with intotoprovenance, want success",
+			d: &gpb.BuildOccurrence{
+				IntotoProvenance: &gpb.InTotoProvenance{},
 			},
 			wantErrs: false,
 		},
