@@ -65,7 +65,7 @@ message Metadata {
   string build_invocation_id = 1;
   // The timestamp of when the build started.
   google.protobuf.Timestamp build_started_on = 2;
-  // The timestamp of when the build completd.
+  // The timestamp of when the build completed.
   google.protobuf.Timestamp build_finished_on = 3;
   // Indicates that the builder claims certain fields in this message to be complete.
   Completeness completeness = 4;
