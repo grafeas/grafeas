@@ -45,7 +45,7 @@ message Recipe {
   // For example, if the recipe type were "make", then this might be the flags passed to make aside from the target, which is captured in recipe.entryPoint.
   repeated google.protobuf.Any arguments = 4;
   // Any other builder-controlled inputs necessary for correctly evaluating the recipe. Usually only needed for reproducing the build but not evaluated as part of policy.
-  map<string, string> environment = 5;
+  repeated google.protobuf.Any environment = 5;
 }
 
 // Indicates that the builder claims certain fields in this message to be complete.
@@ -65,7 +65,7 @@ message Metadata {
   string build_invocation_id = 1;
   // The timestamp of when the build started.
   google.protobuf.Timestamp build_started_on = 2;
-  // The timestamp of when the build completed.
+  // The timestamp of when the build completd.
   google.protobuf.Timestamp build_finished_on = 3;
   // Indicates that the builder claims certain fields in this message to be complete.
   Completeness completeness = 4;
