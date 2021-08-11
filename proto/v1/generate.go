@@ -8,6 +8,7 @@
 //go:generate protoc ../../proto/v1/deployment.proto
 //go:generate protoc ../../proto/v1/intoto_provenance.proto
 //go:generate protoc ../../proto/v1/dsse_attestation.proto
+//go:generate protoc ../../proto/v1/sbom.proto
 //go:generate protoc ../../proto/v1/grafeas.proto
 //go:generate protoc ../../proto/v1/package.proto
 //go:generate protoc ../../proto/v1/provenance.proto
