@@ -106,4 +106,25 @@
 //go:generate mv project.pb.gw.go project_go_proto
 //go:generate swagger project.proto
 //go:generate mv project.swagger.json swagger
+
+//go:generate protoc spdx_document.proto
+//go:generate rm -rf spdx_document_go_proto
+//go:generate mkdir spdx_document_go_proto
+//go:generate mv spdx_document.pb.go spdx_document_go_proto
+//go:generate swagger spdx_document.proto
+//go:generate mv spdx_document.swagger.json swagger
+
+//go:generate protoc spdx_file.proto
+//go:generate rm -rf spdx_file_go_proto
+//go:generate mkdir spdx_file_go_proto
+//go:generate mv spdx_file.pb.go spdx_file_go_proto
+//go:generate swagger spdx_file.proto
+//go:generate mv spdx_file.swagger.json swagger
+
+//go:generate protoc spdx_package.proto
+//go:generate rm -rf spdx_package_go_proto
+//go:generate mkdir spdx_package_go_proto
+//go:generate mv spdx_package.pb.go spdx_package_go_proto
+//go:generate swagger spdx_package.proto
+//go:generate mv spdx_package.swagger.json swagger
 package v1beta1

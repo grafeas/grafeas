@@ -1,0 +1,104 @@
+// Copyright 2021 The Grafeas Authors. All rights reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto3";
+
+package grafeas.v1beta1.spdx_file;
+
+option go_package = "github.com/grafeas/grafeas/proto/v1beta1/spdx_file_go_proto";
+option java_multiple_files = true;
+option java_package = "io.grafeas.v1beta1.spdx_file";
+option objc_class_prefix = "GRA";
+
+// FileNote represents an SPDX File Information
+// section: https://spdx.github.io/spdx-spec/4-file-information/
+message FileNote {
+  // Identify the full path and filename that corresponds to the file
+  // information in this section
+  string title = 1;
+
+  // File Type is intrinsic to the file, independent of how the file is being
+  // used
+  enum FileType {
+    // Unspecified
+    FILE_TYPE_UNSPECIFIED = 0;
+    // The file is human readable source code (.c, .html, etc.)
+    SOURCE = 1;
+    // The file is a compiled object, target image or binary executable (.o, .a,
+    // etc.)
+    BINARY = 2;
+    // The file represents an archive (.tar, .jar, etc.)
+    ARCHIVE = 3;
+    // The file is associated with a specific application type (MIME type of
+    // application/*)
+    APPLICATION = 4;
+    // The file is associated with an audio file (MIME type of audio/* , e.g.
+    // .mp3)
+    AUDIO = 5;
+    // The file is associated with an picture image file (MIME type of image/*,
+    // e.g., .jpg, .gif)
+    IMAGE = 6;
+    // The file is human readable text file (MIME type of text/*)
+    TEXT = 7;
+    // The file is associated with a video file type (MIME type of video/*)
+    VIDEO = 8;
+    // The file serves as documentation
+    DOCUMENTATION = 9;
+    // The file is an SPDX document
+    SPDX = 10;
+    // The file doesn't fit into the above categories (generated artifacts, data
+    // files, etc.)
+    OTHER = 11;
+  }
+  // This field provides information about the type of file identified
+  FileType file_type = 2;
+  // Provide a unique identifier to match analysis information on each specific
+  // file in a package
+  repeated string checksum = 3;
+}
+
+// FileOccurrence represents an SPDX File Information
+// section: https://spdx.github.io/spdx-spec/4-file-information/
+message FileOccurrence {
+  // Uniquely identify any element in an SPDX document which may be referenced
+  // by other elements
+  string id = 1;
+
+  // This field contains the license the SPDX file creator has concluded as
+  // governing the file or alternative values if the governing license cannot be
+  // determined
+  string license_concluded = 2;
+  // This field contains the license information actually found in the file, if
+  // any
+  repeated string files_license_info = 3;
+  // This field provides a place for the SPDX file creator to record any
+  // relevant background references or analysis that went in to arriving at the
+  // Concluded License for a file
+  string license_comments = 4;
+  // Identify the copyright holder of the file, as well as any dates present
+  string copyright = 5;
+  // This field provides a place for the SPDX file creator to record any general
+  // comments about the file
+  string comment = 6;
+  // This field provides a place for the SPDX file creator to record license
+  // notices or other such related notices found in the file
+  string notice = 7;
+  // This field provides a place for the SPDX file creator to record file
+  // contributors
+  repeated string contributors = 8;
+  // This field provides a place for the SPDX data creator to record, at the
+  // file level, acknowledgements that may be needed to be communicated in
+  // some contexts
+  repeated string attributions = 9;
+}

@@ -37,6 +37,9 @@ import "proto/v1beta1/image.proto";
 import "proto/v1beta1/intoto.proto";
 import "proto/v1beta1/package.proto";
 import "proto/v1beta1/provenance.proto";
+import "proto/v1beta1/spdx_document.proto";
+import "proto/v1beta1/spdx_file.proto";
+import "proto/v1beta1/spdx_package.proto";
 import "proto/v1beta1/vulnerability.proto";
 
 // [Grafeas](grafeas.io) API.
@@ -245,9 +248,15 @@ message Occurrence {
     grafeas.v1beta1.attestation.Details attestation = 14;
     // Describes a specific in-toto link.
     grafeas.v1beta1.intoto.Details intoto = 15;
+    // Describes a specific software bill of materials document.
+    grafeas.v1beta1.spdx_document.DocumentOccurrence sbom = 16;
+    // Describes a specific SPDX Package.
+    grafeas.v1beta1.spdx_package.PackageInfoOccurrence spdx_package = 17;
+    // Describes a specific SPDX File.
+    grafeas.v1beta1.spdx_file.FileOccurrence spdx_file = 18;
   }
 
-  // next_id = 16;
+  // next_id = 19;
 }
 
 // An entity that can have metadata. For example, a Docker image.
@@ -326,9 +335,15 @@ message Note {
     grafeas.v1beta1.attestation.Authority attestation_authority = 16;
     // A note describing an in-toto link.
     grafeas.v1beta1.intoto.InToto intoto = 17;
+    // A note describing a software bill of materials.
+    grafeas.v1beta1.spdx_document.DocumentNote sbom = 18;
+    // A note describing an SPDX Package.
+    grafeas.v1beta1.spdx_package.PackageInfoNote spdx_package = 19;
+    // A note describing an SPDX File.
+    grafeas.v1beta1.spdx_file.FileNote spdx_file = 20;
   }
 
-  // next_id = 18;
+  // next_id = 21;
 }
 
 // Request to get an occurrence.
