@@ -319,6 +319,7 @@ type PackageInfoOccurrence struct {
 	SourceInfo string `protobuf:"bytes,3,opt,name=source_info,json=sourceInfo,proto3" json:"source_info,omitempty"`
 	// package or alternative values, if the governing license cannot be
 	// determined
+	// TODO: create a license proto to encapsulate the repeating license fields
 	LicenseConcluded string `protobuf:"bytes,4,opt,name=license_concluded,json=licenseConcluded,proto3" json:"license_concluded,omitempty"`
 	// This field provides a place for the SPDX file creator to record any
 	// relevant background information or analysis that went in to arriving at the

@@ -2081,7 +2081,7 @@
         },
         "licenseConcluded": {
           "type": "string",
-          "title": "package or alternative values, if the governing license cannot be\ndetermined"
+          "title": "package or alternative values, if the governing license cannot be\ndetermined\nTODO: create a license proto to encapsulate the repeating license fields"
         },
         "licenseComments": {
           "type": "string",

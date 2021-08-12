@@ -119,6 +119,7 @@ message PackageInfoOccurrence {
   string source_info = 3;
   // package or alternative values, if the governing license cannot be
   // determined
+  // TODO: create a license proto to encapsulate the repeating license fields
   string license_concluded = 4;
   // This field provides a place for the SPDX file creator to record any
   // relevant background information or analysis that went in to arriving at the
