@@ -1853,7 +1853,7 @@
       },
       "description": "A SourceContext is a reference to a tree of files. A SourceContext together\nwith a path point to a unique revision of a single file or directory."
     },
-    "spdx_documentDocumentNote": {
+    "spdxDocumentNote": {
       "type": "object",
       "properties": {
         "spdxVersion": {
@@ -1867,7 +1867,7 @@
       },
       "title": "DocumentNote represents an SPDX Document Creation Infromation section:\nhttps://spdx.github.io/spdx-spec/2-document-creation-information/"
     },
-    "spdx_documentDocumentOccurrence": {
+    "spdxDocumentOccurrence": {
       "type": "object",
       "properties": {
         "id": {
@@ -1916,7 +1916,7 @@
       },
       "title": "DocumentOccurrence represents an SPDX Document Creation Information\nsection: https://spdx.github.io/spdx-spec/2-document-creation-information/"
     },
-    "spdx_fileFileNote": {
+    "spdxFileNote": {
       "type": "object",
       "properties": {
         "title": {
@@ -1937,7 +1937,7 @@
       },
       "title": "FileNote represents an SPDX File Information\nsection: https://spdx.github.io/spdx-spec/4-file-information/"
     },
-    "spdx_fileFileOccurrence": {
+    "spdxFileOccurrence": {
       "type": "object",
       "properties": {
         "id": {
@@ -1988,7 +1988,7 @@
       },
       "title": "FileOccurrence represents an SPDX File Information\nsection: https://spdx.github.io/spdx-spec/4-file-information/"
     },
-    "spdx_packagePackageInfoNote": {
+    "spdxPackageInfoNote": {
       "type": "object",
       "properties": {
         "title": {
@@ -2064,7 +2064,7 @@
       },
       "title": "PackageInfoNote represents an SPDX Package Information\nsection: https://spdx.github.io/spdx-spec/3-package-information/"
     },
-    "spdx_packagePackageInfoOccurrence": {
+    "spdxPackageInfoOccurrence": {
       "type": "object",
       "properties": {
         "id": {
@@ -2093,6 +2093,84 @@
         }
       },
       "title": "PackageInfoOccurrence represents an SPDX Package Information\nsection: https://spdx.github.io/spdx-spec/3-package-information/"
+    },
+    "spdxRelationshipNote": {
+      "type": "object",
+      "title": "RelationshipNote represents an SPDX Relationship\nsection:\nhttps://spdx.github.io/spdx-spec/7-relationships-between-SPDX-elements/"
+    },
+    "spdxRelationshipOccurrence": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "type": "string",
+          "title": "Also referred to as SPDXRef-A\nThe source SPDX element (file, package, etc)"
+        },
+        "target": {
+          "type": "string",
+          "title": "Also referred to as SPDXRef-B\nThe target SPDC element (file, package, etc)\nIn cases where there are \"known unknowns\", the use of the keyword\nNOASSERTION can be used The keywords NONE can be used to indicate that an\nSPDX element (package/file/snippet) has no other elements connected by\nsome relationship to it"
+        },
+        "type": {
+          "$ref": "#/definitions/spdxRelationshipOccurrenceType",
+          "title": "The type of relationship between the source and target SPDX elements"
+        },
+        "comment": {
+          "type": "string",
+          "title": "A place for the SPDX file creator to record any general comments about\nthe relationship"
+        }
+      },
+      "title": "RelationshipOccurrence represents an SPDX Relationship\nsection:\nhttps://spdx.github.io/spdx-spec/7-relationships-between-SPDX-elements/"
+    },
+    "spdxRelationshipOccurrenceType": {
+      "type": "string",
+      "enum": [
+        "TYPE_UNSPECIFIED",
+        "DESCRIBES",
+        "DESCRIBED_BY",
+        "CONTAINS",
+        "CONTAINED_BY",
+        "DEPENDS_ON",
+        "DEPENDENCY_OF",
+        "DEPENDENCY_MANIFEST_OF",
+        "BUILD_DEPENDENCY_OF",
+        "DEV_DEPENDENCY_OF",
+        "OPTIONAL_DEPENDENCY_OF",
+        "PROVIDED_DEPENDENCY_OF",
+        "TEST_DEPENDENCY_OF",
+        "RUNTIME_DEPENDENCY_OF",
+        "EXAMPLE_OF",
+        "GENERATES",
+        "GENERATED_FROM",
+        "ANCESTOR_OF",
+        "DESCENDANT_OF",
+        "VARIANT_OF",
+        "DISTRIBUTION_ARTIFACT",
+        "PATCH_FOR",
+        "PATCH_APPLIED",
+        "COPY_OF",
+        "FILE_ADDED",
+        "FILE_DELETED",
+        "FILE_MODIFIED",
+        "EXPANDED_FROM_ARCHIVE",
+        "DYNAMIC_LINK",
+        "STATIC_LINK",
+        "DATA_FILE_OF",
+        "TEST_CASE_OF",
+        "BUILD_TOOL_OF",
+        "DEV_TOOL_OF",
+        "TEST_OF",
+        "TEST_TOOL_OF",
+        "DOCUMENTATION_OF",
+        "OPTIONAL_COMPONENT_OF",
+        "METAFILE_OF",
+        "PACKAGE_OF",
+        "AMENDS",
+        "PREREQUISITE_FOR",
+        "HAS_PREREQUISITE",
+        "OTHER"
+      ],
+      "default": "TYPE_UNSPECIFIED",
+      "description": "- TYPE_UNSPECIFIED: Unspecified\n - DESCRIBES: Is to be used when SPDXRef-DOCUMENT describes SPDXRef-A\n - DESCRIBED_BY: Is to be used when SPDXRef-A is described by SPDXREF-Document\n - CONTAINS: Is to be used when SPDXRef-A contains SPDXRef-B\n - CONTAINED_BY: Is to be used when SPDXRef-A is contained by SPDXRef-B\n - DEPENDS_ON: Is to be used when SPDXRef-A depends on SPDXRef-B\n - DEPENDENCY_OF: Is to be used when SPDXRef-A is dependency of SPDXRef-B\n - DEPENDENCY_MANIFEST_OF: Is to be used when SPDXRef-A is a manifest file that lists a set of\ndependencies for SPDXRef-B\n - BUILD_DEPENDENCY_OF: Is to be used when SPDXRef-A is a build dependency of SPDXRef-B\n - DEV_DEPENDENCY_OF: Is to be used when SPDXRef-A is a development dependency of SPDXRef-B\n - OPTIONAL_DEPENDENCY_OF: Is to be used when SPDXRef-A is an optional dependency of SPDXRef-B\n - PROVIDED_DEPENDENCY_OF: Is to be used when SPDXRef-A is a to be provided dependency of\nSPDXRef-B\n - TEST_DEPENDENCY_OF: Is to be used when SPDXRef-A is a test dependency of SPDXRef-B\n - RUNTIME_DEPENDENCY_OF: Is to be used when SPDXRef-A is a dependency required for the execution\nof SPDXRef-B\n - EXAMPLE_OF: Is to be used when SPDXRef-A is an example of SPDXRef-B\n - GENERATES: Is to be used when SPDXRef-A generates SPDXRef-B\n - GENERATED_FROM: Is to be used when SPDXRef-A was generated from SPDXRef-B\n - ANCESTOR_OF: Is to be used when SPDXRef-A is an ancestor (same lineage but\npre-dates) SPDXRef-B\n - DESCENDANT_OF: Is to be used when SPDXRef-A is a descendant of (same lineage but\npostdates) SPDXRef-B\n - VARIANT_OF: Is to be used when SPDXRef-A is a variant of (same lineage but not\nclear which came first) SPDXRef-B\n - DISTRIBUTION_ARTIFACT: Is to be used when distributing SPDXRef-A requires that SPDXRef-B also\nbe distributed\n - PATCH_FOR: Is to be used when SPDXRef-A is a patch file for (to be applied to)\nSPDXRef-B\n - PATCH_APPLIED: Is to be used when SPDXRef-A is a patch file that has been applied to\nSPDXRef-B\n - COPY_OF: Is to be used when SPDXRef-A is an exact copy of SPDXRef-B\n - FILE_ADDED: Is to be used when SPDXRef-A is a file that was added to SPDXRef-B\n - FILE_DELETED: Is to be used when SPDXRef-A is a file that was deleted from SPDXRef-B\n - FILE_MODIFIED: Is to be used when SPDXRef-A is a file that was modified from SPDXRef-B\n - EXPANDED_FROM_ARCHIVE: Is to be used when SPDXRef-A is expanded from the archive SPDXRef-B\n - DYNAMIC_LINK: Is to be used when SPDXRef-A dynamically links to SPDXRef-B\n - STATIC_LINK: Is to be used when SPDXRef-A statically links to SPDXRef-B\n - DATA_FILE_OF: Is to be used when SPDXRef-A is a data file used in SPDXRef-B\n - TEST_CASE_OF: Is to be used when SPDXRef-A is a test case used in testing SPDXRef-B\n - BUILD_TOOL_OF: Is to be used when SPDXRef-A is used to build SPDXRef-B\n - DEV_TOOL_OF: Is to be used when SPDXRef-A is used as a development tool for\nSPDXRef-B\n - TEST_OF: Is to be used when SPDXRef-A is used for testing SPDXRef-B\n - TEST_TOOL_OF: Is to be used when SPDXRef-A is used as a test tool for SPDXRef-B\n - DOCUMENTATION_OF: Is to be used when SPDXRef-A provides documentation of SPDXRef-B\n - OPTIONAL_COMPONENT_OF: Is to be used when SPDXRef-A is an optional component of SPDXRef-B\n - METAFILE_OF: Is to be used when SPDXRef-A is a metafile of SPDXRef-B\n - PACKAGE_OF: Is to be used when SPDXRef-A is used as a package as part of SPDXRef-B\n - AMENDS: Is to be used when (current) SPDXRef-DOCUMENT amends the SPDX\ninformation in SPDXRef-B\n - PREREQUISITE_FOR: Is to be used when SPDXRef-A is a prerequisite for SPDXRef-B\n - HAS_PREREQUISITE: Is to be used when SPDXRef-A has as a prerequisite SPDXRef-B\n - OTHER: Is to be used for a relationship which has not been defined in the\nformal SPDX specification. A description of the relationship should be\nincluded in the Relationship comments field",
+      "title": "The type of relationship between the source and target SPDX elements"
     },
     "v1beta1BatchCreateNotesRequest": {
       "type": "object",
@@ -2290,15 +2368,19 @@
           "description": "A note describing an in-toto link."
         },
         "sbom": {
-          "$ref": "#/definitions/spdx_documentDocumentNote",
+          "$ref": "#/definitions/spdxDocumentNote",
           "description": "A note describing a software bill of materials."
         },
         "spdxPackage": {
-          "$ref": "#/definitions/spdx_packagePackageInfoNote",
+          "$ref": "#/definitions/spdxPackageInfoNote",
           "description": "A note describing an SPDX Package."
         },
         "spdxFile": {
-          "$ref": "#/definitions/spdx_fileFileNote",
+          "$ref": "#/definitions/spdxFileNote",
+          "description": "A note describing an SPDX File."
+        },
+        "spdxRelationship": {
+          "$ref": "#/definitions/spdxRelationshipNote",
           "description": "A note describing an SPDX File."
         }
       },
@@ -2315,10 +2397,14 @@
         "DEPLOYMENT",
         "DISCOVERY",
         "ATTESTATION",
-        "INTOTO"
+        "INTOTO",
+        "SBOM",
+        "SPDX_PACKAGE",
+        "SPDX_FILE",
+        "SPDX_RELATIONSHIP"
       ],
       "default": "NOTE_KIND_UNSPECIFIED",
-      "description": "Kind represents the kinds of notes supported.\n\n - NOTE_KIND_UNSPECIFIED: Default value. This value is unused.\n - VULNERABILITY: The note and occurrence represent a package vulnerability.\n - BUILD: The note and occurrence assert build provenance.\n - IMAGE: This represents an image basis relationship.\n - PACKAGE: This represents a package installed via a package manager.\n - DEPLOYMENT: The note and occurrence track deployment events.\n - DISCOVERY: The note and occurrence track the initial discovery status of a resource.\n - ATTESTATION: This represents a logical \"role\" that can attest to artifacts.\n - INTOTO: This represents an in-toto link."
+      "description": "Kind represents the kinds of notes supported.\n\n - NOTE_KIND_UNSPECIFIED: Default value. This value is unused.\n - VULNERABILITY: The note and occurrence represent a package vulnerability.\n - BUILD: The note and occurrence assert build provenance.\n - IMAGE: This represents an image basis relationship.\n - PACKAGE: This represents a package installed via a package manager.\n - DEPLOYMENT: The note and occurrence track deployment events.\n - DISCOVERY: The note and occurrence track the initial discovery status of a resource.\n - ATTESTATION: This represents a logical \"role\" that can attest to artifacts.\n - INTOTO: This represents an in-toto link.\n - SBOM: This represents a software bill of materials.\n - SPDX_PACKAGE: This represents an SPDX Package.\n - SPDX_FILE: This represents an SPDX File.\n - SPDX_RELATIONSHIP: This represents an SPDX Relationship."
     },
     "v1beta1Occurrence": {
       "type": "object",
@@ -2390,16 +2476,20 @@
           "description": "Describes a specific in-toto link."
         },
         "sbom": {
-          "$ref": "#/definitions/spdx_documentDocumentOccurrence",
+          "$ref": "#/definitions/spdxDocumentOccurrence",
           "description": "Describes a specific software bill of materials document."
         },
         "spdxPackage": {
-          "$ref": "#/definitions/spdx_packagePackageInfoOccurrence",
+          "$ref": "#/definitions/spdxPackageInfoOccurrence",
           "description": "Describes a specific SPDX Package."
         },
         "spdxFile": {
-          "$ref": "#/definitions/spdx_fileFileOccurrence",
+          "$ref": "#/definitions/spdxFileOccurrence",
           "description": "Describes a specific SPDX File."
+        },
+        "spdxRelationship": {
+          "$ref": "#/definitions/spdxRelationshipOccurrence",
+          "description": "Describes a specific SPDX Relationship."
         }
       },
       "description": "An instance of an analysis type that has been found on a resource."
