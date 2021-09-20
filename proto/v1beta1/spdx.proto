@@ -231,6 +231,8 @@ message PackageInfoNote {
   // A place for the SPDX data creator to record, at the package level,
   // acknowledgements that may be needed to be communicated in some contexts
   string attribution = 16;
+  // The type of package: OS, MAVEN, GO, GO_STDLIB, etc.
+  string package_type = 17;
 }
 
 // PackageInfoOccurrence represents an SPDX Package Information
@@ -256,12 +258,138 @@ message PackageInfoOccurrence {
   // A place for the SPDX file creator to record any general
   // comments about the package being described
   string comment = 6;
+  // The type of package: OS, MAVEN, GO, GO_STDLIB, etc.
+  string package_type = 7;
+  // Identify the full name of the package as given by the Package Originator
+  string title = 8;
+  // Identify the version of the package
+  string version = 9;
+  // Provide an independently reproducible mechanism that permits unique
+  // identification of a specific package that correlates to the data in this
+  // SPDX file
+  string checksum = 10;
+  // Provide a place for the SPDX file creator to record a web site that serves
+  // as the package's home page
+  string home_page = 11;
+  // A short description of the package
+  string summary_description = 12;
+}
+
+
+// The type of relationship between the source and target SPDX elements
+// RelationshipOccurrence represents an SPDX Relationship section:
+// https://spdx.github.io/spdx-spec/7-relationships-between-SPDX-elements/
+enum RelationshipType {
+  // Unspecified
+  TYPE_UNSPECIFIED = 0;
+  // Is to be used when SPDXRef-DOCUMENT describes SPDXRef-A
+  DESCRIBES = 1;
+  // Is to be used when SPDXRef-A is described by SPDXREF-Document
+  DESCRIBED_BY = 2;
+  // Is to be used when SPDXRef-A contains SPDXRef-B
+  CONTAINS = 3;
+  // Is to be used when SPDXRef-A is contained by SPDXRef-B
+  CONTAINED_BY = 4;
+  // Is to be used when SPDXRef-A depends on SPDXRef-B
+  DEPENDS_ON = 5;
+  // Is to be used when SPDXRef-A is dependency of SPDXRef-B
+  DEPENDENCY_OF = 6;
+  // Is to be used when SPDXRef-A is a manifest file that lists a set of
+  // dependencies for SPDXRef-B
+  DEPENDENCY_MANIFEST_OF = 7;
+  // Is to be used when SPDXRef-A is a build dependency of SPDXRef-B
+  BUILD_DEPENDENCY_OF = 8;
+  // Is to be used when SPDXRef-A is a development dependency of SPDXRef-B
+  DEV_DEPENDENCY_OF = 9;
+  // Is to be used when SPDXRef-A is an optional dependency of SPDXRef-B
+  OPTIONAL_DEPENDENCY_OF = 10;
+  // Is to be used when SPDXRef-A is a to be provided dependency of
+  // SPDXRef-B
+  PROVIDED_DEPENDENCY_OF = 11;
+  // Is to be used when SPDXRef-A is a test dependency of SPDXRef-B
+  TEST_DEPENDENCY_OF = 12;
+  // Is to be used when SPDXRef-A is a dependency required for the execution
+  // of SPDXRef-B
+  RUNTIME_DEPENDENCY_OF = 13;
+  // Is to be used when SPDXRef-A is an example of SPDXRef-B
+  EXAMPLE_OF = 14;
+  // Is to be used when SPDXRef-A generates SPDXRef-B
+  GENERATES = 15;
+  // Is to be used when SPDXRef-A was generated from SPDXRef-B
+  GENERATED_FROM = 16;
+  // Is to be used when SPDXRef-A is an ancestor (same lineage but
+  // pre-dates) SPDXRef-B
+  ANCESTOR_OF = 17;
+  // Is to be used when SPDXRef-A is a descendant of (same lineage but
+  // postdates) SPDXRef-B
+  DESCENDANT_OF = 18;
+  // Is to be used when SPDXRef-A is a variant of (same lineage but not
+  // clear which came first) SPDXRef-B
+  VARIANT_OF = 19;
+  // Is to be used when distributing SPDXRef-A requires that SPDXRef-B also
+  // be distributed
+  DISTRIBUTION_ARTIFACT = 20;
+  // Is to be used when SPDXRef-A is a patch file for (to be applied to)
+  // SPDXRef-B
+  PATCH_FOR = 21;
+  // Is to be used when SPDXRef-A is a patch file that has been applied to
+  // SPDXRef-B
+  PATCH_APPLIED = 22;
+  // Is to be used when SPDXRef-A is an exact copy of SPDXRef-B
+  COPY_OF = 23;
+  // Is to be used when SPDXRef-A is a file that was added to SPDXRef-B
+  FILE_ADDED = 24;
+  // Is to be used when SPDXRef-A is a file that was deleted from SPDXRef-B
+  FILE_DELETED = 25;
+  // Is to be used when SPDXRef-A is a file that was modified from SPDXRef-B
+  FILE_MODIFIED = 26;
+  // Is to be used when SPDXRef-A is expanded from the archive SPDXRef-B
+  EXPANDED_FROM_ARCHIVE = 27;
+  // Is to be used when SPDXRef-A dynamically links to SPDXRef-B
+  DYNAMIC_LINK = 28;
+  // Is to be used when SPDXRef-A statically links to SPDXRef-B
+  STATIC_LINK = 29;
+  // Is to be used when SPDXRef-A is a data file used in SPDXRef-B
+  DATA_FILE_OF = 30;
+  // Is to be used when SPDXRef-A is a test case used in testing SPDXRef-B
+  TEST_CASE_OF = 31;
+  // Is to be used when SPDXRef-A is used to build SPDXRef-B
+  BUILD_TOOL_OF = 32;
+  // Is to be used when SPDXRef-A is used as a development tool for
+  // SPDXRef-B
+  DEV_TOOL_OF = 33;
+  // Is to be used when SPDXRef-A is used for testing SPDXRef-B
+  TEST_OF = 34;
+  // Is to be used when SPDXRef-A is used as a test tool for SPDXRef-B
+  TEST_TOOL_OF = 35;
+  // Is to be used when SPDXRef-A provides documentation of SPDXRef-B
+  DOCUMENTATION_OF = 36;
+  // Is to be used when SPDXRef-A is an optional component of SPDXRef-B
+  OPTIONAL_COMPONENT_OF = 37;
+  // Is to be used when SPDXRef-A is a metafile of SPDXRef-B
+  METAFILE_OF = 38;
+  // Is to be used when SPDXRef-A is used as a package as part of SPDXRef-B
+  PACKAGE_OF = 39;
+  // Is to be used when (current) SPDXRef-DOCUMENT amends the SPDX
+  // information in SPDXRef-B
+  AMENDS = 40;
+  // Is to be used when SPDXRef-A is a prerequisite for SPDXRef-B
+  PREREQUISITE_FOR = 41;
+  // Is to be used when SPDXRef-A has as a prerequisite SPDXRef-B
+  HAS_PREREQUISITE = 42;
+  // Is to be used for a relationship which has not been defined in the
+  // formal SPDX specification. A description of the relationship should be
+  // included in the Relationship comments field
+  OTHER = 43;
 }
 
 // RelationshipNote represents an SPDX Relationship
 // section:
 // https://spdx.github.io/spdx-spec/7-relationships-between-SPDX-elements/
-message RelationshipNote {}
+message RelationshipNote {
+  // The type of relationship between the source and target SPDX elements
+  RelationshipType type = 1;
+}
 
 // RelationshipOccurrence represents an SPDX Relationship
 // section:
@@ -277,115 +405,10 @@ message RelationshipOccurrence {
   // SPDX element (package/file/snippet) has no other elements connected by
   // some relationship to it
   string target = 2;
-  // The type of relationship between the source and target SPDX elements
-  enum Type {
-    // Unspecified
-    TYPE_UNSPECIFIED = 0;
-    // Is to be used when SPDXRef-DOCUMENT describes SPDXRef-A
-    DESCRIBES = 1;
-    // Is to be used when SPDXRef-A is described by SPDXREF-Document
-    DESCRIBED_BY = 2;
-    // Is to be used when SPDXRef-A contains SPDXRef-B
-    CONTAINS = 3;
-    // Is to be used when SPDXRef-A is contained by SPDXRef-B
-    CONTAINED_BY = 4;
-    // Is to be used when SPDXRef-A depends on SPDXRef-B
-    DEPENDS_ON = 5;
-    // Is to be used when SPDXRef-A is dependency of SPDXRef-B
-    DEPENDENCY_OF = 6;
-    // Is to be used when SPDXRef-A is a manifest file that lists a set of
-    // dependencies for SPDXRef-B
-    DEPENDENCY_MANIFEST_OF = 7;
-    // Is to be used when SPDXRef-A is a build dependency of SPDXRef-B
-    BUILD_DEPENDENCY_OF = 8;
-    // Is to be used when SPDXRef-A is a development dependency of SPDXRef-B
-    DEV_DEPENDENCY_OF = 9;
-    // Is to be used when SPDXRef-A is an optional dependency of SPDXRef-B
-    OPTIONAL_DEPENDENCY_OF = 10;
-    // Is to be used when SPDXRef-A is a to be provided dependency of
-    // SPDXRef-B
-    PROVIDED_DEPENDENCY_OF = 11;
-    // Is to be used when SPDXRef-A is a test dependency of SPDXRef-B
-    TEST_DEPENDENCY_OF = 12;
-    // Is to be used when SPDXRef-A is a dependency required for the execution
-    // of SPDXRef-B
-    RUNTIME_DEPENDENCY_OF = 13;
-    // Is to be used when SPDXRef-A is an example of SPDXRef-B
-    EXAMPLE_OF = 14;
-    // Is to be used when SPDXRef-A generates SPDXRef-B
-    GENERATES = 15;
-    // Is to be used when SPDXRef-A was generated from SPDXRef-B
-    GENERATED_FROM = 16;
-    // Is to be used when SPDXRef-A is an ancestor (same lineage but
-    // pre-dates) SPDXRef-B
-    ANCESTOR_OF = 17;
-    // Is to be used when SPDXRef-A is a descendant of (same lineage but
-    // postdates) SPDXRef-B
-    DESCENDANT_OF = 18;
-    // Is to be used when SPDXRef-A is a variant of (same lineage but not
-    // clear which came first) SPDXRef-B
-    VARIANT_OF = 19;
-    // Is to be used when distributing SPDXRef-A requires that SPDXRef-B also
-    // be distributed
-    DISTRIBUTION_ARTIFACT = 20;
-    // Is to be used when SPDXRef-A is a patch file for (to be applied to)
-    // SPDXRef-B
-    PATCH_FOR = 21;
-    // Is to be used when SPDXRef-A is a patch file that has been applied to
-    // SPDXRef-B
-    PATCH_APPLIED = 22;
-    // Is to be used when SPDXRef-A is an exact copy of SPDXRef-B
-    COPY_OF = 23;
-    // Is to be used when SPDXRef-A is a file that was added to SPDXRef-B
-    FILE_ADDED = 24;
-    // Is to be used when SPDXRef-A is a file that was deleted from SPDXRef-B
-    FILE_DELETED = 25;
-    // Is to be used when SPDXRef-A is a file that was modified from SPDXRef-B
-    FILE_MODIFIED = 26;
-    // Is to be used when SPDXRef-A is expanded from the archive SPDXRef-B
-    EXPANDED_FROM_ARCHIVE = 27;
-    // Is to be used when SPDXRef-A dynamically links to SPDXRef-B
-    DYNAMIC_LINK = 28;
-    // Is to be used when SPDXRef-A statically links to SPDXRef-B
-    STATIC_LINK = 29;
-    // Is to be used when SPDXRef-A is a data file used in SPDXRef-B
-    DATA_FILE_OF = 30;
-    // Is to be used when SPDXRef-A is a test case used in testing SPDXRef-B
-    TEST_CASE_OF = 31;
-    // Is to be used when SPDXRef-A is used to build SPDXRef-B
-    BUILD_TOOL_OF = 32;
-    // Is to be used when SPDXRef-A is used as a development tool for
-    // SPDXRef-B
-    DEV_TOOL_OF = 33;
-    // Is to be used when SPDXRef-A is used for testing SPDXRef-B
-    TEST_OF = 34;
-    // Is to be used when SPDXRef-A is used as a test tool for SPDXRef-B
-    TEST_TOOL_OF = 35;
-    // Is to be used when SPDXRef-A provides documentation of SPDXRef-B
-    DOCUMENTATION_OF = 36;
-    // Is to be used when SPDXRef-A is an optional component of SPDXRef-B
-    OPTIONAL_COMPONENT_OF = 37;
-    // Is to be used when SPDXRef-A is a metafile of SPDXRef-B
-    METAFILE_OF = 38;
-    // Is to be used when SPDXRef-A is used as a package as part of SPDXRef-B
-    PACKAGE_OF = 39;
-    // Is to be used when (current) SPDXRef-DOCUMENT amends the SPDX
-    // information in SPDXRef-B
-    AMENDS = 40;
-    // Is to be used when SPDXRef-A is a prerequisite for SPDXRef-B
-    PREREQUISITE_FOR = 41;
-    // Is to be used when SPDXRef-A has as a prerequisite SPDXRef-B
-    HAS_PREREQUISITE = 42;
-    // Is to be used for a relationship which has not been defined in the
-    // formal SPDX specification. A description of the relationship should be
-    // included in the Relationship comments field
-    OTHER = 43;
-  }
 
   // The type of relationship between the source and target SPDX elements
-  Type type = 3;
+  RelationshipType type = 3;
   // A place for the SPDX file creator to record any general comments about
   // the relationship
   string comment = 4;
 }
-
