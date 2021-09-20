@@ -50,6 +50,7 @@ The following projects provide bindings for Grafeas API to different storage bac
 
 * [grafeas-pgsql](https://github.com/grafeas/grafeas-pgsql)
 * [grafeas-oracle](https://github.com/judavi/grafeas-oracle)
+* [grafeas-elasticsearch](https://github.com/rode/grafeas-elasticsearch)
 
 ## Roadmap
 
