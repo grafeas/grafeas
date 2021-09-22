@@ -149,6 +149,14 @@ message FileOccurrence {
   repeated string attributions = 9;
 }
 
+// License information: https://spdx.github.io/spdx-spec/3-package-information/#315-declared-license
+message License {
+    // Expression: https://spdx.github.io/spdx-spec/appendix-IV-SPDX-license-expressions/
+    string expression = 1;
+    // Comments
+    string comments = 2;
+}
+
 // PackageInfoNote represents an SPDX Package Information
 // section: https://spdx.github.io/spdx-spec/3-package-information/
 message PackageInfoNote {
@@ -188,7 +196,7 @@ message PackageInfoNote {
   // specified in this field – it is simply a listing of all licenses found
   repeated string files_license_info = 10;
   // List the licenses that have been declared by the authors of the package
-  string license_declared = 11;
+  License license_declared = 11;
   // Identify the copyright holders of the package, as well as any dates present
   string copyright = 12;
   // A short description of the package
@@ -249,30 +257,21 @@ message PackageInfoOccurrence {
   string source_info = 3;
   // package or alternative values, if the governing license cannot be
   // determined
-  // TODO: create a license proto to encapsulate the repeating license fields
-  string license_concluded = 4;
-  // This field provides a place for the SPDX file creator to record any
-  // relevant background information or analysis that went in to arriving at the
-  // Concluded License for a package
-  string license_comments = 5;
+  License license_concluded = 4;
   // A place for the SPDX file creator to record any general
   // comments about the package being described
-  string comment = 6;
-  // The type of package: OS, MAVEN, GO, GO_STDLIB, etc.
-  string package_type = 7;
-  // Identify the full name of the package as given by the Package Originator
-  string title = 8;
-  // Identify the version of the package
-  string version = 9;
-  // Provide an independently reproducible mechanism that permits unique
-  // identification of a specific package that correlates to the data in this
-  // SPDX file
-  string checksum = 10;
-  // Provide a place for the SPDX file creator to record a web site that serves
+  string comment = 5;
+  // Output only. The type of package: OS, MAVEN, GO, GO_STDLIB, etc.
+  string package_type = 6;
+  // Output only. Identify the full name of the package as given by the Package Originator
+  string title = 7;
+  // Output only. Identify the version of the package
+  string version = 8;
+  // Output only. Provide a place for the SPDX file creator to record a web site that serves
   // as the package's home page
-  string home_page = 11;
-  // A short description of the package
-  string summary_description = 12;
+  string home_page = 9;
+  // Output only. A short description of the package
+  string summary_description = 10;
 }
 
 
@@ -406,7 +405,7 @@ message RelationshipOccurrence {
   // some relationship to it
   string target = 2;
 
-  // The type of relationship between the source and target SPDX elements
+  // Output only. The type of relationship between the source and target SPDX elements
   RelationshipType type = 3;
   // A place for the SPDX file creator to record any general comments about
   // the relationship

@@ -1988,6 +1988,20 @@
       },
       "title": "FileOccurrence represents an SPDX File Information\nsection: https://spdx.github.io/spdx-spec/4-file-information/"
     },
+    "spdxLicense": {
+      "type": "object",
+      "properties": {
+        "expression": {
+          "type": "string",
+          "title": "Expression: https://spdx.github.io/spdx-spec/appendix-IV-SPDX-license-expressions/"
+        },
+        "comments": {
+          "type": "string",
+          "title": "Comments"
+        }
+      },
+      "title": "License information: https://spdx.github.io/spdx-spec/3-package-information/#315-declared-license"
+    },
     "spdxPackageInfoNote": {
       "type": "object",
       "properties": {
@@ -2035,7 +2049,7 @@
           "title": "Contain the license the SPDX file creator has concluded as governing the\nThis field is to contain a list of all licenses found in the package. The\nrelationship between licenses (i.e., conjunctive, disjunctive) is not\nspecified in this field – it is simply a listing of all licenses found"
         },
         "licenseDeclared": {
-          "type": "string",
+          "$ref": "#/definitions/spdxLicense",
           "title": "List the licenses that have been declared by the authors of the package"
         },
         "copyright": {
@@ -2084,12 +2098,8 @@
           "title": "Provide a place for the SPDX file creator to record any relevant background\ninformation or additional comments about the origin of the package"
         },
         "licenseConcluded": {
-          "type": "string",
-          "title": "package or alternative values, if the governing license cannot be\ndetermined\nTODO: create a license proto to encapsulate the repeating license fields"
-        },
-        "licenseComments": {
-          "type": "string",
-          "title": "This field provides a place for the SPDX file creator to record any\nrelevant background information or analysis that went in to arriving at the\nConcluded License for a package"
+          "$ref": "#/definitions/spdxLicense",
+          "title": "package or alternative values, if the governing license cannot be\ndetermined"
         },
         "comment": {
           "type": "string",
@@ -2097,27 +2107,28 @@
         },
         "packageType": {
           "type": "string",
-          "description": "The type of package: OS, MAVEN, GO, GO_STDLIB, etc."
+          "description": "Output only. The type of package: OS, MAVEN, GO, GO_STDLIB, etc.",
+          "readOnly": true
         },
         "title": {
           "type": "string",
-          "title": "Identify the full name of the package as given by the Package Originator"
+          "title": "Output only. Identify the full name of the package as given by the Package Originator",
+          "readOnly": true
         },
         "version": {
           "type": "string",
-          "title": "Identify the version of the package"
-        },
-        "checksum": {
-          "type": "string",
-          "title": "Provide an independently reproducible mechanism that permits unique\nidentification of a specific package that correlates to the data in this\nSPDX file"
+          "title": "Output only. Identify the version of the package",
+          "readOnly": true
         },
         "homePage": {
           "type": "string",
-          "title": "Provide a place for the SPDX file creator to record a web site that serves\nas the package's home page"
+          "title": "Output only. Provide a place for the SPDX file creator to record a web site that serves\nas the package's home page",
+          "readOnly": true
         },
         "summaryDescription": {
           "type": "string",
-          "title": "A short description of the package"
+          "title": "Output only. A short description of the package",
+          "readOnly": true
         }
       },
       "title": "PackageInfoOccurrence represents an SPDX Package Information\nsection: https://spdx.github.io/spdx-spec/3-package-information/"
@@ -2145,7 +2156,8 @@
         },
         "type": {
           "$ref": "#/definitions/spdxRelationshipType",
-          "title": "The type of relationship between the source and target SPDX elements"
+          "title": "Output only. The type of relationship between the source and target SPDX elements",
+          "readOnly": true
         },
         "comment": {
           "type": "string",
