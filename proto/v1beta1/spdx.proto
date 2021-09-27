@@ -124,29 +124,25 @@ message FileOccurrence {
   // This field contains the license the SPDX file creator has concluded as
   // governing the file or alternative values if the governing license cannot be
   // determined
-  string license_concluded = 2;
+  License license_concluded = 2;
   // This field contains the license information actually found in the file, if
   // any
   repeated string files_license_info = 3;
-  // This field provides a place for the SPDX file creator to record any
-  // relevant background references or analysis that went in to arriving at the
-  // Concluded License for a file
-  string license_comments = 4;
   // Identify the copyright holder of the file, as well as any dates present
-  string copyright = 5;
+  string copyright = 4;
   // This field provides a place for the SPDX file creator to record any general
   // comments about the file
-  string comment = 6;
+  string comment = 5;
   // This field provides a place for the SPDX file creator to record license
   // notices or other such related notices found in the file
-  string notice = 7;
+  string notice = 6;
   // This field provides a place for the SPDX file creator to record file
   // contributors
-  repeated string contributors = 8;
+  repeated string contributors = 7;
   // This field provides a place for the SPDX data creator to record, at the
   // file level, acknowledgements that may be needed to be communicated in
   // some contexts
-  repeated string attributions = 9;
+  repeated string attributions = 8;
 }
 
 // License information: https://spdx.github.io/spdx-spec/3-package-information/#315-declared-license

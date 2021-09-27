@@ -1945,7 +1945,7 @@
           "title": "Uniquely identify any element in an SPDX document which may be referenced\nby other elements"
         },
         "licenseConcluded": {
-          "type": "string",
+          "$ref": "#/definitions/spdxLicense",
           "title": "This field contains the license the SPDX file creator has concluded as\ngoverning the file or alternative values if the governing license cannot be\ndetermined"
         },
         "filesLicenseInfo": {
@@ -1954,10 +1954,6 @@
             "type": "string"
           },
           "title": "This field contains the license information actually found in the file, if\nany"
-        },
-        "licenseComments": {
-          "type": "string",
-          "title": "This field provides a place for the SPDX file creator to record any\nrelevant background references or analysis that went in to arriving at the\nConcluded License for a file"
         },
         "copyright": {
           "type": "string",
