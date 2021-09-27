@@ -41,6 +41,14 @@ enum NoteKind {
   ATTESTATION = 7;
   // This represents an in-toto link.
   INTOTO = 8;
+  // This represents a software bill of materials.
+  SBOM = 9;
+  // This represents an SPDX Package.
+  SPDX_PACKAGE = 10;
+  // This represents an SPDX File.
+  SPDX_FILE = 11;
+  // This represents an SPDX Relationship.
+  SPDX_RELATIONSHIP = 12;
 }
 
 // Metadata for any related URL information.

@@ -1,0 +1,409 @@
+// Copyright 2021 The Grafeas Authors. All rights reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto3";
+
+package grafeas.v1beta1.spdx;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/grafeas/grafeas/proto/v1beta1/spdx_go_proto";
+option java_multiple_files = true;
+option java_package = "io.grafeas.v1beta1.spdx";
+option objc_class_prefix = "GRA";
+
+// DocumentNote represents an SPDX Document Creation Infromation section:
+// https://spdx.github.io/spdx-spec/2-document-creation-information/
+message DocumentNote {
+  // Provide a reference number that can be used to understand how to parse and
+  // interpret the rest of the file
+  string spdx_version = 1;
+  // Compliance with the SPDX specification includes populating the SPDX fields
+  // therein with data related to such fields ("SPDX-Metadata")
+  string data_licence = 2;
+}
+
+// DocumentOccurrence represents an SPDX Document Creation Information
+// section: https://spdx.github.io/spdx-spec/2-document-creation-information/
+message DocumentOccurrence {
+  // Identify the current SPDX document which may be referenced in relationships
+  // by other files, packages internally and documents externally
+  string id = 1;
+  // Identify name of this document as designated by creator
+  string title = 2;
+  // Provide an SPDX document specific namespace as a unique absolute Uniform
+  // Resource Identifier (URI) as specified in RFC-3986, with the exception of
+  // the ‘#’ delimiter
+  string namespace = 3;
+  // Identify any external SPDX documents referenced within this SPDX document
+  repeated string external_document_refs = 4;
+  // A field for creators of the SPDX file to provide the version of
+  // the SPDX License List used when the SPDX file was created
+  string license_list_version = 5;
+  // Identify who (or what, in the case of a tool) created the SPDX file. If the
+  // SPDX file was created by an individual, indicate the person's name
+  repeated string creators = 6;
+  // Identify when the SPDX file was originally created. The date is to be
+  // specified according to combined date and time in UTC format as specified in
+  // ISO 8601 standard
+  google.protobuf.Timestamp create_time = 7;
+  // A field for creators of the SPDX file to provide general comments
+  // about the creation of the SPDX file or any other relevant comment not
+  // included in the other fields
+  string creator_comment = 8;
+  // A field for creators of the SPDX file content to provide comments
+  // to the consumers of the SPDX document
+  string document_comment = 9;
+}
+
+// FileNote represents an SPDX File Information
+// section: https://spdx.github.io/spdx-spec/4-file-information/
+message FileNote {
+  // Identify the full path and filename that corresponds to the file
+  // information in this section
+  string title = 1;
+
+  // File Type is intrinsic to the file, independent of how the file is being
+  // used
+  enum FileType {
+    // Unspecified
+    FILE_TYPE_UNSPECIFIED = 0;
+    // The file is human readable source code (.c, .html, etc.)
+    SOURCE = 1;
+    // The file is a compiled object, target image or binary executable (.o, .a,
+    // etc.)
+    BINARY = 2;
+    // The file represents an archive (.tar, .jar, etc.)
+    ARCHIVE = 3;
+    // The file is associated with a specific application type (MIME type of
+    // application/*)
+    APPLICATION = 4;
+    // The file is associated with an audio file (MIME type of audio/* , e.g.
+    // .mp3)
+    AUDIO = 5;
+    // The file is associated with an picture image file (MIME type of image/*,
+    // e.g., .jpg, .gif)
+    IMAGE = 6;
+    // The file is human readable text file (MIME type of text/*)
+    TEXT = 7;
+    // The file is associated with a video file type (MIME type of video/*)
+    VIDEO = 8;
+    // The file serves as documentation
+    DOCUMENTATION = 9;
+    // The file is an SPDX document
+    SPDX = 10;
+    // The file doesn't fit into the above categories (generated artifacts, data
+    // files, etc.)
+    OTHER = 11;
+  }
+  // This field provides information about the type of file identified
+  FileType file_type = 2;
+  // Provide a unique identifier to match analysis information on each specific
+  // file in a package
+  repeated string checksum = 3;
+}
+
+// FileOccurrence represents an SPDX File Information
+// section: https://spdx.github.io/spdx-spec/4-file-information/
+message FileOccurrence {
+  // Uniquely identify any element in an SPDX document which may be referenced
+  // by other elements
+  string id = 1;
+
+  // This field contains the license the SPDX file creator has concluded as
+  // governing the file or alternative values if the governing license cannot be
+  // determined
+  License license_concluded = 2;
+  // This field contains the license information actually found in the file, if
+  // any
+  repeated string files_license_info = 3;
+  // Identify the copyright holder of the file, as well as any dates present
+  string copyright = 4;
+  // This field provides a place for the SPDX file creator to record any general
+  // comments about the file
+  string comment = 5;
+  // This field provides a place for the SPDX file creator to record license
+  // notices or other such related notices found in the file
+  string notice = 6;
+  // This field provides a place for the SPDX file creator to record file
+  // contributors
+  repeated string contributors = 7;
+  // This field provides a place for the SPDX data creator to record, at the
+  // file level, acknowledgements that may be needed to be communicated in
+  // some contexts
+  repeated string attributions = 8;
+}
+
+// License information: https://spdx.github.io/spdx-spec/3-package-information/#315-declared-license
+message License {
+    // Expression: https://spdx.github.io/spdx-spec/appendix-IV-SPDX-license-expressions/
+    string expression = 1;
+    // Comments
+    string comments = 2;
+}
+
+// PackageInfoNote represents an SPDX Package Information
+// section: https://spdx.github.io/spdx-spec/3-package-information/
+message PackageInfoNote {
+  // Identify the full name of the package as given by the Package Originator
+  string title = 1;
+  // Identify the version of the package
+  string version = 2;
+  // Identify the actual distribution source for the package/directory
+  // identified in the SPDX file
+  string supplier = 3;
+  // If the package identified in the SPDX file originated from a different
+  // person or organization than identified as Package Supplier, this field
+  // identifies from where or whom the package originally came
+  string originator = 4;
+  //  This section identifies the download Universal Resource Locator (URL), or
+  //  a specific location within a version control system (VCS) for the package
+  //  at the time that the SPDX file was created
+  string download_location = 5;
+  // Indicates whether the file content of this package has been available for
+  // or subjected to analysis when creating the SPDX document
+  bool analyzed = 6;
+  // This field provides an independently reproducible mechanism identifying
+  // specific contents of a package based on the actual files (except the SPDX
+  // file itself, if it is included in the package) that make up each package
+  // and that correlates to the data in this SPDX file
+  string verification_code = 7;
+  // Provide an independently reproducible mechanism that permits unique
+  // identification of a specific package that correlates to the data in this
+  // SPDX file
+  string checksum = 8;
+  // Provide a place for the SPDX file creator to record a web site that serves
+  // as the package's home page
+  string home_page = 9;
+  // Contain the license the SPDX file creator has concluded as governing the
+  // This field is to contain a list of all licenses found in the package. The
+  // relationship between licenses (i.e., conjunctive, disjunctive) is not
+  // specified in this field – it is simply a listing of all licenses found
+  repeated string files_license_info = 10;
+  // List the licenses that have been declared by the authors of the package
+  License license_declared = 11;
+  // Identify the copyright holders of the package, as well as any dates present
+  string copyright = 12;
+  // A short description of the package
+  string summary_description = 13;
+  // A more detailed description of the package
+  string detailed_description = 14;
+
+  // An External Reference allows a Package to reference an external source of
+  // additional information, metadata, enumerations, asset identifiers, or
+  // downloadable content believed to be relevant to the Package
+  message ExternalRef {
+    // The category of the external reference
+    enum Category {
+      // Unspecified
+      CATEGORY_UNSPECIFIED = 0;
+      // Security (e.g. cpe22Type, cpe23Type)
+      SECURITY = 1;
+      // Package Manager (e.g. maven-central, npm, nuget, bower, purl)
+      PACKAGE_MANAGER = 2;
+      // Persistent-Id (e.g. swh)
+      PERSISTENT_ID = 3;
+      // Other
+      OTHER = 4;
+    }
+
+    // An External Reference allows a Package to reference an external source of
+    // additional information, metadata, enumerations, asset identifiers, or
+    // downloadable content believed to be relevant to the Package
+    Category category = 1;
+    // Type of category (e.g. 'npm' for the PACKAGE_MANAGER category)
+    string type = 2;
+    // The unique string with no spaces necessary to access the package-specific
+    // information, metadata, or content within the target location
+    string locator = 3;
+    // Human-readable information about the purpose and target of the reference
+    string comment = 4;
+  }
+  // ExternalRef
+  repeated ExternalRef external_refs = 15;
+  // A place for the SPDX data creator to record, at the package level,
+  // acknowledgements that may be needed to be communicated in some contexts
+  string attribution = 16;
+  // The type of package: OS, MAVEN, GO, GO_STDLIB, etc.
+  string package_type = 17;
+}
+
+// PackageInfoOccurrence represents an SPDX Package Information
+// section: https://spdx.github.io/spdx-spec/3-package-information/
+message PackageInfoOccurrence {
+  // Uniquely identify any element in an SPDX document which may be referenced
+  // by other elements
+  string id = 1;
+  // Provide the actual file name of the package, or path of the directory being
+  // treated as a package
+  string filename = 2;
+  // Provide a place for the SPDX file creator to record any relevant background
+  // information or additional comments about the origin of the package
+  string source_info = 3;
+  // package or alternative values, if the governing license cannot be
+  // determined
+  License license_concluded = 4;
+  // A place for the SPDX file creator to record any general
+  // comments about the package being described
+  string comment = 5;
+  // Output only. The type of package: OS, MAVEN, GO, GO_STDLIB, etc.
+  string package_type = 6;
+  // Output only. Identify the full name of the package as given by the Package Originator
+  string title = 7;
+  // Output only. Identify the version of the package
+  string version = 8;
+  // Output only. Provide a place for the SPDX file creator to record a web site that serves
+  // as the package's home page
+  string home_page = 9;
+  // Output only. A short description of the package
+  string summary_description = 10;
+}
+
+
+// The type of relationship between the source and target SPDX elements
+// RelationshipOccurrence represents an SPDX Relationship section:
+// https://spdx.github.io/spdx-spec/7-relationships-between-SPDX-elements/
+enum RelationshipType {
+  // Unspecified
+  TYPE_UNSPECIFIED = 0;
+  // Is to be used when SPDXRef-DOCUMENT describes SPDXRef-A
+  DESCRIBES = 1;
+  // Is to be used when SPDXRef-A is described by SPDXREF-Document
+  DESCRIBED_BY = 2;
+  // Is to be used when SPDXRef-A contains SPDXRef-B
+  CONTAINS = 3;
+  // Is to be used when SPDXRef-A is contained by SPDXRef-B
+  CONTAINED_BY = 4;
+  // Is to be used when SPDXRef-A depends on SPDXRef-B
+  DEPENDS_ON = 5;
+  // Is to be used when SPDXRef-A is dependency of SPDXRef-B
+  DEPENDENCY_OF = 6;
+  // Is to be used when SPDXRef-A is a manifest file that lists a set of
+  // dependencies for SPDXRef-B
+  DEPENDENCY_MANIFEST_OF = 7;
+  // Is to be used when SPDXRef-A is a build dependency of SPDXRef-B
+  BUILD_DEPENDENCY_OF = 8;
+  // Is to be used when SPDXRef-A is a development dependency of SPDXRef-B
+  DEV_DEPENDENCY_OF = 9;
+  // Is to be used when SPDXRef-A is an optional dependency of SPDXRef-B
+  OPTIONAL_DEPENDENCY_OF = 10;
+  // Is to be used when SPDXRef-A is a to be provided dependency of
+  // SPDXRef-B
+  PROVIDED_DEPENDENCY_OF = 11;
+  // Is to be used when SPDXRef-A is a test dependency of SPDXRef-B
+  TEST_DEPENDENCY_OF = 12;
+  // Is to be used when SPDXRef-A is a dependency required for the execution
+  // of SPDXRef-B
+  RUNTIME_DEPENDENCY_OF = 13;
+  // Is to be used when SPDXRef-A is an example of SPDXRef-B
+  EXAMPLE_OF = 14;
+  // Is to be used when SPDXRef-A generates SPDXRef-B
+  GENERATES = 15;
+  // Is to be used when SPDXRef-A was generated from SPDXRef-B
+  GENERATED_FROM = 16;
+  // Is to be used when SPDXRef-A is an ancestor (same lineage but
+  // pre-dates) SPDXRef-B
+  ANCESTOR_OF = 17;
+  // Is to be used when SPDXRef-A is a descendant of (same lineage but
+  // postdates) SPDXRef-B
+  DESCENDANT_OF = 18;
+  // Is to be used when SPDXRef-A is a variant of (same lineage but not
+  // clear which came first) SPDXRef-B
+  VARIANT_OF = 19;
+  // Is to be used when distributing SPDXRef-A requires that SPDXRef-B also
+  // be distributed
+  DISTRIBUTION_ARTIFACT = 20;
+  // Is to be used when SPDXRef-A is a patch file for (to be applied to)
+  // SPDXRef-B
+  PATCH_FOR = 21;
+  // Is to be used when SPDXRef-A is a patch file that has been applied to
+  // SPDXRef-B
+  PATCH_APPLIED = 22;
+  // Is to be used when SPDXRef-A is an exact copy of SPDXRef-B
+  COPY_OF = 23;
+  // Is to be used when SPDXRef-A is a file that was added to SPDXRef-B
+  FILE_ADDED = 24;
+  // Is to be used when SPDXRef-A is a file that was deleted from SPDXRef-B
+  FILE_DELETED = 25;
+  // Is to be used when SPDXRef-A is a file that was modified from SPDXRef-B
+  FILE_MODIFIED = 26;
+  // Is to be used when SPDXRef-A is expanded from the archive SPDXRef-B
+  EXPANDED_FROM_ARCHIVE = 27;
+  // Is to be used when SPDXRef-A dynamically links to SPDXRef-B
+  DYNAMIC_LINK = 28;
+  // Is to be used when SPDXRef-A statically links to SPDXRef-B
+  STATIC_LINK = 29;
+  // Is to be used when SPDXRef-A is a data file used in SPDXRef-B
+  DATA_FILE_OF = 30;
+  // Is to be used when SPDXRef-A is a test case used in testing SPDXRef-B
+  TEST_CASE_OF = 31;
+  // Is to be used when SPDXRef-A is used to build SPDXRef-B
+  BUILD_TOOL_OF = 32;
+  // Is to be used when SPDXRef-A is used as a development tool for
+  // SPDXRef-B
+  DEV_TOOL_OF = 33;
+  // Is to be used when SPDXRef-A is used for testing SPDXRef-B
+  TEST_OF = 34;
+  // Is to be used when SPDXRef-A is used as a test tool for SPDXRef-B
+  TEST_TOOL_OF = 35;
+  // Is to be used when SPDXRef-A provides documentation of SPDXRef-B
+  DOCUMENTATION_OF = 36;
+  // Is to be used when SPDXRef-A is an optional component of SPDXRef-B
+  OPTIONAL_COMPONENT_OF = 37;
+  // Is to be used when SPDXRef-A is a metafile of SPDXRef-B
+  METAFILE_OF = 38;
+  // Is to be used when SPDXRef-A is used as a package as part of SPDXRef-B
+  PACKAGE_OF = 39;
+  // Is to be used when (current) SPDXRef-DOCUMENT amends the SPDX
+  // information in SPDXRef-B
+  AMENDS = 40;
+  // Is to be used when SPDXRef-A is a prerequisite for SPDXRef-B
+  PREREQUISITE_FOR = 41;
+  // Is to be used when SPDXRef-A has as a prerequisite SPDXRef-B
+  HAS_PREREQUISITE = 42;
+  // Is to be used for a relationship which has not been defined in the
+  // formal SPDX specification. A description of the relationship should be
+  // included in the Relationship comments field
+  OTHER = 43;
+}
+
+// RelationshipNote represents an SPDX Relationship
+// section:
+// https://spdx.github.io/spdx-spec/7-relationships-between-SPDX-elements/
+message RelationshipNote {
+  // The type of relationship between the source and target SPDX elements
+  RelationshipType type = 1;
+}
+
+// RelationshipOccurrence represents an SPDX Relationship
+// section:
+// https://spdx.github.io/spdx-spec/7-relationships-between-SPDX-elements/
+message RelationshipOccurrence {
+  // Also referred to as SPDXRef-A
+  // The source SPDX element (file, package, etc)
+  string source = 1;
+  // Also referred to as SPDXRef-B
+  // The target SPDC element (file, package, etc)
+  // In cases where there are "known unknowns", the use of the keyword
+  // NOASSERTION can be used The keywords NONE can be used to indicate that an
+  // SPDX element (package/file/snippet) has no other elements connected by
+  // some relationship to it
+  string target = 2;
+
+  // Output only. The type of relationship between the source and target SPDX elements
+  RelationshipType type = 3;
+  // A place for the SPDX file creator to record any general comments about
+  // the relationship
+  string comment = 4;
+}
