@@ -16,6 +16,7 @@ syntax = "proto3";
 
 package grafeas.v1beta1.spdx;
 
+import "google/api/field_behavior.proto";
 import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/grafeas/grafeas/proto/v1beta1/spdx_go_proto";
@@ -258,16 +259,16 @@ message PackageInfoOccurrence {
   // comments about the package being described
   string comment = 5;
   // Output only. The type of package: OS, MAVEN, GO, GO_STDLIB, etc.
-  string package_type = 6;
+  string package_type = 6 [(google.api.field_behavior) = OUTPUT_ONLY];
   // Output only. Identify the full name of the package as given by the Package Originator
-  string title = 7;
+  string title = 7 [(google.api.field_behavior) = OUTPUT_ONLY];
   // Output only. Identify the version of the package
-  string version = 8;
+  string version = 8 [(google.api.field_behavior) = OUTPUT_ONLY];
   // Output only. Provide a place for the SPDX file creator to record a web site that serves
   // as the package's home page
-  string home_page = 9;
+  string home_page = 9 [(google.api.field_behavior) = OUTPUT_ONLY];
   // Output only. A short description of the package
-  string summary_description = 10;
+  string summary_description = 10 [(google.api.field_behavior) = OUTPUT_ONLY];
 }
 
 
@@ -276,7 +277,7 @@ message PackageInfoOccurrence {
 // https://spdx.github.io/spdx-spec/7-relationships-between-SPDX-elements/
 enum RelationshipType {
   // Unspecified
-  TYPE_UNSPECIFIED = 0;
+  RELATIONSHIP_TYPE_UNSPECIFIED = 0;
   // Is to be used when SPDXRef-DOCUMENT describes SPDXRef-A
   DESCRIBES = 1;
   // Is to be used when SPDXRef-A is described by SPDXREF-Document
@@ -402,7 +403,7 @@ message RelationshipOccurrence {
   string target = 2;
 
   // Output only. The type of relationship between the source and target SPDX elements
-  RelationshipType type = 3;
+  RelationshipType type = 3 [(google.api.field_behavior) = OUTPUT_ONLY];
   // A place for the SPDX file creator to record any general comments about
   // the relationship
   string comment = 4;
