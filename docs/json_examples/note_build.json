@@ -1,4 +1,5 @@
 {
+	"name": "projects/notes_example/notes/exampleBuildNote",
     "shortDescription": "Gives an example build note",
     "longDescription": "Shows the fields that need to be set in order to create a build note inside a project",
     "kind": "BUILD",
