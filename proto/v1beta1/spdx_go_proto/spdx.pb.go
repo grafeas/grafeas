@@ -1104,16 +1104,16 @@ type PackageInfoOccurrence struct {
 	// A place for the SPDX file creator to record any general
 	// comments about the package being described
 	Comment string `protobuf:"bytes,5,opt,name=comment,proto3" json:"comment,omitempty"`
-	// Output only. The type of package: OS, MAVEN, GO, GO_STDLIB, etc.
+	// The type of package: OS, MAVEN, GO, GO_STDLIB, etc.
 	PackageType string `protobuf:"bytes,6,opt,name=package_type,json=packageType,proto3" json:"package_type,omitempty"`
-	// Output only. Identify the full name of the package as given by the Package Originator
+	// Identify the full name of the package as given by the Package Originator
 	Title string `protobuf:"bytes,7,opt,name=title,proto3" json:"title,omitempty"`
-	// Output only. Identify the version of the package
+	// Identify the version of the package
 	Version string `protobuf:"bytes,8,opt,name=version,proto3" json:"version,omitempty"`
-	// Output only. Provide a place for the SPDX file creator to record a web site that serves
+	// Provide a place for the SPDX file creator to record a web site that serves
 	// as the package's home page
 	HomePage string `protobuf:"bytes,9,opt,name=home_page,json=homePage,proto3" json:"home_page,omitempty"`
-	// Output only. A short description of the package
+	// A short description of the package
 	SummaryDescription string `protobuf:"bytes,10,opt,name=summary_description,json=summaryDescription,proto3" json:"summary_description,omitempty"`
 }
 
@@ -1288,7 +1288,7 @@ type RelationshipOccurrence struct {
 	// SPDX element (package/file/snippet) has no other elements connected by
 	// some relationship to it
 	Target string `protobuf:"bytes,2,opt,name=target,proto3" json:"target,omitempty"`
-	// Output only. The type of relationship between the source and target SPDX elements
+	// The type of relationship between the source and target SPDX elements
 	Type RelationshipType `protobuf:"varint,3,opt,name=type,proto3,enum=grafeas.v1beta1.spdx.RelationshipType" json:"type,omitempty"`
 	// A place for the SPDX file creator to record any general comments about
 	// the relationship

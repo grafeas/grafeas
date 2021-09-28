@@ -258,16 +258,16 @@ message PackageInfoOccurrence {
   // A place for the SPDX file creator to record any general
   // comments about the package being described
   string comment = 5;
-  // Output only. The type of package: OS, MAVEN, GO, GO_STDLIB, etc.
+  // The type of package: OS, MAVEN, GO, GO_STDLIB, etc.
   string package_type = 6 [(google.api.field_behavior) = OUTPUT_ONLY];
-  // Output only. Identify the full name of the package as given by the Package Originator
+  // Identify the full name of the package as given by the Package Originator
   string title = 7 [(google.api.field_behavior) = OUTPUT_ONLY];
-  // Output only. Identify the version of the package
+  // Identify the version of the package
   string version = 8 [(google.api.field_behavior) = OUTPUT_ONLY];
-  // Output only. Provide a place for the SPDX file creator to record a web site that serves
+  // Provide a place for the SPDX file creator to record a web site that serves
   // as the package's home page
   string home_page = 9 [(google.api.field_behavior) = OUTPUT_ONLY];
-  // Output only. A short description of the package
+  // A short description of the package
   string summary_description = 10 [(google.api.field_behavior) = OUTPUT_ONLY];
 }
 
@@ -402,7 +402,7 @@ message RelationshipOccurrence {
   // some relationship to it
   string target = 2;
 
-  // Output only. The type of relationship between the source and target SPDX elements
+  // The type of relationship between the source and target SPDX elements
   RelationshipType type = 3 [(google.api.field_behavior) = OUTPUT_ONLY];
   // A place for the SPDX file creator to record any general comments about
   // the relationship

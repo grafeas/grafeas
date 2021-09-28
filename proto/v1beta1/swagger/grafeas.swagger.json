@@ -2103,28 +2103,23 @@
         },
         "packageType": {
           "type": "string",
-          "description": "Output only. The type of package: OS, MAVEN, GO, GO_STDLIB, etc.",
-          "readOnly": true
+          "description": "The type of package: OS, MAVEN, GO, GO_STDLIB, etc."
         },
         "title": {
           "type": "string",
-          "title": "Output only. Identify the full name of the package as given by the Package Originator",
-          "readOnly": true
+          "title": "Identify the full name of the package as given by the Package Originator"
         },
         "version": {
           "type": "string",
-          "title": "Output only. Identify the version of the package",
-          "readOnly": true
+          "title": "Identify the version of the package"
         },
         "homePage": {
           "type": "string",
-          "title": "Output only. Provide a place for the SPDX file creator to record a web site that serves\nas the package's home page",
-          "readOnly": true
+          "title": "Provide a place for the SPDX file creator to record a web site that serves\nas the package's home page"
         },
         "summaryDescription": {
           "type": "string",
-          "title": "Output only. A short description of the package",
-          "readOnly": true
+          "title": "A short description of the package"
         }
       },
       "title": "PackageInfoOccurrence represents an SPDX Package Information\nsection: https://spdx.github.io/spdx-spec/3-package-information/"
@@ -2152,8 +2147,7 @@
         },
         "type": {
           "$ref": "#/definitions/spdxRelationshipType",
-          "title": "Output only. The type of relationship between the source and target SPDX elements",
-          "readOnly": true
+          "title": "The type of relationship between the source and target SPDX elements"
         },
         "comment": {
           "type": "string",
