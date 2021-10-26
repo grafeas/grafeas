@@ -6,6 +6,7 @@
 //go:generate protoc ../../proto/v1/attestation.proto
 //go:generate protoc ../../proto/v1/common.proto
 //go:generate protoc ../../proto/v1/deployment.proto
+//go:generate protoc ../../proto/v1/dsse_attestation.proto
 //go:generate protoc ../../proto/v1/intoto_provenance.proto
 //go:generate protoc ../../proto/v1/slsa_provenance.proto
 //go:generate protoc ../../proto/v1/intoto_statement.proto

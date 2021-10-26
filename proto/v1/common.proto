@@ -43,7 +43,8 @@ enum NoteKind {
   UPGRADE = 8;
   // This represents a Compliance Note
   COMPLIANCE = 9;
-  reserved 10;
+  // This represents a DSSE attestation Note
+  DSSE_ATTESTATION = 10;
 }
 
 // Metadata for any related URL information.
