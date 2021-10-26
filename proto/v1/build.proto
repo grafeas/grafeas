@@ -34,7 +34,7 @@ message BuildNote {
 
 // Details of a build occurrence.
 message BuildOccurrence {
-  // Required. The actual provenance for the build.
+  // The actual provenance for the build.
   grafeas.v1.BuildProvenance provenance = 1;
 
   // Serialized JSON representation of the provenance, used in generating the

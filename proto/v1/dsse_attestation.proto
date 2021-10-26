@@ -60,7 +60,7 @@ message InTotoStatement {
   string predicate_type = 3;
   oneof predicate {
     InTotoProvenance provenance = 4;
-    SlsaProvenance slsa_provenance = 5;
+    // SlsaProvenance slsa_provenance = 5;
   }
 }
 message Subject {
