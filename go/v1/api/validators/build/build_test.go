@@ -79,6 +79,15 @@ func TestValidateOccurrence(t *testing.T) {
 			},
 			wantErrs: false,
 		},
+		{
+			desc: "valid details with intotostatement, want success",
+			d: &gpb.BuildOccurrence{
+				IntotoStatement: &gpb.InTotoStatement{
+					Type: "my_type",
+				},
+			},
+			wantErrs: false,
+		},
 	}
 
 	for _, tt := range tests {

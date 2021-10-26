@@ -41,8 +41,9 @@ func ValidateOccurrence(d *gpb.BuildOccurrence) []error {
 
 	p := d.GetProvenance()
 	i := d.GetIntotoProvenance()
-	if p == nil && i == nil {
-		errs = append(errs, errors.New("either Provenance or intotoProvenance is required"))
+	s := d.GetIntotoStatement()
+	if p == nil && i == nil && s == nil {
+		errs = append(errs, errors.New("either Provenance or intotoProvenance or intotoStatement is required"))
 	}
 	if p != nil {
 		for _, err := range provenance.ValidateBuildProvenance(p) {
