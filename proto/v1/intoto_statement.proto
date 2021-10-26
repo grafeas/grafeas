@@ -31,7 +31,7 @@ message InTotoStatement {
   // Always "https://in-toto.io/Statement/v0.1".
   string type = 1 [json_name = "_type"];
   repeated Subject subject = 2;
-  // "https://in-toto.io/Provenance/v0.1" for InTotoProvenance.
+  // "https://slsa.dev/provenance/v0.1" for SlsaProvenance.
   string predicate_type = 3;
   oneof predicate {
     InTotoProvenance provenance = 4;
@@ -41,5 +41,7 @@ message InTotoStatement {
 message Subject {
   string name = 1;
   // "<ALGORITHM>": "<HEX_VALUE>"
+  // Algorithms can be e.g. sha256, sha512
+  // See https://github.com/in-toto/attestation/blob/main/spec/field_types.md#DigestSet
   map<string, string> digest = 2;
 }

@@ -50,7 +50,7 @@ message BuildOccurrence {
   // future changes.
   string provenance_bytes = 2;
 
-  // Deprecated
+  // Deprecated. See InTotoStatement for the replacement.
   // In-toto Provenance representation as defined in spec.
   InTotoProvenance intoto_provenance = 3;
 
