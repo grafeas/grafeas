@@ -66,7 +66,7 @@ func ValidateNote(n *gpb.Note) error {
 
 	if d := n.GetDeployable(); d != nil {
 		for _, err := range deployment.ValidateDeployable(d) {
-			errs = append(errs, fmt.Errorf("deplyable.%s", err))
+			errs = append(errs, fmt.Errorf("deployable.%s", err))
 		}
 	}
 
