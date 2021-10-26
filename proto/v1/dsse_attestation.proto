@@ -19,7 +19,7 @@ option java_package = "io.grafeas.v1";
 option objc_class_prefix = "GRA";
 
 import "proto/v1/common.proto";
-import "proto/v1/intoto_provenance.proto";
+import "proto/v1/intoto_statement.proto";
 
 message DSSEAttestationNote {
   // This submessage provides human-readable hints about the purpose of the
@@ -43,6 +43,6 @@ message DSSEAttestationOccurrence {
   // If doing something security critical, make sure to verify the signatures in this metadata.
   Envelope envelope = 1;
   oneof decoded_payload {
-    InTotoProvenance provenance = 2;
+    InTotoStatement statement = 2;
   }
 }
