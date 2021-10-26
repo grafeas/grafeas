@@ -22,6 +22,7 @@ option java_package = "io.grafeas.v1";
 option objc_class_prefix = "GRA";
 
 import "proto/v1/provenance.proto";
+import "third_party/grafeas/proto/v1/dsse_attestation.proto";
 import "proto/v1/intoto_provenance.proto";
 
 // Note holding the version of the provider's builder and the signature of the
@@ -51,4 +52,7 @@ message BuildOccurrence {
 
   // In-toto Provenance representation as defined in spec.
   InTotoProvenance intoto_provenance = 3;
+
+  // In-toto Statement representation as defined in spec.
+  InTotoStatement intoto_statement = 4;
 }
