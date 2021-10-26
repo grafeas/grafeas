@@ -23,7 +23,7 @@ option objc_class_prefix = "GRA";
 
 import "proto/v1/common.proto";
 import "proto/v1/intoto_provenance.proto";
-import "third_party/grafeas/proto/v1/slsa_provenance.proto";
+import "proto/v1/slsa_provenance.proto";
 
 message DSSEAttestationNote {
   // This submessage provides human-readable hints about the purpose of the
