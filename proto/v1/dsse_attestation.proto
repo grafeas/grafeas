@@ -11,18 +11,15 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
 syntax = "proto3";
-
 package grafeas.v1;
-
 option go_package = "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto";
 option java_multiple_files = true;
 option java_package = "io.grafeas.v1";
 option objc_class_prefix = "GRA";
 
 import "proto/v1/common.proto";
-import "proto/v1/intoto_provenance.proto";
+import "proto/v1/intoto_statement.proto";
 
 message DSSEAttestationNote {
   // This submessage provides human-readable hints about the purpose of the
@@ -40,29 +37,12 @@ message DSSEAttestationNote {
   DSSEHint hint = 1;
 }
 
+// Deprecated. Prefer to use a regular Occurrence, and populate the
+// Envelope at the top level of the Occurrence.
 message DSSEAttestationOccurrence {
   // If doing something security critical, make sure to verify the signatures in this metadata.
   Envelope envelope = 1;
   oneof decoded_payload {
     InTotoStatement statement = 2;
   }
-}
-
-// Spec defined at https://github.com/in-toto/attestation/tree/main/spec#statement
-// The serialized InTotoStatement will be stored as Envelope.payload.
-// Envelope.payloadType is always "application/vnd.in-toto+json".
-message InTotoStatement {
-  // Always "https://in-toto.io/Statement/v0.1".
-  string type = 1;
-  repeated Subject subject = 2;
-  // "https://in-toto.io/Provenance/v0.1" for InTotoProvenance.
-  string predicate_type = 3;
-  oneof predicate {
-    InTotoProvenance provenance = 4;
-  }
-}
-message Subject {
-  string name = 1;
-  // "<ALGORITHM>": "<HEX_VALUE>"
-  map<string, string> digest = 2;
 }

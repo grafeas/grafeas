@@ -22,6 +22,7 @@ option java_package = "io.grafeas.v1";
 option objc_class_prefix = "GRA";
 
 import "proto/v1/provenance.proto";
+import "proto/v1/intoto_statement.proto";
 import "proto/v1/intoto_provenance.proto";
 
 // Note holding the version of the provider's builder and the signature of the
@@ -33,7 +34,7 @@ message BuildNote {
 
 // Details of a build occurrence.
 message BuildOccurrence {
-  // Required. The actual provenance for the build.
+  // The actual provenance for the build.
   grafeas.v1.BuildProvenance provenance = 1;
 
   // Serialized JSON representation of the provenance, used in generating the
@@ -49,6 +50,13 @@ message BuildOccurrence {
   // future changes.
   string provenance_bytes = 2;
 
+  // Deprecated. See InTotoStatement for the replacement.
   // In-toto Provenance representation as defined in spec.
   InTotoProvenance intoto_provenance = 3;
+
+  // In-toto Statement representation as defined in spec.
+  // The intoto_statement can contain any type of provenance. The serialized
+  // payload of the statement can be stored and signed in the Occurrence's
+  // envelope.
+  InTotoStatement intoto_statement = 4;
 }
