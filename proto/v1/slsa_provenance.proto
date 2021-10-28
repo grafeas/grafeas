@@ -73,7 +73,10 @@ message SlsaProvenance {
     bool reproducible = 5;
   }
 
-  message Builder {
+  // The builder is of type BuilderConfig so that a generated Java Builder class
+  // doesn't cause naming conflicts, but the field name keeps the builder name, as
+  // per the SLSA spec.
+  message BuilderConfig {
     string id = 1;
   }
 
@@ -82,7 +85,7 @@ message SlsaProvenance {
     map<string, string> digest = 2;
   }
 
-  Builder builder = 1; // required
+  BuilderConfig builder = 1; // required
   // Identifies the configuration used for the build.
   // When combined with materials, this SHOULD fully describe the build,
   // such that re-running this recipe results in bit-for-bit identical output
