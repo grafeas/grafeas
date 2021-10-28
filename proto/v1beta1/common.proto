@@ -110,3 +110,42 @@ message Signature {
   string public_key_id = 2;
 }
 
+// ProducerSignature represents the signature of the "details" of either a
+// note or an occurrence. It should be signed by the corresponding producer
+// and verified by deployers.
+//
+// A custom message is created because it seems that public_key_id in
+// common.Signature is designed to include the information encoded by KeyType
+// however there is no way to determine the KeyType used.
+// Using an additional field to store such information is more structural, and
+// the information is also about the attributes instead of the identity of a key.
+message ProducerSignature {
+  // The content of the signature, an opaque bytestring is a Base64-encoded digest.
+  // The payload that this signature verifies MUST be unambiguously provided
+  // with the ProducerSignature during verification. A wrapper message might provide
+  // the payload explicitly. Alternatively, a message might have a canonical
+  // serialization that can always be unambiguously computed to derive the
+  // payload. The signature can either be a digital signature or a HMAC.
+  bytes signature = 1;
+
+  // The public key ID corresponding to the private key used to generate the
+  // signature.
+  string public_key_id = 2;
+
+  // If the signature field contains a digital signature, the naming scheme of
+  // the key types is <format>_<algo>_<hash_algo> where
+  //
+  // * <format> refers to the format in which the public key is stored (e.g PKCS8).
+  // * <algo> refers to the asymmetric algorithm in use (e.g. ECDSA_P256).
+  // * <hash_algo> refers to the hash algorithm used to generate the digest
+  //    of the payload (e.g. SHA256).
+  // Note that some algorithms (e.g. ed25519) have the hash algorithm
+  // "internalized", so they won't have this part.
+  //
+  // If the signature field does not contain a digital signature (e.g. maybe a HMAC),
+  // dedicated key types can be created to cater for that use case.
+  KeyType key_type = 3;
+  enum KeyType {
+    PKCS8_ED25519 = 0;
+  }
+}
