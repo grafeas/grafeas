@@ -666,35 +666,15 @@
       "default": "KEY_TYPE_UNSPECIFIED",
       "description": "Public key formats.\n\n - KEY_TYPE_UNSPECIFIED: `KeyType` is not set.\n - PGP_ASCII_ARMORED: `PGP ASCII Armored` public key.\n - PKIX_PEM: `PKIX PEM` public key."
     },
-    "CVSSv3AttackComplexity": {
+    "CVSSv2Authentication": {
       "type": "string",
       "enum": [
-        "ATTACK_COMPLEXITY_UNSPECIFIED",
-        "ATTACK_COMPLEXITY_LOW",
-        "ATTACK_COMPLEXITY_HIGH"
+        "AUTHENTICATION_UNSPECIFIED",
+        "AUTHENTICATION_MULTIPLE",
+        "AUTHENTICATION_SINGLE",
+        "AUTHENTICATION_NONE"
       ],
-      "default": "ATTACK_COMPLEXITY_UNSPECIFIED"
-    },
-    "CVSSv3AttackVector": {
-      "type": "string",
-      "enum": [
-        "ATTACK_VECTOR_UNSPECIFIED",
-        "ATTACK_VECTOR_NETWORK",
-        "ATTACK_VECTOR_ADJACENT",
-        "ATTACK_VECTOR_LOCAL",
-        "ATTACK_VECTOR_PHYSICAL"
-      ],
-      "default": "ATTACK_VECTOR_UNSPECIFIED"
-    },
-    "CVSSv3Impact": {
-      "type": "string",
-      "enum": [
-        "IMPACT_UNSPECIFIED",
-        "IMPACT_HIGH",
-        "IMPACT_LOW",
-        "IMPACT_NONE"
-      ],
-      "default": "IMPACT_UNSPECIFIED"
+      "default": "AUTHENTICATION_UNSPECIFIED"
     },
     "CVSSv3PrivilegesRequired": {
       "type": "string",
@@ -2755,6 +2735,74 @@
       },
       "description": "Details of a vulnerability Occurrence."
     },
+    "vulnerabilityCVSSv2": {
+      "type": "object",
+      "properties": {
+        "baseScore": {
+          "type": "number",
+          "format": "float",
+          "description": "The base score is a function of the base metric scores."
+        },
+        "exploitabilityScore": {
+          "type": "number",
+          "format": "float"
+        },
+        "impactScore": {
+          "type": "number",
+          "format": "float"
+        },
+        "attackVector": {
+          "$ref": "#/definitions/vulnerabilityCVSSv2AttackVector",
+          "title": "Base Metrics\nRepresents the intrinsic and fundamental characteristics of a vulnerability that are\nconstant over time and user environments"
+        },
+        "attackComplexity": {
+          "$ref": "#/definitions/vulnerabilityCVSSv2AttackComplexity"
+        },
+        "authentication": {
+          "$ref": "#/definitions/CVSSv2Authentication"
+        },
+        "confidentialityImpact": {
+          "$ref": "#/definitions/vulnerabilityCVSSv2Impact"
+        },
+        "integrityImpact": {
+          "$ref": "#/definitions/vulnerabilityCVSSv2Impact"
+        },
+        "availabilityImpact": {
+          "$ref": "#/definitions/vulnerabilityCVSSv2Impact"
+        }
+      },
+      "title": "Common Vulnerability Scoring System version 2.\nFor details, see https://www.first.org/cvss/v2/guide\nCVSS v2 calculator: https://nvd.nist.gov/vuln-metrics/cvss/v2-calculator"
+    },
+    "vulnerabilityCVSSv2AttackComplexity": {
+      "type": "string",
+      "enum": [
+        "ATTACK_COMPLEXITY_UNSPECIFIED",
+        "ATTACK_COMPLEXITY_HIGH",
+        "ATTACK_COMPLEXITY_MEDIUM",
+        "ATTACK_COMPLEXITY_LOW"
+      ],
+      "default": "ATTACK_COMPLEXITY_UNSPECIFIED"
+    },
+    "vulnerabilityCVSSv2AttackVector": {
+      "type": "string",
+      "enum": [
+        "ATTACK_VECTOR_UNSPECIFIED",
+        "ATTACK_VECTOR_LOCAL",
+        "ATTACK_VECTOR_ADJACENT",
+        "ATTACK_VECTOR_NETWORK"
+      ],
+      "default": "ATTACK_VECTOR_UNSPECIFIED"
+    },
+    "vulnerabilityCVSSv2Impact": {
+      "type": "string",
+      "enum": [
+        "IMPACT_UNSPECIFIED",
+        "IMPACT_NONE",
+        "IMPACT_PARTIAL",
+        "IMPACT_COMPLETE"
+      ],
+      "default": "IMPACT_UNSPECIFIED"
+    },
     "vulnerabilityCVSSv3": {
       "type": "object",
       "properties": {
@@ -2772,11 +2820,11 @@
           "format": "float"
         },
         "attackVector": {
-          "$ref": "#/definitions/CVSSv3AttackVector",
+          "$ref": "#/definitions/vulnerabilityCVSSv3AttackVector",
           "description": "Base Metrics\nRepresents the intrinsic characteristics of a vulnerability that are\nconstant over time and across user environments."
         },
         "attackComplexity": {
-          "$ref": "#/definitions/CVSSv3AttackComplexity"
+          "$ref": "#/definitions/vulnerabilityCVSSv3AttackComplexity"
         },
         "privilegesRequired": {
           "$ref": "#/definitions/CVSSv3PrivilegesRequired"
@@ -2788,16 +2836,46 @@
           "$ref": "#/definitions/CVSSv3Scope"
         },
         "confidentialityImpact": {
-          "$ref": "#/definitions/CVSSv3Impact"
+          "$ref": "#/definitions/vulnerabilityCVSSv3Impact"
         },
         "integrityImpact": {
-          "$ref": "#/definitions/CVSSv3Impact"
+          "$ref": "#/definitions/vulnerabilityCVSSv3Impact"
         },
         "availabilityImpact": {
-          "$ref": "#/definitions/CVSSv3Impact"
+          "$ref": "#/definitions/vulnerabilityCVSSv3Impact"
         }
       },
       "title": "Common Vulnerability Scoring System version 3.\nFor details, see https://www.first.org/cvss/specification-document"
+    },
+    "vulnerabilityCVSSv3AttackComplexity": {
+      "type": "string",
+      "enum": [
+        "ATTACK_COMPLEXITY_UNSPECIFIED",
+        "ATTACK_COMPLEXITY_LOW",
+        "ATTACK_COMPLEXITY_HIGH"
+      ],
+      "default": "ATTACK_COMPLEXITY_UNSPECIFIED"
+    },
+    "vulnerabilityCVSSv3AttackVector": {
+      "type": "string",
+      "enum": [
+        "ATTACK_VECTOR_UNSPECIFIED",
+        "ATTACK_VECTOR_NETWORK",
+        "ATTACK_VECTOR_ADJACENT",
+        "ATTACK_VECTOR_LOCAL",
+        "ATTACK_VECTOR_PHYSICAL"
+      ],
+      "default": "ATTACK_VECTOR_UNSPECIFIED"
+    },
+    "vulnerabilityCVSSv3Impact": {
+      "type": "string",
+      "enum": [
+        "IMPACT_UNSPECIFIED",
+        "IMPACT_HIGH",
+        "IMPACT_LOW",
+        "IMPACT_NONE"
+      ],
+      "default": "IMPACT_UNSPECIFIED"
     },
     "vulnerabilityPackageIssue": {
       "type": "object",
@@ -2872,6 +2950,21 @@
           "type": "string",
           "format": "date-time",
           "description": "The time this information was last changed at the source. This is an\nupstream timestamp from the underlying information source - e.g. Ubuntu\nsecurity tracker."
+        },
+        "cve": {
+          "type": "string",
+          "title": "This field tracks the CVE record for this vulnerability"
+        },
+        "cwe": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "The CWE includes both software \u0026 hardware weakness types for this vulnerability."
+        },
+        "cvssV2": {
+          "$ref": "#/definitions/vulnerabilityCVSSv2",
+          "description": "The full description of the CVSSv2."
         }
       },
       "description": "Vulnerability provides metadata about a security vulnerability in a Note."

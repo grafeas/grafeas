@@ -110,7 +110,7 @@ type UnsafeProjectsServer interface {
 	mustEmbedUnimplementedProjectsServer()
 }
 
-func RegisterProjectsServer(s grpc.ServiceRegistrar, srv ProjectsServer) {
+func RegisterProjectsServer(s *grpc.Server, srv ProjectsServer) {
 	s.RegisterService(&_Projects_serviceDesc, srv)
 }
 

@@ -83,3 +83,53 @@ message CVSSv3 {
     IMPACT_NONE = 3;
   }
 }
+
+// Common Vulnerability Scoring System version 2.
+// For details, see https://www.first.org/cvss/v2/guide
+// CVSS v2 calculator: https://nvd.nist.gov/vuln-metrics/cvss/v2-calculator
+message CVSSv2 {
+  // The base score is a function of the base metric scores.
+  float base_score = 1;
+
+  float exploitability_score = 2;
+
+  float impact_score = 3;
+
+  // Base Metrics
+  // Represents the intrinsic and fundamental characteristics of a vulnerability that are
+  // constant over time and user environments
+  AttackVector attack_vector = 4;
+  AttackComplexity attack_complexity = 5;
+  Authentication authentication = 6;
+  Impact confidentiality_impact = 7;
+  Impact integrity_impact = 8;
+  Impact availability_impact = 9;
+
+  enum AttackVector {
+    ATTACK_VECTOR_UNSPECIFIED = 0;
+    ATTACK_VECTOR_LOCAL = 1;
+    ATTACK_VECTOR_ADJACENT = 2;
+    ATTACK_VECTOR_NETWORK = 3;
+  }
+
+  enum AttackComplexity {
+    ATTACK_COMPLEXITY_UNSPECIFIED = 0;
+    ATTACK_COMPLEXITY_HIGH = 1;
+    ATTACK_COMPLEXITY_MEDIUM = 2;
+    ATTACK_COMPLEXITY_LOW = 3;
+  }
+
+  enum Authentication {
+    AUTHENTICATION_UNSPECIFIED = 0;
+    AUTHENTICATION_MULTIPLE = 1;
+    AUTHENTICATION_SINGLE = 2;
+    AUTHENTICATION_NONE = 3;
+  }
+
+  enum Impact {
+    IMPACT_UNSPECIFIED = 0;
+    IMPACT_NONE = 1;
+    IMPACT_PARTIAL = 2;
+    IMPACT_COMPLETE = 3;
+  }
+}
