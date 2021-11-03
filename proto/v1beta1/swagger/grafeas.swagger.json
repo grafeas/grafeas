@@ -2951,17 +2951,6 @@
           "format": "date-time",
           "description": "The time this information was last changed at the source. This is an\nupstream timestamp from the underlying information source - e.g. Ubuntu\nsecurity tracker."
         },
-        "cve": {
-          "type": "string",
-          "title": "This field tracks the CVE record for this vulnerability"
-        },
-        "cwe": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "description": "The CWE includes both software \u0026 hardware weakness types for this vulnerability."
-        },
         "cvssV2": {
           "$ref": "#/definitions/vulnerabilityCVSSv2",
           "description": "The full description of the CVSSv2."
