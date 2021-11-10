@@ -666,7 +666,7 @@
       "default": "KEY_TYPE_UNSPECIFIED",
       "description": "Public key formats.\n\n - KEY_TYPE_UNSPECIFIED: `KeyType` is not set.\n - PGP_ASCII_ARMORED: `PGP ASCII Armored` public key.\n - PKIX_PEM: `PKIX PEM` public key."
     },
-    "CVSSv2Authentication": {
+    "CVSSAuthentication": {
       "type": "string",
       "enum": [
         "AUTHENTICATION_UNSPECIFIED",
@@ -675,34 +675,6 @@
         "AUTHENTICATION_NONE"
       ],
       "default": "AUTHENTICATION_UNSPECIFIED"
-    },
-    "CVSSv3PrivilegesRequired": {
-      "type": "string",
-      "enum": [
-        "PRIVILEGES_REQUIRED_UNSPECIFIED",
-        "PRIVILEGES_REQUIRED_NONE",
-        "PRIVILEGES_REQUIRED_LOW",
-        "PRIVILEGES_REQUIRED_HIGH"
-      ],
-      "default": "PRIVILEGES_REQUIRED_UNSPECIFIED"
-    },
-    "CVSSv3Scope": {
-      "type": "string",
-      "enum": [
-        "SCOPE_UNSPECIFIED",
-        "SCOPE_UNCHANGED",
-        "SCOPE_CHANGED"
-      ],
-      "default": "SCOPE_UNSPECIFIED"
-    },
-    "CVSSv3UserInteraction": {
-      "type": "string",
-      "enum": [
-        "USER_INTERACTION_UNSPECIFIED",
-        "USER_INTERACTION_NONE",
-        "USER_INTERACTION_REQUIRED"
-      ],
-      "default": "USER_INTERACTION_UNSPECIFIED"
     },
     "DeploymentPlatform": {
       "type": "string",
@@ -2735,7 +2707,7 @@
       },
       "description": "Details of a vulnerability Occurrence."
     },
-    "vulnerabilityCVSSv2": {
+    "vulnerabilityCVSS": {
       "type": "object",
       "properties": {
         "baseScore": {
@@ -2752,56 +2724,93 @@
           "format": "float"
         },
         "attackVector": {
-          "$ref": "#/definitions/vulnerabilityCVSSv2AttackVector",
-          "title": "Base Metrics\nRepresents the intrinsic and fundamental characteristics of a vulnerability that are\nconstant over time and user environments"
+          "$ref": "#/definitions/vulnerabilityCVSSAttackVector",
+          "description": "Base Metrics\nRepresents the intrinsic characteristics of a vulnerability that are\nconstant over time and across user environments."
         },
         "attackComplexity": {
-          "$ref": "#/definitions/vulnerabilityCVSSv2AttackComplexity"
+          "$ref": "#/definitions/vulnerabilityCVSSAttackComplexity"
         },
         "authentication": {
-          "$ref": "#/definitions/CVSSv2Authentication"
+          "$ref": "#/definitions/CVSSAuthentication"
+        },
+        "privilegesRequired": {
+          "$ref": "#/definitions/vulnerabilityCVSSPrivilegesRequired"
+        },
+        "userInteraction": {
+          "$ref": "#/definitions/vulnerabilityCVSSUserInteraction"
+        },
+        "scope": {
+          "$ref": "#/definitions/vulnerabilityCVSSScope"
         },
         "confidentialityImpact": {
-          "$ref": "#/definitions/vulnerabilityCVSSv2Impact"
+          "$ref": "#/definitions/vulnerabilityCVSSImpact"
         },
         "integrityImpact": {
-          "$ref": "#/definitions/vulnerabilityCVSSv2Impact"
+          "$ref": "#/definitions/vulnerabilityCVSSImpact"
         },
         "availabilityImpact": {
-          "$ref": "#/definitions/vulnerabilityCVSSv2Impact"
+          "$ref": "#/definitions/vulnerabilityCVSSImpact"
         }
       },
-      "title": "Common Vulnerability Scoring System version 2.\nFor details, see https://www.first.org/cvss/v2/guide\nCVSS v2 calculator: https://nvd.nist.gov/vuln-metrics/cvss/v2-calculator"
+      "title": "Common Vulnerability Scoring System.\nFor details, see https://www.first.org/cvss/specification-document"
     },
-    "vulnerabilityCVSSv2AttackComplexity": {
+    "vulnerabilityCVSSAttackComplexity": {
       "type": "string",
       "enum": [
         "ATTACK_COMPLEXITY_UNSPECIFIED",
-        "ATTACK_COMPLEXITY_HIGH",
-        "ATTACK_COMPLEXITY_MEDIUM",
-        "ATTACK_COMPLEXITY_LOW"
+        "ATTACK_COMPLEXITY_LOW",
+        "ATTACK_COMPLEXITY_HIGH"
       ],
       "default": "ATTACK_COMPLEXITY_UNSPECIFIED"
     },
-    "vulnerabilityCVSSv2AttackVector": {
+    "vulnerabilityCVSSAttackVector": {
       "type": "string",
       "enum": [
         "ATTACK_VECTOR_UNSPECIFIED",
-        "ATTACK_VECTOR_LOCAL",
+        "ATTACK_VECTOR_NETWORK",
         "ATTACK_VECTOR_ADJACENT",
-        "ATTACK_VECTOR_NETWORK"
+        "ATTACK_VECTOR_LOCAL",
+        "ATTACK_VECTOR_PHYSICAL"
       ],
       "default": "ATTACK_VECTOR_UNSPECIFIED"
     },
-    "vulnerabilityCVSSv2Impact": {
+    "vulnerabilityCVSSImpact": {
       "type": "string",
       "enum": [
         "IMPACT_UNSPECIFIED",
-        "IMPACT_NONE",
-        "IMPACT_PARTIAL",
-        "IMPACT_COMPLETE"
+        "IMPACT_HIGH",
+        "IMPACT_LOW",
+        "IMPACT_NONE"
       ],
       "default": "IMPACT_UNSPECIFIED"
+    },
+    "vulnerabilityCVSSPrivilegesRequired": {
+      "type": "string",
+      "enum": [
+        "PRIVILEGES_REQUIRED_UNSPECIFIED",
+        "PRIVILEGES_REQUIRED_NONE",
+        "PRIVILEGES_REQUIRED_LOW",
+        "PRIVILEGES_REQUIRED_HIGH"
+      ],
+      "default": "PRIVILEGES_REQUIRED_UNSPECIFIED"
+    },
+    "vulnerabilityCVSSScope": {
+      "type": "string",
+      "enum": [
+        "SCOPE_UNSPECIFIED",
+        "SCOPE_UNCHANGED",
+        "SCOPE_CHANGED"
+      ],
+      "default": "SCOPE_UNSPECIFIED"
+    },
+    "vulnerabilityCVSSUserInteraction": {
+      "type": "string",
+      "enum": [
+        "USER_INTERACTION_UNSPECIFIED",
+        "USER_INTERACTION_NONE",
+        "USER_INTERACTION_REQUIRED"
+      ],
+      "default": "USER_INTERACTION_UNSPECIFIED"
     },
     "vulnerabilityCVSSv3": {
       "type": "object",
@@ -2827,13 +2836,13 @@
           "$ref": "#/definitions/vulnerabilityCVSSv3AttackComplexity"
         },
         "privilegesRequired": {
-          "$ref": "#/definitions/CVSSv3PrivilegesRequired"
+          "$ref": "#/definitions/vulnerabilityCVSSv3PrivilegesRequired"
         },
         "userInteraction": {
-          "$ref": "#/definitions/CVSSv3UserInteraction"
+          "$ref": "#/definitions/vulnerabilityCVSSv3UserInteraction"
         },
         "scope": {
-          "$ref": "#/definitions/CVSSv3Scope"
+          "$ref": "#/definitions/vulnerabilityCVSSv3Scope"
         },
         "confidentialityImpact": {
           "$ref": "#/definitions/vulnerabilityCVSSv3Impact"
@@ -2845,7 +2854,7 @@
           "$ref": "#/definitions/vulnerabilityCVSSv3Impact"
         }
       },
-      "title": "Common Vulnerability Scoring System version 3.\nFor details, see https://www.first.org/cvss/specification-document"
+      "title": "Deprecated. See CVSS instead"
     },
     "vulnerabilityCVSSv3AttackComplexity": {
       "type": "string",
@@ -2876,6 +2885,34 @@
         "IMPACT_NONE"
       ],
       "default": "IMPACT_UNSPECIFIED"
+    },
+    "vulnerabilityCVSSv3PrivilegesRequired": {
+      "type": "string",
+      "enum": [
+        "PRIVILEGES_REQUIRED_UNSPECIFIED",
+        "PRIVILEGES_REQUIRED_NONE",
+        "PRIVILEGES_REQUIRED_LOW",
+        "PRIVILEGES_REQUIRED_HIGH"
+      ],
+      "default": "PRIVILEGES_REQUIRED_UNSPECIFIED"
+    },
+    "vulnerabilityCVSSv3Scope": {
+      "type": "string",
+      "enum": [
+        "SCOPE_UNSPECIFIED",
+        "SCOPE_UNCHANGED",
+        "SCOPE_CHANGED"
+      ],
+      "default": "SCOPE_UNSPECIFIED"
+    },
+    "vulnerabilityCVSSv3UserInteraction": {
+      "type": "string",
+      "enum": [
+        "USER_INTERACTION_UNSPECIFIED",
+        "USER_INTERACTION_NONE",
+        "USER_INTERACTION_REQUIRED"
+      ],
+      "default": "USER_INTERACTION_UNSPECIFIED"
     },
     "vulnerabilityPackageIssue": {
       "type": "object",
@@ -2937,7 +2974,7 @@
         },
         "cvssV3": {
           "$ref": "#/definitions/vulnerabilityCVSSv3",
-          "description": "The full description of the CVSSv3."
+          "description": "Deprecated. See CVSS for the replacement."
         },
         "windowsDetails": {
           "type": "array",
@@ -2952,8 +2989,11 @@
           "description": "The time this information was last changed at the source. This is an\nupstream timestamp from the underlying information source - e.g. Ubuntu\nsecurity tracker."
         },
         "cvssV2": {
-          "$ref": "#/definitions/vulnerabilityCVSSv2",
-          "description": "The full description of the CVSSv2."
+          "$ref": "#/definitions/vulnerabilityCVSS",
+          "description": "The full description of the CVSS."
+        },
+        "cvssV30": {
+          "$ref": "#/definitions/vulnerabilityCVSS"
         }
       },
       "description": "Vulnerability provides metadata about a security vulnerability in a Note."
