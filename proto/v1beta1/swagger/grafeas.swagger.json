@@ -666,7 +666,7 @@
       "default": "KEY_TYPE_UNSPECIFIED",
       "description": "Public key formats.\n\n - KEY_TYPE_UNSPECIFIED: `KeyType` is not set.\n - PGP_ASCII_ARMORED: `PGP ASCII Armored` public key.\n - PKIX_PEM: `PKIX PEM` public key."
     },
-    "CVSSv3AttackComplexity": {
+    "CVSSAttackComplexity": {
       "type": "string",
       "enum": [
         "ATTACK_COMPLEXITY_UNSPECIFIED",
@@ -675,7 +675,7 @@
       ],
       "default": "ATTACK_COMPLEXITY_UNSPECIFIED"
     },
-    "CVSSv3AttackVector": {
+    "CVSSAttackVector": {
       "type": "string",
       "enum": [
         "ATTACK_VECTOR_UNSPECIFIED",
@@ -686,7 +686,17 @@
       ],
       "default": "ATTACK_VECTOR_UNSPECIFIED"
     },
-    "CVSSv3Impact": {
+    "CVSSAuthentication": {
+      "type": "string",
+      "enum": [
+        "AUTHENTICATION_UNSPECIFIED",
+        "AUTHENTICATION_MULTIPLE",
+        "AUTHENTICATION_SINGLE",
+        "AUTHENTICATION_NONE"
+      ],
+      "default": "AUTHENTICATION_UNSPECIFIED"
+    },
+    "CVSSImpact": {
       "type": "string",
       "enum": [
         "IMPACT_UNSPECIFIED",
@@ -696,7 +706,7 @@
       ],
       "default": "IMPACT_UNSPECIFIED"
     },
-    "CVSSv3PrivilegesRequired": {
+    "CVSSPrivilegesRequired": {
       "type": "string",
       "enum": [
         "PRIVILEGES_REQUIRED_UNSPECIFIED",
@@ -706,7 +716,7 @@
       ],
       "default": "PRIVILEGES_REQUIRED_UNSPECIFIED"
     },
-    "CVSSv3Scope": {
+    "CVSSScope": {
       "type": "string",
       "enum": [
         "SCOPE_UNSPECIFIED",
@@ -715,7 +725,7 @@
       ],
       "default": "SCOPE_UNSPECIFIED"
     },
-    "CVSSv3UserInteraction": {
+    "CVSSUserInteraction": {
       "type": "string",
       "enum": [
         "USER_INTERACTION_UNSPECIFIED",
@@ -2755,7 +2765,7 @@
       },
       "description": "Details of a vulnerability Occurrence."
     },
-    "vulnerabilityCVSSv3": {
+    "vulnerabilityCVSS": {
       "type": "object",
       "properties": {
         "baseScore": {
@@ -2772,32 +2782,35 @@
           "format": "float"
         },
         "attackVector": {
-          "$ref": "#/definitions/CVSSv3AttackVector",
+          "$ref": "#/definitions/CVSSAttackVector",
           "description": "Base Metrics\nRepresents the intrinsic characteristics of a vulnerability that are\nconstant over time and across user environments."
         },
         "attackComplexity": {
-          "$ref": "#/definitions/CVSSv3AttackComplexity"
+          "$ref": "#/definitions/CVSSAttackComplexity"
+        },
+        "authentication": {
+          "$ref": "#/definitions/CVSSAuthentication"
         },
         "privilegesRequired": {
-          "$ref": "#/definitions/CVSSv3PrivilegesRequired"
+          "$ref": "#/definitions/CVSSPrivilegesRequired"
         },
         "userInteraction": {
-          "$ref": "#/definitions/CVSSv3UserInteraction"
+          "$ref": "#/definitions/CVSSUserInteraction"
         },
         "scope": {
-          "$ref": "#/definitions/CVSSv3Scope"
+          "$ref": "#/definitions/CVSSScope"
         },
         "confidentialityImpact": {
-          "$ref": "#/definitions/CVSSv3Impact"
+          "$ref": "#/definitions/CVSSImpact"
         },
         "integrityImpact": {
-          "$ref": "#/definitions/CVSSv3Impact"
+          "$ref": "#/definitions/CVSSImpact"
         },
         "availabilityImpact": {
-          "$ref": "#/definitions/CVSSv3Impact"
+          "$ref": "#/definitions/CVSSImpact"
         }
       },
-      "title": "Common Vulnerability Scoring System version 3.\nFor details, see https://www.first.org/cvss/specification-document"
+      "title": "Common Vulnerability Scoring System.\nFor details, see https://www.first.org/cvss/specification-document"
     },
     "vulnerabilityPackageIssue": {
       "type": "object",
@@ -2858,8 +2871,8 @@
           "description": "All information about the package to specifically identify this\nvulnerability. One entry per (version range and cpe_uri) the package\nvulnerability has manifested in."
         },
         "cvssV3": {
-          "$ref": "#/definitions/vulnerabilityCVSSv3",
-          "description": "The full description of the CVSSv3."
+          "$ref": "#/definitions/vulnerabilityCVSS",
+          "description": "The full description of the CVSS for version 3."
         },
         "windowsDetails": {
           "type": "array",
@@ -2872,6 +2885,10 @@
           "type": "string",
           "format": "date-time",
           "description": "The time this information was last changed at the source. This is an\nupstream timestamp from the underlying information source - e.g. Ubuntu\nsecurity tracker."
+        },
+        "cvssV2": {
+          "$ref": "#/definitions/vulnerabilityCVSS",
+          "description": "The full description of the CVSS for version 2."
         }
       },
       "description": "Vulnerability provides metadata about a security vulnerability in a Note."

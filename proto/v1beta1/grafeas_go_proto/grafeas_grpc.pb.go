@@ -296,7 +296,7 @@ type UnsafeGrafeasV1Beta1Server interface {
 	mustEmbedUnimplementedGrafeasV1Beta1Server()
 }
 
-func RegisterGrafeasV1Beta1Server(s grpc.ServiceRegistrar, srv GrafeasV1Beta1Server) {
+func RegisterGrafeasV1Beta1Server(s *grpc.Server, srv GrafeasV1Beta1Server) {
 	s.RegisterService(&_GrafeasV1Beta1_serviceDesc, srv)
 }
 
