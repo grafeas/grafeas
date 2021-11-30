@@ -256,7 +256,10 @@ message Occurrence {
     grafeas.v1beta1.spdx.RelationshipOccurrence spdx_relationship = 19;
   }
 
-  // next_id = 20;
+  // Output only. The time this occurrence was archived.
+  google.protobuf.Timestamp archive_time = 20;
+
+  // next_id = 21;
 }
 
 // An entity that can have metadata. For example, a Docker image.

@@ -246,6 +246,9 @@ message Occurrence {
 
   // https://github.com/secure-systems-lab/dsse
   grafeas.v1.Envelope envelope = 18;
+
+  // Output only. The time this occurrence was archived.
+  google.protobuf.Timestamp archive_time = 19;
 }
 
 // A type of analysis that can be done for a resource.
