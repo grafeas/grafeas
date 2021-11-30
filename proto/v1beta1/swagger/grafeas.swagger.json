@@ -2536,6 +2536,12 @@
         "spdxRelationship": {
           "$ref": "#/definitions/spdxRelationshipOccurrence",
           "description": "Describes a specific SPDX Relationship."
+        },
+        "archiveTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Output only. The time this occurrence was archived.",
+          "readOnly": true
         }
       },
       "description": "An instance of an analysis type that has been found on a resource."
