@@ -256,7 +256,7 @@ message Occurrence {
     grafeas.v1beta1.spdx.RelationshipOccurrence spdx_relationship = 19;
   }
 
-  // next_id = 21;
+  // next_id = 20;
 }
 
 // An entity that can have metadata. For example, a Docker image.
