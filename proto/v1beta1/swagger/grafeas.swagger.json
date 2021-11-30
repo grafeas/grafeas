@@ -1220,6 +1220,12 @@
         "analysisStatusError": {
           "$ref": "#/definitions/rpcStatus",
           "description": "When an error is encountered this will contain a LocalizedMessage under\ndetails to show to the user. The LocalizedMessage is output only and\npopulated by the API."
+        },
+        "archiveTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Output only. The time occurrences related to this discovery occurrence were archived.",
+          "readOnly": true
         }
       },
       "description": "Provides information about the analysis status of a discovered resource."
@@ -2536,12 +2542,6 @@
         "spdxRelationship": {
           "$ref": "#/definitions/spdxRelationshipOccurrence",
           "description": "Describes a specific SPDX Relationship."
-        },
-        "archiveTime": {
-          "type": "string",
-          "format": "date-time",
-          "description": "Output only. The time this occurrence was archived.",
-          "readOnly": true
         }
       },
       "description": "An instance of an analysis type that has been found on a resource."
