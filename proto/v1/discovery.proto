@@ -23,6 +23,7 @@ option objc_class_prefix = "GRA";
 
 import "google/protobuf/timestamp.proto";
 import "google/rpc/status.proto";
+import "google/api/field_behavior.proto";
 import "proto/v1/common.proto";
 
 // A note that indicates a type of analysis a provider would perform. This note
@@ -80,4 +81,7 @@ message DiscoveryOccurrence {
   
   // The last time this resource was scanned.
   google.protobuf.Timestamp last_scan_time = 5;
+
+  // The time occurrences related to this discovery occurrence were archived.
+  google.protobuf.Timestamp archive_time = 6 [(google.api.field_behavior) = OUTPUT_ONLY];
 }
