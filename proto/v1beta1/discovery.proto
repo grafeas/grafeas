@@ -84,7 +84,4 @@ message Discovered {
   // details to show to the user. The LocalizedMessage is output only and
   // populated by the API.
   google.rpc.Status analysis_status_error = 4;
-
-  // Output only. The time occurrences related to this discovery occurrence were archived.
-  google.protobuf.Timestamp archive_time = 5;
 }
