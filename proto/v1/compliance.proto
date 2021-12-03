@@ -16,7 +16,7 @@ syntax = "proto3";
 
 package grafeas.v1;
 
-import "proto/v1/vulnerability.proto";
+import "proto/v1/severity.proto";
 
 option go_package = "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto";
 option java_multiple_files = true;
