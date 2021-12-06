@@ -4,6 +4,11 @@
     "title": "project.proto",
     "version": "version not set"
   },
+  "tags": [
+    {
+      "name": "Projects"
+    }
+  ],
   "consumes": [
     "application/json"
   ],
@@ -184,14 +189,11 @@
     "protobufAny": {
       "type": "object",
       "properties": {
-        "typeUrl": {
+        "@type": {
           "type": "string"
-        },
-        "value": {
-          "type": "string",
-          "format": "byte"
         }
-      }
+      },
+      "additionalProperties": {}
     },
     "rpcStatus": {
       "type": "object",

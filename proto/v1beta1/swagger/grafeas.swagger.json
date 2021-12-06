@@ -4,6 +4,11 @@
     "title": "grafeas.proto",
     "version": "version not set"
   },
+  "tags": [
+    {
+      "name": "GrafeasV1Beta1"
+    }
+  ],
   "consumes": [
     "application/json"
   ],
@@ -111,11 +116,7 @@
             "description": "The fields to update.",
             "in": "query",
             "required": false,
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "collectionFormat": "multi"
+            "type": "string"
           }
         ],
         "tags": [
@@ -277,11 +278,7 @@
             "description": "The fields to update.",
             "in": "query",
             "required": false,
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "collectionFormat": "multi"
+            "type": "string"
           }
         ],
         "tags": [
@@ -412,7 +409,7 @@
             "name": "noteId",
             "description": "The ID to use for this note.",
             "in": "query",
-            "required": false,
+            "required": true,
             "type": "string"
           }
         ],
@@ -452,7 +449,23 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/v1beta1BatchCreateNotesRequest"
+              "type": "object",
+              "properties": {
+                "notes": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "$ref": "#/definitions/v1beta1Note"
+                  },
+                  "description": "The notes to create, the key is expected to be the note ID. Max allowed length is 1000.",
+                  "required": [
+                    "notes"
+                  ]
+                }
+              },
+              "description": "Request to create notes in batch.",
+              "required": [
+                "notes"
+              ]
             }
           }
         ],
@@ -585,7 +598,23 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/v1beta1BatchCreateOccurrencesRequest"
+              "type": "object",
+              "properties": {
+                "occurrences": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/v1beta1Occurrence"
+                  },
+                  "description": "The occurrences to create. Max allowed length is 1000.",
+                  "required": [
+                    "occurrences"
+                  ]
+                }
+              },
+              "description": "Request to create occurrences in batch.",
+              "required": [
+                "occurrences"
+              ]
             }
           }
         ],
@@ -1542,16 +1571,12 @@
     "protobufAny": {
       "type": "object",
       "properties": {
-        "typeUrl": {
+        "@type": {
           "type": "string",
           "description": "A URL/resource name that uniquely identifies the type of the serialized\nprotocol buffer message. This string must contain at least\none \"/\" character. The last segment of the URL's path must represent\nthe fully qualified name of the type (as in\n`path/google.protobuf.Duration`). The name should be in a canonical form\n(e.g., leading \".\" is not accepted).\n\nIn practice, teams usually precompile into the binary all types that they\nexpect it to use in the context of Any. However, for URLs which use the\nscheme `http`, `https`, or no scheme, one can optionally set up a type\nserver that maps type URLs to message definitions as follows:\n\n* If no scheme is provided, `https` is assumed.\n* An HTTP GET on the URL must yield a [google.protobuf.Type][]\n  value in binary format, or produce an error.\n* Applications are allowed to cache lookup results based on the\n  URL, or have them precompiled into a binary to avoid any\n  lookup. Therefore, binary compatibility needs to be preserved\n  on changes to types. (Use versioned type names to manage\n  breaking changes.)\n\nNote: this functionality is not currently available in the official\nprotobuf release, and it is not used for type URLs beginning with\ntype.googleapis.com.\n\nSchemes other than `http`, `https` (or the empty scheme) might be\nused with implementation specific semantics."
-        },
-        "value": {
-          "type": "string",
-          "format": "byte",
-          "description": "Must be a valid serialized protocol buffer of the above specified type."
         }
       },
+      "additionalProperties": {},
       "description": "`Any` contains an arbitrary serialized protocol buffer message along with a\nURL that describes the type of the serialized message.\n\nProtobuf library provides support to pack/unpack Any values in the form\nof utility functions or additional generated methods of the Any type.\n\nExample 1: Pack and unpack a message in C++.\n\n    Foo foo = ...;\n    Any any;\n    any.PackFrom(foo);\n    ...\n    if (any.UnpackTo(\u0026foo)) {\n      ...\n    }\n\nExample 2: Pack and unpack a message in Java.\n\n    Foo foo = ...;\n    Any any = Any.pack(foo);\n    ...\n    if (any.is(Foo.class)) {\n      foo = any.unpack(Foo.class);\n    }\n\n Example 3: Pack and unpack a message in Python.\n\n    foo = Foo(...)\n    any = Any()\n    any.Pack(foo)\n    ...\n    if any.Is(Foo.DESCRIPTOR):\n      any.Unpack(foo)\n      ...\n\n Example 4: Pack and unpack a message in Go\n\n     foo := \u0026pb.Foo{...}\n     any, err := ptypes.MarshalAny(foo)\n     ...\n     foo := \u0026pb.Foo{}\n     if err := ptypes.UnmarshalAny(any, foo); err != nil {\n       ...\n     }\n\nThe pack methods provided by protobuf library will by default use\n'type.googleapis.com/full.type.name' as the type URL and the unpack\nmethods only use the fully qualified type name after the last '/'\nin the type URL, for example \"foo.bar.com/x/y.z\" will yield type\nname \"y.z\".\n\n\nJSON\n====\nThe JSON representation of an `Any` value uses the regular\nrepresentation of the deserialized, embedded message, with an\nadditional field `@type` which contains the type URL. Example:\n\n    package google.profile;\n    message Person {\n      string first_name = 1;\n      string last_name = 2;\n    }\n\n    {\n      \"@type\": \"type.googleapis.com/google.profile.Person\",\n      \"firstName\": \u003cstring\u003e,\n      \"lastName\": \u003cstring\u003e\n    }\n\nIf the embedded message type is well-known and has a custom JSON\nrepresentation, that representation will be embedded adding a field\n`value` which holds the custom JSON in addition to the `@type`\nfield. Example (for message [google.protobuf.Duration][]):\n\n    {\n      \"@type\": \"type.googleapis.com/google.protobuf.Duration\",\n      \"value\": \"1.212s\"\n    }"
     },
     "provenanceBuildProvenance": {
@@ -2113,23 +2138,28 @@
         },
         "packageType": {
           "type": "string",
-          "description": "The type of package: OS, MAVEN, GO, GO_STDLIB, etc."
+          "description": "The type of package: OS, MAVEN, GO, GO_STDLIB, etc.",
+          "readOnly": true
         },
         "title": {
           "type": "string",
-          "title": "Identify the full name of the package as given by the Package Originator"
+          "title": "Identify the full name of the package as given by the Package Originator",
+          "readOnly": true
         },
         "version": {
           "type": "string",
-          "title": "Identify the version of the package"
+          "title": "Identify the version of the package",
+          "readOnly": true
         },
         "homePage": {
           "type": "string",
-          "title": "Provide a place for the SPDX file creator to record a web site that serves\nas the package's home page"
+          "title": "Provide a place for the SPDX file creator to record a web site that serves\nas the package's home page",
+          "readOnly": true
         },
         "summaryDescription": {
           "type": "string",
-          "title": "A short description of the package"
+          "title": "A short description of the package",
+          "readOnly": true
         }
       },
       "title": "PackageInfoOccurrence represents an SPDX Package Information\nsection: https://spdx.github.io/spdx-spec/3-package-information/"
@@ -2218,23 +2248,6 @@
       "description": "- RELATIONSHIP_TYPE_UNSPECIFIED: Unspecified\n - DESCRIBES: Is to be used when SPDXRef-DOCUMENT describes SPDXRef-A\n - DESCRIBED_BY: Is to be used when SPDXRef-A is described by SPDXREF-Document\n - CONTAINS: Is to be used when SPDXRef-A contains SPDXRef-B\n - CONTAINED_BY: Is to be used when SPDXRef-A is contained by SPDXRef-B\n - DEPENDS_ON: Is to be used when SPDXRef-A depends on SPDXRef-B\n - DEPENDENCY_OF: Is to be used when SPDXRef-A is dependency of SPDXRef-B\n - DEPENDENCY_MANIFEST_OF: Is to be used when SPDXRef-A is a manifest file that lists a set of\ndependencies for SPDXRef-B\n - BUILD_DEPENDENCY_OF: Is to be used when SPDXRef-A is a build dependency of SPDXRef-B\n - DEV_DEPENDENCY_OF: Is to be used when SPDXRef-A is a development dependency of SPDXRef-B\n - OPTIONAL_DEPENDENCY_OF: Is to be used when SPDXRef-A is an optional dependency of SPDXRef-B\n - PROVIDED_DEPENDENCY_OF: Is to be used when SPDXRef-A is a to be provided dependency of\nSPDXRef-B\n - TEST_DEPENDENCY_OF: Is to be used when SPDXRef-A is a test dependency of SPDXRef-B\n - RUNTIME_DEPENDENCY_OF: Is to be used when SPDXRef-A is a dependency required for the execution\nof SPDXRef-B\n - EXAMPLE_OF: Is to be used when SPDXRef-A is an example of SPDXRef-B\n - GENERATES: Is to be used when SPDXRef-A generates SPDXRef-B\n - GENERATED_FROM: Is to be used when SPDXRef-A was generated from SPDXRef-B\n - ANCESTOR_OF: Is to be used when SPDXRef-A is an ancestor (same lineage but\npre-dates) SPDXRef-B\n - DESCENDANT_OF: Is to be used when SPDXRef-A is a descendant of (same lineage but\npostdates) SPDXRef-B\n - VARIANT_OF: Is to be used when SPDXRef-A is a variant of (same lineage but not\nclear which came first) SPDXRef-B\n - DISTRIBUTION_ARTIFACT: Is to be used when distributing SPDXRef-A requires that SPDXRef-B also\nbe distributed\n - PATCH_FOR: Is to be used when SPDXRef-A is a patch file for (to be applied to)\nSPDXRef-B\n - PATCH_APPLIED: Is to be used when SPDXRef-A is a patch file that has been applied to\nSPDXRef-B\n - COPY_OF: Is to be used when SPDXRef-A is an exact copy of SPDXRef-B\n - FILE_ADDED: Is to be used when SPDXRef-A is a file that was added to SPDXRef-B\n - FILE_DELETED: Is to be used when SPDXRef-A is a file that was deleted from SPDXRef-B\n - FILE_MODIFIED: Is to be used when SPDXRef-A is a file that was modified from SPDXRef-B\n - EXPANDED_FROM_ARCHIVE: Is to be used when SPDXRef-A is expanded from the archive SPDXRef-B\n - DYNAMIC_LINK: Is to be used when SPDXRef-A dynamically links to SPDXRef-B\n - STATIC_LINK: Is to be used when SPDXRef-A statically links to SPDXRef-B\n - DATA_FILE_OF: Is to be used when SPDXRef-A is a data file used in SPDXRef-B\n - TEST_CASE_OF: Is to be used when SPDXRef-A is a test case used in testing SPDXRef-B\n - BUILD_TOOL_OF: Is to be used when SPDXRef-A is used to build SPDXRef-B\n - DEV_TOOL_OF: Is to be used when SPDXRef-A is used as a development tool for\nSPDXRef-B\n - TEST_OF: Is to be used when SPDXRef-A is used for testing SPDXRef-B\n - TEST_TOOL_OF: Is to be used when SPDXRef-A is used as a test tool for SPDXRef-B\n - DOCUMENTATION_OF: Is to be used when SPDXRef-A provides documentation of SPDXRef-B\n - OPTIONAL_COMPONENT_OF: Is to be used when SPDXRef-A is an optional component of SPDXRef-B\n - METAFILE_OF: Is to be used when SPDXRef-A is a metafile of SPDXRef-B\n - PACKAGE_OF: Is to be used when SPDXRef-A is used as a package as part of SPDXRef-B\n - AMENDS: Is to be used when (current) SPDXRef-DOCUMENT amends the SPDX\ninformation in SPDXRef-B\n - PREREQUISITE_FOR: Is to be used when SPDXRef-A is a prerequisite for SPDXRef-B\n - HAS_PREREQUISITE: Is to be used when SPDXRef-A has as a prerequisite SPDXRef-B\n - OTHER: Is to be used for a relationship which has not been defined in the\nformal SPDX specification. A description of the relationship should be\nincluded in the Relationship comments field",
       "title": "The type of relationship between the source and target SPDX elements\nRelationshipOccurrence represents an SPDX Relationship section:\nhttps://spdx.github.io/spdx-spec/7-relationships-between-SPDX-elements/"
     },
-    "v1beta1BatchCreateNotesRequest": {
-      "type": "object",
-      "properties": {
-        "parent": {
-          "type": "string",
-          "description": "The name of the project in the form of `projects/[PROJECT_ID]`, under which\nthe notes are to be created."
-        },
-        "notes": {
-          "type": "object",
-          "additionalProperties": {
-            "$ref": "#/definitions/v1beta1Note"
-          },
-          "description": "The notes to create, the key is expected to be the note ID. Max allowed length is 1000."
-        }
-      },
-      "description": "Request to create notes in batch."
-    },
     "v1beta1BatchCreateNotesResponse": {
       "type": "object",
       "properties": {
@@ -2247,23 +2260,6 @@
         }
       },
       "description": "Response for creating notes in batch."
-    },
-    "v1beta1BatchCreateOccurrencesRequest": {
-      "type": "object",
-      "properties": {
-        "parent": {
-          "type": "string",
-          "description": "The name of the project in the form of `projects/[PROJECT_ID]`, under which\nthe occurrences are to be created."
-        },
-        "occurrences": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/v1beta1Occurrence"
-          },
-          "description": "The occurrences to create. Max allowed length is 1000."
-        }
-      },
-      "description": "Request to create occurrences in batch."
     },
     "v1beta1BatchCreateOccurrencesResponse": {
       "type": "object",

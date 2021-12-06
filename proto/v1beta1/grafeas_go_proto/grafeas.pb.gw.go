@@ -1073,7 +1073,7 @@ func RegisterGrafeasV1Beta1HandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/GetOccurrence")
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/GetOccurrence", runtime.WithHTTPPathPattern("/v1beta1/{name=projects/*/occurrences/*}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1096,7 +1096,7 @@ func RegisterGrafeasV1Beta1HandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/ListOccurrences")
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/ListOccurrences", runtime.WithHTTPPathPattern("/v1beta1/{parent=projects/*}/occurrences"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1119,7 +1119,7 @@ func RegisterGrafeasV1Beta1HandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/DeleteOccurrence")
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/DeleteOccurrence", runtime.WithHTTPPathPattern("/v1beta1/{name=projects/*/occurrences/*}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1142,7 +1142,7 @@ func RegisterGrafeasV1Beta1HandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/CreateOccurrence")
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/CreateOccurrence", runtime.WithHTTPPathPattern("/v1beta1/{parent=projects/*}/occurrences"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1165,7 +1165,7 @@ func RegisterGrafeasV1Beta1HandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/BatchCreateOccurrences")
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/BatchCreateOccurrences", runtime.WithHTTPPathPattern("/v1beta1/{parent=projects/*}/occurrences:batchCreate"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1188,7 +1188,7 @@ func RegisterGrafeasV1Beta1HandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/UpdateOccurrence")
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/UpdateOccurrence", runtime.WithHTTPPathPattern("/v1beta1/{name=projects/*/occurrences/*}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1211,7 +1211,7 @@ func RegisterGrafeasV1Beta1HandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/GetOccurrenceNote")
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/GetOccurrenceNote", runtime.WithHTTPPathPattern("/v1beta1/{name=projects/*/occurrences/*}/notes"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1234,7 +1234,7 @@ func RegisterGrafeasV1Beta1HandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/GetNote")
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/GetNote", runtime.WithHTTPPathPattern("/v1beta1/{name=projects/*/notes/*}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1257,7 +1257,7 @@ func RegisterGrafeasV1Beta1HandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/ListNotes")
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/ListNotes", runtime.WithHTTPPathPattern("/v1beta1/{parent=projects/*}/notes"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1280,7 +1280,7 @@ func RegisterGrafeasV1Beta1HandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/DeleteNote")
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/DeleteNote", runtime.WithHTTPPathPattern("/v1beta1/{name=projects/*/notes/*}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1303,7 +1303,7 @@ func RegisterGrafeasV1Beta1HandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/CreateNote")
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/CreateNote", runtime.WithHTTPPathPattern("/v1beta1/{parent=projects/*}/notes"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1326,7 +1326,7 @@ func RegisterGrafeasV1Beta1HandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/BatchCreateNotes")
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/BatchCreateNotes", runtime.WithHTTPPathPattern("/v1beta1/{parent=projects/*}/notes:batchCreate"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1349,7 +1349,7 @@ func RegisterGrafeasV1Beta1HandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/UpdateNote")
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/UpdateNote", runtime.WithHTTPPathPattern("/v1beta1/{name=projects/*/notes/*}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1372,7 +1372,7 @@ func RegisterGrafeasV1Beta1HandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/ListNoteOccurrences")
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/ListNoteOccurrences", runtime.WithHTTPPathPattern("/v1beta1/{name=projects/*/notes/*}/occurrences"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1395,7 +1395,7 @@ func RegisterGrafeasV1Beta1HandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/GetVulnerabilityOccurrencesSummary")
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/GetVulnerabilityOccurrencesSummary", runtime.WithHTTPPathPattern("/v1beta1/{parent=projects/*}/occurrences:vulnerabilitySummary"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1442,7 +1442,7 @@ func RegisterGrafeasV1Beta1HandlerFromEndpoint(ctx context.Context, mux *runtime
 
 // RegisterGrafeasV1Beta1Handler registers the http handlers for service GrafeasV1Beta1 to "mux".
 // The handlers forward requests to the grpc endpoint over "conn".
-func RegisterGrafeasV1Beta1Handler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
+func RegisterGrafeasV1Beta1Handler(ctx context.Context, mux *runtime.ServeMux, conn grpc.ClientConnInterface) error {
 	return RegisterGrafeasV1Beta1HandlerClient(ctx, mux, NewGrafeasV1Beta1Client(conn))
 }
 
@@ -1457,7 +1457,7 @@ func RegisterGrafeasV1Beta1HandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/GetOccurrence")
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/GetOccurrence", runtime.WithHTTPPathPattern("/v1beta1/{name=projects/*/occurrences/*}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1477,7 +1477,7 @@ func RegisterGrafeasV1Beta1HandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/ListOccurrences")
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/ListOccurrences", runtime.WithHTTPPathPattern("/v1beta1/{parent=projects/*}/occurrences"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1497,7 +1497,7 @@ func RegisterGrafeasV1Beta1HandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/DeleteOccurrence")
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/DeleteOccurrence", runtime.WithHTTPPathPattern("/v1beta1/{name=projects/*/occurrences/*}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1517,7 +1517,7 @@ func RegisterGrafeasV1Beta1HandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/CreateOccurrence")
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/CreateOccurrence", runtime.WithHTTPPathPattern("/v1beta1/{parent=projects/*}/occurrences"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1537,7 +1537,7 @@ func RegisterGrafeasV1Beta1HandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/BatchCreateOccurrences")
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/BatchCreateOccurrences", runtime.WithHTTPPathPattern("/v1beta1/{parent=projects/*}/occurrences:batchCreate"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1557,7 +1557,7 @@ func RegisterGrafeasV1Beta1HandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/UpdateOccurrence")
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/UpdateOccurrence", runtime.WithHTTPPathPattern("/v1beta1/{name=projects/*/occurrences/*}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1577,7 +1577,7 @@ func RegisterGrafeasV1Beta1HandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/GetOccurrenceNote")
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/GetOccurrenceNote", runtime.WithHTTPPathPattern("/v1beta1/{name=projects/*/occurrences/*}/notes"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1597,7 +1597,7 @@ func RegisterGrafeasV1Beta1HandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/GetNote")
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/GetNote", runtime.WithHTTPPathPattern("/v1beta1/{name=projects/*/notes/*}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1617,7 +1617,7 @@ func RegisterGrafeasV1Beta1HandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/ListNotes")
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/ListNotes", runtime.WithHTTPPathPattern("/v1beta1/{parent=projects/*}/notes"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1637,7 +1637,7 @@ func RegisterGrafeasV1Beta1HandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/DeleteNote")
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/DeleteNote", runtime.WithHTTPPathPattern("/v1beta1/{name=projects/*/notes/*}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1657,7 +1657,7 @@ func RegisterGrafeasV1Beta1HandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/CreateNote")
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/CreateNote", runtime.WithHTTPPathPattern("/v1beta1/{parent=projects/*}/notes"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1677,7 +1677,7 @@ func RegisterGrafeasV1Beta1HandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/BatchCreateNotes")
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/BatchCreateNotes", runtime.WithHTTPPathPattern("/v1beta1/{parent=projects/*}/notes:batchCreate"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1697,7 +1697,7 @@ func RegisterGrafeasV1Beta1HandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/UpdateNote")
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/UpdateNote", runtime.WithHTTPPathPattern("/v1beta1/{name=projects/*/notes/*}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1717,7 +1717,7 @@ func RegisterGrafeasV1Beta1HandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/ListNoteOccurrences")
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/ListNoteOccurrences", runtime.WithHTTPPathPattern("/v1beta1/{name=projects/*/notes/*}/occurrences"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1737,7 +1737,7 @@ func RegisterGrafeasV1Beta1HandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/GetVulnerabilityOccurrencesSummary")
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grafeas.v1beta1.GrafeasV1Beta1/GetVulnerabilityOccurrencesSummary", runtime.WithHTTPPathPattern("/v1beta1/{parent=projects/*}/occurrences:vulnerabilitySummary"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
