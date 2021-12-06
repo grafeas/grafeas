@@ -16,7 +16,7 @@ syntax = "proto3";
 
 package grafeas.v1alpha1.api;
 
-option go_package = "grafeas";
+option go_package = "github.com/grafeas/grafeas/proto/v1alpha1/grafeas";
 
 import "google/api/annotations.proto";
 import "google/longrunning/operations.proto";
