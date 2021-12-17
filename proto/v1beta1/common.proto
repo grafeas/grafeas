@@ -110,3 +110,15 @@ message Signature {
   string public_key_id = 2;
 }
 
+// MUST match https://github.com/secure-systems-lab/dsse/blob/master/envelope.proto.
+// An authenticated message of arbitrary type.
+message Envelope {
+  bytes payload = 1;
+  string payload_type = 2;
+  repeated EnvelopeSignature signatures = 3;
+}
+
+message EnvelopeSignature {
+  bytes sig = 1;
+  string keyid = 2;
+}
