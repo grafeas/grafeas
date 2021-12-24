@@ -1900,7 +1900,7 @@
           "title": "Compliance with the SPDX specification includes populating the SPDX fields\ntherein with data related to such fields (\"SPDX-Metadata\")"
         }
       },
-      "title": "DocumentNote represents an SPDX Document Creation Infromation section:\nhttps://spdx.github.io/spdx-spec/2-document-creation-information/"
+      "title": "DocumentNote represents an SPDX Document Creation Information section:\nhttps://spdx.github.io/spdx-spec/2-document-creation-information/"
     },
     "spdxDocumentOccurrence": {
       "type": "object",
