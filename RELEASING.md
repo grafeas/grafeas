@@ -23,7 +23,7 @@ git push upstream --tags
 
 NOTE: the last command will not work if you set `git remote set-url --push upstream no_push` as described in [DEVELOPMENT.md](DEVELOPMENT.md). You will need to re-enable the `push` for this to work, so proceed with caution.
 
-You can find the releases in Github, e.g. [v0.1.0](https://github.com/grafeas/grafeas/releases/tag/v0.1.0).
+You can find the releases in GitHub, e.g. [v0.1.0](https://github.com/grafeas/grafeas/releases/tag/v0.1.0).
 
 ## Release the Docker image
 
