@@ -25,7 +25,7 @@ func TestErrors(t *testing.T) {
 	errors := NewErrors()
 	errors.ReportError(source, NewLocation(1, 1), "No such field")
 	if len(errors.GetErrors()) != 1 {
-		t.Error("First eror not recorded")
+		t.Error("First error not recorded")
 	}
 	errors.ReportError(source, NewLocation(2, 20), "Syntax error, missing paren")
 	if len(errors.GetErrors()) != 2 {
