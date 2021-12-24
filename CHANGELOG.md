@@ -14,7 +14,7 @@ v0.1.4:
   * Support for use of existing secret and certs in Helm chart, in addition to generating them.
   * Fix for handling http requests.
   * Support for multi-platform protobuf compiler download.
-  * Checked in `v1beta1` go generated protos, to simplify integratio downstream.
+  * Checked in `v1beta1` go generated protos, to simplify integration downstream.
 
 v0.1.3:
   * same as `v0.1.2`, but with generated protos uploaded with the release.
