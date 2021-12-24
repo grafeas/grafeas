@@ -1157,7 +1157,7 @@
           "description": "Distinguish between sentinel MIN/MAX versions and normal versions.\nIf kind is not NORMAL, then the other fields are ignored."
         }
       },
-      "title": "Version contains structured information about the version of the package.\nFor a discussion of this in Debian/Ubuntu:\nhttp://serverfault.com/questions/604541/debian-packages-version-convention\nFor a discussion of this in Redhat/Fedora/Centos:\nhttp://blog.jasonantman.com/2014/07/how-yum-and-rpm-compare-versions/"
+      "title": "Version contains structured information about the version of the package.\nFor a discussion of this in Debian/Ubuntu:\nhttp://serverfault.com/questions/604541/debian-packages-version-convention\nFor a discussion of this in RedHat/Fedora/Centos:\nhttp://blog.jasonantman.com/2014/07/how-yum-and-rpm-compare-versions/"
     },
     "VulnerabilityTypeVulnerabilityDetails": {
       "type": "object",
