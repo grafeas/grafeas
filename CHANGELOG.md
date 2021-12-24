@@ -7,7 +7,7 @@ v0.1.6:
 
 v0.1.5:
   * Upgraded to golang 1.14.0
-  * Addeded last_scan_time to discovery occurrences
+  * Added last_scan_time to discovery occurrences
   * Added support for Windows updates
 
 v0.1.4:
