@@ -190,7 +190,7 @@ func main() {
 		log.Printf("Project 'provider_example' does not contain any notes")
 	}
 
-	// --- now occurrernces ---
+	// --- now occurrences ---
 
 	// Create occurrence for the deployment note in the second project
 	log.Println("create a deployment occurrence")
