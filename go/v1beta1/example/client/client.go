@@ -35,7 +35,7 @@ import (
 
 func main() {
 	// demonstrates creation of two projects,
-	// creation of notes in one project and occurences in the other
+	// creation of notes in one project and occurrences in the other
 	// shows creation of build, vulnerability and deploy types
 	conn, err := grpc.Dial("localhost:8080", grpc.WithInsecure())
 	defer conn.Close()
@@ -192,7 +192,7 @@ func main() {
 
 	// --- now occurrernces ---
 
-	// Create occurence for the deployment note in the second project
+	// Create occurrence for the deployment note in the second project
 	log.Println("create a deployment occurrence")
 
 	deploymentDetails := deppb.Deployment{
@@ -204,26 +204,26 @@ func main() {
 		Address:  "some hosting platform",
 		Platform: deppb.Deployment_CUSTOM,
 	}
-	occurenceDeployment := pb.Occurrence_Deployment{
+	occurrenceDeployment := pb.Occurrence_Deployment{
 		Deployment: &deppb.Details{Deployment: &deploymentDetails},
 	}
-	occurenceDetails := pb.Occurrence{
-		Name: "projects/occurrence_example/occurences/testDeploymentOccurrence",
+	occurrenceDetails := pb.Occurrence{
+		Name: "projects/occurrence_example/occurrences/testDeploymentOccurrence",
 		Resource: &pb.Resource{
 			Name: "some os",
 			Uri:  "http://someuri",
 		},
 		NoteName: "projects/occurrence_example/notes/testDeploymentOccurrence",
 		Kind:     5,
-		Details:  &occurenceDeployment,
+		Details:  &occurrenceDeployment,
 	}
 
-	occurenceRequest := pb.CreateOccurrenceRequest{
+	occurrenceRequest := pb.CreateOccurrenceRequest{
 		Parent:     "projects/occurrence_example",
-		Occurrence: &occurenceDetails,
+		Occurrence: &occurrenceDetails,
 	}
 
-	_, err = client.CreateOccurrence(context.Background(), &occurenceRequest)
+	_, err = client.CreateOccurrence(context.Background(), &occurrenceRequest)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -260,8 +260,8 @@ func main() {
 		Vulnerability: &vulnerability,
 	}
 
-	occurenceDetails = pb.Occurrence{
-		Name: "projects/occurrence_example/occurences/testVulnerabilityOccurrence",
+	occurrenceDetails = pb.Occurrence{
+		Name: "projects/occurrence_example/occurrences/testVulnerabilityOccurrence",
 		Resource: &pb.Resource{
 			Name: "some os",
 			Uri:  "http://someuri",
@@ -271,12 +271,12 @@ func main() {
 		Details:  &occurrenceVulnerabilityDetails,
 	}
 
-	occurenceRequest = pb.CreateOccurrenceRequest{
+	occurrenceRequest = pb.CreateOccurrenceRequest{
 		Parent:     "projects/occurrence_example",
-		Occurrence: &occurenceDetails,
+		Occurrence: &occurrenceDetails,
 	}
 
-	_, err = client.CreateOccurrence(context.Background(), &occurenceRequest)
+	_, err = client.CreateOccurrence(context.Background(), &occurrenceRequest)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -328,8 +328,8 @@ func main() {
 		Build: &build,
 	}
 
-	occurenceDetails = pb.Occurrence{
-		Name: "projects/occurrence_example/occurences/testBuildOccurrence",
+	occurrenceDetails = pb.Occurrence{
+		Name: "projects/occurrence_example/occurrences/testBuildOccurrence",
 		Resource: &pb.Resource{
 			Name: "some os",
 			Uri:  "http://someuri",
@@ -339,7 +339,7 @@ func main() {
 		Details:  &occurrenceBuildDetails,
 	}
 
-	_, err = client.CreateOccurrence(context.Background(), &occurenceRequest)
+	_, err = client.CreateOccurrence(context.Background(), &occurrenceRequest)
 	if err != nil {
 		log.Fatal(err)
 	}

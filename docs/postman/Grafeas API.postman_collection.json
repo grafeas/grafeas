@@ -240,7 +240,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"name\": \"projects/occurrence_example/occurences/exampleDeploymentOccurrence\",\n    \"resource\": {\n  \t\"name\": \"some os\",\n    \"uri\": \"https://gcr.io/project/image@sha256:foo\"\n  },\n  \"noteName\": \"projects/provider_example/notes/exampleDeploymentNote\",\n  \"kind\": \"DEPLOYMENT\",\n  \"deployment\": {\n  \t\"deployment\": {\n  \t \"userEmail\": \"user_email\",\n            \"address\": \"address\",\n            \"resourceUri\":[\n                \"resource_uri\",\n                \"resource_uri\"\n            ],\n            \"undeployTime\": \"2000-01-23T04:56:07.000+00:00\",\n            \"deployTime\": \"2000-01-23T04:56:07.000+00:00\",\n            \"config\": \"config\",\n            \"platform\": \"CUSTOM\"\n\t}\n  }\n}"
+					"raw": "{\n    \"name\": \"projects/occurrence_example/occurrences/exampleDeploymentOccurrence\",\n    \"resource\": {\n  \t\"name\": \"some os\",\n    \"uri\": \"https://gcr.io/project/image@sha256:foo\"\n  },\n  \"noteName\": \"projects/provider_example/notes/exampleDeploymentNote\",\n  \"kind\": \"DEPLOYMENT\",\n  \"deployment\": {\n  \t\"deployment\": {\n  \t \"userEmail\": \"user_email\",\n            \"address\": \"address\",\n            \"resourceUri\":[\n                \"resource_uri\",\n                \"resource_uri\"\n            ],\n            \"undeployTime\": \"2000-01-23T04:56:07.000+00:00\",\n            \"deployTime\": \"2000-01-23T04:56:07.000+00:00\",\n            \"config\": \"config\",\n            \"platform\": \"CUSTOM\"\n\t}\n  }\n}"
 				},
 				"url": {
 					"raw": "http://{{host}}/v1beta1/projects/occurrence_example/occurrences",
