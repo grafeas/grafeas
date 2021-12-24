@@ -1,5 +1,5 @@
 This is the changelog of Grafeas server releases. For more information on
-versionining, see [versioning](docs/versioning.md) document.
+versioning, see [versioning](docs/versioning.md) document.
 
 v0.1.6:
   * Added support for in-toto.
