@@ -2274,6 +2274,37 @@
       },
       "description": "Response for creating occurrences in batch."
     },
+    "v1beta1Envelope": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "type": "string",
+          "format": "byte"
+        },
+        "payloadType": {
+          "type": "string"
+        },
+        "signatures": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1beta1EnvelopeSignature"
+          }
+        }
+      },
+      "description": "MUST match https://github.com/secure-systems-lab/dsse/blob/master/envelope.proto.\nAn authenticated message of arbitrary type."
+    },
+    "v1beta1EnvelopeSignature": {
+      "type": "object",
+      "properties": {
+        "sig": {
+          "type": "string",
+          "format": "byte"
+        },
+        "keyid": {
+          "type": "string"
+        }
+      }
+    },
     "v1beta1ListNoteOccurrencesResponse": {
       "type": "object",
       "properties": {
@@ -2532,6 +2563,10 @@
         "spdxRelationship": {
           "$ref": "#/definitions/spdxRelationshipOccurrence",
           "description": "Describes a specific SPDX Relationship."
+        },
+        "envelope": {
+          "$ref": "#/definitions/v1beta1Envelope",
+          "title": "https://github.com/secure-systems-lab/dsse"
         }
       },
       "description": "An instance of an analysis type that has been found on a resource."
@@ -2885,6 +2920,13 @@
         "cvssV2": {
           "$ref": "#/definitions/vulnerabilityCVSS",
           "description": "The full description of the CVSS for version 2."
+        },
+        "cwe": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "title": "A list of CWE for this vulnerability.\nFor details, see: https://cwe.mitre.org/index.html"
         }
       },
       "description": "Vulnerability provides metadata about a security vulnerability in a Note."
