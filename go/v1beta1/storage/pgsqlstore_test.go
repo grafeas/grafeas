@@ -77,7 +77,7 @@ func startupPostgres(pgData *testPgHelper) error {
 
 	//Init db
 	pgCtl := filepath.Join(pgData.pgBinPath, "pg_ctl")
-	fmt.Fprintln(os.Stderr, "testing: intializing test postgres instance under", pgData.pgDataPath)
+	fmt.Fprintln(os.Stderr, "testing: initializing test postgres instance under", pgData.pgDataPath)
 	pgCtlInitDBOptions := fmt.Sprintf("--username %s --pwfile %s", pgData.pgConfig.User, passwordTempFile.Name())
 	cmd := exec.Command(pgCtl, "--pgdata", pgData.pgDataPath, "-o", pgCtlInitDBOptions, "initdb")
 	if err := cmd.Run(); err != nil {

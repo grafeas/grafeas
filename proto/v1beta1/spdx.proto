@@ -24,7 +24,7 @@ option java_multiple_files = true;
 option java_package = "io.grafeas.v1beta1.spdx";
 option objc_class_prefix = "GRA";
 
-// DocumentNote represents an SPDX Document Creation Infromation section:
+// DocumentNote represents an SPDX Document Creation Information section:
 // https://spdx.github.io/spdx-spec/2-document-creation-information/
 message DocumentNote {
   // Provide a reference number that can be used to understand how to parse and

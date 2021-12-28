@@ -1126,7 +1126,7 @@
         },
         "pgpKeyId": {
           "type": "string",
-          "description": "The cryptographic fingerprint of the key used to generate the signature,\nas output by, e.g. `gpg --list-keys`. This should be the version 4, full\n160-bit fingerprint, expressed as a 40 character hexidecimal string. See\nhttps://tools.ietf.org/html/rfc4880#section-12.2 for details.\nImplementations may choose to acknowledge \"LONG\", \"SHORT\", or other\nabbreviated key IDs, but only the full fingerprint is guaranteed to work.\nIn gpg, the full fingerprint can be retrieved from the `fpr` field\nreturned when calling --list-keys with --with-colons.  For example:\n```\ngpg --with-colons --with-fingerprint --force-v4-certs \\\n    --list-keys attester@example.com\ntru::1:1513631572:0:3:1:5\npub:...\u003cSNIP\u003e...\nfpr:::::::::24FF6481B76AC91E66A00AC657A93A81EF3AE6FB:\n```\nAbove, the fingerprint is `24FF6481B76AC91E66A00AC657A93A81EF3AE6FB`."
+          "description": "The cryptographic fingerprint of the key used to generate the signature,\nas output by, e.g. `gpg --list-keys`. This should be the version 4, full\n160-bit fingerprint, expressed as a 40 character hexadecimal string. See\nhttps://tools.ietf.org/html/rfc4880#section-12.2 for details.\nImplementations may choose to acknowledge \"LONG\", \"SHORT\", or other\nabbreviated key IDs, but only the full fingerprint is guaranteed to work.\nIn gpg, the full fingerprint can be retrieved from the `fpr` field\nreturned when calling --list-keys with --with-colons.  For example:\n```\ngpg --with-colons --with-fingerprint --force-v4-certs \\\n    --list-keys attester@example.com\ntru::1:1513631572:0:3:1:5\npub:...\u003cSNIP\u003e...\nfpr:::::::::24FF6481B76AC91E66A00AC657A93A81EF3AE6FB:\n```\nAbove, the fingerprint is `24FF6481B76AC91E66A00AC657A93A81EF3AE6FB`."
         }
       },
       "description": "An attestation wrapper with a PGP-compatible signature. This message only\nsupports `ATTACHED` signatures, where the payload that is signed is included\nalongside the signature itself in the same file."
@@ -1900,7 +1900,7 @@
           "title": "Compliance with the SPDX specification includes populating the SPDX fields\ntherein with data related to such fields (\"SPDX-Metadata\")"
         }
       },
-      "title": "DocumentNote represents an SPDX Document Creation Infromation section:\nhttps://spdx.github.io/spdx-spec/2-document-creation-information/"
+      "title": "DocumentNote represents an SPDX Document Creation Information section:\nhttps://spdx.github.io/spdx-spec/2-document-creation-information/"
     },
     "spdxDocumentOccurrence": {
       "type": "object",

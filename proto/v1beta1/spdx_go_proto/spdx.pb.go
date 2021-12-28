@@ -424,7 +424,7 @@ func (PackageInfoNote_ExternalRef_Category) EnumDescriptor() ([]byte, []int) {
 	return file_spdx_proto_rawDescGZIP(), []int{5, 0, 0}
 }
 
-// DocumentNote represents an SPDX Document Creation Infromation section:
+// DocumentNote represents an SPDX Document Creation Information section:
 // https://spdx.github.io/spdx-spec/2-document-creation-information/
 type DocumentNote struct {
 	state         protoimpl.MessageState

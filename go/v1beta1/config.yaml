@@ -18,7 +18,7 @@ grafeas:
   postgres:
     # Database host
     host: "127.0.0.1:5432"
-    # Dabase name
+    # Database name
     dbname: "postgres"
     # Database username
     user: "postgres"

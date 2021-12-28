@@ -54,7 +54,7 @@ func TestStringSource_Description(t *testing.T) {
 	}
 }
 
-// Test the character offest to make sure that the offsets accurately reflect
+// Test the character offset to make sure that the offsets accurately reflect
 // the location of a character in source.
 func TestStringSource_CharacterOffset(t *testing.T) {
 	contents := "c.d &&\n\t b.c.arg(10) &&\n\t test(10)"

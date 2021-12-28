@@ -21,7 +21,7 @@ ERROR: ...
 ```
 
 The baseline file must not end with an empty line as the line will be included
-comparisions.
+comparisons.
 
 ## Test Output
 
