@@ -1,6 +1,23 @@
 This is the changelog of Grafeas server releases. For more information on
 versioning, see [versioning](docs/versioning.md) document.
 
+v0.2.0:
+  * Support for SBOM, using SPDX spec.
+  * Enhanced support for Occurrences, with the following additions (via v1beta1 API):
+    * [DSSE Envelope](https://github.com/secure-systems-lab/dsse),
+    * archival timestamp.
+  * Enhanced support for Vulnerability Notes and Occurrences, with the following additions (via v1beta1 API):
+    * per-source CVE reporting,
+    * CWEs tracking,
+    * CVSS v2 and v3 scores,
+    * improved package types support,
+    * vendor information,
+    * inclusive version ranges.
+  * Added support for ARM builds.
+  * Improved validation and permissions checks.
+  * Improved development support on Windows.
+  * Documentation and code cleanups and minor fixes.
+
 v0.1.6:
   * Added support for in-toto.
   * Added JWT support to attestation notes.
