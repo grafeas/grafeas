@@ -46,8 +46,7 @@ docker push us.gcr.io/grafeas/grafeas-server:vX.Y.Z
 
 ## Release the Grafeas Helm chart
 
-You'll need to create service account key for `grafeas-helm-manual-release` and
-download it in JSON format. See [instructions](https://cloud.google.com/docs/authentication/production) in the *Obtaining and providing service account credentials manually* section. Once you downloaded the key, set the `GOOGLE_APPLICATION_CREDENTIALS` environment variable:
+You'll need a service account key for `grafeas-helm-manual-release`. Ask the maintainers team for the key, or to execute the following commands on your behalf:
 
 ```shell
 export GOOGLE_APPLICATION_CREDENTIALS="/path/to/json-key.json"
@@ -57,7 +56,6 @@ Inside the fork, `go/src/github.com/grafeas/grafeas`, run the commands below:
 
 ```shell
 cd grafeas-charts
-helm init --client-only
 helm plugin install https://github.com/hayorov/helm-gcs
 helm repo add grafeas-charts-repository gs://grafeas-charts/repository
 helm package .
@@ -65,3 +63,7 @@ helm gcs push grafeas-charts-*.tgz grafeas-charts-repository
 ```
 
 [Grafeas Helm chart](https://storage.cloud.google.com/grafeas-charts/repository/grafeas-charts-0.1.0.tgz?organizationId=433637338589).
+
+## Confirm the new image and Helm chart have been uploaded
+
+Navigate to the `grafeas` GCP project and confirm the new image has been uploaded to the registry, and the new Helm chart is on the list of items in Cloud Storage.
