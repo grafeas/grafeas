@@ -95,7 +95,7 @@
         ]
       }
     },
-    "/v1beta1/{name=projects/*}": {
+    "/v1beta1/{name}": {
       "get": {
         "summary": "Gets the specified project.",
         "operationId": "Projects_GetProject",
@@ -119,7 +119,8 @@
             "description": "The name of the project in the form of `projects/{PROJECT_ID}`.",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "pattern": "projects/[^/]+"
           }
         ],
         "tags": [
@@ -149,7 +150,8 @@
             "description": "The name of the project in the form of `projects/{PROJECT_ID}`.",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "pattern": "projects/[^/]+"
           }
         ],
         "tags": [

@@ -333,7 +333,7 @@ func RegisterProjectsHandlerFromEndpoint(ctx context.Context, mux *runtime.Serve
 
 // RegisterProjectsHandler registers the http handlers for service Projects to "mux".
 // The handlers forward requests to the grpc endpoint over "conn".
-func RegisterProjectsHandler(ctx context.Context, mux *runtime.ServeMux, conn grpc.ClientConnInterface) error {
+func RegisterProjectsHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
 	return RegisterProjectsHandlerClient(ctx, mux, NewProjectsClient(conn))
 }
 

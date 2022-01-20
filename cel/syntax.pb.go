@@ -514,7 +514,7 @@ type SourceInfo struct {
 	//
 	// The line number of a given position is the index `i` where for a given
 	// `id` the `line_offsets[i] < id_positions[id] < line_offsets[i+1]`. The
-	// column may be derived from `id_positions[id] - line_offsets[i]`.
+	// column may be derivd from `id_positions[id] - line_offsets[i]`.
 	LineOffsets []int32 `protobuf:"varint,3,rep,packed,name=line_offsets,json=lineOffsets,proto3" json:"line_offsets,omitempty"`
 	// A map from the parse node id (e.g. `Expr.id`) to the character offset
 	// within source.
@@ -587,7 +587,7 @@ type SourcePosition struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// The source location name (e.g. file name).
+	// The soucre location name (e.g. file name).
 	Location string `protobuf:"bytes,1,opt,name=location,proto3" json:"location,omitempty"`
 	// The character offset.
 	Offset int32 `protobuf:"varint,2,opt,name=offset,proto3" json:"offset,omitempty"`

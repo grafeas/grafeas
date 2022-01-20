@@ -1442,7 +1442,7 @@ func RegisterGrafeasV1Beta1HandlerFromEndpoint(ctx context.Context, mux *runtime
 
 // RegisterGrafeasV1Beta1Handler registers the http handlers for service GrafeasV1Beta1 to "mux".
 // The handlers forward requests to the grpc endpoint over "conn".
-func RegisterGrafeasV1Beta1Handler(ctx context.Context, mux *runtime.ServeMux, conn grpc.ClientConnInterface) error {
+func RegisterGrafeasV1Beta1Handler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
 	return RegisterGrafeasV1Beta1HandlerClient(ctx, mux, NewGrafeasV1Beta1Client(conn))
 }
 
