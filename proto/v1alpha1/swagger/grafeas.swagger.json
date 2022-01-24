@@ -98,7 +98,7 @@
         ]
       }
     },
-    "/v1alpha1/{name=projects/*/notes/*}": {
+    "/v1alpha1/{name_1}": {
       "get": {
         "summary": "Returns the requested `Note`.",
         "operationId": "Grafeas_GetNote",
@@ -118,11 +118,12 @@
         },
         "parameters": [
           {
-            "name": "name",
+            "name": "name_1",
             "description": "The name of the note in the form of\n\"providers/{provider_id}/notes/{NOTE_ID}\"",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "pattern": "projects/[^/]+/notes/[^/]+"
           }
         ],
         "tags": [
@@ -148,11 +149,12 @@
         },
         "parameters": [
           {
-            "name": "name",
+            "name": "name_1",
             "description": "The name of the note in the form of\n\"providers/{provider_id}/notes/{NOTE_ID}\"",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "pattern": "projects/[^/]+/notes/[^/]+"
           }
         ],
         "tags": [
@@ -178,11 +180,12 @@
         },
         "parameters": [
           {
-            "name": "name",
+            "name": "name_1",
             "description": "The name of the note.\nShould be of the form \"projects/{provider_id}/notes/{note_id}\".",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "pattern": "projects/[^/]+/notes/[^/]+"
           },
           {
             "name": "body",
@@ -206,15 +209,15 @@
         ]
       }
     },
-    "/v1alpha1/{name=projects/*/notes/*}/occurrences": {
+    "/v1alpha1/{name_2}": {
       "get": {
-        "summary": "Lists `Occurrences` referencing the specified `Note`. Use this method to\nget all occurrences referencing your `Note` across all your customer\nprojects.",
-        "operationId": "Grafeas_ListNoteOccurrences",
+        "summary": "Gets the specified project.",
+        "operationId": "GrafeasProjects_GetProject",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/apiListNoteOccurrencesResponse"
+              "$ref": "#/definitions/apiProject"
             }
           },
           "default": {
@@ -226,33 +229,89 @@
         },
         "parameters": [
           {
-            "name": "name",
-            "description": "The name field will contain the note name for example:\n  \"provider/{provider_id}/notes/{note_id}\"",
+            "name": "name_2",
+            "description": "The name of the project in the form of `projects/{PROJECT_ID}`.",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "pattern": "projects/[^/]+"
+          }
+        ],
+        "tags": [
+          "GrafeasProjects"
+        ]
+      },
+      "delete": {
+        "summary": "Deletes the specified project.",
+        "operationId": "GrafeasProjects_DeleteProject",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "properties": {}
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "name_2",
+            "description": "The name of the project in the form of `projects/{PROJECT_ID}`.",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "pattern": "projects/[^/]+"
+          }
+        ],
+        "tags": [
+          "GrafeasProjects"
+        ]
+      },
+      "patch": {
+        "summary": "Updates an existing operation returns an error if operation\n does not exist. The only valid operations are to update mark the done bit\nchange the result.",
+        "operationId": "Grafeas_UpdateOperation",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/googlelongrunningOperation"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "name_2",
+            "description": "The name of the Operation.\nShould be of the form \"projects/{provider_id}/operations/{operation_id}\".",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "pattern": "projects/[^/]+/operations/[^/]+"
           },
           {
-            "name": "filter",
-            "description": "The filter expression.",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "pageSize",
-            "description": "Number of notes to return in the list.",
-            "in": "query",
-            "required": false,
-            "type": "integer",
-            "format": "int32"
-          },
-          {
-            "name": "pageToken",
-            "description": "Token to provide to skip to a particular spot in the list.",
-            "in": "query",
-            "required": false,
-            "type": "string"
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "operation": {
+                  "$ref": "#/definitions/googlelongrunningOperation",
+                  "description": "The operation to create."
+                }
+              },
+              "title": "Request for updating an existing operation"
+            }
           }
         ],
         "tags": [
@@ -260,7 +319,7 @@
         ]
       }
     },
-    "/v1alpha1/{name=projects/*/occurrences/*}": {
+    "/v1alpha1/{name}": {
       "get": {
         "summary": "Returns the requested `Occurrence`.",
         "operationId": "Grafeas_GetOccurrence",
@@ -284,7 +343,8 @@
             "description": "The name of the occurrence of the form\n\"projects/{project_id}/occurrences/{OCCURRENCE_ID}\"",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "pattern": "projects/[^/]+/occurrences/[^/]+"
           }
         ],
         "tags": [
@@ -314,7 +374,8 @@
             "description": "The name of the occurrence in the form of\n\"projects/{project_id}/occurrences/{OCCURRENCE_ID}\"",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "pattern": "projects/[^/]+/occurrences/[^/]+"
           }
         ],
         "tags": [
@@ -344,7 +405,8 @@
             "description": "The name of the occurrence.\nShould be of the form \"projects/{project_id}/occurrences/{OCCURRENCE_ID}\".",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "pattern": "projects/[^/]+/occurrences/[^/]+"
           },
           {
             "name": "body",
@@ -368,7 +430,7 @@
         ]
       }
     },
-    "/v1alpha1/{name=projects/*/occurrences/*}/notes": {
+    "/v1alpha1/{name}/notes": {
       "get": {
         "summary": "Gets the `Note` attached to the given `Occurrence`.",
         "operationId": "Grafeas_GetOccurrenceNote",
@@ -392,7 +454,8 @@
             "description": "The name of the occurrence in the form\n\"projects/{project_id}/occurrences/{OCCURRENCE_ID}\"",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "pattern": "projects/[^/]+/occurrences/[^/]+"
           }
         ],
         "tags": [
@@ -400,62 +463,15 @@
         ]
       }
     },
-    "/v1alpha1/{name=projects/*/operations/*}": {
-      "patch": {
-        "summary": "Updates an existing operation returns an error if operation\n does not exist. The only valid operations are to update mark the done bit\nchange the result.",
-        "operationId": "Grafeas_UpdateOperation",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/googlelongrunningOperation"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "name",
-            "description": "The name of the Operation.\nShould be of the form \"projects/{provider_id}/operations/{operation_id}\".",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "operation": {
-                  "$ref": "#/definitions/googlelongrunningOperation",
-                  "description": "The operation to create."
-                }
-              },
-              "title": "Request for updating an existing operation"
-            }
-          }
-        ],
-        "tags": [
-          "Grafeas"
-        ]
-      }
-    },
-    "/v1alpha1/{name=projects/*}": {
+    "/v1alpha1/{name}/occurrences": {
       "get": {
-        "summary": "Gets the specified project.",
-        "operationId": "GrafeasProjects_GetProject",
+        "summary": "Lists `Occurrences` referencing the specified `Note`. Use this method to\nget all occurrences referencing your `Note` across all your customer\nprojects.",
+        "operationId": "Grafeas_ListNoteOccurrences",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/apiProject"
+              "$ref": "#/definitions/apiListNoteOccurrencesResponse"
             }
           },
           "default": {
@@ -468,48 +484,41 @@
         "parameters": [
           {
             "name": "name",
-            "description": "The name of the project in the form of `projects/{PROJECT_ID}`.",
+            "description": "The name field will contain the note name for example:\n  \"provider/{provider_id}/notes/{note_id}\"",
             "in": "path",
             "required": true,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "GrafeasProjects"
-        ]
-      },
-      "delete": {
-        "summary": "Deletes the specified project.",
-        "operationId": "GrafeasProjects_DeleteProject",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "properties": {}
-            }
+            "type": "string",
+            "pattern": "projects/[^/]+/notes/[^/]+"
           },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
           {
-            "name": "name",
-            "description": "The name of the project in the form of `projects/{PROJECT_ID}`.",
-            "in": "path",
-            "required": true,
+            "name": "filter",
+            "description": "The filter expression.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pageSize",
+            "description": "Number of notes to return in the list.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pageToken",
+            "description": "Token to provide to skip to a particular spot in the list.",
+            "in": "query",
+            "required": false,
             "type": "string"
           }
         ],
         "tags": [
-          "GrafeasProjects"
+          "Grafeas"
         ]
       }
     },
-    "/v1alpha1/{parent=projects/*}/notes": {
+    "/v1alpha1/{parent}/notes": {
       "get": {
         "summary": "Lists all `Notes` for a given project.",
         "operationId": "Grafeas_ListNotes",
@@ -533,7 +542,8 @@
             "description": "This field contains the project ID for example: \"projects/{project_id}\".",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "pattern": "projects/[^/]+"
           },
           {
             "name": "filter",
@@ -585,7 +595,8 @@
             "description": "This field contains the project Id for example:\n\"project/{project_id}",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "pattern": "projects/[^/]+"
           },
           {
             "name": "body",
@@ -609,7 +620,7 @@
         ]
       }
     },
-    "/v1alpha1/{parent=projects/*}/occurrences": {
+    "/v1alpha1/{parent}/occurrences": {
       "get": {
         "summary": "Lists active `Occurrences` for a given project matching the filters.",
         "operationId": "Grafeas_ListOccurrences",
@@ -633,7 +644,8 @@
             "description": "This contains the project Id for example: projects/{project_id}.",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "pattern": "projects/[^/]+"
           },
           {
             "name": "filter",
@@ -685,7 +697,8 @@
             "description": "This field contains the project Id for example: \"projects/{project_id}\"",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "pattern": "projects/[^/]+"
           },
           {
             "name": "body",
@@ -702,7 +715,7 @@
         ]
       }
     },
-    "/v1alpha1/{parent=projects/*}/operations": {
+    "/v1alpha1/{parent}/operations": {
       "post": {
         "summary": "Creates a new `Operation`.",
         "operationId": "Grafeas_CreateOperation",
@@ -726,7 +739,8 @@
             "description": "The projectId that this operation should be created under.",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "pattern": "projects/[^/]+"
           },
           {
             "name": "body",

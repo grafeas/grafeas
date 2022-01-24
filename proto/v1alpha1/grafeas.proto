@@ -1340,26 +1340,6 @@ service Grafeas {
     };
   }
 
-  // Creates a new `Operation`.
-  rpc CreateOperation(CreateOperationRequest)
-  returns (google.longrunning.Operation) {
-    option (google.api.http) = {
-      post: "/v1alpha1/{parent=projects/*}/operations"
-      body: "*"
-    };
-  };
-
-  // Updates an existing operation returns an error if operation
-  //  does not exist. The only valid operations are to update mark the done bit
-  // change the result.
-  rpc UpdateOperation(UpdateOperationRequest)
-  returns (google.longrunning.Operation) {
-    option (google.api.http) = {
-      patch: "/v1alpha1/{name=projects/*/operations/*}"
-      body: "*"
-    };
-  };
-
   // Returns the requested `Note`.
   rpc GetNote(GetNoteRequest) returns (Note) {
     option (google.api.http) = {
@@ -1406,6 +1386,26 @@ service Grafeas {
       get: "/v1alpha1/{name=projects/*/notes/*}/occurrences"
     };
   }
+
+  // Creates a new `Operation`.
+  rpc CreateOperation(CreateOperationRequest)
+      returns (google.longrunning.Operation) {
+    option (google.api.http) = {
+      post: "/v1alpha1/{parent=projects/*}/operations"
+      body: "*"
+    };
+  };
+
+  // Updates an existing operation returns an error if operation
+  //  does not exist. The only valid operations are to update mark the done bit
+  // change the result.
+  rpc UpdateOperation(UpdateOperationRequest)
+      returns (google.longrunning.Operation) {
+    option (google.api.http) = {
+      patch: "/v1alpha1/{name=projects/*/operations/*}"
+      body: "*"
+    };
+  };
 }
 
 // [GrafeasProjects](grafeas.io) API.
