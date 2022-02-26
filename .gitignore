@@ -6,7 +6,6 @@ protoc/protoc.zip
 protoc/readme.txt
 .install.tools
 proto/**/.done
-proto/v1/*_go_proto/
 proto/v1alpha1/*.pb.go
 proto/v1alpha1/*.pb.gw.go
 cel/syntax.proto
