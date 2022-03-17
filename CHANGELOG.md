@@ -1,6 +1,9 @@
 This is the changelog of Grafeas server releases. For more information on
 versioning, see [versioning](docs/versioning.md) document.
 
+v0.2.1:
+  * Update grpc-gateway v2.7.3 to generate compatible openapi spec.
+
 v0.2.0:
   * Support for SBOM, using SPDX spec.
   * Enhanced support for Occurrences, with the following additions (via v1beta1 API):
