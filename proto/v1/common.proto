@@ -119,7 +119,7 @@ message EnvelopeSignature {
   string keyid = 2;
 }
 
-// Indicates the lcation at which a package was found.
+// Indicates the location at which a package was found.
 message FileLocation {
   // For jars that are contained inside .war files, this filepath
   // can indicate the path to war file combined with the path to jar file.
