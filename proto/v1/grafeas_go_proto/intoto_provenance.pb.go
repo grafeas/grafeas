@@ -21,7 +21,7 @@
 package grafeas_go_proto
 
 import (
-	any "github.com/golang/protobuf/ptypes/any"
+	any1 "github.com/golang/protobuf/ptypes/any"
 	timestamp "github.com/golang/protobuf/ptypes/timestamp"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
@@ -57,10 +57,10 @@ type Recipe struct {
 	// Collection of all external inputs that influenced the build on top of recipe.definedInMaterial and recipe.entryPoint.
 	// For example, if the recipe type were "make", then this might be the flags passed to make aside from the target, which is captured in recipe.entryPoint.
 	// Since the arguments field can greatly vary in structure, depending on the builder and recipe type, this is of form "Any".
-	Arguments []*any.Any `protobuf:"bytes,4,rep,name=arguments,proto3" json:"arguments,omitempty"`
+	Arguments []*any1.Any `protobuf:"bytes,4,rep,name=arguments,proto3" json:"arguments,omitempty"`
 	// Any other builder-controlled inputs necessary for correctly evaluating the recipe. Usually only needed for reproducing the build but not evaluated as part of policy.
 	// Since the environment field can greatly vary in structure, depending on the builder and recipe type, this is of form "Any".
-	Environment []*any.Any `protobuf:"bytes,5,rep,name=environment,proto3" json:"environment,omitempty"`
+	Environment []*any1.Any `protobuf:"bytes,5,rep,name=environment,proto3" json:"environment,omitempty"`
 }
 
 func (x *Recipe) Reset() {
@@ -116,14 +116,14 @@ func (x *Recipe) GetEntryPoint() string {
 	return ""
 }
 
-func (x *Recipe) GetArguments() []*any.Any {
+func (x *Recipe) GetArguments() []*any1.Any {
 	if x != nil {
 		return x.Arguments
 	}
 	return nil
 }
 
-func (x *Recipe) GetEnvironment() []*any.Any {
+func (x *Recipe) GetEnvironment() []*any1.Any {
 	if x != nil {
 		return x.Environment
 	}
@@ -500,7 +500,7 @@ var file_proto_v1_intoto_provenance_proto_goTypes = []interface{}{
 	(*Metadata)(nil),            // 2: grafeas.v1.Metadata
 	(*BuilderConfig)(nil),       // 3: grafeas.v1.BuilderConfig
 	(*InTotoProvenance)(nil),    // 4: grafeas.v1.InTotoProvenance
-	(*any.Any)(nil),             // 5: google.protobuf.Any
+	(*any1.Any)(nil),            // 5: google.protobuf.Any
 	(*timestamp.Timestamp)(nil), // 6: google.protobuf.Timestamp
 }
 var file_proto_v1_intoto_provenance_proto_depIdxs = []int32{

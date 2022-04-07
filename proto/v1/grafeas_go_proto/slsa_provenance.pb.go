@@ -21,7 +21,7 @@
 package grafeas_go_proto
 
 import (
-	any "github.com/golang/protobuf/ptypes/any"
+	any1 "github.com/golang/protobuf/ptypes/any"
 	timestamp "github.com/golang/protobuf/ptypes/timestamp"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
@@ -134,10 +134,10 @@ type SlsaProvenance_SlsaRecipe struct {
 	// Collection of all external inputs that influenced the build on top of recipe.definedInMaterial and recipe.entryPoint.
 	// For example, if the recipe type were "make", then this might be the flags passed to make aside from the target, which is captured in recipe.entryPoint.
 	// Depending on the recipe Type, the structure may be different.
-	Arguments *any.Any `protobuf:"bytes,4,opt,name=arguments,proto3" json:"arguments,omitempty"`
+	Arguments *any1.Any `protobuf:"bytes,4,opt,name=arguments,proto3" json:"arguments,omitempty"`
 	// Any other builder-controlled inputs necessary for correctly evaluating the recipe. Usually only needed for reproducing the build but not evaluated as part of policy.
 	// Depending on the recipe Type, the structure may be different.
-	Environment *any.Any `protobuf:"bytes,5,opt,name=environment,proto3" json:"environment,omitempty"`
+	Environment *any1.Any `protobuf:"bytes,5,opt,name=environment,proto3" json:"environment,omitempty"`
 }
 
 func (x *SlsaProvenance_SlsaRecipe) Reset() {
@@ -193,14 +193,14 @@ func (x *SlsaProvenance_SlsaRecipe) GetEntryPoint() string {
 	return ""
 }
 
-func (x *SlsaProvenance_SlsaRecipe) GetArguments() *any.Any {
+func (x *SlsaProvenance_SlsaRecipe) GetArguments() *any1.Any {
 	if x != nil {
 		return x.Arguments
 	}
 	return nil
 }
 
-func (x *SlsaProvenance_SlsaRecipe) GetEnvironment() *any.Any {
+func (x *SlsaProvenance_SlsaRecipe) GetEnvironment() *any1.Any {
 	if x != nil {
 		return x.Environment
 	}
@@ -572,7 +572,7 @@ var file_proto_v1_slsa_provenance_proto_goTypes = []interface{}{
 	(*SlsaProvenance_SlsaBuilder)(nil),      // 4: grafeas.v1.SlsaProvenance.SlsaBuilder
 	(*SlsaProvenance_Material)(nil),         // 5: grafeas.v1.SlsaProvenance.Material
 	nil,                                     // 6: grafeas.v1.SlsaProvenance.Material.DigestEntry
-	(*any.Any)(nil),                         // 7: google.protobuf.Any
+	(*any1.Any)(nil),                        // 7: google.protobuf.Any
 	(*timestamp.Timestamp)(nil),             // 8: google.protobuf.Timestamp
 }
 var file_proto_v1_slsa_provenance_proto_depIdxs = []int32{
