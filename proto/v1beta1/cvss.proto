@@ -20,6 +20,7 @@ option go_package = "github.com/grafeas/grafeas/proto/v1beta1/cvss_go_proto";
 option java_multiple_files = true;
 option java_package = "io.grafeas.v1beta1.vulnerability";
 option objc_class_prefix = "GRA";
+option java_outer_classname = "CVSSProto";
 
 // Common Vulnerability Scoring System.
 // For details, see https://www.first.org/cvss/specification-document
