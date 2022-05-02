@@ -1679,7 +1679,10 @@
         "name": {
           "type": "string",
           "description": "The name of the installed package.",
-          "readOnly": true
+          "readOnly": true,
+          "required": [
+            "name"
+          ]
         },
         "location": {
           "type": "array",
@@ -1711,7 +1714,10 @@
           "description": "The version of the package."
         }
       },
-      "description": "This represents how a particular software package may be installed on a\nsystem."
+      "description": "This represents how a particular software package may be installed on a\nsystem.",
+      "required": [
+        "name"
+      ]
     },
     "packagePackage": {
       "type": "object",

@@ -129,7 +129,10 @@ message Details {
 // system.
 message Installation {
   // The name of the installed package.
-  string name = 1 [(google.api.field_behavior) = OUTPUT_ONLY];
+  string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.field_behavior) = OUTPUT_ONLY
+  ];
 
   // All of the places within the filesystem versions of this package
   // have been found.
