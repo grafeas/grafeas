@@ -2588,7 +2588,10 @@
         "name": {
           "type": "string",
           "description": "The name of the installed package.",
-          "readOnly": true
+          "readOnly": true,
+          "required": [
+            "name"
+          ]
         },
         "location": {
           "type": "array",
@@ -2620,7 +2623,10 @@
           "description": "The version of the package."
         }
       },
-      "description": "Details on how a particular software package was installed on a system."
+      "description": "Details on how a particular software package was installed on a system.",
+      "required": [
+        "name"
+      ]
     },
     "v1ProjectRepoId": {
       "type": "object",
