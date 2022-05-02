@@ -2614,6 +2614,10 @@
         "license": {
           "$ref": "#/definitions/v1License",
           "description": "Licenses that have been declared by the authors of the package."
+        },
+        "version": {
+          "$ref": "#/definitions/v1Version",
+          "description": "The version of the package."
         }
       },
       "description": "Details on how a particular software package was installed on a system."

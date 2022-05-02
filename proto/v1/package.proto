@@ -142,6 +142,9 @@ message PackageOccurrence {
 
   // Licenses that have been declared by the authors of the package.
   License license = 6;
+
+  // The version of the package.
+  Version version = 7 [(google.api.field_behavior) = OUTPUT_ONLY];
 }
 
 // Version contains structured information about the version of a package.

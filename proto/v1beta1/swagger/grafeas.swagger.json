@@ -1496,7 +1496,10 @@
       "properties": {
         "cpeUri": {
           "type": "string",
-          "description": "Required. The cpe_uri in [CPE format](https://cpe.mitre.org/specification/)\ndenoting the package manager version distributing a package."
+          "description": "The cpe_uri in [CPE format](https://cpe.mitre.org/specification/)\ndenoting the package manager version distributing a package.",
+          "required": [
+            "cpe_uri"
+          ]
         },
         "architecture": {
           "$ref": "#/definitions/packageArchitecture",
@@ -1519,14 +1522,17 @@
           "description": "The distribution channel-specific description of this package."
         }
       },
-      "description": "This represents a particular channel of distribution for a given package.\nE.g., Debian's jessie-backports dpkg mirror."
+      "description": "This represents a particular channel of distribution for a given package.\nE.g., Debian's jessie-backports dpkg mirror.",
+      "required": [
+        "cpeUri"
+      ]
     },
     "packageInstallation": {
       "type": "object",
       "properties": {
         "name": {
           "type": "string",
-          "description": "Output only. The name of the installed package.",
+          "description": "The name of the installed package.",
           "readOnly": true
         },
         "location": {
@@ -1534,7 +1540,29 @@
           "items": {
             "$ref": "#/definitions/v1beta1packageLocation"
           },
-          "description": "Required. All of the places within the filesystem versions of this package\nhave been found."
+          "description": "All of the places within the filesystem versions of this package\nhave been found."
+        },
+        "packageType": {
+          "type": "string",
+          "description": "The type of package; whether native or non native (e.g., ruby gems,\nnode.js packages, etc.).",
+          "readOnly": true
+        },
+        "cpeUri": {
+          "type": "string",
+          "description": "The cpe_uri in [CPE format](https://cpe.mitre.org/specification/)\ndenoting the package manager version distributing a package.\nThe cpe_uri will be blank for language packages.",
+          "readOnly": true
+        },
+        "architecture": {
+          "$ref": "#/definitions/packageArchitecture",
+          "description": "The CPU architecture for which packages in this distribution channel were\nbuilt. Architecture will be blank for language packages."
+        },
+        "license": {
+          "$ref": "#/definitions/v1beta1License",
+          "description": "Licenses that have been declared by the authors of the package."
+        },
+        "version": {
+          "$ref": "#/definitions/packageVersion",
+          "description": "The version of the package."
         }
       },
       "description": "This represents how a particular software package may be installed on a\nsystem."
@@ -1544,7 +1572,10 @@
       "properties": {
         "name": {
           "type": "string",
-          "description": "Required. Immutable. The name of the package."
+          "description": "The name of the package.",
+          "required": [
+            "name"
+          ]
         },
         "distribution": {
           "type": "array",
@@ -1552,9 +1583,51 @@
             "$ref": "#/definitions/packageDistribution"
           },
           "description": "The various channels by which a package is distributed."
+        },
+        "packageType": {
+          "type": "string",
+          "description": "The type of package; whether native or non native (e.g., ruby gems,\nnode.js packages, etc.)."
+        },
+        "cpeUri": {
+          "type": "string",
+          "description": "The cpe_uri in [CPE format](https://cpe.mitre.org/specification/)\ndenoting the package manager version distributing a package.\nThe cpe_uri will be blank for language packages."
+        },
+        "architecture": {
+          "$ref": "#/definitions/packageArchitecture",
+          "description": "The CPU architecture for which packages in this distribution channel were\nbuilt. Architecture will be blank for language packages."
+        },
+        "version": {
+          "$ref": "#/definitions/packageVersion",
+          "description": "The version of the package."
+        },
+        "maintainer": {
+          "type": "string",
+          "description": "A freeform text denoting the maintainer of this package."
+        },
+        "url": {
+          "type": "string",
+          "description": "The homepage for this package."
+        },
+        "description": {
+          "type": "string",
+          "description": "The description of this package."
+        },
+        "license": {
+          "$ref": "#/definitions/v1beta1License",
+          "description": "Licenses that have been declared by the authors of the package."
+        },
+        "digest": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1beta1Digest"
+          },
+          "description": "Hash value, typically a file digest, that allows unique\nidentification a specific package."
         }
       },
-      "description": "This represents a particular package that is distributed over various\nchannels. E.g., glibc (aka libc6) is distributed by many, at various\nversions."
+      "description": "Package represents a particular package version.",
+      "required": [
+        "name"
+      ]
     },
     "packageVersion": {
       "type": "object",
@@ -1995,7 +2068,7 @@
           "title": "Uniquely identify any element in an SPDX document which may be referenced\nby other elements"
         },
         "licenseConcluded": {
-          "$ref": "#/definitions/spdxLicense",
+          "$ref": "#/definitions/v1beta1License",
           "title": "This field contains the license the SPDX file creator has concluded as\ngoverning the file or alternative values if the governing license cannot be\ndetermined"
         },
         "filesLicenseInfo": {
@@ -2033,20 +2106,6 @@
         }
       },
       "title": "FileOccurrence represents an SPDX File Information\nsection: https://spdx.github.io/spdx-spec/4-file-information/"
-    },
-    "spdxLicense": {
-      "type": "object",
-      "properties": {
-        "expression": {
-          "type": "string",
-          "title": "Expression: https://spdx.github.io/spdx-spec/appendix-IV-SPDX-license-expressions/"
-        },
-        "comments": {
-          "type": "string",
-          "title": "Comments"
-        }
-      },
-      "title": "License information: https://spdx.github.io/spdx-spec/3-package-information/#315-declared-license"
     },
     "spdxPackageInfoNote": {
       "type": "object",
@@ -2095,7 +2154,7 @@
           "title": "Contain the license the SPDX file creator has concluded as governing the\nThis field is to contain a list of all licenses found in the package. The\nrelationship between licenses (i.e., conjunctive, disjunctive) is not\nspecified in this field – it is simply a listing of all licenses found"
         },
         "licenseDeclared": {
-          "$ref": "#/definitions/spdxLicense",
+          "$ref": "#/definitions/v1beta1License",
           "title": "List the licenses that have been declared by the authors of the package"
         },
         "copyright": {
@@ -2144,7 +2203,7 @@
           "title": "Provide a place for the SPDX file creator to record any relevant background\ninformation or additional comments about the origin of the package"
         },
         "licenseConcluded": {
-          "$ref": "#/definitions/spdxLicense",
+          "$ref": "#/definitions/v1beta1License",
           "title": "package or alternative values, if the governing license cannot be\ndetermined"
         },
         "comment": {
@@ -2289,6 +2348,20 @@
       },
       "description": "Response for creating occurrences in batch."
     },
+    "v1beta1Digest": {
+      "type": "object",
+      "properties": {
+        "algo": {
+          "type": "string",
+          "description": "`SHA1`, `SHA512` etc."
+        },
+        "digestValue": {
+          "type": "string",
+          "description": "Value of the digest encoded.\nFor example: SHA512 - base64 encoding, SHA1 - hex encoding."
+        }
+      },
+      "description": "Digest information."
+    },
     "v1beta1Envelope": {
       "type": "object",
       "properties": {
@@ -2319,6 +2392,20 @@
           "type": "string"
         }
       }
+    },
+    "v1beta1License": {
+      "type": "object",
+      "properties": {
+        "expression": {
+          "type": "string",
+          "description": "Often a single license can be used to represent the licensing terms.\nSometimes it is necessary to include a choice of one or more licenses\nor some combination of license identifiers.\nExamples: \"LGPL-2.1-only OR MIT\", \"LGPL-2.1-only AND MIT\",\n\"GPL-2.0-or-later WITH Bison-exception-2.2\"."
+        },
+        "comments": {
+          "type": "string",
+          "title": "Comments"
+        }
+      },
+      "description": "License information."
     },
     "v1beta1ListNoteOccurrencesResponse": {
       "type": "object",
@@ -2727,11 +2814,11 @@
       "properties": {
         "cpeUri": {
           "type": "string",
-          "description": "Required. The CPE URI in [CPE format](https://cpe.mitre.org/specification/)\ndenoting the package manager version distributing a package."
+          "description": "Deprecated.\nThe CPE URI in [CPE format](https://cpe.mitre.org/specification/)\ndenoting the package manager version distributing a package."
         },
         "version": {
           "$ref": "#/definitions/packageVersion",
-          "description": "The version installed at this location."
+          "description": "Deprecated.\nThe version installed at this location."
         },
         "path": {
           "type": "string",
