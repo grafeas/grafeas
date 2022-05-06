@@ -861,7 +861,8 @@
       "enum": [
         "ATTACK_COMPLEXITY_UNSPECIFIED",
         "ATTACK_COMPLEXITY_LOW",
-        "ATTACK_COMPLEXITY_HIGH"
+        "ATTACK_COMPLEXITY_HIGH",
+        "ATTACK_COMPLEXITY_MEDIUM"
       ],
       "default": "ATTACK_COMPLEXITY_UNSPECIFIED"
     },
@@ -892,7 +893,9 @@
         "IMPACT_UNSPECIFIED",
         "IMPACT_HIGH",
         "IMPACT_LOW",
-        "IMPACT_NONE"
+        "IMPACT_NONE",
+        "IMPACT_PARTIAL",
+        "IMPACT_COMPLETE"
       ],
       "default": "IMPACT_UNSPECIFIED"
     },
@@ -3122,7 +3125,7 @@
           "$ref": "#/definitions/CVSSImpact"
         }
       },
-      "title": "Common Vulnerability Scoring System.\nFor details, see https://www.first.org/cvss/specification-document"
+      "title": "Common Vulnerability Scoring System.\nThis message is compatible with CVSS v2 and v3.\nFor CVSS v2 details, see https://www.first.org/cvss/v2/guide\nCVSS v2 calculator: https://nvd.nist.gov/vuln-metrics/cvss/v2-calculator\nFor CVSS v3 details, see https://www.first.org/cvss/specification-document\nCVSS v3 calculator: https://nvd.nist.gov/vuln-metrics/cvss/v3-calculator"
     },
     "vulnerabilityPackageIssue": {
       "type": "object",

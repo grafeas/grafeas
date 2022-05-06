@@ -23,7 +23,11 @@ option objc_class_prefix = "GRA";
 option java_outer_classname = "CVSSProto";
 
 // Common Vulnerability Scoring System.
-// For details, see https://www.first.org/cvss/specification-document
+// This message is compatible with CVSS v2 and v3.
+// For CVSS v2 details, see https://www.first.org/cvss/v2/guide
+// CVSS v2 calculator: https://nvd.nist.gov/vuln-metrics/cvss/v2-calculator
+// For CVSS v3 details, see https://www.first.org/cvss/specification-document
+// CVSS v3 calculator: https://nvd.nist.gov/vuln-metrics/cvss/v3-calculator
 message CVSS {
   // The base score is a function of the base metric scores.
   float base_score = 1;
@@ -35,60 +39,63 @@ message CVSS {
   // Base Metrics
   // Represents the intrinsic characteristics of a vulnerability that are
   // constant over time and across user environments.
-  AttackVector attack_vector = 4;
-  AttackComplexity attack_complexity = 5;
-  Authentication authentication = 6;
-  PrivilegesRequired privileges_required = 7;
-  UserInteraction user_interaction = 8;
-  Scope scope = 9;
-  Impact confidentiality_impact = 10;
-  Impact integrity_impact = 11;
-  Impact availability_impact = 12;
+  AttackVector attack_vector = 4; // Defined in CVSS v3, CVSS v2
+  AttackComplexity attack_complexity = 5; // Defined in CVSS v3, CVSS v2
+  Authentication authentication = 6; // Defined in CVSS v2
+  PrivilegesRequired privileges_required = 7; // Defined in CVSS v3
+  UserInteraction user_interaction = 8; // Defined in CVSS v3
+  Scope scope = 9; // Defined in CVSS v3
+  Impact confidentiality_impact = 10; // Defined in CVSS v3, CVSS v2
+  Impact integrity_impact = 11; // Defined in CVSS v3, CVSS v2
+  Impact availability_impact = 12; // Defined in CVSS v3, CVSS v2
 
   enum AttackVector {
-    ATTACK_VECTOR_UNSPECIFIED = 0;
-    ATTACK_VECTOR_NETWORK = 1;
-    ATTACK_VECTOR_ADJACENT = 2;
-    ATTACK_VECTOR_LOCAL = 3;
-    ATTACK_VECTOR_PHYSICAL = 4;
+    ATTACK_VECTOR_UNSPECIFIED = 0; // Defined in CVSS v3, CVSS v2
+    ATTACK_VECTOR_NETWORK = 1; // Defined in CVSS v3, CVSS v2
+    ATTACK_VECTOR_ADJACENT = 2; // Defined in CVSS v3, CVSS v2
+    ATTACK_VECTOR_LOCAL = 3; // Defined in CVSS v3, CVSS v2
+    ATTACK_VECTOR_PHYSICAL = 4; // Defined in CVSS v3
   }
 
   enum AttackComplexity {
-    ATTACK_COMPLEXITY_UNSPECIFIED = 0;
-    ATTACK_COMPLEXITY_LOW = 1;
-    ATTACK_COMPLEXITY_HIGH = 2;
+    ATTACK_COMPLEXITY_UNSPECIFIED = 0; // Defined in CVSS v3, CVSS v2
+    ATTACK_COMPLEXITY_LOW = 1; // Defined in CVSS v3, CVSS v2
+    ATTACK_COMPLEXITY_HIGH = 2; // Defined in CVSS v3, CVSS v2
+    ATTACK_COMPLEXITY_MEDIUM = 3; // Defined in CVSS v2
   }
 
   enum Authentication {
-    AUTHENTICATION_UNSPECIFIED = 0;
-    AUTHENTICATION_MULTIPLE = 1;
-    AUTHENTICATION_SINGLE = 2;
-    AUTHENTICATION_NONE = 3;
+    AUTHENTICATION_UNSPECIFIED = 0; // Defined in CVSS v2
+    AUTHENTICATION_MULTIPLE = 1; // Defined in CVSS v2
+    AUTHENTICATION_SINGLE = 2; // Defined in CVSS v2
+    AUTHENTICATION_NONE = 3; // Defined in CVSS v2
   }
 
   enum PrivilegesRequired {
-    PRIVILEGES_REQUIRED_UNSPECIFIED = 0;
-    PRIVILEGES_REQUIRED_NONE = 1;
-    PRIVILEGES_REQUIRED_LOW = 2;
-    PRIVILEGES_REQUIRED_HIGH = 3;
+    PRIVILEGES_REQUIRED_UNSPECIFIED = 0; // Defined in CVSS v3
+    PRIVILEGES_REQUIRED_NONE = 1; // Defined in CVSS v3
+    PRIVILEGES_REQUIRED_LOW = 2; // Defined in CVSS v3
+    PRIVILEGES_REQUIRED_HIGH = 3; // Defined in CVSS v3
   }
 
   enum UserInteraction {
-    USER_INTERACTION_UNSPECIFIED = 0;
-    USER_INTERACTION_NONE = 1;
-    USER_INTERACTION_REQUIRED = 2;
+    USER_INTERACTION_UNSPECIFIED = 0; // Defined in CVSS v3
+    USER_INTERACTION_NONE = 1; // Defined in CVSS v3
+    USER_INTERACTION_REQUIRED = 2; // Defined in CVSS v3
   }
 
   enum Scope {
-    SCOPE_UNSPECIFIED = 0;
-    SCOPE_UNCHANGED = 1;
-    SCOPE_CHANGED = 2;
+    SCOPE_UNSPECIFIED = 0; // Defined in CVSS v3
+    SCOPE_UNCHANGED = 1; // Defined in CVSS v3
+    SCOPE_CHANGED = 2; // Defined in CVSS v3
   }
 
   enum Impact {
-    IMPACT_UNSPECIFIED = 0;
-    IMPACT_HIGH = 1;
-    IMPACT_LOW = 2;
-    IMPACT_NONE = 3;
+    IMPACT_UNSPECIFIED = 0; // Defined in CVSS v3, CVSS v2
+    IMPACT_HIGH = 1; // Defined in CVSS v3
+    IMPACT_LOW = 2; // Defined in CVSS v3
+    IMPACT_NONE = 3; // Defined in CVSS v3, CVSS v2
+    IMPACT_PARTIAL = 4; // Defined in CVSS v2
+    IMPACT_COMPLETE = 5; // Defined in CVSS v2
   }
 }
