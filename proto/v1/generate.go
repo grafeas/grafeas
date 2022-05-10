@@ -24,6 +24,7 @@
 //go:generate protoc ../../proto/v1/dsse_attestation.proto
 //go:generate protoc ../../proto/v1/intoto_provenance.proto
 //go:generate protoc ../../proto/v1/slsa_provenance.proto
+//go:generate protoc ../../proto/v1/slsa_provenance_0_2.proto
 //go:generate protoc ../../proto/v1/intoto_statement.proto
 //go:generate protoc ../../proto/v1/grafeas.proto
 //go:generate protoc ../../proto/v1/package.proto
