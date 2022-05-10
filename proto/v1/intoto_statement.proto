@@ -38,7 +38,7 @@ message InTotoStatement {
   oneof predicate {
     InTotoProvenance provenance = 4;
     SlsaProvenance slsa_provenance = 5;
-    SlsaProvenance slsa_provenance_0_2 = 6;
+    SlsaProvenance_0_2 slsa_provenance_0_2 = 6;
   }
 }
 message Subject {
