@@ -23,9 +23,9 @@ option go_package = "github.com/grafeas/grafeas/proto/v1/grafeas_go_proto";
 option java_multiple_files = true;
 option java_package = "io.grafeas.v1";
 option objc_class_prefix = "GRA";
-option java_outer_classname = "SlsaProvenance_0_2Proto";
+option java_outer_classname = "SlsaProvenanceZeroTwoProto";
 
-message SlsaProvenance_0_2 {
+message SlsaProvenanceZeroTwo {
   // See full explanation of fields at slsa.dev/provenance/v0.2.
 
   // Identifies the entity that executed the recipe, which is trusted to have

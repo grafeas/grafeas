@@ -914,7 +914,7 @@
       },
       "description": "Steps taken to build the artifact.\nFor a TaskRun, typically each container corresponds to one step in the recipe."
     },
-    "SlsaProvenance_0_2SlsaConfigSource": {
+    "SlsaProvenanceZeroTwoSlsaConfigSource": {
       "type": "object",
       "properties": {
         "uri": {
@@ -932,11 +932,11 @@
       },
       "description": "Describes where the config file that kicked off the build came from.\nThis is effectively a pointer to the source where buildConfig came from."
     },
-    "SlsaProvenance_0_2SlsaInvocation": {
+    "SlsaProvenanceZeroTwoSlsaInvocation": {
       "type": "object",
       "properties": {
         "configSource": {
-          "$ref": "#/definitions/SlsaProvenance_0_2SlsaConfigSource"
+          "$ref": "#/definitions/SlsaProvenanceZeroTwoSlsaConfigSource"
         },
         "parameters": {
           "type": "object"
@@ -947,7 +947,7 @@
       },
       "description": "Identifies the event that kicked off the build."
     },
-    "SlsaProvenance_0_2SlsaMaterial": {
+    "SlsaProvenanceZeroTwoSlsaMaterial": {
       "type": "object",
       "properties": {
         "uri": {
@@ -2188,8 +2188,8 @@
         "slsaProvenance": {
           "$ref": "#/definitions/v1SlsaProvenance"
         },
-        "slsaProvenance02": {
-          "$ref": "#/definitions/v1SlsaProvenance_0_2"
+        "slsaProvenanceZeroTwo": {
+          "$ref": "#/definitions/v1SlsaProvenanceZeroTwo"
         }
       },
       "description": "Spec defined at https://github.com/in-toto/attestation/tree/main/spec#statement\nThe serialized InTotoStatement will be stored as Envelope.payload.\nEnvelope.payloadType is always \"application/vnd.in-toto+json\"."
@@ -2812,33 +2812,33 @@
       },
       "description": "Other properties of the build."
     },
-    "v1SlsaProvenance_0_2": {
+    "v1SlsaProvenanceZeroTwo": {
       "type": "object",
       "properties": {
         "builder": {
-          "$ref": "#/definitions/v1SlsaProvenance_0_2SlsaBuilder"
+          "$ref": "#/definitions/v1SlsaProvenanceZeroTwoSlsaBuilder"
         },
         "buildType": {
           "type": "string"
         },
         "invocation": {
-          "$ref": "#/definitions/SlsaProvenance_0_2SlsaInvocation"
+          "$ref": "#/definitions/SlsaProvenanceZeroTwoSlsaInvocation"
         },
         "buildConfig": {
           "type": "object"
         },
         "metadata": {
-          "$ref": "#/definitions/v1SlsaProvenance_0_2SlsaMetadata"
+          "$ref": "#/definitions/v1SlsaProvenanceZeroTwoSlsaMetadata"
         },
         "materials": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/SlsaProvenance_0_2SlsaMaterial"
+            "$ref": "#/definitions/SlsaProvenanceZeroTwoSlsaMaterial"
           }
         }
       }
     },
-    "v1SlsaProvenance_0_2SlsaBuilder": {
+    "v1SlsaProvenanceZeroTwoSlsaBuilder": {
       "type": "object",
       "properties": {
         "id": {
@@ -2847,7 +2847,7 @@
       },
       "description": "Identifies the entity that executed the recipe, which is trusted to have\ncorrectly performed the operation and populated this provenance."
     },
-    "v1SlsaProvenance_0_2SlsaCompleteness": {
+    "v1SlsaProvenanceZeroTwoSlsaCompleteness": {
       "type": "object",
       "properties": {
         "parameters": {
@@ -2862,7 +2862,7 @@
       },
       "description": "Indicates that the builder claims certain fields in this message to be\ncomplete."
     },
-    "v1SlsaProvenance_0_2SlsaMetadata": {
+    "v1SlsaProvenanceZeroTwoSlsaMetadata": {
       "type": "object",
       "properties": {
         "buildInvocationId": {
@@ -2877,7 +2877,7 @@
           "format": "date-time"
         },
         "completeness": {
-          "$ref": "#/definitions/v1SlsaProvenance_0_2SlsaCompleteness"
+          "$ref": "#/definitions/v1SlsaProvenanceZeroTwoSlsaCompleteness"
         },
         "reproducible": {
           "type": "boolean"
