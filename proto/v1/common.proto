@@ -144,9 +144,8 @@ message Digest {
   // `SHA1`, `SHA512` etc.
   string algo = 1;
 
-  // Value of the digest encoded.
-  // For example: SHA512 - base64 encoding, SHA1 - hex encoding.
-  string digest_value = 2;
+  // Value of the digest.
+  bytes digest_value = 2;
 }
 
 
