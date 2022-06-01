@@ -2364,9 +2364,10 @@
           "type": "string",
           "description": "`SHA1`, `SHA512` etc."
         },
-        "digestValue": {
+        "digestBytes": {
           "type": "string",
-          "description": "Value of the digest encoded.\nFor example: SHA512 - base64 encoding, SHA1 - hex encoding."
+          "format": "byte",
+          "description": "Value of the digest."
         }
       },
       "description": "Digest information."

@@ -145,7 +145,7 @@ message Digest {
   string algo = 1;
 
   // Value of the digest.
-  bytes digest_value = 2;
+  bytes digest_bytes = 2;
 }
 
 
