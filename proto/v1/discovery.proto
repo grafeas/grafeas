@@ -52,14 +52,17 @@ message DiscoveryOccurrence {
   // Analysis status for a resource. Currently for initial analysis only (not
   // updated in continuous analysis).
   enum AnalysisStatus {
+    option allow_alias = true;
     // Unknown.
     ANALYSIS_STATUS_UNSPECIFIED = 0;
     // Resource is known but no action has been taken yet.
     PENDING = 1;
     // Resource is being analyzed.
     SCANNING = 2;
-    // Analysis has completed. 
-    FINISHED_SUCCESS = 3 [alias = "COMPLETE"];
+    // Analysis has finished successfully. 
+    FINISHED_SUCCESS = 3;
+    // Analysis has completed
+    COMPLETE = 3;
     // Analysis has finished unsuccessfully, the analysis itself is in a bad
     // state.
     FINISHED_FAILED = 4;
