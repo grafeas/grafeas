@@ -89,7 +89,7 @@ message Discovered {
     repeated string analysis_type = 1;
   }
 
-  AnalysisComplete analysis_completed = 5;
+  AnalysisCompleted analysis_completed = 5;
 
   // Indicates any errors encountered during analysis of a resource. There
   // could be 0 or more of these errors.
