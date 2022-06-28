@@ -92,7 +92,7 @@ message DiscoveryOccurrence {
 
   // The CPE of the resource being scanned.
   string  cpe = 4;
-  
+
   // The last time this resource was scanned.
   google.protobuf.Timestamp last_scan_time = 5;
 }
