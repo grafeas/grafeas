@@ -92,6 +92,7 @@ type DSSEAttestationOccurrence struct {
 	// If doing something security critical, make sure to verify the signatures in this metadata.
 	Envelope *Envelope `protobuf:"bytes,1,opt,name=envelope,proto3" json:"envelope,omitempty"`
 	// Types that are assignable to DecodedPayload:
+	//
 	//	*DSSEAttestationOccurrence_Statement
 	DecodedPayload isDSSEAttestationOccurrence_DecodedPayload `protobuf_oneof:"decoded_payload"`
 }
