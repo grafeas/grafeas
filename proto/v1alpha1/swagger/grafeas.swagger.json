@@ -4,6 +4,14 @@
     "title": "An API to insert and retrieve metadata on cloud artifacts.",
     "version": "v1alpha1"
   },
+  "tags": [
+    {
+      "name": "Grafeas"
+    },
+    {
+      "name": "GrafeasProjects"
+    }
+  ],
   "consumes": [
     "application/json"
   ],
@@ -90,7 +98,7 @@
         ]
       }
     },
-    "/v1alpha1/{name=projects/*/notes/*}": {
+    "/v1alpha1/{name_1}": {
       "get": {
         "summary": "Returns the requested `Note`.",
         "operationId": "Grafeas_GetNote",
@@ -110,11 +118,12 @@
         },
         "parameters": [
           {
-            "name": "name",
+            "name": "name_1",
             "description": "The name of the note in the form of\n\"providers/{provider_id}/notes/{NOTE_ID}\"",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "pattern": "projects/[^/]+/notes/[^/]+"
           }
         ],
         "tags": [
@@ -140,11 +149,12 @@
         },
         "parameters": [
           {
-            "name": "name",
+            "name": "name_1",
             "description": "The name of the note in the form of\n\"providers/{provider_id}/notes/{NOTE_ID}\"",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "pattern": "projects/[^/]+/notes/[^/]+"
           }
         ],
         "tags": [
@@ -170,11 +180,12 @@
         },
         "parameters": [
           {
-            "name": "name",
+            "name": "name_1",
             "description": "The name of the note.\nShould be of the form \"projects/{provider_id}/notes/{note_id}\".",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "pattern": "projects/[^/]+/notes/[^/]+"
           },
           {
             "name": "body",
@@ -190,11 +201,7 @@
             "description": "The fields to update.",
             "in": "query",
             "required": false,
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "collectionFormat": "multi"
+            "type": "string"
           }
         ],
         "tags": [
@@ -202,15 +209,15 @@
         ]
       }
     },
-    "/v1alpha1/{name=projects/*/notes/*}/occurrences": {
+    "/v1alpha1/{name_2}": {
       "get": {
-        "summary": "Lists `Occurrences` referencing the specified `Note`. Use this method to\nget all occurrences referencing your `Note` across all your customer\nprojects.",
-        "operationId": "Grafeas_ListNoteOccurrences",
+        "summary": "Gets the specified project.",
+        "operationId": "GrafeasProjects_GetProject",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/apiListNoteOccurrencesResponse"
+              "$ref": "#/definitions/apiProject"
             }
           },
           "default": {
@@ -222,33 +229,89 @@
         },
         "parameters": [
           {
-            "name": "name",
-            "description": "The name field will contain the note name for example:\n  \"provider/{provider_id}/notes/{note_id}\"",
+            "name": "name_2",
+            "description": "The name of the project in the form of `projects/{PROJECT_ID}`.",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "pattern": "projects/[^/]+"
+          }
+        ],
+        "tags": [
+          "GrafeasProjects"
+        ]
+      },
+      "delete": {
+        "summary": "Deletes the specified project.",
+        "operationId": "GrafeasProjects_DeleteProject",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "properties": {}
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "name_2",
+            "description": "The name of the project in the form of `projects/{PROJECT_ID}`.",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "pattern": "projects/[^/]+"
+          }
+        ],
+        "tags": [
+          "GrafeasProjects"
+        ]
+      },
+      "patch": {
+        "summary": "Updates an existing operation returns an error if operation\n does not exist. The only valid operations are to update mark the done bit\nchange the result.",
+        "operationId": "Grafeas_UpdateOperation",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/googlelongrunningOperation"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "name_2",
+            "description": "The name of the Operation.\nShould be of the form \"projects/{provider_id}/operations/{operation_id}\".",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "pattern": "projects/[^/]+/operations/[^/]+"
           },
           {
-            "name": "filter",
-            "description": "The filter expression.",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "pageSize",
-            "description": "Number of notes to return in the list.",
-            "in": "query",
-            "required": false,
-            "type": "integer",
-            "format": "int32"
-          },
-          {
-            "name": "pageToken",
-            "description": "Token to provide to skip to a particular spot in the list.",
-            "in": "query",
-            "required": false,
-            "type": "string"
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "operation": {
+                  "$ref": "#/definitions/googlelongrunningOperation",
+                  "description": "The operation to create."
+                }
+              },
+              "title": "Request for updating an existing operation"
+            }
           }
         ],
         "tags": [
@@ -256,7 +319,7 @@
         ]
       }
     },
-    "/v1alpha1/{name=projects/*/occurrences/*}": {
+    "/v1alpha1/{name}": {
       "get": {
         "summary": "Returns the requested `Occurrence`.",
         "operationId": "Grafeas_GetOccurrence",
@@ -280,7 +343,8 @@
             "description": "The name of the occurrence of the form\n\"projects/{project_id}/occurrences/{OCCURRENCE_ID}\"",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "pattern": "projects/[^/]+/occurrences/[^/]+"
           }
         ],
         "tags": [
@@ -310,7 +374,8 @@
             "description": "The name of the occurrence in the form of\n\"projects/{project_id}/occurrences/{OCCURRENCE_ID}\"",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "pattern": "projects/[^/]+/occurrences/[^/]+"
           }
         ],
         "tags": [
@@ -340,7 +405,8 @@
             "description": "The name of the occurrence.\nShould be of the form \"projects/{project_id}/occurrences/{OCCURRENCE_ID}\".",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "pattern": "projects/[^/]+/occurrences/[^/]+"
           },
           {
             "name": "body",
@@ -356,11 +422,7 @@
             "description": "The fields to update.",
             "in": "query",
             "required": false,
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "collectionFormat": "multi"
+            "type": "string"
           }
         ],
         "tags": [
@@ -368,7 +430,7 @@
         ]
       }
     },
-    "/v1alpha1/{name=projects/*/occurrences/*}/notes": {
+    "/v1alpha1/{name}/notes": {
       "get": {
         "summary": "Gets the `Note` attached to the given `Occurrence`.",
         "operationId": "Grafeas_GetOccurrenceNote",
@@ -392,7 +454,8 @@
             "description": "The name of the occurrence in the form\n\"projects/{project_id}/occurrences/{OCCURRENCE_ID}\"",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "pattern": "projects/[^/]+/occurrences/[^/]+"
           }
         ],
         "tags": [
@@ -400,55 +463,15 @@
         ]
       }
     },
-    "/v1alpha1/{name=projects/*/operations/*}": {
-      "patch": {
-        "summary": "Updates an existing operation returns an error if operation\n does not exist. The only valid operations are to update mark the done bit\nchange the result.",
-        "operationId": "Grafeas_UpdateOperation",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/googlelongrunningOperation"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "name",
-            "description": "The name of the Operation.\nShould be of the form \"projects/{provider_id}/operations/{operation_id}\".",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/apiUpdateOperationRequest"
-            }
-          }
-        ],
-        "tags": [
-          "Grafeas"
-        ]
-      }
-    },
-    "/v1alpha1/{name=projects/*}": {
+    "/v1alpha1/{name}/occurrences": {
       "get": {
-        "summary": "Gets the specified project.",
-        "operationId": "GrafeasProjects_GetProject",
+        "summary": "Lists `Occurrences` referencing the specified `Note`. Use this method to\nget all occurrences referencing your `Note` across all your customer\nprojects.",
+        "operationId": "Grafeas_ListNoteOccurrences",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/apiProject"
+              "$ref": "#/definitions/apiListNoteOccurrencesResponse"
             }
           },
           "default": {
@@ -461,48 +484,41 @@
         "parameters": [
           {
             "name": "name",
-            "description": "The name of the project in the form of `projects/{PROJECT_ID}`.",
+            "description": "The name field will contain the note name for example:\n  \"provider/{provider_id}/notes/{note_id}\"",
             "in": "path",
             "required": true,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "GrafeasProjects"
-        ]
-      },
-      "delete": {
-        "summary": "Deletes the specified project.",
-        "operationId": "GrafeasProjects_DeleteProject",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "properties": {}
-            }
+            "type": "string",
+            "pattern": "projects/[^/]+/notes/[^/]+"
           },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
           {
-            "name": "name",
-            "description": "The name of the project in the form of `projects/{PROJECT_ID}`.",
-            "in": "path",
-            "required": true,
+            "name": "filter",
+            "description": "The filter expression.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pageSize",
+            "description": "Number of notes to return in the list.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pageToken",
+            "description": "Token to provide to skip to a particular spot in the list.",
+            "in": "query",
+            "required": false,
             "type": "string"
           }
         ],
         "tags": [
-          "GrafeasProjects"
+          "Grafeas"
         ]
       }
     },
-    "/v1alpha1/{parent=projects/*}/notes": {
+    "/v1alpha1/{parent}/notes": {
       "get": {
         "summary": "Lists all `Notes` for a given project.",
         "operationId": "Grafeas_ListNotes",
@@ -526,7 +542,8 @@
             "description": "This field contains the project ID for example: \"projects/{project_id}\".",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "pattern": "projects/[^/]+"
           },
           {
             "name": "filter",
@@ -578,7 +595,8 @@
             "description": "This field contains the project Id for example:\n\"project/{project_id}",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "pattern": "projects/[^/]+"
           },
           {
             "name": "body",
@@ -602,7 +620,7 @@
         ]
       }
     },
-    "/v1alpha1/{parent=projects/*}/occurrences": {
+    "/v1alpha1/{parent}/occurrences": {
       "get": {
         "summary": "Lists active `Occurrences` for a given project matching the filters.",
         "operationId": "Grafeas_ListOccurrences",
@@ -626,7 +644,8 @@
             "description": "This contains the project Id for example: projects/{project_id}.",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "pattern": "projects/[^/]+"
           },
           {
             "name": "filter",
@@ -678,7 +697,8 @@
             "description": "This field contains the project Id for example: \"projects/{project_id}\"",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "pattern": "projects/[^/]+"
           },
           {
             "name": "body",
@@ -695,7 +715,7 @@
         ]
       }
     },
-    "/v1alpha1/{parent=projects/*}/operations": {
+    "/v1alpha1/{parent}/operations": {
       "post": {
         "summary": "Creates a new `Operation`.",
         "operationId": "Grafeas_CreateOperation",
@@ -719,14 +739,26 @@
             "description": "The projectId that this operation should be created under.",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "pattern": "projects/[^/]+"
           },
           {
             "name": "body",
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/apiCreateOperationRequest"
+              "type": "object",
+              "properties": {
+                "operationId": {
+                  "type": "string",
+                  "description": "The ID to use for this operation."
+                },
+                "operation": {
+                  "$ref": "#/definitions/googlelongrunningOperation",
+                  "description": "The operation to create."
+                }
+              },
+              "title": "Request for creating an operation"
             }
           }
         ],
@@ -1139,7 +1171,7 @@
           "description": "Distinguish between sentinel MIN/MAX versions and normal versions.\nIf kind is not NORMAL, then the other fields are ignored."
         }
       },
-      "title": "Version contains structured information about the version of the package.\nFor a discussion of this in Debian/Ubuntu:\nhttp://serverfault.com/questions/604541/debian-packages-version-convention\nFor a discussion of this in Redhat/Fedora/Centos:\nhttp://blog.jasonantman.com/2014/07/how-yum-and-rpm-compare-versions/"
+      "title": "Version contains structured information about the version of the package.\nFor a discussion of this in Debian/Ubuntu:\nhttp://serverfault.com/questions/604541/debian-packages-version-convention\nFor a discussion of this in RedHat/Fedora/Centos:\nhttp://blog.jasonantman.com/2014/07/how-yum-and-rpm-compare-versions/"
     },
     "VulnerabilityTypeVulnerabilityDetails": {
       "type": "object",
@@ -1422,24 +1454,6 @@
         }
       },
       "description": "Command describes a step performed as part of the build pipeline."
-    },
-    "apiCreateOperationRequest": {
-      "type": "object",
-      "properties": {
-        "parent": {
-          "type": "string",
-          "description": "The projectId that this operation should be created under."
-        },
-        "operationId": {
-          "type": "string",
-          "description": "The ID to use for this operation."
-        },
-        "operation": {
-          "$ref": "#/definitions/googlelongrunningOperation",
-          "description": "The operation to create."
-        }
-      },
-      "title": "Request for creating an operation"
     },
     "apiDeployable": {
       "type": "object",
@@ -1793,7 +1807,7 @@
         },
         "pgpKeyId": {
           "type": "string",
-          "description": "The cryptographic fingerprint of the key used to generate the signature,\nas output by, e.g. `gpg --list-keys`. This should be the version 4, full\n160-bit fingerprint, expressed as a 40 character hexidecimal string. See\nhttps://tools.ietf.org/html/rfc4880#section-12.2 for details.\nImplementations may choose to acknowledge \"LONG\", \"SHORT\", or other\nabbreviated key IDs, but only the full fingerprint is guaranteed to work.\nIn gpg, the full fingerprint can be retrieved from the `fpr` field\nreturned when calling --list-keys with --with-colons.  For example:\n```\ngpg --with-colons --with-fingerprint --force-v4-certs \\\n    --list-keys attester@example.com\ntru::1:1513631572:0:3:1:5\npub:...\u003cSNIP\u003e...\nfpr:::::::::24FF6481B76AC91E66A00AC657A93A81EF3AE6FB:\n```\nAbove, the fingerprint is `24FF6481B76AC91E66A00AC657A93A81EF3AE6FB`."
+          "description": "The cryptographic fingerprint of the key used to generate the signature,\nas output by, e.g. `gpg --list-keys`. This should be the version 4, full\n160-bit fingerprint, expressed as a 40 character hexadecimal string. See\nhttps://tools.ietf.org/html/rfc4880#section-12.2 for details.\nImplementations may choose to acknowledge \"LONG\", \"SHORT\", or other\nabbreviated key IDs, but only the full fingerprint is guaranteed to work.\nIn gpg, the full fingerprint can be retrieved from the `fpr` field\nreturned when calling --list-keys with --with-colons.  For example:\n```\ngpg --with-colons --with-fingerprint --force-v4-certs \\\n    --list-keys attester@example.com\ntru::1:1513631572:0:3:1:5\npub:...\u003cSNIP\u003e...\nfpr:::::::::24FF6481B76AC91E66A00AC657A93A81EF3AE6FB:\n```\nAbove, the fingerprint is `24FF6481B76AC91E66A00AC657A93A81EF3AE6FB`."
         }
       },
       "description": "An attestation wrapper with a PGP-compatible signature.\nThis message only supports ATTACHED signatures, where the payload that is\nsigned is included alongside the signature itself in the same file."
@@ -1942,20 +1956,6 @@
       },
       "description": "StorageSource describes the location of the source in an archive file in\nGoogle Cloud Storage."
     },
-    "apiUpdateOperationRequest": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "description": "The name of the Operation.\nShould be of the form \"projects/{provider_id}/operations/{operation_id}\"."
-        },
-        "operation": {
-          "$ref": "#/definitions/googlelongrunningOperation",
-          "description": "The operation to create."
-        }
-      },
-      "title": "Request for updating an existing operation"
-    },
     "apiVulnerabilityType": {
       "type": "object",
       "properties": {
@@ -2007,16 +2007,12 @@
     "protobufAny": {
       "type": "object",
       "properties": {
-        "typeUrl": {
+        "@type": {
           "type": "string",
           "description": "A URL/resource name that uniquely identifies the type of the serialized\nprotocol buffer message. This string must contain at least\none \"/\" character. The last segment of the URL's path must represent\nthe fully qualified name of the type (as in\n`path/google.protobuf.Duration`). The name should be in a canonical form\n(e.g., leading \".\" is not accepted).\n\nIn practice, teams usually precompile into the binary all types that they\nexpect it to use in the context of Any. However, for URLs which use the\nscheme `http`, `https`, or no scheme, one can optionally set up a type\nserver that maps type URLs to message definitions as follows:\n\n* If no scheme is provided, `https` is assumed.\n* An HTTP GET on the URL must yield a [google.protobuf.Type][]\n  value in binary format, or produce an error.\n* Applications are allowed to cache lookup results based on the\n  URL, or have them precompiled into a binary to avoid any\n  lookup. Therefore, binary compatibility needs to be preserved\n  on changes to types. (Use versioned type names to manage\n  breaking changes.)\n\nNote: this functionality is not currently available in the official\nprotobuf release, and it is not used for type URLs beginning with\ntype.googleapis.com.\n\nSchemes other than `http`, `https` (or the empty scheme) might be\nused with implementation specific semantics."
-        },
-        "value": {
-          "type": "string",
-          "format": "byte",
-          "description": "Must be a valid serialized protocol buffer of the above specified type."
         }
       },
+      "additionalProperties": {},
       "description": "`Any` contains an arbitrary serialized protocol buffer message along with a\nURL that describes the type of the serialized message.\n\nProtobuf library provides support to pack/unpack Any values in the form\nof utility functions or additional generated methods of the Any type.\n\nExample 1: Pack and unpack a message in C++.\n\n    Foo foo = ...;\n    Any any;\n    any.PackFrom(foo);\n    ...\n    if (any.UnpackTo(\u0026foo)) {\n      ...\n    }\n\nExample 2: Pack and unpack a message in Java.\n\n    Foo foo = ...;\n    Any any = Any.pack(foo);\n    ...\n    if (any.is(Foo.class)) {\n      foo = any.unpack(Foo.class);\n    }\n\n Example 3: Pack and unpack a message in Python.\n\n    foo = Foo(...)\n    any = Any()\n    any.Pack(foo)\n    ...\n    if any.Is(Foo.DESCRIPTOR):\n      any.Unpack(foo)\n      ...\n\n Example 4: Pack and unpack a message in Go\n\n     foo := \u0026pb.Foo{...}\n     any, err := ptypes.MarshalAny(foo)\n     ...\n     foo := \u0026pb.Foo{}\n     if err := ptypes.UnmarshalAny(any, foo); err != nil {\n       ...\n     }\n\nThe pack methods provided by protobuf library will by default use\n'type.googleapis.com/full.type.name' as the type URL and the unpack\nmethods only use the fully qualified type name after the last '/'\nin the type URL, for example \"foo.bar.com/x/y.z\" will yield type\nname \"y.z\".\n\n\nJSON\n====\nThe JSON representation of an `Any` value uses the regular\nrepresentation of the deserialized, embedded message, with an\nadditional field `@type` which contains the type URL. Example:\n\n    package google.profile;\n    message Person {\n      string first_name = 1;\n      string last_name = 2;\n    }\n\n    {\n      \"@type\": \"type.googleapis.com/google.profile.Person\",\n      \"firstName\": \u003cstring\u003e,\n      \"lastName\": \u003cstring\u003e\n    }\n\nIf the embedded message type is well-known and has a custom JSON\nrepresentation, that representation will be embedded adding a field\n`value` which holds the custom JSON in addition to the `@type`\nfield. Example (for message [google.protobuf.Duration][]):\n\n    {\n      \"@type\": \"type.googleapis.com/google.protobuf.Duration\",\n      \"value\": \"1.212s\"\n    }"
     },
     "rpcStatus": {

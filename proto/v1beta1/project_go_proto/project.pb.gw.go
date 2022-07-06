@@ -217,7 +217,7 @@ func RegisterProjectsHandlerServer(ctx context.Context, mux *runtime.ServeMux, s
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grafeas.v1beta1.project.Projects/CreateProject")
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grafeas.v1beta1.project.Projects/CreateProject", runtime.WithHTTPPathPattern("/v1beta1/projects"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -240,7 +240,7 @@ func RegisterProjectsHandlerServer(ctx context.Context, mux *runtime.ServeMux, s
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grafeas.v1beta1.project.Projects/GetProject")
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grafeas.v1beta1.project.Projects/GetProject", runtime.WithHTTPPathPattern("/v1beta1/{name=projects/*}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -263,7 +263,7 @@ func RegisterProjectsHandlerServer(ctx context.Context, mux *runtime.ServeMux, s
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grafeas.v1beta1.project.Projects/ListProjects")
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grafeas.v1beta1.project.Projects/ListProjects", runtime.WithHTTPPathPattern("/v1beta1/projects"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -286,7 +286,7 @@ func RegisterProjectsHandlerServer(ctx context.Context, mux *runtime.ServeMux, s
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grafeas.v1beta1.project.Projects/DeleteProject")
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grafeas.v1beta1.project.Projects/DeleteProject", runtime.WithHTTPPathPattern("/v1beta1/{name=projects/*}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -348,7 +348,7 @@ func RegisterProjectsHandlerClient(ctx context.Context, mux *runtime.ServeMux, c
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grafeas.v1beta1.project.Projects/CreateProject")
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grafeas.v1beta1.project.Projects/CreateProject", runtime.WithHTTPPathPattern("/v1beta1/projects"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -368,7 +368,7 @@ func RegisterProjectsHandlerClient(ctx context.Context, mux *runtime.ServeMux, c
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grafeas.v1beta1.project.Projects/GetProject")
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grafeas.v1beta1.project.Projects/GetProject", runtime.WithHTTPPathPattern("/v1beta1/{name=projects/*}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -388,7 +388,7 @@ func RegisterProjectsHandlerClient(ctx context.Context, mux *runtime.ServeMux, c
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grafeas.v1beta1.project.Projects/ListProjects")
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grafeas.v1beta1.project.Projects/ListProjects", runtime.WithHTTPPathPattern("/v1beta1/projects"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -408,7 +408,7 @@ func RegisterProjectsHandlerClient(ctx context.Context, mux *runtime.ServeMux, c
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grafeas.v1beta1.project.Projects/DeleteProject")
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grafeas.v1beta1.project.Projects/DeleteProject", runtime.WithHTTPPathPattern("/v1beta1/{name=projects/*}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return

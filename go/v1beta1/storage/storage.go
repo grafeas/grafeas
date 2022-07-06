@@ -223,7 +223,7 @@ func DoTestStorage(t *testing.T, createStore func(t *testing.T) (grafeas.Storage
 		pID := "myproject"
 		// Delete before the project exists
 		if err := gp.DeleteProject(ctx, pID); err == nil {
-			t.Error("Deleting nonexistant note got success, want error")
+			t.Error("Deleting nonexistent note got success, want error")
 		}
 		if _, err := gp.CreateProject(ctx, pID, &prpb.Project{}); err != nil {
 			t.Fatalf("CreateProject got %v want success", err)

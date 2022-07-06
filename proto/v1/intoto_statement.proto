@@ -24,6 +24,7 @@ option java_outer_classname = "InTotoStatementProto";
 
 import "proto/v1/intoto_provenance.proto";
 import "proto/v1/slsa_provenance.proto";
+import "proto/v1/slsa_provenance_zero_two.proto";
 
 // Spec defined at https://github.com/in-toto/attestation/tree/main/spec#statement
 // The serialized InTotoStatement will be stored as Envelope.payload.
@@ -37,6 +38,7 @@ message InTotoStatement {
   oneof predicate {
     InTotoProvenance provenance = 4;
     SlsaProvenance slsa_provenance = 5;
+    SlsaProvenanceZeroTwo slsa_provenance_zero_two = 6;
   }
 }
 message Subject {

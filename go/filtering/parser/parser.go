@@ -216,7 +216,7 @@ func (p *parser) VisitRestriction(ctx *gen.RestrictionContext) interface{} {
 		[]*expr.Expr{comparable, arg})
 }
 
-// Visit either the numeric constant or value expresssion.
+// Visit either the numeric constant or value expression.
 func (p *parser) VisitComparable(ctx *gen.ComparableContext) interface{} {
 	if ctx.Number() != nil {
 		return p.Visit(ctx.Number())
@@ -229,7 +229,7 @@ func (p *parser) VisitPrimaryExpr(ctx *gen.PrimaryExprContext) interface{} {
 	return p.Visit(ctx.Primary())
 }
 
-// Return the select exprssion of qualified/member function call.
+// Return the select expression of qualified/member function call.
 func (p *parser) VisitSelectOrCall(ctx *gen.SelectOrCallContext) interface{} {
 	// Resolve the function target if one is present
 	target := p.Visit(ctx.Value()).(*expr.Expr)

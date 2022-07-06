@@ -16,15 +16,16 @@ syntax = "proto3";
 
 package grafeas.v1beta1.spdx;
 
-import "google/api/field_behavior.proto";
-import "google/protobuf/timestamp.proto";
-
 option go_package = "github.com/grafeas/grafeas/proto/v1beta1/spdx_go_proto";
 option java_multiple_files = true;
 option java_package = "io.grafeas.v1beta1.spdx";
 option objc_class_prefix = "GRA";
 
-// DocumentNote represents an SPDX Document Creation Infromation section:
+import "google/api/field_behavior.proto";
+import "google/protobuf/timestamp.proto";
+import "proto/v1beta1/common.proto";
+
+// DocumentNote represents an SPDX Document Creation Information section:
 // https://spdx.github.io/spdx-spec/2-document-creation-information/
 message DocumentNote {
   // Provide a reference number that can be used to understand how to parse and
@@ -144,14 +145,6 @@ message FileOccurrence {
   // file level, acknowledgements that may be needed to be communicated in
   // some contexts
   repeated string attributions = 8;
-}
-
-// License information: https://spdx.github.io/spdx-spec/3-package-information/#315-declared-license
-message License {
-    // Expression: https://spdx.github.io/spdx-spec/appendix-IV-SPDX-license-expressions/
-    string expression = 1;
-    // Comments
-    string comments = 2;
 }
 
 // PackageInfoNote represents an SPDX Package Information

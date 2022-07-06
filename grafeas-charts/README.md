@@ -1,7 +1,7 @@
 # Grafeas HELM chart
 
 This folder contains a sample helm chart for running Grafeas using helm on k8s.
-The setup will run a Greafeas instance backed by memstore by default, or embedded [boltdb](https://github.com/boltdb/bolt) data store, with mutual TLS authentication.
+The setup will run a Grafeas instance backed by memstore by default, or embedded [boltdb](https://github.com/boltdb/bolt) data store, with mutual TLS authentication.
 
 ## Requirements
 

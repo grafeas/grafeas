@@ -54,7 +54,7 @@ func TestStringSource_Description(t *testing.T) {
 	}
 }
 
-// Test the character offest to make sure that the offsets accurately reflect
+// Test the character offset to make sure that the offsets accurately reflect
 // the location of a character in source.
 func TestStringSource_CharacterOffset(t *testing.T) {
 	contents := "c.d &&\n\t b.c.arg(10) &&\n\t test(10)"
@@ -125,8 +125,8 @@ func TestStringSource_SnippetSingleline(t *testing.T) {
 		t.Errorf(UnexpectedSnippet, "hello, world", str)
 	}
 	if str2, found := source.Snippet(2); found {
-		t.Error(SnippetFound, 2)
+		t.Errorf(SnippetFound, 2)
 	} else if str2 != "" {
-		t.Error(UnexpectedSnippet, "", str2)
+		t.Errorf(UnexpectedSnippet, "", str2)
 	}
 }

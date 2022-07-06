@@ -1,5 +1,5 @@
 {
-    "name": "projects/occurrence_example/occurences/exampleDeploymentOccurrence",
+    "name": "projects/occurrence_example/occurrences/exampleDeploymentOccurrence",
     "resource": {
         "name": "some name",
         "uri": "https://gcr.io/project/image@sha256:foo"

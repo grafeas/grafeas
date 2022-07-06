@@ -4,6 +4,11 @@
     "title": "grafeas.proto",
     "version": "version not set"
   },
+  "tags": [
+    {
+      "name": "GrafeasV1Beta1"
+    }
+  ],
   "consumes": [
     "application/json"
   ],
@@ -11,7 +16,7 @@
     "application/json"
   ],
   "paths": {
-    "/v1beta1/{name=projects/*/notes/*}": {
+    "/v1beta1/{name_1}": {
       "get": {
         "summary": "Gets the specified note.",
         "operationId": "GrafeasV1Beta1_GetNote",
@@ -31,11 +36,12 @@
         },
         "parameters": [
           {
-            "name": "name",
+            "name": "name_1",
             "description": "The name of the note in the form of\n`projects/[PROVIDER_ID]/notes/[NOTE_ID]`.",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "pattern": "projects/[^/]+/notes/[^/]+"
           }
         ],
         "tags": [
@@ -61,11 +67,12 @@
         },
         "parameters": [
           {
-            "name": "name",
+            "name": "name_1",
             "description": "The name of the note in the form of\n`projects/[PROVIDER_ID]/notes/[NOTE_ID]`.",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "pattern": "projects/[^/]+/notes/[^/]+"
           }
         ],
         "tags": [
@@ -91,11 +98,12 @@
         },
         "parameters": [
           {
-            "name": "name",
+            "name": "name_1",
             "description": "The name of the note in the form of\n`projects/[PROVIDER_ID]/notes/[NOTE_ID]`.",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "pattern": "projects/[^/]+/notes/[^/]+"
           },
           {
             "name": "body",
@@ -111,64 +119,6 @@
             "description": "The fields to update.",
             "in": "query",
             "required": false,
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "collectionFormat": "multi"
-          }
-        ],
-        "tags": [
-          "GrafeasV1Beta1"
-        ]
-      }
-    },
-    "/v1beta1/{name=projects/*/notes/*}/occurrences": {
-      "get": {
-        "summary": "Lists occurrences referencing the specified note. Provider projects can use\nthis method to get all occurrences across consumer projects referencing the\nspecified note.",
-        "operationId": "GrafeasV1Beta1_ListNoteOccurrences",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1beta1ListNoteOccurrencesResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "name",
-            "description": "The name of the note to list occurrences for in the form of\n`projects/[PROVIDER_ID]/notes/[NOTE_ID]`.",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "filter",
-            "description": "The filter expression.",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "pageSize",
-            "description": "Number of occurrences to return in the list.",
-            "in": "query",
-            "required": false,
-            "type": "integer",
-            "format": "int32"
-          },
-          {
-            "name": "pageToken",
-            "description": "Token to provide to skip to a particular spot in the list.",
-            "in": "query",
-            "required": false,
             "type": "string"
           }
         ],
@@ -177,7 +127,7 @@
         ]
       }
     },
-    "/v1beta1/{name=projects/*/occurrences/*}": {
+    "/v1beta1/{name}": {
       "get": {
         "summary": "Gets the specified occurrence.",
         "operationId": "GrafeasV1Beta1_GetOccurrence",
@@ -201,7 +151,8 @@
             "description": "The name of the occurrence in the form of\n`projects/[PROJECT_ID]/occurrences/[OCCURRENCE_ID]`.",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "pattern": "projects/[^/]+/occurrences/[^/]+"
           }
         ],
         "tags": [
@@ -231,7 +182,8 @@
             "description": "The name of the occurrence in the form of\n`projects/[PROJECT_ID]/occurrences/[OCCURRENCE_ID]`.",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "pattern": "projects/[^/]+/occurrences/[^/]+"
           }
         ],
         "tags": [
@@ -261,7 +213,8 @@
             "description": "The name of the occurrence in the form of\n`projects/[PROJECT_ID]/occurrences/[OCCURRENCE_ID]`.",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "pattern": "projects/[^/]+/occurrences/[^/]+"
           },
           {
             "name": "body",
@@ -277,11 +230,7 @@
             "description": "The fields to update.",
             "in": "query",
             "required": false,
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "collectionFormat": "multi"
+            "type": "string"
           }
         ],
         "tags": [
@@ -289,7 +238,7 @@
         ]
       }
     },
-    "/v1beta1/{name=projects/*/occurrences/*}/notes": {
+    "/v1beta1/{name}/notes": {
       "get": {
         "summary": "Gets the note attached to the specified occurrence. Consumer projects can\nuse this method to get a note that belongs to a provider project.",
         "operationId": "GrafeasV1Beta1_GetOccurrenceNote",
@@ -313,6 +262,62 @@
             "description": "The name of the occurrence in the form of\n`projects/[PROJECT_ID]/occurrences/[OCCURRENCE_ID]`.",
             "in": "path",
             "required": true,
+            "type": "string",
+            "pattern": "projects/[^/]+/occurrences/[^/]+"
+          }
+        ],
+        "tags": [
+          "GrafeasV1Beta1"
+        ]
+      }
+    },
+    "/v1beta1/{name}/occurrences": {
+      "get": {
+        "summary": "Lists occurrences referencing the specified note. Provider projects can use\nthis method to get all occurrences across consumer projects referencing the\nspecified note.",
+        "operationId": "GrafeasV1Beta1_ListNoteOccurrences",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1beta1ListNoteOccurrencesResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "name",
+            "description": "The name of the note to list occurrences for in the form of\n`projects/[PROVIDER_ID]/notes/[NOTE_ID]`.",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "pattern": "projects/[^/]+/notes/[^/]+"
+          },
+          {
+            "name": "filter",
+            "description": "The filter expression.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pageSize",
+            "description": "Number of occurrences to return in the list.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pageToken",
+            "description": "Token to provide to skip to a particular spot in the list.",
+            "in": "query",
+            "required": false,
             "type": "string"
           }
         ],
@@ -321,7 +326,7 @@
         ]
       }
     },
-    "/v1beta1/{parent=projects/*}/notes": {
+    "/v1beta1/{parent}/notes": {
       "get": {
         "summary": "Lists notes for the specified project.",
         "operationId": "GrafeasV1Beta1_ListNotes",
@@ -345,7 +350,8 @@
             "description": "The name of the project to list notes for in the form of\n`projects/[PROJECT_ID]`.",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "pattern": "projects/[^/]+"
           },
           {
             "name": "filter",
@@ -397,7 +403,8 @@
             "description": "The name of the project in the form of `projects/[PROJECT_ID]`, under which\nthe note is to be created.",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "pattern": "projects/[^/]+"
           },
           {
             "name": "body",
@@ -412,7 +419,7 @@
             "name": "noteId",
             "description": "The ID to use for this note.",
             "in": "query",
-            "required": false,
+            "required": true,
             "type": "string"
           }
         ],
@@ -421,7 +428,7 @@
         ]
       }
     },
-    "/v1beta1/{parent=projects/*}/notes:batchCreate": {
+    "/v1beta1/{parent}/notes:batchCreate": {
       "post": {
         "summary": "Creates new notes in batch.",
         "operationId": "GrafeasV1Beta1_BatchCreateNotes",
@@ -445,14 +452,31 @@
             "description": "The name of the project in the form of `projects/[PROJECT_ID]`, under which\nthe notes are to be created.",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "pattern": "projects/[^/]+"
           },
           {
             "name": "body",
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/v1beta1BatchCreateNotesRequest"
+              "type": "object",
+              "properties": {
+                "notes": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "$ref": "#/definitions/v1beta1Note"
+                  },
+                  "description": "The notes to create, the key is expected to be the note ID. Max allowed length is 1000.",
+                  "required": [
+                    "notes"
+                  ]
+                }
+              },
+              "description": "Request to create notes in batch.",
+              "required": [
+                "notes"
+              ]
             }
           }
         ],
@@ -461,7 +485,7 @@
         ]
       }
     },
-    "/v1beta1/{parent=projects/*}/occurrences": {
+    "/v1beta1/{parent}/occurrences": {
       "get": {
         "summary": "Lists occurrences for the specified project.",
         "operationId": "GrafeasV1Beta1_ListOccurrences",
@@ -485,7 +509,8 @@
             "description": "The name of the project to list occurrences for in the form of\n`projects/[PROJECT_ID]`.",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "pattern": "projects/[^/]+"
           },
           {
             "name": "filter",
@@ -537,7 +562,8 @@
             "description": "The name of the project in the form of `projects/[PROJECT_ID]`, under which\nthe occurrence is to be created.",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "pattern": "projects/[^/]+"
           },
           {
             "name": "body",
@@ -554,7 +580,7 @@
         ]
       }
     },
-    "/v1beta1/{parent=projects/*}/occurrences:batchCreate": {
+    "/v1beta1/{parent}/occurrences:batchCreate": {
       "post": {
         "summary": "Creates new occurrences in batch.",
         "operationId": "GrafeasV1Beta1_BatchCreateOccurrences",
@@ -578,14 +604,31 @@
             "description": "The name of the project in the form of `projects/[PROJECT_ID]`, under which\nthe occurrences are to be created.",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "pattern": "projects/[^/]+"
           },
           {
             "name": "body",
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/v1beta1BatchCreateOccurrencesRequest"
+              "type": "object",
+              "properties": {
+                "occurrences": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/v1beta1Occurrence"
+                  },
+                  "description": "The occurrences to create. Max allowed length is 1000.",
+                  "required": [
+                    "occurrences"
+                  ]
+                }
+              },
+              "description": "Request to create occurrences in batch.",
+              "required": [
+                "occurrences"
+              ]
             }
           }
         ],
@@ -594,7 +637,7 @@
         ]
       }
     },
-    "/v1beta1/{parent=projects/*}/occurrences:vulnerabilitySummary": {
+    "/v1beta1/{parent}/occurrences:vulnerabilitySummary": {
       "get": {
         "summary": "Gets a summary of the number and severity of occurrences.",
         "operationId": "GrafeasV1Beta1_GetVulnerabilityOccurrencesSummary",
@@ -618,7 +661,8 @@
             "description": "The name of the project to get a vulnerability summary for in the form of\n`projects/[PROJECT_ID]`.",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "pattern": "projects/[^/]+"
           },
           {
             "name": "filter",
@@ -666,16 +710,17 @@
       "default": "KEY_TYPE_UNSPECIFIED",
       "description": "Public key formats.\n\n - KEY_TYPE_UNSPECIFIED: `KeyType` is not set.\n - PGP_ASCII_ARMORED: `PGP ASCII Armored` public key.\n - PKIX_PEM: `PKIX PEM` public key."
     },
-    "CVSSv3AttackComplexity": {
+    "CVSSAttackComplexity": {
       "type": "string",
       "enum": [
         "ATTACK_COMPLEXITY_UNSPECIFIED",
         "ATTACK_COMPLEXITY_LOW",
-        "ATTACK_COMPLEXITY_HIGH"
+        "ATTACK_COMPLEXITY_HIGH",
+        "ATTACK_COMPLEXITY_MEDIUM"
       ],
       "default": "ATTACK_COMPLEXITY_UNSPECIFIED"
     },
-    "CVSSv3AttackVector": {
+    "CVSSAttackVector": {
       "type": "string",
       "enum": [
         "ATTACK_VECTOR_UNSPECIFIED",
@@ -686,17 +731,29 @@
       ],
       "default": "ATTACK_VECTOR_UNSPECIFIED"
     },
-    "CVSSv3Impact": {
+    "CVSSAuthentication": {
+      "type": "string",
+      "enum": [
+        "AUTHENTICATION_UNSPECIFIED",
+        "AUTHENTICATION_MULTIPLE",
+        "AUTHENTICATION_SINGLE",
+        "AUTHENTICATION_NONE"
+      ],
+      "default": "AUTHENTICATION_UNSPECIFIED"
+    },
+    "CVSSImpact": {
       "type": "string",
       "enum": [
         "IMPACT_UNSPECIFIED",
         "IMPACT_HIGH",
         "IMPACT_LOW",
-        "IMPACT_NONE"
+        "IMPACT_NONE",
+        "IMPACT_PARTIAL",
+        "IMPACT_COMPLETE"
       ],
       "default": "IMPACT_UNSPECIFIED"
     },
-    "CVSSv3PrivilegesRequired": {
+    "CVSSPrivilegesRequired": {
       "type": "string",
       "enum": [
         "PRIVILEGES_REQUIRED_UNSPECIFIED",
@@ -706,7 +763,7 @@
       ],
       "default": "PRIVILEGES_REQUIRED_UNSPECIFIED"
     },
-    "CVSSv3Scope": {
+    "CVSSScope": {
       "type": "string",
       "enum": [
         "SCOPE_UNSPECIFIED",
@@ -715,7 +772,7 @@
       ],
       "default": "SCOPE_UNSPECIFIED"
     },
-    "CVSSv3UserInteraction": {
+    "CVSSUserInteraction": {
       "type": "string",
       "enum": [
         "USER_INTERACTION_UNSPECIFIED",
@@ -1100,7 +1157,7 @@
         },
         "pgpKeyId": {
           "type": "string",
-          "description": "The cryptographic fingerprint of the key used to generate the signature,\nas output by, e.g. `gpg --list-keys`. This should be the version 4, full\n160-bit fingerprint, expressed as a 40 character hexidecimal string. See\nhttps://tools.ietf.org/html/rfc4880#section-12.2 for details.\nImplementations may choose to acknowledge \"LONG\", \"SHORT\", or other\nabbreviated key IDs, but only the full fingerprint is guaranteed to work.\nIn gpg, the full fingerprint can be retrieved from the `fpr` field\nreturned when calling --list-keys with --with-colons.  For example:\n```\ngpg --with-colons --with-fingerprint --force-v4-certs \\\n    --list-keys attester@example.com\ntru::1:1513631572:0:3:1:5\npub:...\u003cSNIP\u003e...\nfpr:::::::::24FF6481B76AC91E66A00AC657A93A81EF3AE6FB:\n```\nAbove, the fingerprint is `24FF6481B76AC91E66A00AC657A93A81EF3AE6FB`."
+          "description": "The cryptographic fingerprint of the key used to generate the signature,\nas output by, e.g. `gpg --list-keys`. This should be the version 4, full\n160-bit fingerprint, expressed as a 40 character hexadecimal string. See\nhttps://tools.ietf.org/html/rfc4880#section-12.2 for details.\nImplementations may choose to acknowledge \"LONG\", \"SHORT\", or other\nabbreviated key IDs, but only the full fingerprint is guaranteed to work.\nIn gpg, the full fingerprint can be retrieved from the `fpr` field\nreturned when calling --list-keys with --with-colons.  For example:\n```\ngpg --with-colons --with-fingerprint --force-v4-certs \\\n    --list-keys attester@example.com\ntru::1:1513631572:0:3:1:5\npub:...\u003cSNIP\u003e...\nfpr:::::::::24FF6481B76AC91E66A00AC657A93A81EF3AE6FB:\n```\nAbove, the fingerprint is `24FF6481B76AC91E66A00AC657A93A81EF3AE6FB`."
         }
       },
       "description": "An attestation wrapper with a PGP-compatible signature. This message only\nsupports `ATTACHED` signatures, where the payload that is signed is included\nalongside the signature itself in the same file."
@@ -1465,7 +1522,10 @@
       "properties": {
         "cpeUri": {
           "type": "string",
-          "description": "Required. The cpe_uri in [CPE format](https://cpe.mitre.org/specification/)\ndenoting the package manager version distributing a package."
+          "description": "The cpe_uri in [CPE format](https://cpe.mitre.org/specification/)\ndenoting the package manager version distributing a package.",
+          "required": [
+            "cpe_uri"
+          ]
         },
         "architecture": {
           "$ref": "#/definitions/packageArchitecture",
@@ -1488,32 +1548,66 @@
           "description": "The distribution channel-specific description of this package."
         }
       },
-      "description": "This represents a particular channel of distribution for a given package.\nE.g., Debian's jessie-backports dpkg mirror."
+      "description": "This represents a particular channel of distribution for a given package.\nE.g., Debian's jessie-backports dpkg mirror.",
+      "required": [
+        "cpeUri"
+      ]
     },
     "packageInstallation": {
       "type": "object",
       "properties": {
         "name": {
           "type": "string",
-          "description": "Output only. The name of the installed package.",
-          "readOnly": true
+          "description": "The name of the installed package.",
+          "readOnly": true,
+          "required": [
+            "name"
+          ]
         },
         "location": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/v1beta1packageLocation"
           },
-          "description": "Required. All of the places within the filesystem versions of this package\nhave been found."
+          "description": "All of the places within the filesystem versions of this package\nhave been found."
+        },
+        "packageType": {
+          "type": "string",
+          "description": "The type of package; whether native or non native (e.g., ruby gems,\nnode.js packages, etc.).",
+          "readOnly": true
+        },
+        "cpeUri": {
+          "type": "string",
+          "description": "The cpe_uri in [CPE format](https://cpe.mitre.org/specification/)\ndenoting the package manager version distributing a package.\nThe cpe_uri will be blank for language packages.",
+          "readOnly": true
+        },
+        "architecture": {
+          "$ref": "#/definitions/packageArchitecture",
+          "description": "The CPU architecture for which packages in this distribution channel were\nbuilt. Architecture will be blank for language packages."
+        },
+        "license": {
+          "$ref": "#/definitions/v1beta1License",
+          "description": "Licenses that have been declared by the authors of the package."
+        },
+        "version": {
+          "$ref": "#/definitions/packageVersion",
+          "description": "The version of the package."
         }
       },
-      "description": "This represents how a particular software package may be installed on a\nsystem."
+      "description": "This represents how a particular software package may be installed on a\nsystem.",
+      "required": [
+        "name"
+      ]
     },
     "packagePackage": {
       "type": "object",
       "properties": {
         "name": {
           "type": "string",
-          "description": "Required. Immutable. The name of the package."
+          "description": "The name of the package.",
+          "required": [
+            "name"
+          ]
         },
         "distribution": {
           "type": "array",
@@ -1521,9 +1615,51 @@
             "$ref": "#/definitions/packageDistribution"
           },
           "description": "The various channels by which a package is distributed."
+        },
+        "packageType": {
+          "type": "string",
+          "description": "The type of package; whether native or non native (e.g., ruby gems,\nnode.js packages, etc.)."
+        },
+        "cpeUri": {
+          "type": "string",
+          "description": "The cpe_uri in [CPE format](https://cpe.mitre.org/specification/)\ndenoting the package manager version distributing a package.\nThe cpe_uri will be blank for language packages."
+        },
+        "architecture": {
+          "$ref": "#/definitions/packageArchitecture",
+          "description": "The CPU architecture for which packages in this distribution channel were\nbuilt. Architecture will be blank for language packages."
+        },
+        "version": {
+          "$ref": "#/definitions/packageVersion",
+          "description": "The version of the package."
+        },
+        "maintainer": {
+          "type": "string",
+          "description": "A freeform text denoting the maintainer of this package."
+        },
+        "url": {
+          "type": "string",
+          "description": "The homepage for this package."
+        },
+        "description": {
+          "type": "string",
+          "description": "The description of this package."
+        },
+        "license": {
+          "$ref": "#/definitions/v1beta1License",
+          "description": "Licenses that have been declared by the authors of the package."
+        },
+        "digest": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1beta1Digest"
+          },
+          "description": "Hash value, typically a file digest, that allows unique\nidentification a specific package."
         }
       },
-      "description": "This represents a particular package that is distributed over various\nchannels. E.g., glibc (aka libc6) is distributed by many, at various\nversions."
+      "description": "Package represents a particular package version.",
+      "required": [
+        "name"
+      ]
     },
     "packageVersion": {
       "type": "object",
@@ -1555,16 +1691,12 @@
     "protobufAny": {
       "type": "object",
       "properties": {
-        "typeUrl": {
+        "@type": {
           "type": "string",
           "description": "A URL/resource name that uniquely identifies the type of the serialized\nprotocol buffer message. This string must contain at least\none \"/\" character. The last segment of the URL's path must represent\nthe fully qualified name of the type (as in\n`path/google.protobuf.Duration`). The name should be in a canonical form\n(e.g., leading \".\" is not accepted).\n\nIn practice, teams usually precompile into the binary all types that they\nexpect it to use in the context of Any. However, for URLs which use the\nscheme `http`, `https`, or no scheme, one can optionally set up a type\nserver that maps type URLs to message definitions as follows:\n\n* If no scheme is provided, `https` is assumed.\n* An HTTP GET on the URL must yield a [google.protobuf.Type][]\n  value in binary format, or produce an error.\n* Applications are allowed to cache lookup results based on the\n  URL, or have them precompiled into a binary to avoid any\n  lookup. Therefore, binary compatibility needs to be preserved\n  on changes to types. (Use versioned type names to manage\n  breaking changes.)\n\nNote: this functionality is not currently available in the official\nprotobuf release, and it is not used for type URLs beginning with\ntype.googleapis.com.\n\nSchemes other than `http`, `https` (or the empty scheme) might be\nused with implementation specific semantics."
-        },
-        "value": {
-          "type": "string",
-          "format": "byte",
-          "description": "Must be a valid serialized protocol buffer of the above specified type."
         }
       },
+      "additionalProperties": {},
       "description": "`Any` contains an arbitrary serialized protocol buffer message along with a\nURL that describes the type of the serialized message.\n\nProtobuf library provides support to pack/unpack Any values in the form\nof utility functions or additional generated methods of the Any type.\n\nExample 1: Pack and unpack a message in C++.\n\n    Foo foo = ...;\n    Any any;\n    any.PackFrom(foo);\n    ...\n    if (any.UnpackTo(\u0026foo)) {\n      ...\n    }\n\nExample 2: Pack and unpack a message in Java.\n\n    Foo foo = ...;\n    Any any = Any.pack(foo);\n    ...\n    if (any.is(Foo.class)) {\n      foo = any.unpack(Foo.class);\n    }\n\n Example 3: Pack and unpack a message in Python.\n\n    foo = Foo(...)\n    any = Any()\n    any.Pack(foo)\n    ...\n    if any.Is(Foo.DESCRIPTOR):\n      any.Unpack(foo)\n      ...\n\n Example 4: Pack and unpack a message in Go\n\n     foo := \u0026pb.Foo{...}\n     any, err := ptypes.MarshalAny(foo)\n     ...\n     foo := \u0026pb.Foo{}\n     if err := ptypes.UnmarshalAny(any, foo); err != nil {\n       ...\n     }\n\nThe pack methods provided by protobuf library will by default use\n'type.googleapis.com/full.type.name' as the type URL and the unpack\nmethods only use the fully qualified type name after the last '/'\nin the type URL, for example \"foo.bar.com/x/y.z\" will yield type\nname \"y.z\".\n\n\nJSON\n====\nThe JSON representation of an `Any` value uses the regular\nrepresentation of the deserialized, embedded message, with an\nadditional field `@type` which contains the type URL. Example:\n\n    package google.profile;\n    message Person {\n      string first_name = 1;\n      string last_name = 2;\n    }\n\n    {\n      \"@type\": \"type.googleapis.com/google.profile.Person\",\n      \"firstName\": \u003cstring\u003e,\n      \"lastName\": \u003cstring\u003e\n    }\n\nIf the embedded message type is well-known and has a custom JSON\nrepresentation, that representation will be embedded adding a field\n`value` which holds the custom JSON in addition to the `@type`\nfield. Example (for message [google.protobuf.Duration][]):\n\n    {\n      \"@type\": \"type.googleapis.com/google.protobuf.Duration\",\n      \"value\": \"1.212s\"\n    }"
     },
     "provenanceBuildProvenance": {
@@ -1888,7 +2020,7 @@
           "title": "Compliance with the SPDX specification includes populating the SPDX fields\ntherein with data related to such fields (\"SPDX-Metadata\")"
         }
       },
-      "title": "DocumentNote represents an SPDX Document Creation Infromation section:\nhttps://spdx.github.io/spdx-spec/2-document-creation-information/"
+      "title": "DocumentNote represents an SPDX Document Creation Information section:\nhttps://spdx.github.io/spdx-spec/2-document-creation-information/"
     },
     "spdxDocumentOccurrence": {
       "type": "object",
@@ -1968,7 +2100,7 @@
           "title": "Uniquely identify any element in an SPDX document which may be referenced\nby other elements"
         },
         "licenseConcluded": {
-          "$ref": "#/definitions/spdxLicense",
+          "$ref": "#/definitions/v1beta1License",
           "title": "This field contains the license the SPDX file creator has concluded as\ngoverning the file or alternative values if the governing license cannot be\ndetermined"
         },
         "filesLicenseInfo": {
@@ -2006,20 +2138,6 @@
         }
       },
       "title": "FileOccurrence represents an SPDX File Information\nsection: https://spdx.github.io/spdx-spec/4-file-information/"
-    },
-    "spdxLicense": {
-      "type": "object",
-      "properties": {
-        "expression": {
-          "type": "string",
-          "title": "Expression: https://spdx.github.io/spdx-spec/appendix-IV-SPDX-license-expressions/"
-        },
-        "comments": {
-          "type": "string",
-          "title": "Comments"
-        }
-      },
-      "title": "License information: https://spdx.github.io/spdx-spec/3-package-information/#315-declared-license"
     },
     "spdxPackageInfoNote": {
       "type": "object",
@@ -2068,7 +2186,7 @@
           "title": "Contain the license the SPDX file creator has concluded as governing the\nThis field is to contain a list of all licenses found in the package. The\nrelationship between licenses (i.e., conjunctive, disjunctive) is not\nspecified in this field – it is simply a listing of all licenses found"
         },
         "licenseDeclared": {
-          "$ref": "#/definitions/spdxLicense",
+          "$ref": "#/definitions/v1beta1License",
           "title": "List the licenses that have been declared by the authors of the package"
         },
         "copyright": {
@@ -2117,7 +2235,7 @@
           "title": "Provide a place for the SPDX file creator to record any relevant background\ninformation or additional comments about the origin of the package"
         },
         "licenseConcluded": {
-          "$ref": "#/definitions/spdxLicense",
+          "$ref": "#/definitions/v1beta1License",
           "title": "package or alternative values, if the governing license cannot be\ndetermined"
         },
         "comment": {
@@ -2126,23 +2244,28 @@
         },
         "packageType": {
           "type": "string",
-          "description": "The type of package: OS, MAVEN, GO, GO_STDLIB, etc."
+          "description": "The type of package: OS, MAVEN, GO, GO_STDLIB, etc.",
+          "readOnly": true
         },
         "title": {
           "type": "string",
-          "title": "Identify the full name of the package as given by the Package Originator"
+          "title": "Identify the full name of the package as given by the Package Originator",
+          "readOnly": true
         },
         "version": {
           "type": "string",
-          "title": "Identify the version of the package"
+          "title": "Identify the version of the package",
+          "readOnly": true
         },
         "homePage": {
           "type": "string",
-          "title": "Provide a place for the SPDX file creator to record a web site that serves\nas the package's home page"
+          "title": "Provide a place for the SPDX file creator to record a web site that serves\nas the package's home page",
+          "readOnly": true
         },
         "summaryDescription": {
           "type": "string",
-          "title": "A short description of the package"
+          "title": "A short description of the package",
+          "readOnly": true
         }
       },
       "title": "PackageInfoOccurrence represents an SPDX Package Information\nsection: https://spdx.github.io/spdx-spec/3-package-information/"
@@ -2231,23 +2354,6 @@
       "description": "- RELATIONSHIP_TYPE_UNSPECIFIED: Unspecified\n - DESCRIBES: Is to be used when SPDXRef-DOCUMENT describes SPDXRef-A\n - DESCRIBED_BY: Is to be used when SPDXRef-A is described by SPDXREF-Document\n - CONTAINS: Is to be used when SPDXRef-A contains SPDXRef-B\n - CONTAINED_BY: Is to be used when SPDXRef-A is contained by SPDXRef-B\n - DEPENDS_ON: Is to be used when SPDXRef-A depends on SPDXRef-B\n - DEPENDENCY_OF: Is to be used when SPDXRef-A is dependency of SPDXRef-B\n - DEPENDENCY_MANIFEST_OF: Is to be used when SPDXRef-A is a manifest file that lists a set of\ndependencies for SPDXRef-B\n - BUILD_DEPENDENCY_OF: Is to be used when SPDXRef-A is a build dependency of SPDXRef-B\n - DEV_DEPENDENCY_OF: Is to be used when SPDXRef-A is a development dependency of SPDXRef-B\n - OPTIONAL_DEPENDENCY_OF: Is to be used when SPDXRef-A is an optional dependency of SPDXRef-B\n - PROVIDED_DEPENDENCY_OF: Is to be used when SPDXRef-A is a to be provided dependency of\nSPDXRef-B\n - TEST_DEPENDENCY_OF: Is to be used when SPDXRef-A is a test dependency of SPDXRef-B\n - RUNTIME_DEPENDENCY_OF: Is to be used when SPDXRef-A is a dependency required for the execution\nof SPDXRef-B\n - EXAMPLE_OF: Is to be used when SPDXRef-A is an example of SPDXRef-B\n - GENERATES: Is to be used when SPDXRef-A generates SPDXRef-B\n - GENERATED_FROM: Is to be used when SPDXRef-A was generated from SPDXRef-B\n - ANCESTOR_OF: Is to be used when SPDXRef-A is an ancestor (same lineage but\npre-dates) SPDXRef-B\n - DESCENDANT_OF: Is to be used when SPDXRef-A is a descendant of (same lineage but\npostdates) SPDXRef-B\n - VARIANT_OF: Is to be used when SPDXRef-A is a variant of (same lineage but not\nclear which came first) SPDXRef-B\n - DISTRIBUTION_ARTIFACT: Is to be used when distributing SPDXRef-A requires that SPDXRef-B also\nbe distributed\n - PATCH_FOR: Is to be used when SPDXRef-A is a patch file for (to be applied to)\nSPDXRef-B\n - PATCH_APPLIED: Is to be used when SPDXRef-A is a patch file that has been applied to\nSPDXRef-B\n - COPY_OF: Is to be used when SPDXRef-A is an exact copy of SPDXRef-B\n - FILE_ADDED: Is to be used when SPDXRef-A is a file that was added to SPDXRef-B\n - FILE_DELETED: Is to be used when SPDXRef-A is a file that was deleted from SPDXRef-B\n - FILE_MODIFIED: Is to be used when SPDXRef-A is a file that was modified from SPDXRef-B\n - EXPANDED_FROM_ARCHIVE: Is to be used when SPDXRef-A is expanded from the archive SPDXRef-B\n - DYNAMIC_LINK: Is to be used when SPDXRef-A dynamically links to SPDXRef-B\n - STATIC_LINK: Is to be used when SPDXRef-A statically links to SPDXRef-B\n - DATA_FILE_OF: Is to be used when SPDXRef-A is a data file used in SPDXRef-B\n - TEST_CASE_OF: Is to be used when SPDXRef-A is a test case used in testing SPDXRef-B\n - BUILD_TOOL_OF: Is to be used when SPDXRef-A is used to build SPDXRef-B\n - DEV_TOOL_OF: Is to be used when SPDXRef-A is used as a development tool for\nSPDXRef-B\n - TEST_OF: Is to be used when SPDXRef-A is used for testing SPDXRef-B\n - TEST_TOOL_OF: Is to be used when SPDXRef-A is used as a test tool for SPDXRef-B\n - DOCUMENTATION_OF: Is to be used when SPDXRef-A provides documentation of SPDXRef-B\n - OPTIONAL_COMPONENT_OF: Is to be used when SPDXRef-A is an optional component of SPDXRef-B\n - METAFILE_OF: Is to be used when SPDXRef-A is a metafile of SPDXRef-B\n - PACKAGE_OF: Is to be used when SPDXRef-A is used as a package as part of SPDXRef-B\n - AMENDS: Is to be used when (current) SPDXRef-DOCUMENT amends the SPDX\ninformation in SPDXRef-B\n - PREREQUISITE_FOR: Is to be used when SPDXRef-A is a prerequisite for SPDXRef-B\n - HAS_PREREQUISITE: Is to be used when SPDXRef-A has as a prerequisite SPDXRef-B\n - OTHER: Is to be used for a relationship which has not been defined in the\nformal SPDX specification. A description of the relationship should be\nincluded in the Relationship comments field",
       "title": "The type of relationship between the source and target SPDX elements\nRelationshipOccurrence represents an SPDX Relationship section:\nhttps://spdx.github.io/spdx-spec/7-relationships-between-SPDX-elements/"
     },
-    "v1beta1BatchCreateNotesRequest": {
-      "type": "object",
-      "properties": {
-        "parent": {
-          "type": "string",
-          "description": "The name of the project in the form of `projects/[PROJECT_ID]`, under which\nthe notes are to be created."
-        },
-        "notes": {
-          "type": "object",
-          "additionalProperties": {
-            "$ref": "#/definitions/v1beta1Note"
-          },
-          "description": "The notes to create, the key is expected to be the note ID. Max allowed length is 1000."
-        }
-      },
-      "description": "Request to create notes in batch."
-    },
     "v1beta1BatchCreateNotesResponse": {
       "type": "object",
       "properties": {
@@ -2261,23 +2367,6 @@
       },
       "description": "Response for creating notes in batch."
     },
-    "v1beta1BatchCreateOccurrencesRequest": {
-      "type": "object",
-      "properties": {
-        "parent": {
-          "type": "string",
-          "description": "The name of the project in the form of `projects/[PROJECT_ID]`, under which\nthe occurrences are to be created."
-        },
-        "occurrences": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/v1beta1Occurrence"
-          },
-          "description": "The occurrences to create. Max allowed length is 1000."
-        }
-      },
-      "description": "Request to create occurrences in batch."
-    },
     "v1beta1BatchCreateOccurrencesResponse": {
       "type": "object",
       "properties": {
@@ -2290,6 +2379,66 @@
         }
       },
       "description": "Response for creating occurrences in batch."
+    },
+    "v1beta1Digest": {
+      "type": "object",
+      "properties": {
+        "algo": {
+          "type": "string",
+          "description": "`SHA1`, `SHA512` etc."
+        },
+        "digestBytes": {
+          "type": "string",
+          "format": "byte",
+          "description": "Value of the digest."
+        }
+      },
+      "description": "Digest information."
+    },
+    "v1beta1Envelope": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "type": "string",
+          "format": "byte"
+        },
+        "payloadType": {
+          "type": "string"
+        },
+        "signatures": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1beta1EnvelopeSignature"
+          }
+        }
+      },
+      "description": "MUST match https://github.com/secure-systems-lab/dsse/blob/master/envelope.proto.\nAn authenticated message of arbitrary type."
+    },
+    "v1beta1EnvelopeSignature": {
+      "type": "object",
+      "properties": {
+        "sig": {
+          "type": "string",
+          "format": "byte"
+        },
+        "keyid": {
+          "type": "string"
+        }
+      }
+    },
+    "v1beta1License": {
+      "type": "object",
+      "properties": {
+        "expression": {
+          "type": "string",
+          "description": "Often a single license can be used to represent the licensing terms.\nSometimes it is necessary to include a choice of one or more licenses\nor some combination of license identifiers.\nExamples: \"LGPL-2.1-only OR MIT\", \"LGPL-2.1-only AND MIT\",\n\"GPL-2.0-or-later WITH Bison-exception-2.2\"."
+        },
+        "comments": {
+          "type": "string",
+          "title": "Comments"
+        }
+      },
+      "description": "License information."
     },
     "v1beta1ListNoteOccurrencesResponse": {
       "type": "object",
@@ -2549,6 +2698,10 @@
         "spdxRelationship": {
           "$ref": "#/definitions/spdxRelationshipOccurrence",
           "description": "Describes a specific SPDX Relationship."
+        },
+        "envelope": {
+          "$ref": "#/definitions/v1beta1Envelope",
+          "title": "https://github.com/secure-systems-lab/dsse"
         }
       },
       "description": "An instance of an analysis type that has been found on a resource."
@@ -2694,11 +2847,11 @@
       "properties": {
         "cpeUri": {
           "type": "string",
-          "description": "Required. The CPE URI in [CPE format](https://cpe.mitre.org/specification/)\ndenoting the package manager version distributing a package."
+          "description": "Deprecated.\nThe CPE URI in [CPE format](https://cpe.mitre.org/specification/)\ndenoting the package manager version distributing a package."
         },
         "version": {
           "$ref": "#/definitions/packageVersion",
-          "description": "The version installed at this location."
+          "description": "Deprecated.\nThe version installed at this location."
         },
         "path": {
           "type": "string",
@@ -2778,7 +2931,7 @@
       },
       "description": "Details of a vulnerability Occurrence."
     },
-    "vulnerabilityCVSSv3": {
+    "vulnerabilityCVSS": {
       "type": "object",
       "properties": {
         "baseScore": {
@@ -2795,32 +2948,35 @@
           "format": "float"
         },
         "attackVector": {
-          "$ref": "#/definitions/CVSSv3AttackVector",
+          "$ref": "#/definitions/CVSSAttackVector",
           "description": "Base Metrics\nRepresents the intrinsic characteristics of a vulnerability that are\nconstant over time and across user environments."
         },
         "attackComplexity": {
-          "$ref": "#/definitions/CVSSv3AttackComplexity"
+          "$ref": "#/definitions/CVSSAttackComplexity"
+        },
+        "authentication": {
+          "$ref": "#/definitions/CVSSAuthentication"
         },
         "privilegesRequired": {
-          "$ref": "#/definitions/CVSSv3PrivilegesRequired"
+          "$ref": "#/definitions/CVSSPrivilegesRequired"
         },
         "userInteraction": {
-          "$ref": "#/definitions/CVSSv3UserInteraction"
+          "$ref": "#/definitions/CVSSUserInteraction"
         },
         "scope": {
-          "$ref": "#/definitions/CVSSv3Scope"
+          "$ref": "#/definitions/CVSSScope"
         },
         "confidentialityImpact": {
-          "$ref": "#/definitions/CVSSv3Impact"
+          "$ref": "#/definitions/CVSSImpact"
         },
         "integrityImpact": {
-          "$ref": "#/definitions/CVSSv3Impact"
+          "$ref": "#/definitions/CVSSImpact"
         },
         "availabilityImpact": {
-          "$ref": "#/definitions/CVSSv3Impact"
+          "$ref": "#/definitions/CVSSImpact"
         }
       },
-      "title": "Common Vulnerability Scoring System version 3.\nFor details, see https://www.first.org/cvss/specification-document"
+      "title": "Common Vulnerability Scoring System.\nThis message is compatible with CVSS v2 and v3.\nFor CVSS v2 details, see https://www.first.org/cvss/v2/guide\nCVSS v2 calculator: https://nvd.nist.gov/vuln-metrics/cvss/v2-calculator\nFor CVSS v3 details, see https://www.first.org/cvss/specification-document\nCVSS v3 calculator: https://nvd.nist.gov/vuln-metrics/cvss/v3-calculator"
     },
     "vulnerabilityPackageIssue": {
       "type": "object",
@@ -2881,8 +3037,8 @@
           "description": "All information about the package to specifically identify this\nvulnerability. One entry per (version range and cpe_uri) the package\nvulnerability has manifested in."
         },
         "cvssV3": {
-          "$ref": "#/definitions/vulnerabilityCVSSv3",
-          "description": "The full description of the CVSSv3."
+          "$ref": "#/definitions/vulnerabilityCVSS",
+          "description": "The full description of the CVSS for version 3."
         },
         "windowsDetails": {
           "type": "array",
@@ -2895,6 +3051,17 @@
           "type": "string",
           "format": "date-time",
           "description": "The time this information was last changed at the source. This is an\nupstream timestamp from the underlying information source - e.g. Ubuntu\nsecurity tracker."
+        },
+        "cvssV2": {
+          "$ref": "#/definitions/vulnerabilityCVSS",
+          "description": "The full description of the CVSS for version 2."
+        },
+        "cwe": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "title": "A list of CWE for this vulnerability.\nFor details, see: https://cwe.mitre.org/index.html"
         }
       },
       "description": "Vulnerability provides metadata about a security vulnerability in a Note."

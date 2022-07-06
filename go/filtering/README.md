@@ -9,7 +9,7 @@ logic to help rank results which might be most relevant to the query. Filters
 are not intended to be exact and may perform case-insensitive compares, 
 corrections of common misspellings, or fuzzy matching. 
 
-For a pratical example of list filters in production, see Google Cloud Logging's
+For a practical example of list filters in production, see Google Cloud Logging's
 [Advanced Filters](https://cloud.google.com/logging/docs/view/advanced-filters).
 
 ## Expressions

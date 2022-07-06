@@ -16,7 +16,7 @@ syntax = "proto3";
 
 package grafeas.v1alpha1.api;
 
-option go_package = "grafeas";
+option go_package = "github.com/grafeas/grafeas/proto/v1alpha1/grafeas";
 
 import "google/api/annotations.proto";
 import "google/longrunning/operations.proto";
@@ -917,7 +917,7 @@ message PgpSignedAttestation {
   oneof key_id {
     // The cryptographic fingerprint of the key used to generate the signature,
     // as output by, e.g. `gpg --list-keys`. This should be the version 4, full
-    // 160-bit fingerprint, expressed as a 40 character hexidecimal string. See
+    // 160-bit fingerprint, expressed as a 40 character hexadecimal string. See
     // https://tools.ietf.org/html/rfc4880#section-12.2 for details.
     // Implementations may choose to acknowledge "LONG", "SHORT", or other
     // abbreviated key IDs, but only the full fingerprint is guaranteed to work.
@@ -1014,7 +1014,7 @@ message VulnerabilityType {
   // Version contains structured information about the version of the package.
   // For a discussion of this in Debian/Ubuntu:
   // http://serverfault.com/questions/604541/debian-packages-version-convention
-  // For a discussion of this in Redhat/Fedora/Centos:
+  // For a discussion of this in RedHat/Fedora/Centos:
   // http://blog.jasonantman.com/2014/07/how-yum-and-rpm-compare-versions/
   message Version {
     // Whether this is an ordinary package version or a
@@ -1340,26 +1340,6 @@ service Grafeas {
     };
   }
 
-  // Creates a new `Operation`.
-  rpc CreateOperation(CreateOperationRequest)
-  returns (google.longrunning.Operation) {
-    option (google.api.http) = {
-      post: "/v1alpha1/{parent=projects/*}/operations"
-      body: "*"
-    };
-  };
-
-  // Updates an existing operation returns an error if operation
-  //  does not exist. The only valid operations are to update mark the done bit
-  // change the result.
-  rpc UpdateOperation(UpdateOperationRequest)
-  returns (google.longrunning.Operation) {
-    option (google.api.http) = {
-      patch: "/v1alpha1/{name=projects/*/operations/*}"
-      body: "*"
-    };
-  };
-
   // Returns the requested `Note`.
   rpc GetNote(GetNoteRequest) returns (Note) {
     option (google.api.http) = {
@@ -1406,6 +1386,26 @@ service Grafeas {
       get: "/v1alpha1/{name=projects/*/notes/*}/occurrences"
     };
   }
+
+  // Creates a new `Operation`.
+  rpc CreateOperation(CreateOperationRequest)
+      returns (google.longrunning.Operation) {
+    option (google.api.http) = {
+      post: "/v1alpha1/{parent=projects/*}/operations"
+      body: "*"
+    };
+  };
+
+  // Updates an existing operation returns an error if operation
+  //  does not exist. The only valid operations are to update mark the done bit
+  // change the result.
+  rpc UpdateOperation(UpdateOperationRequest)
+      returns (google.longrunning.Operation) {
+    option (google.api.http) = {
+      patch: "/v1alpha1/{name=projects/*/operations/*}"
+      body: "*"
+    };
+  };
 }
 
 // [GrafeasProjects](grafeas.io) API.
