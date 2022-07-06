@@ -48,6 +48,7 @@ type InTotoStatement struct {
 	// `https://slsa.dev/provenance/v0.1` for SlsaProvenance.
 	PredicateType string `protobuf:"bytes,3,opt,name=predicate_type,json=predicateType,proto3" json:"predicate_type,omitempty"`
 	// Types that are assignable to Predicate:
+	//
 	//	*InTotoStatement_Provenance
 	//	*InTotoStatement_SlsaProvenance
 	//	*InTotoStatement_SlsaProvenanceZeroTwo

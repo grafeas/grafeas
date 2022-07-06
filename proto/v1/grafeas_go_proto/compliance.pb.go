@@ -50,6 +50,7 @@ type ComplianceNote struct {
 	// A description of remediation steps if the compliance check fails.
 	Remediation string `protobuf:"bytes,5,opt,name=remediation,proto3" json:"remediation,omitempty"`
 	// Types that are assignable to ComplianceType:
+	//
 	//	*ComplianceNote_CisBenchmark_
 	ComplianceType isComplianceNote_ComplianceType `protobuf_oneof:"compliance_type"`
 	// Serialized scan instructions with a predefined format.

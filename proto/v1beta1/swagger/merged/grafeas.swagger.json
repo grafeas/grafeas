@@ -938,6 +938,18 @@
       "default": "PLATFORM_UNSPECIFIED",
       "description": "Types of platforms.\n\n - PLATFORM_UNSPECIFIED: Unknown.\n - GKE: Google Container Engine.\n - FLEX: Google App Engine: Flexible Environment.\n - CUSTOM: Custom user-defined platform."
     },
+    "DiscoveredAnalysisCompleted": {
+      "type": "object",
+      "properties": {
+        "analysisType": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Indicates which analysis completed successfully. Multiple types of analysis\ncan be performed on a single resource."
+    },
     "DiscoveredAnalysisStatus": {
       "type": "string",
       "enum": [
@@ -945,11 +957,12 @@
         "PENDING",
         "SCANNING",
         "FINISHED_SUCCESS",
+        "COMPLETE",
         "FINISHED_FAILED",
         "FINISHED_UNSUPPORTED"
       ],
       "default": "ANALYSIS_STATUS_UNSPECIFIED",
-      "description": "Analysis status for a resource. Currently for initial analysis only (not\nupdated in continuous analysis).\n\n - ANALYSIS_STATUS_UNSPECIFIED: Unknown.\n - PENDING: Resource is known but no action has been taken yet.\n - SCANNING: Resource is being analyzed.\n - FINISHED_SUCCESS: Analysis has finished successfully.\n - FINISHED_FAILED: Analysis has finished unsuccessfully, the analysis itself is in a bad\nstate.\n - FINISHED_UNSUPPORTED: The resource is known not to be supported"
+      "description": "Analysis status for a resource. Currently for initial analysis only (not\nupdated in continuous analysis).\n\n - ANALYSIS_STATUS_UNSPECIFIED: Unknown.\n - PENDING: Resource is known but no action has been taken yet.\n - SCANNING: Resource is being analyzed.\n - FINISHED_SUCCESS: Analysis has finished successfully.\n - COMPLETE: Analysis has completed.\n - FINISHED_FAILED: Analysis has finished unsuccessfully, the analysis itself is in a bad\nstate.\n - FINISHED_UNSUPPORTED: The resource is known not to be supported"
     },
     "DiscoveredContinuousAnalysis": {
       "type": "string",
@@ -1409,6 +1422,16 @@
         "analysisStatus": {
           "$ref": "#/definitions/DiscoveredAnalysisStatus",
           "description": "The status of discovery for the resource."
+        },
+        "analysisCompleted": {
+          "$ref": "#/definitions/DiscoveredAnalysisCompleted"
+        },
+        "analysisError": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/rpcStatus"
+          },
+          "description": "Indicates any errors encountered during analysis of a resource. There\ncould be 0 or more of these errors."
         },
         "analysisStatusError": {
           "$ref": "#/definitions/rpcStatus",

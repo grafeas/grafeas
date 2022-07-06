@@ -105,8 +105,10 @@ type Fingerprint struct {
 	// Required. The ordered list of v2 blobs that represent a given image.
 	V2Blob []string `protobuf:"bytes,2,rep,name=v2_blob,json=v2Blob,proto3" json:"v2_blob,omitempty"`
 	// Output only. The name of the image's v2 blobs computed via:
-	//   [bottom] := v2_blob[bottom]
-	//   [N] := sha256(v2_blob[N] + " " + v2_name[N+1])
+	//
+	//	[bottom] := v2_blob[bottom]
+	//	[N] := sha256(v2_blob[N] + " " + v2_name[N+1])
+	//
 	// Only the name of the final blob is kept.
 	V2Name string `protobuf:"bytes,3,opt,name=v2_name,json=v2Name,proto3" json:"v2_name,omitempty"`
 }
@@ -167,7 +169,9 @@ func (x *Fingerprint) GetV2Name() string {
 // Basis describes the base image portion (Note) of the DockerImage
 // relationship. Linked occurrences are derived from this or an equivalent image
 // via:
-//   FROM <Basis.resource_url>
+//
+//	FROM <Basis.resource_url>
+//
 // Or an equivalent reference, e.g., a tag of the resource_url.
 type ImageNote struct {
 	state         protoimpl.MessageState

@@ -136,10 +136,12 @@ func (x *InToto) GetThreshold() int64 {
 // chain. An in-toto link is attested using one or more keys defined in the
 // in-toto layout. An example of this is:
 // {
-//   "key_id": "776a00e29f3559e0141b3b096f696abc6cfb0c657ab40f441132b345b0...",
-//   "key_type": "rsa",
-//   "public_key_value": "-----BEGIN PUBLIC KEY-----\nMIIBojANBgkqhkiG9w0B...",
-//   "key_scheme": "rsassa-pss-sha256"
+//
+//	"key_id": "776a00e29f3559e0141b3b096f696abc6cfb0c657ab40f441132b345b0...",
+//	"key_type": "rsa",
+//	"public_key_value": "-----BEGIN PUBLIC KEY-----\nMIIBojANBgkqhkiG9w0B...",
+//	"key_scheme": "rsassa-pss-sha256"
+//
 // }
 // The format for in-toto's key definition can be found in section 4.2 of the
 // in-toto specification.
@@ -350,13 +352,15 @@ type Link struct {
 	// for the operation performed. The key of the map is the path of the artifact
 	// and the structure contains the recorded hash information. An example is:
 	// "materials": [
-	//   {
-	//     "resource_uri": "foo/bar",
-	//     "hashes": {
-	//       "sha256": "ebebf...",
-	//       <OTHER HASH ALGORITHMS>: <HASH VALUE>
-	//     }
-	//   }
+	//
+	//	{
+	//	  "resource_uri": "foo/bar",
+	//	  "hashes": {
+	//	    "sha256": "ebebf...",
+	//	    <OTHER HASH ALGORITHMS>: <HASH VALUE>
+	//	  }
+	//	}
+	//
 	// ]
 	Materials []*Link_Artifact `protobuf:"bytes,2,rep,name=materials,proto3" json:"materials,omitempty"`
 	// Products are the supply chain artifacts generated as a result of the step.
@@ -370,12 +374,14 @@ type Link struct {
 	// details environment variables, filesystem information, and the present
 	// working directory. The recommended structure of this field is:
 	// "environment": {
-	//   "custom_values": {
-	//     "variables": "<ENV>",
-	//     "filesystem": "<FS>",
-	//     "workdir": "<CWD>",
-	//     "<ANY OTHER RELEVANT FIELDS>": "..."
-	//   }
+	//
+	//	"custom_values": {
+	//	  "variables": "<ENV>",
+	//	  "filesystem": "<FS>",
+	//	  "workdir": "<CWD>",
+	//	  "<ANY OTHER RELEVANT FIELDS>": "..."
+	//	}
+	//
 	// }
 	Environment *Link_Environment `protobuf:"bytes,5,opt,name=environment,proto3" json:"environment,omitempty"`
 }

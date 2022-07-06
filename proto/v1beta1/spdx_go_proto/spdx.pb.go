@@ -828,9 +828,9 @@ type PackageInfoNote struct {
 	// person or organization than identified as Package Supplier, this field
 	// identifies from where or whom the package originally came
 	Originator string `protobuf:"bytes,4,opt,name=originator,proto3" json:"originator,omitempty"`
-	//  This section identifies the download Universal Resource Locator (URL), or
-	//  a specific location within a version control system (VCS) for the package
-	//  at the time that the SPDX file was created
+	// This section identifies the download Universal Resource Locator (URL), or
+	// a specific location within a version control system (VCS) for the package
+	// at the time that the SPDX file was created
 	DownloadLocation string `protobuf:"bytes,5,opt,name=download_location,json=downloadLocation,proto3" json:"download_location,omitempty"`
 	// Indicates whether the file content of this package has been available for
 	// or subjected to analysis when creating the SPDX document

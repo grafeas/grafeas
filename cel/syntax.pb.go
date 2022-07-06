@@ -125,6 +125,7 @@ type Expr struct {
 	// Required. Variants of expressions.
 	//
 	// Types that are assignable to ExprKind:
+	//
 	//	*Expr_ConstExpr
 	//	*Expr_IdentExpr
 	//	*Expr_SelectExpr
@@ -305,6 +306,7 @@ type Constant struct {
 	// Required. The valid constant kinds.
 	//
 	// Types that are assignable to ConstantKind:
+	//
 	//	*Constant_NullValue
 	//	*Constant_BoolValue
 	//	*Constant_Int64Value
@@ -985,13 +987,18 @@ func (x *Expr_CreateStruct) GetEntries() []*Expr_CreateStruct_Entry {
 // in a map:
 //
 // *  `all`, `exists`, `exists_one` -  test a predicate expression against
-//    the inputs and return `true` if the predicate is satisfied for all,
-//    any, or only one value `list.all(x, x < 10)`.
+//
+//	the inputs and return `true` if the predicate is satisfied for all,
+//	any, or only one value `list.all(x, x < 10)`.
+//
 // *  `filter` - test a predicate expression against the inputs and return
-//    the subset of elements which satisfy the predicate:
-//    `payments.filter(p, p > 1000)`.
+//
+//	the subset of elements which satisfy the predicate:
+//	`payments.filter(p, p > 1000)`.
+//
 // *  `map` - apply an expression to all elements in the input and return the
-//    output aggregate type: `[1, 2, 3].map(i, i * i)`.
+//
+//	output aggregate type: `[1, 2, 3].map(i, i * i)`.
 //
 // The `has(m.x)` macro tests whether the property `x` is present in struct
 // `m`. The semantics of this macro depend on the type of `m`. For proto2
@@ -1120,6 +1127,7 @@ type Expr_CreateStruct_Entry struct {
 	// The `Entry` key kinds.
 	//
 	// Types that are assignable to KeyKind:
+	//
 	//	*Expr_CreateStruct_Entry_FieldKey
 	//	*Expr_CreateStruct_Entry_MapKey
 	KeyKind isExpr_CreateStruct_Entry_KeyKind `protobuf_oneof:"key_kind"`
