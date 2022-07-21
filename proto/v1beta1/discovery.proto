@@ -69,10 +69,10 @@ message Discovered {
     PENDING = 1;
     // Resource is being analyzed.
     SCANNING = 2;
-    // Analysis has finished successfully.
-    FINISHED_SUCCESS = 3;
     // Analysis has completed.
     COMPLETE = 3;
+    // Analysis has finished successfully.
+    FINISHED_SUCCESS = 3;
     // Analysis has finished unsuccessfully, the analysis itself is in a bad
     // state.
     FINISHED_FAILED = 4;
