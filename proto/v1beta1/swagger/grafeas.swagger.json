@@ -810,13 +810,13 @@
         "ANALYSIS_STATUS_UNSPECIFIED",
         "PENDING",
         "SCANNING",
-        "FINISHED_SUCCESS",
         "COMPLETE",
+        "FINISHED_SUCCESS",
         "FINISHED_FAILED",
         "FINISHED_UNSUPPORTED"
       ],
       "default": "ANALYSIS_STATUS_UNSPECIFIED",
-      "description": "Analysis status for a resource. Currently for initial analysis only (not\nupdated in continuous analysis).\n\n - ANALYSIS_STATUS_UNSPECIFIED: Unknown.\n - PENDING: Resource is known but no action has been taken yet.\n - SCANNING: Resource is being analyzed.\n - FINISHED_SUCCESS: Analysis has finished successfully.\n - COMPLETE: Analysis has completed.\n - FINISHED_FAILED: Analysis has finished unsuccessfully, the analysis itself is in a bad\nstate.\n - FINISHED_UNSUPPORTED: The resource is known not to be supported"
+      "description": "Analysis status for a resource. Currently for initial analysis only (not\nupdated in continuous analysis).\n\n - ANALYSIS_STATUS_UNSPECIFIED: Unknown.\n - PENDING: Resource is known but no action has been taken yet.\n - SCANNING: Resource is being analyzed.\n - COMPLETE: Analysis has completed.\n - FINISHED_SUCCESS: Analysis has finished successfully.\n - FINISHED_FAILED: Analysis has finished unsuccessfully, the analysis itself is in a bad\nstate.\n - FINISHED_UNSUPPORTED: The resource is known not to be supported"
     },
     "DiscoveredContinuousAnalysis": {
       "type": "string",
@@ -2927,6 +2927,11 @@
         "effectiveSeverity": {
           "$ref": "#/definitions/vulnerabilitySeverity",
           "description": "The distro assigned severity for this vulnerability when it is\navailable, and note provider assigned severity when distro has not yet\nassigned a severity for this vulnerability.\n\nWhen there are multiple PackageIssues for this vulnerability, they can have\ndifferent effective severities because some might be provided by the distro\nwhile others are provided by the language ecosystem for a language pack.\nFor this reason, it is advised to use the effective severity on the\nPackageIssue level. In the case where multiple PackageIssues have differing\neffective severities, this field should be the highest severity for any of\nthe PackageIssues."
+        },
+        "cvssVersion": {
+          "$ref": "#/definitions/vulnerabilityCVSSVersion",
+          "description": "Output only. CVSS version used to populate cvss_score and severity.",
+          "readOnly": true
         }
       },
       "description": "Details of a vulnerability Occurrence."
@@ -2977,6 +2982,16 @@
         }
       },
       "title": "Common Vulnerability Scoring System.\nThis message is compatible with CVSS v2 and v3.\nFor CVSS v2 details, see https://www.first.org/cvss/v2/guide\nCVSS v2 calculator: https://nvd.nist.gov/vuln-metrics/cvss/v2-calculator\nFor CVSS v3 details, see https://www.first.org/cvss/specification-document\nCVSS v3 calculator: https://nvd.nist.gov/vuln-metrics/cvss/v3-calculator"
+    },
+    "vulnerabilityCVSSVersion": {
+      "type": "string",
+      "enum": [
+        "CVSS_VERSION_UNSPECIFIED",
+        "CVSS_VERSION_2",
+        "CVSS_VERSION_3"
+      ],
+      "default": "CVSS_VERSION_UNSPECIFIED",
+      "description": "CVSS Version."
     },
     "vulnerabilityPackageIssue": {
       "type": "object",
@@ -3062,6 +3077,11 @@
             "type": "string"
           },
           "title": "A list of CWE for this vulnerability.\nFor details, see: https://cwe.mitre.org/index.html"
+        },
+        "cvssVersion": {
+          "$ref": "#/definitions/vulnerabilityCVSSVersion",
+          "description": "Output only. CVSS version used to populate cvss_score and severity.",
+          "readOnly": true
         }
       },
       "description": "Vulnerability provides metadata about a security vulnerability in a Note."
