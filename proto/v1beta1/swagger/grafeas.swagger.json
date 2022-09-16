@@ -3080,8 +3080,7 @@
         },
         "cvssVersion": {
           "$ref": "#/definitions/vulnerabilityCVSSVersion",
-          "description": "Output only. CVSS version used to populate cvss_score and severity.",
-          "readOnly": true
+          "description": "CVSS version used to populate cvss_score and severity."
         }
       },
       "description": "Vulnerability provides metadata about a security vulnerability in a Note."

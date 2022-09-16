@@ -3127,8 +3127,7 @@
         },
         "cvssVersion": {
           "$ref": "#/definitions/v1CVSSVersion",
-          "description": "Output only. CVSS version used to populate cvss_score and severity.",
-          "readOnly": true
+          "description": "CVSS version used to populate cvss_score and severity."
         }
       },
       "description": "A security vulnerability that can be found in resources."
