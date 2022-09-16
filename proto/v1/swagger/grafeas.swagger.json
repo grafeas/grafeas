@@ -868,13 +868,13 @@
         "ANALYSIS_STATUS_UNSPECIFIED",
         "PENDING",
         "SCANNING",
-        "COMPLETE",
         "FINISHED_SUCCESS",
+        "COMPLETE",
         "FINISHED_FAILED",
         "FINISHED_UNSUPPORTED"
       ],
       "default": "ANALYSIS_STATUS_UNSPECIFIED",
-      "description": "Analysis status for a resource. Currently for initial analysis only (not\nupdated in continuous analysis).\n\n - ANALYSIS_STATUS_UNSPECIFIED: Unknown.\n - PENDING: Resource is known but no action has been taken yet.\n - SCANNING: Resource is being analyzed.\n - COMPLETE: Analysis has completed.\n - FINISHED_SUCCESS: Analysis has finished successfully.\n - FINISHED_FAILED: Analysis has finished unsuccessfully, the analysis itself is in a bad\nstate.\n - FINISHED_UNSUPPORTED: The resource is known not to be supported."
+      "description": "Analysis status for a resource. Currently for initial analysis only (not\nupdated in continuous analysis).\n\n - ANALYSIS_STATUS_UNSPECIFIED: Unknown.\n - PENDING: Resource is known but no action has been taken yet.\n - SCANNING: Resource is being analyzed.\n - FINISHED_SUCCESS: Analysis has finished successfully.\n - COMPLETE: Analysis has completed.\n - FINISHED_FAILED: Analysis has finished unsuccessfully, the analysis itself is in a bad\nstate.\n - FINISHED_UNSUPPORTED: The resource is known not to be supported."
     },
     "DiscoveryOccurrenceContinuousAnalysis": {
       "type": "string",
