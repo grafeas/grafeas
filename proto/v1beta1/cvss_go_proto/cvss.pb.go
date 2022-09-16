@@ -34,6 +34,56 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// CVSS Version.
+type CVSSVersion int32
+
+const (
+	CVSSVersion_CVSS_VERSION_UNSPECIFIED CVSSVersion = 0
+	CVSSVersion_CVSS_VERSION_2           CVSSVersion = 1
+	CVSSVersion_CVSS_VERSION_3           CVSSVersion = 2
+)
+
+// Enum value maps for CVSSVersion.
+var (
+	CVSSVersion_name = map[int32]string{
+		0: "CVSS_VERSION_UNSPECIFIED",
+		1: "CVSS_VERSION_2",
+		2: "CVSS_VERSION_3",
+	}
+	CVSSVersion_value = map[string]int32{
+		"CVSS_VERSION_UNSPECIFIED": 0,
+		"CVSS_VERSION_2":           1,
+		"CVSS_VERSION_3":           2,
+	}
+)
+
+func (x CVSSVersion) Enum() *CVSSVersion {
+	p := new(CVSSVersion)
+	*p = x
+	return p
+}
+
+func (x CVSSVersion) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (CVSSVersion) Descriptor() protoreflect.EnumDescriptor {
+	return file_cvss_proto_enumTypes[0].Descriptor()
+}
+
+func (CVSSVersion) Type() protoreflect.EnumType {
+	return &file_cvss_proto_enumTypes[0]
+}
+
+func (x CVSSVersion) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use CVSSVersion.Descriptor instead.
+func (CVSSVersion) EnumDescriptor() ([]byte, []int) {
+	return file_cvss_proto_rawDescGZIP(), []int{0}
+}
+
 type CVSS_AttackVector int32
 
 const (
@@ -73,11 +123,11 @@ func (x CVSS_AttackVector) String() string {
 }
 
 func (CVSS_AttackVector) Descriptor() protoreflect.EnumDescriptor {
-	return file_cvss_proto_enumTypes[0].Descriptor()
+	return file_cvss_proto_enumTypes[1].Descriptor()
 }
 
 func (CVSS_AttackVector) Type() protoreflect.EnumType {
-	return &file_cvss_proto_enumTypes[0]
+	return &file_cvss_proto_enumTypes[1]
 }
 
 func (x CVSS_AttackVector) Number() protoreflect.EnumNumber {
@@ -125,11 +175,11 @@ func (x CVSS_AttackComplexity) String() string {
 }
 
 func (CVSS_AttackComplexity) Descriptor() protoreflect.EnumDescriptor {
-	return file_cvss_proto_enumTypes[1].Descriptor()
+	return file_cvss_proto_enumTypes[2].Descriptor()
 }
 
 func (CVSS_AttackComplexity) Type() protoreflect.EnumType {
-	return &file_cvss_proto_enumTypes[1]
+	return &file_cvss_proto_enumTypes[2]
 }
 
 func (x CVSS_AttackComplexity) Number() protoreflect.EnumNumber {
@@ -177,11 +227,11 @@ func (x CVSS_Authentication) String() string {
 }
 
 func (CVSS_Authentication) Descriptor() protoreflect.EnumDescriptor {
-	return file_cvss_proto_enumTypes[2].Descriptor()
+	return file_cvss_proto_enumTypes[3].Descriptor()
 }
 
 func (CVSS_Authentication) Type() protoreflect.EnumType {
-	return &file_cvss_proto_enumTypes[2]
+	return &file_cvss_proto_enumTypes[3]
 }
 
 func (x CVSS_Authentication) Number() protoreflect.EnumNumber {
@@ -229,11 +279,11 @@ func (x CVSS_PrivilegesRequired) String() string {
 }
 
 func (CVSS_PrivilegesRequired) Descriptor() protoreflect.EnumDescriptor {
-	return file_cvss_proto_enumTypes[3].Descriptor()
+	return file_cvss_proto_enumTypes[4].Descriptor()
 }
 
 func (CVSS_PrivilegesRequired) Type() protoreflect.EnumType {
-	return &file_cvss_proto_enumTypes[3]
+	return &file_cvss_proto_enumTypes[4]
 }
 
 func (x CVSS_PrivilegesRequired) Number() protoreflect.EnumNumber {
@@ -278,11 +328,11 @@ func (x CVSS_UserInteraction) String() string {
 }
 
 func (CVSS_UserInteraction) Descriptor() protoreflect.EnumDescriptor {
-	return file_cvss_proto_enumTypes[4].Descriptor()
+	return file_cvss_proto_enumTypes[5].Descriptor()
 }
 
 func (CVSS_UserInteraction) Type() protoreflect.EnumType {
-	return &file_cvss_proto_enumTypes[4]
+	return &file_cvss_proto_enumTypes[5]
 }
 
 func (x CVSS_UserInteraction) Number() protoreflect.EnumNumber {
@@ -327,11 +377,11 @@ func (x CVSS_Scope) String() string {
 }
 
 func (CVSS_Scope) Descriptor() protoreflect.EnumDescriptor {
-	return file_cvss_proto_enumTypes[5].Descriptor()
+	return file_cvss_proto_enumTypes[6].Descriptor()
 }
 
 func (CVSS_Scope) Type() protoreflect.EnumType {
-	return &file_cvss_proto_enumTypes[5]
+	return &file_cvss_proto_enumTypes[6]
 }
 
 func (x CVSS_Scope) Number() protoreflect.EnumNumber {
@@ -385,11 +435,11 @@ func (x CVSS_Impact) String() string {
 }
 
 func (CVSS_Impact) Descriptor() protoreflect.EnumDescriptor {
-	return file_cvss_proto_enumTypes[6].Descriptor()
+	return file_cvss_proto_enumTypes[7].Descriptor()
 }
 
 func (CVSS_Impact) Type() protoreflect.EnumType {
-	return &file_cvss_proto_enumTypes[6]
+	return &file_cvss_proto_enumTypes[7]
 }
 
 func (x CVSS_Impact) Number() protoreflect.EnumNumber {
@@ -666,14 +716,20 @@ var file_cvss_proto_rawDesc = []byte{
 	0x49, 0x4d, 0x50, 0x41, 0x43, 0x54, 0x5f, 0x4e, 0x4f, 0x4e, 0x45, 0x10, 0x03, 0x12, 0x12, 0x0a,
 	0x0e, 0x49, 0x4d, 0x50, 0x41, 0x43, 0x54, 0x5f, 0x50, 0x41, 0x52, 0x54, 0x49, 0x41, 0x4c, 0x10,
 	0x04, 0x12, 0x13, 0x0a, 0x0f, 0x49, 0x4d, 0x50, 0x41, 0x43, 0x54, 0x5f, 0x43, 0x4f, 0x4d, 0x50,
-	0x4c, 0x45, 0x54, 0x45, 0x10, 0x05, 0x42, 0x6d, 0x0a, 0x20, 0x69, 0x6f, 0x2e, 0x67, 0x72, 0x61,
-	0x66, 0x65, 0x61, 0x73, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x76, 0x75, 0x6c,
-	0x6e, 0x65, 0x72, 0x61, 0x62, 0x69, 0x6c, 0x69, 0x74, 0x79, 0x42, 0x09, 0x43, 0x56, 0x53, 0x53,
-	0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x36, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e,
-	0x63, 0x6f, 0x6d, 0x2f, 0x67, 0x72, 0x61, 0x66, 0x65, 0x61, 0x73, 0x2f, 0x67, 0x72, 0x61, 0x66,
-	0x65, 0x61, 0x73, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61,
-	0x31, 0x2f, 0x63, 0x76, 0x73, 0x73, 0x5f, 0x67, 0x6f, 0x5f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0xa2,
-	0x02, 0x03, 0x47, 0x52, 0x41, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x4c, 0x45, 0x54, 0x45, 0x10, 0x05, 0x2a, 0x53, 0x0a, 0x0b, 0x43, 0x56, 0x53, 0x53, 0x56, 0x65,
+	0x72, 0x73, 0x69, 0x6f, 0x6e, 0x12, 0x1c, 0x0a, 0x18, 0x43, 0x56, 0x53, 0x53, 0x5f, 0x56, 0x45,
+	0x52, 0x53, 0x49, 0x4f, 0x4e, 0x5f, 0x55, 0x4e, 0x53, 0x50, 0x45, 0x43, 0x49, 0x46, 0x49, 0x45,
+	0x44, 0x10, 0x00, 0x12, 0x12, 0x0a, 0x0e, 0x43, 0x56, 0x53, 0x53, 0x5f, 0x56, 0x45, 0x52, 0x53,
+	0x49, 0x4f, 0x4e, 0x5f, 0x32, 0x10, 0x01, 0x12, 0x12, 0x0a, 0x0e, 0x43, 0x56, 0x53, 0x53, 0x5f,
+	0x56, 0x45, 0x52, 0x53, 0x49, 0x4f, 0x4e, 0x5f, 0x33, 0x10, 0x02, 0x42, 0x6d, 0x0a, 0x20, 0x69,
+	0x6f, 0x2e, 0x67, 0x72, 0x61, 0x66, 0x65, 0x61, 0x73, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61,
+	0x31, 0x2e, 0x76, 0x75, 0x6c, 0x6e, 0x65, 0x72, 0x61, 0x62, 0x69, 0x6c, 0x69, 0x74, 0x79, 0x42,
+	0x09, 0x43, 0x56, 0x53, 0x53, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x36, 0x67, 0x69,
+	0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x67, 0x72, 0x61, 0x66, 0x65, 0x61, 0x73,
+	0x2f, 0x67, 0x72, 0x61, 0x66, 0x65, 0x61, 0x73, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x76,
+	0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2f, 0x63, 0x76, 0x73, 0x73, 0x5f, 0x67, 0x6f, 0x5f, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0xa2, 0x02, 0x03, 0x47, 0x52, 0x41, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x33,
 }
 
 var (
@@ -688,28 +744,29 @@ func file_cvss_proto_rawDescGZIP() []byte {
 	return file_cvss_proto_rawDescData
 }
 
-var file_cvss_proto_enumTypes = make([]protoimpl.EnumInfo, 7)
+var file_cvss_proto_enumTypes = make([]protoimpl.EnumInfo, 8)
 var file_cvss_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_cvss_proto_goTypes = []interface{}{
-	(CVSS_AttackVector)(0),       // 0: grafeas.v1beta1.vulnerability.CVSS.AttackVector
-	(CVSS_AttackComplexity)(0),   // 1: grafeas.v1beta1.vulnerability.CVSS.AttackComplexity
-	(CVSS_Authentication)(0),     // 2: grafeas.v1beta1.vulnerability.CVSS.Authentication
-	(CVSS_PrivilegesRequired)(0), // 3: grafeas.v1beta1.vulnerability.CVSS.PrivilegesRequired
-	(CVSS_UserInteraction)(0),    // 4: grafeas.v1beta1.vulnerability.CVSS.UserInteraction
-	(CVSS_Scope)(0),              // 5: grafeas.v1beta1.vulnerability.CVSS.Scope
-	(CVSS_Impact)(0),             // 6: grafeas.v1beta1.vulnerability.CVSS.Impact
-	(*CVSS)(nil),                 // 7: grafeas.v1beta1.vulnerability.CVSS
+	(CVSSVersion)(0),             // 0: grafeas.v1beta1.vulnerability.CVSSVersion
+	(CVSS_AttackVector)(0),       // 1: grafeas.v1beta1.vulnerability.CVSS.AttackVector
+	(CVSS_AttackComplexity)(0),   // 2: grafeas.v1beta1.vulnerability.CVSS.AttackComplexity
+	(CVSS_Authentication)(0),     // 3: grafeas.v1beta1.vulnerability.CVSS.Authentication
+	(CVSS_PrivilegesRequired)(0), // 4: grafeas.v1beta1.vulnerability.CVSS.PrivilegesRequired
+	(CVSS_UserInteraction)(0),    // 5: grafeas.v1beta1.vulnerability.CVSS.UserInteraction
+	(CVSS_Scope)(0),              // 6: grafeas.v1beta1.vulnerability.CVSS.Scope
+	(CVSS_Impact)(0),             // 7: grafeas.v1beta1.vulnerability.CVSS.Impact
+	(*CVSS)(nil),                 // 8: grafeas.v1beta1.vulnerability.CVSS
 }
 var file_cvss_proto_depIdxs = []int32{
-	0, // 0: grafeas.v1beta1.vulnerability.CVSS.attack_vector:type_name -> grafeas.v1beta1.vulnerability.CVSS.AttackVector
-	1, // 1: grafeas.v1beta1.vulnerability.CVSS.attack_complexity:type_name -> grafeas.v1beta1.vulnerability.CVSS.AttackComplexity
-	2, // 2: grafeas.v1beta1.vulnerability.CVSS.authentication:type_name -> grafeas.v1beta1.vulnerability.CVSS.Authentication
-	3, // 3: grafeas.v1beta1.vulnerability.CVSS.privileges_required:type_name -> grafeas.v1beta1.vulnerability.CVSS.PrivilegesRequired
-	4, // 4: grafeas.v1beta1.vulnerability.CVSS.user_interaction:type_name -> grafeas.v1beta1.vulnerability.CVSS.UserInteraction
-	5, // 5: grafeas.v1beta1.vulnerability.CVSS.scope:type_name -> grafeas.v1beta1.vulnerability.CVSS.Scope
-	6, // 6: grafeas.v1beta1.vulnerability.CVSS.confidentiality_impact:type_name -> grafeas.v1beta1.vulnerability.CVSS.Impact
-	6, // 7: grafeas.v1beta1.vulnerability.CVSS.integrity_impact:type_name -> grafeas.v1beta1.vulnerability.CVSS.Impact
-	6, // 8: grafeas.v1beta1.vulnerability.CVSS.availability_impact:type_name -> grafeas.v1beta1.vulnerability.CVSS.Impact
+	1, // 0: grafeas.v1beta1.vulnerability.CVSS.attack_vector:type_name -> grafeas.v1beta1.vulnerability.CVSS.AttackVector
+	2, // 1: grafeas.v1beta1.vulnerability.CVSS.attack_complexity:type_name -> grafeas.v1beta1.vulnerability.CVSS.AttackComplexity
+	3, // 2: grafeas.v1beta1.vulnerability.CVSS.authentication:type_name -> grafeas.v1beta1.vulnerability.CVSS.Authentication
+	4, // 3: grafeas.v1beta1.vulnerability.CVSS.privileges_required:type_name -> grafeas.v1beta1.vulnerability.CVSS.PrivilegesRequired
+	5, // 4: grafeas.v1beta1.vulnerability.CVSS.user_interaction:type_name -> grafeas.v1beta1.vulnerability.CVSS.UserInteraction
+	6, // 5: grafeas.v1beta1.vulnerability.CVSS.scope:type_name -> grafeas.v1beta1.vulnerability.CVSS.Scope
+	7, // 6: grafeas.v1beta1.vulnerability.CVSS.confidentiality_impact:type_name -> grafeas.v1beta1.vulnerability.CVSS.Impact
+	7, // 7: grafeas.v1beta1.vulnerability.CVSS.integrity_impact:type_name -> grafeas.v1beta1.vulnerability.CVSS.Impact
+	7, // 8: grafeas.v1beta1.vulnerability.CVSS.availability_impact:type_name -> grafeas.v1beta1.vulnerability.CVSS.Impact
 	9, // [9:9] is the sub-list for method output_type
 	9, // [9:9] is the sub-list for method input_type
 	9, // [9:9] is the sub-list for extension type_name
@@ -741,7 +798,7 @@ func file_cvss_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_cvss_proto_rawDesc,
-			NumEnums:      7,
+			NumEnums:      8,
 			NumMessages:   1,
 			NumExtensions: 0,
 			NumServices:   0,

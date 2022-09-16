@@ -868,13 +868,13 @@
         "ANALYSIS_STATUS_UNSPECIFIED",
         "PENDING",
         "SCANNING",
-        "FINISHED_SUCCESS",
         "COMPLETE",
+        "FINISHED_SUCCESS",
         "FINISHED_FAILED",
         "FINISHED_UNSUPPORTED"
       ],
       "default": "ANALYSIS_STATUS_UNSPECIFIED",
-      "description": "Analysis status for a resource. Currently for initial analysis only (not\nupdated in continuous analysis).\n\n - ANALYSIS_STATUS_UNSPECIFIED: Unknown.\n - PENDING: Resource is known but no action has been taken yet.\n - SCANNING: Resource is being analyzed.\n - FINISHED_SUCCESS: Analysis has finished successfully.\n - COMPLETE: Analysis has completed\n - FINISHED_FAILED: Analysis has finished unsuccessfully, the analysis itself is in a bad\nstate.\n - FINISHED_UNSUPPORTED: The resource is known not to be supported."
+      "description": "Analysis status for a resource. Currently for initial analysis only (not\nupdated in continuous analysis).\n\n - ANALYSIS_STATUS_UNSPECIFIED: Unknown.\n - PENDING: Resource is known but no action has been taken yet.\n - SCANNING: Resource is being analyzed.\n - COMPLETE: Analysis has completed.\n - FINISHED_SUCCESS: Analysis has finished successfully.\n - FINISHED_FAILED: Analysis has finished unsuccessfully, the analysis itself is in a bad\nstate.\n - FINISHED_UNSUPPORTED: The resource is known not to be supported."
     },
     "DiscoveryOccurrenceContinuousAnalysis": {
       "type": "string",
@@ -1572,6 +1572,16 @@
         "USER_INTERACTION_REQUIRED"
       ],
       "default": "USER_INTERACTION_UNSPECIFIED"
+    },
+    "v1CVSSVersion": {
+      "type": "string",
+      "enum": [
+        "CVSS_VERSION_UNSPECIFIED",
+        "CVSS_VERSION_2",
+        "CVSS_VERSION_3"
+      ],
+      "default": "CVSS_VERSION_UNSPECIFIED",
+      "description": "CVSS Version."
     },
     "v1CVSSv3": {
       "type": "object",
@@ -3114,6 +3124,10 @@
           "type": "string",
           "format": "date-time",
           "description": "The time this information was last changed at the source. This is an\nupstream timestamp from the underlying information source - e.g. Ubuntu\nsecurity tracker."
+        },
+        "cvssVersion": {
+          "$ref": "#/definitions/v1CVSSVersion",
+          "description": "CVSS version used to populate cvss_score and severity."
         }
       },
       "description": "A security vulnerability that can be found in resources."
@@ -3172,6 +3186,11 @@
         "fixAvailable": {
           "type": "boolean",
           "description": "Output only. Whether at least one of the affected packages has a fix\navailable.",
+          "readOnly": true
+        },
+        "cvssVersion": {
+          "$ref": "#/definitions/v1CVSSVersion",
+          "description": "Output only. CVSS version used to populate cvss_score and severity.",
           "readOnly": true
         }
       },
