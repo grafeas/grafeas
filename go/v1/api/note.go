@@ -16,6 +16,7 @@ package grafeas
 
 import (
 	"fmt"
+	"strings"
 
 	emptypb "github.com/golang/protobuf/ptypes/empty"
 	"github.com/google/logger"
@@ -40,6 +41,9 @@ func (g *API) CreateNote(ctx context.Context, req *gpb.CreateNoteRequest) (*gpb.
 
 	if req.NoteId == "" {
 		return nil, status.Errorf(codes.InvalidArgument, "a noteId must be specified")
+	}
+	if strings.Contains(req.NoteId, "/") {
+		return nil, status.Errorf(codes.InvalidArgument, "a noteId must not contain /")
 	}
 	if req.Note == nil {
 		return nil, status.Errorf(codes.InvalidArgument, "a note must be specified")
