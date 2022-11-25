@@ -85,6 +85,15 @@ func TestCreateNoteErrors(t *testing.T) {
 			wantErrStatus: codes.InvalidArgument,
 		},
 		{
+			desc: "note ID contains /",
+			req: &gpb.CreateNoteRequest{
+				Parent: "projects/goog-vulnz",
+				NoteId: "CVE-UH-OH/TEST",
+				Note:   vulnzNote(t),
+			},
+			wantErrStatus: codes.InvalidArgument,
+		},
+		{
 			desc: "nil note",
 			req: &gpb.CreateNoteRequest{
 				Parent: "projects/goog-vulnz",
