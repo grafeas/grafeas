@@ -1,7 +1,7 @@
-// Code generated from FilterExpression.g4 by ANTLR 4.7.1. DO NOT EDIT.
+// Code generated from FilterExpression.g4 by ANTLR 4.11.1. DO NOT EDIT.
 
 package gen // FilterExpression
-import "github.com/antlr/antlr4/runtime/Go/antlr"
+import "github.com/antlr/antlr4/runtime/Go/antlr/v4"
 
 type BaseFilterExpressionVisitor struct {
 	*antlr.BaseParseTreeVisitor
@@ -91,10 +91,6 @@ func (v *BaseFilterExpressionVisitor) VisitFloatVal(ctx *FloatValContext) interf
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseFilterExpressionVisitor) VisitKeyword(ctx *KeywordContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
 func (v *BaseFilterExpressionVisitor) VisitNotOp(ctx *NotOpContext) interface{} {
 	return v.VisitChildren(ctx)
 }
@@ -108,5 +104,9 @@ func (v *BaseFilterExpressionVisitor) VisitOrOp(ctx *OrOpContext) interface{} {
 }
 
 func (v *BaseFilterExpressionVisitor) VisitSep(ctx *SepContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseFilterExpressionVisitor) VisitKeyword(ctx *KeywordContext) interface{} {
 	return v.VisitChildren(ctx)
 }
