@@ -250,15 +250,15 @@ type PgpSignedAttestation_PgpKeyId struct {
 	// abbreviated key IDs, but only the full fingerprint is guaranteed to work.
 	// In gpg, the full fingerprint can be retrieved from the `fpr` field
 	// returned when calling --list-keys with --with-colons.  For example:
-	// “`
-	// gpg --with-colons --with-fingerprint --force-v4-certs \
+	// ```
 	//
-	//	--list-keys attester@example.com
+	//	gpg --with-colons --with-fingerprint --force-v4-certs \
+	//	    --list-keys attester@example.com
 	//
 	// tru::1:1513631572:0:3:1:5
 	// pub:...<SNIP>...
 	// fpr:::::::::24FF6481B76AC91E66A00AC657A93A81EF3AE6FB:
-	// “`
+	// ```
 	// Above, the fingerprint is `24FF6481B76AC91E66A00AC657A93A81EF3AE6FB`.
 	PgpKeyId string `protobuf:"bytes,2,opt,name=pgp_key_id,json=pgpKeyId,proto3,oneof"`
 }

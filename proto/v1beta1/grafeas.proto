@@ -39,6 +39,7 @@ import "proto/v1beta1/package.proto";
 import "proto/v1beta1/provenance.proto";
 import "proto/v1beta1/spdx.proto";
 import "proto/v1beta1/vulnerability.proto";
+import "proto/v1beta1/vex.proto";
 
 // [Grafeas](grafeas.io) API.
 //
@@ -346,9 +347,11 @@ message Note {
     grafeas.v1beta1.spdx.FileNote spdx_file = 20;
     // A note describing an SPDX File.
     grafeas.v1beta1.spdx.RelationshipNote spdx_relationship = 21;
+    // A note describing a vulnerability assessment.
+    grafeas.v1beta1.vex.VulnerabilityAssessmentNote vulnerability_assessment = 22;
   }
 
-  // next_id = 22;
+  // next_id = 23;
 }
 
 // Request to get an occurrence.

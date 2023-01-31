@@ -1,0 +1,166 @@
+// Copyright 2023 The Grafeas Authors. All rights reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto3";
+
+package grafeas.v1beta1.vex;
+
+option go_package = "github.com/grafeas/grafeas/proto/v1beta1/vex_go_proto";
+option java_multiple_files = true;
+option java_package = "io.grafeas.v1beta1.vex";
+option objc_class_prefix = "GRA";
+
+import "google/api/field_behavior.proto";
+import "google/protobuf/timestamp.proto";
+import "proto/v1beta1/common.proto";
+
+// A single VulnerabilityAssessmentNote represents
+// one particular product's vulnerability assessment for one CVE.
+message VulnerabilityAssessmentNote {
+    // The title of the note. E.g. `Vex-Debian-11.4`
+    string title = 1;
+   
+    // Output only. A one sentence description of this Vex.
+    string short_description = 2;
+   
+    // Output only. A detailed description of this Vex.
+    string long_description = 3;
+   
+    // Identifies the language used by this document,
+    // corresponding to IETF BCP 47 / RFC 5646.
+    string language = 4;
+   
+    // Publisher details of this Note.
+    Publisher publisher = 5;
+   
+    // The product affected by this vex.
+    Product product = 6;
+   
+    // Represents a vulnerability assessment for the product.
+    Assessment assessment = 7;
+   }
+   
+   // Publisher provides information about the publisher of
+   // this Note.
+   message Publisher {
+    // Name of the publisher.
+    // Examples: 'Google', 'Google Cloud Platform'.
+    string name = 1;
+
+    // Provides information about the authority of the issuing party to
+    // release the document, in particular, the party's constituency and
+    // responsibilities or other obligations.
+    string issuing_authority = 2;
+
+    // Contains a URL which is under control of the issuing party and can
+    // be used as a globally unique identifier for that issuing party.
+    // Example: https://csaf.io
+    string namespace = 3;
+   }
+   
+   message Product {
+    // Name of the product.
+    string name = 1;
+
+    // Token required to identify a group of products so that it can be
+    // referred to from other parts in the document. There is no predefined
+    // or required format for the product_group_id as long as it uniquely
+    // identifies a group in the context of the current document.
+    string id = 2;
+
+    // Prodivdes information to help in identifying the product.
+    ProductIdentifier product_identifier = 3;
+   }
+   
+   message ProductIdentifier {
+
+    oneof identifier {
+        // Contains a URI which is vendor-specific.
+        // Example: The artifact repository URL of an image. 
+        grafeas.v1beta1.RelatedUrl generic_uri = 1;
+    }
+   }
+   
+   // Assessment provides all information that is related to a single vulnerability
+   // for this product.
+   message Assessment {
+    // Holds the MITRE standard Common Vulnerabilities and Exposures (CVE)
+    // tracking number for the vulnerability.
+    string cve = 1;
+   
+    // Holds a list of references associated with this vulnerability item and assessment.
+    repeated grafeas.v1beta1.RelatedUrl related_urls = 2;
+   
+    enum Status {
+      STATUS_UNSPECIFIED = 0;
+      // This product is known to be affected by this vulnerability.
+      AFFECTED = 1;
+      // This product is known to be not affected by this vulnerability.
+      NOT_AFFECTED = 2;
+      // This product contains a fix for this vulnerability.
+      FIXED = 3;
+      // It is not known yet whether these versions are or are not affected
+      // by the vulnerability. However, it is still under investigation.
+      UNDER_INVESTIGATION = 4;
+    }
+
+    // Provides the status of this Vulnerability assessment.
+    Status status = 3;
+   
+    // Contains the vulnerability kinetic information.
+    // This information can change as the vulnerability ages and new
+    // information becomes available.
+    message Threat {
+      enum ThreatType {
+          THREAT_TYPE_UNSPECIFIED = 0;
+          IMPACT = 1;
+          EXPLOID_STATUS = 2;
+      }
+    
+      ThreatType threat_type = 1;
+
+      // Represents a thorough human-readable discussion of the threat.
+      string details = 2;
+    }
+   
+    // Contains information about this vulnerability, this will change with time.
+    repeated Threat threats = 4;
+   
+    // Specifies details on how to handle (and presumably, fix) a vulnerability.
+    message Remediation {
+      enum RemediationType {
+        REMEDIATION_TYPE_UNSPECIFIED = 0;
+        MITIGATION = 1;
+        NO_FIX_PLANNED = 2;
+        NONE_AVAILABLE = 3;
+        VENDOR_FIX = 4;
+        WORKAROUND = 5;
+      }
+   
+      RemediationType remediation_type = 1;
+   
+      // Contains the date from which the remediation is available.
+      google.protobuf.Timestamp remediation_date = 2;
+   
+      // Contains a comprehensive human-readable discussion of the remediation.
+      string details = 4;
+   
+      // Contains the URL where to obtain the remediation.
+      grafeas.v1beta1.RelatedUrl url = 5;
+    }
+   
+    // Specifies details on how to handle (and presumably, fix) a vulnerability.
+    repeated Remediation remediations = 5;
+   }
+   

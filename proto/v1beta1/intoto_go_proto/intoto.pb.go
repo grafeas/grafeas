@@ -135,14 +135,14 @@ func (x *InToto) GetThreshold() int64 {
 // This defines the format used to record keys used in the software supply
 // chain. An in-toto link is attested using one or more keys defined in the
 // in-toto layout. An example of this is:
-// {
 //
-//	"key_id": "776a00e29f3559e0141b3b096f696abc6cfb0c657ab40f441132b345b0...",
-//	"key_type": "rsa",
-//	"public_key_value": "-----BEGIN PUBLIC KEY-----\nMIIBojANBgkqhkiG9w0B...",
-//	"key_scheme": "rsassa-pss-sha256"
+//	{
+//	  "key_id": "776a00e29f3559e0141b3b096f696abc6cfb0c657ab40f441132b345b0...",
+//	  "key_type": "rsa",
+//	  "public_key_value": "-----BEGIN PUBLIC KEY-----\nMIIBojANBgkqhkiG9w0B...",
+//	  "key_scheme": "rsassa-pss-sha256"
+//	}
 //
-// }
 // The format for in-toto's key definition can be found in section 4.2 of the
 // in-toto specification.
 type SigningKey struct {
@@ -373,16 +373,15 @@ type Link struct {
 	// environment. It is suggested for this field to contain information that
 	// details environment variables, filesystem information, and the present
 	// working directory. The recommended structure of this field is:
-	// "environment": {
 	//
-	//	"custom_values": {
-	//	  "variables": "<ENV>",
-	//	  "filesystem": "<FS>",
-	//	  "workdir": "<CWD>",
-	//	  "<ANY OTHER RELEVANT FIELDS>": "..."
+	//	"environment": {
+	//	  "custom_values": {
+	//	    "variables": "<ENV>",
+	//	    "filesystem": "<FS>",
+	//	    "workdir": "<CWD>",
+	//	    "<ANY OTHER RELEVANT FIELDS>": "..."
+	//	  }
 	//	}
-	//
-	// }
 	Environment *Link_Environment `protobuf:"bytes,5,opt,name=environment,proto3" json:"environment,omitempty"`
 }
 

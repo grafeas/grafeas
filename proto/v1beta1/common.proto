@@ -49,6 +49,8 @@ enum NoteKind {
   SPDX_FILE = 11;
   // This represents an SPDX Relationship.
   SPDX_RELATIONSHIP = 12;
+  // This represents a Vulnerability Assessment.
+  VULNERABILITY_ASSESSMENT = 13;
 }
 
 // Metadata for any related URL information.
