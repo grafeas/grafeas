@@ -33,7 +33,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/googlerpcStatus"
+              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
@@ -78,7 +78,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/googlerpcStatus"
+              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
@@ -112,7 +112,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/googlerpcStatus"
+              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
@@ -143,7 +143,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/googlerpcStatus"
+              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
@@ -174,7 +174,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/googlerpcStatus"
+              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
@@ -223,7 +223,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/googlerpcStatus"
+              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
@@ -254,7 +254,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/googlerpcStatus"
+              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
@@ -287,7 +287,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/googlerpcStatus"
+              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
@@ -318,7 +318,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/googlerpcStatus"
+              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
@@ -349,7 +349,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/googlerpcStatus"
+              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
@@ -398,7 +398,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/googlerpcStatus"
+              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
@@ -431,7 +431,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/googlerpcStatus"
+              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
@@ -486,7 +486,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/googlerpcStatus"
+              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
@@ -539,7 +539,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/googlerpcStatus"
+              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
@@ -588,7 +588,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/googlerpcStatus"
+              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
@@ -645,7 +645,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/googlerpcStatus"
+              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
@@ -698,7 +698,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/googlerpcStatus"
+              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
@@ -740,7 +740,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/googlerpcStatus"
+              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
@@ -797,7 +797,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/googlerpcStatus"
+              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
@@ -835,6 +835,55 @@
       ],
       "default": "KIND_UNSPECIFIED",
       "description": "The type of an alias.\n\n - KIND_UNSPECIFIED: Unknown.\n - FIXED: Git tag.\n - MOVABLE: Git branch.\n - OTHER: Used to specify non-standard aliases. For example, if a Git repo has a\nref named \"refs/foo/bar\"."
+    },
+    "AssessmentRemediation": {
+      "type": "object",
+      "properties": {
+        "remediationType": {
+          "$ref": "#/definitions/RemediationRemediationType",
+          "description": "The type of remediation that can be applied."
+        },
+        "remediationTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Contains the date from which the remediation is available."
+        },
+        "details": {
+          "type": "string",
+          "description": "Contains a comprehensive human-readable discussion of the remediation."
+        },
+        "remediationUri": {
+          "$ref": "#/definitions/v1beta1RelatedUrl",
+          "description": "Contains the URL where to obtain the remediation."
+        }
+      },
+      "description": "Specifies details on how to handle (and presumably, fix) a vulnerability."
+    },
+    "AssessmentState": {
+      "type": "string",
+      "enum": [
+        "STATE_UNSPECIFIED",
+        "AFFECTED",
+        "NOT_AFFECTED",
+        "FIXED",
+        "UNDER_INVESTIGATION"
+      ],
+      "default": "STATE_UNSPECIFIED",
+      "description": "Provides the state of this Vulnerability assessment.\n\n - STATE_UNSPECIFIED: No state is specified.\n - AFFECTED: This product is known to be affected by this vulnerability.\n - NOT_AFFECTED: This product is known to be not affected by this vulnerability.\n - FIXED: This product contains a fix for this vulnerability.\n - UNDER_INVESTIGATION: It is not known yet whether these versions are or are not affected\nby the vulnerability. However, it is still under investigation."
+    },
+    "AssessmentThreat": {
+      "type": "object",
+      "properties": {
+        "threatType": {
+          "$ref": "#/definitions/ThreatThreatType",
+          "description": "The type of threat."
+        },
+        "details": {
+          "type": "string",
+          "description": "Represents a thorough human-readable discussion of the threat."
+        }
+      },
+      "description": "Contains the vulnerability kinetic information.\nThis information can change as the vulnerability ages and new\ninformation becomes available."
     },
     "AuthorityHint": {
       "type": "object",
@@ -937,6 +986,45 @@
       ],
       "default": "PLATFORM_UNSPECIFIED",
       "description": "Types of platforms.\n\n - PLATFORM_UNSPECIFIED: Unknown.\n - GKE: Google Container Engine.\n - FLEX: Google App Engine: Flexible Environment.\n - CUSTOM: Custom user-defined platform."
+    },
+    "DetailsVexAssessment": {
+      "type": "object",
+      "properties": {
+        "cve": {
+          "type": "string",
+          "description": "Holds the MITRE standard Common Vulnerabilities and Exposures (CVE)\ntracking number for the vulnerability."
+        },
+        "relatedUris": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1beta1RelatedUrl"
+          },
+          "description": "Holds a list of references associated with this vulnerability item and\nassessment."
+        },
+        "note": {
+          "type": "string",
+          "description": "The VulnerabilityAssessment note from which this VexAssessment was\ngenerated."
+        },
+        "state": {
+          "$ref": "#/definitions/AssessmentState",
+          "description": "Provides the state of this Vulnerability assessment."
+        },
+        "threats": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AssessmentThreat"
+          },
+          "description": "Contains information about this vulnerability, this will change with\ntime."
+        },
+        "remediations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AssessmentRemediation"
+          },
+          "description": "Specifies details on how to handle (and presumably, fix) a vulnerability."
+        }
+      },
+      "description": "VexAssessment provides all publisher provided Vex information that is\nrelated to this vulnerability."
     },
     "DiscoveredAnalysisCompleted": {
       "type": "object",
@@ -1108,6 +1196,29 @@
       },
       "title": "An External Reference allows a Package to reference an external source of\nadditional information, metadata, enumerations, asset identifiers, or\ndownloadable content believed to be relevant to the Package"
     },
+    "RemediationRemediationType": {
+      "type": "string",
+      "enum": [
+        "REMEDIATION_TYPE_UNSPECIFIED",
+        "MITIGATION",
+        "NO_FIX_PLANNED",
+        "NONE_AVAILABLE",
+        "VENDOR_FIX",
+        "WORKAROUND"
+      ],
+      "default": "REMEDIATION_TYPE_UNSPECIFIED",
+      "description": "The type of remediation that can be applied.\n\n - REMEDIATION_TYPE_UNSPECIFIED: No remediation type specified.\n - MITIGATION: A MITIGATION is available.\n - NO_FIX_PLANNED: No fix is planned.\n - NONE_AVAILABLE: Not available.\n - VENDOR_FIX: A vendor fix is available.\n - WORKAROUND: A workaround is available."
+    },
+    "ThreatThreatType": {
+      "type": "string",
+      "enum": [
+        "THREAT_TYPE_UNSPECIFIED",
+        "IMPACT",
+        "EXPLOIT_STATUS"
+      ],
+      "default": "THREAT_TYPE_UNSPECIFIED",
+      "description": "The type of threat.\n\n - THREAT_TYPE_UNSPECIFIED: No threat type specified.\n - IMPACT: IMPACT\n - EXPLOIT_STATUS: EXPLOIT_STATUS"
+    },
     "VersionVersionKind": {
       "type": "string",
       "enum": [
@@ -1118,6 +1229,85 @@
       ],
       "default": "VERSION_KIND_UNSPECIFIED",
       "description": "Whether this is an ordinary package version or a sentinel MIN/MAX version.\n\n - VERSION_KIND_UNSPECIFIED: Unknown.\n - NORMAL: A standard package version.\n - MINIMUM: A special version representing negative infinity.\n - MAXIMUM: A special version representing positive infinity."
+    },
+    "VulnerabilityAssessmentNoteAssessment": {
+      "type": "object",
+      "properties": {
+        "cve": {
+          "type": "string",
+          "description": "Holds the MITRE standard Common Vulnerabilities and Exposures (CVE)\ntracking number for the vulnerability."
+        },
+        "shortDescription": {
+          "type": "string",
+          "description": "A one sentence description of this Vex."
+        },
+        "longDescription": {
+          "type": "string",
+          "description": "A detailed description of this Vex."
+        },
+        "relatedUris": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1beta1RelatedUrl"
+          },
+          "description": "Holds a list of references associated with this vulnerability item and\nassessment."
+        },
+        "state": {
+          "$ref": "#/definitions/AssessmentState",
+          "description": "Provides the state of this Vulnerability assessment."
+        },
+        "threats": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AssessmentThreat"
+          },
+          "description": "Contains information about this vulnerability, this will change with\ntime."
+        },
+        "remediations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AssessmentRemediation"
+          },
+          "description": "Specifies details on how to handle (and presumably, fix) a vulnerability."
+        }
+      },
+      "description": "Assessment provides all information that is related to a single\nvulnerability for this product."
+    },
+    "VulnerabilityAssessmentNoteProduct": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the product."
+        },
+        "id": {
+          "type": "string",
+          "description": "Token that identifies a product so that it can be referred to from other\nparts in the document. There is no predefined format as long as it\nuniquely identifies a group in the context of the current document."
+        },
+        "genericUri": {
+          "$ref": "#/definitions/v1beta1RelatedUrl",
+          "description": "Contains a URI which is vendor-specific.\nExample: The artifact repository URL of an image."
+        }
+      },
+      "title": "Product contains information about a product and how to uniquely identify\nit.\n(-- api-linter: core::0123::resource-annotation=disabled\n    aip.dev/not-precedent: Product is not a separate resource. --)"
+    },
+    "VulnerabilityAssessmentNotePublisher": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the publisher.\nExamples: 'Google', 'Google Cloud Platform'."
+        },
+        "issuingAuthority": {
+          "type": "string",
+          "description": "Provides information about the authority of the issuing party to\nrelease the document, in particular, the party's constituency and\nresponsibilities or other obligations."
+        },
+        "context": {
+          "type": "string",
+          "title": "The context or namespace.\nContains a URL which is under control of the issuing party and can\nbe used as a globally unique identifier for that issuing party.\nExample: https://csaf.io"
+        }
+      },
+      "title": "Publisher contains information about the publisher of\nthis Note.\n(-- api-linter: core::0123::resource-annotation=disabled\n    aip.dev/not-precedent: Publisher is not a separate resource. --)"
     },
     "VulnerabilityDetail": {
       "type": "object",
@@ -1197,112 +1387,6 @@
         }
       },
       "description": "Per resource and severity counts of fixable and total vulnerabilities."
-    },
-    "VulnerabilityVexAssessment": {
-      "type": "object",
-      "properties": {
-        "cve": {
-          "type": "string",
-          "description": "Holds the MITRE standard Common Vulnerabilities and Exposures (CVE)\ntracking number for the vulnerability."
-        },
-        "relatedUrls": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/v1beta1RelatedUrl"
-          },
-          "description": "Holds a list of references associated with this vulnerability item and assessment."
-        },
-        "noteName": {
-          "type": "string"
-        },
-        "status": {
-          "$ref": "#/definitions/VulnerabilityVexAssessmentStatus",
-          "description": "Provides the status of this Vulnerability assessment."
-        },
-        "threats": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/VulnerabilityVexAssessmentThreat"
-          },
-          "description": "Contains information about this vulnerability, this will change with time."
-        },
-        "remediations": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/VulnerabilityVexAssessmentRemediation"
-          },
-          "description": "Specifies details on how to handle (and presumably, fix) a vulnerability."
-        }
-      },
-      "description": "VexAssessment provides all publisher provided Vex information that is related\nthis vulnerability."
-    },
-    "VulnerabilityVexAssessmentRemediation": {
-      "type": "object",
-      "properties": {
-        "remediationType": {
-          "$ref": "#/definitions/VulnerabilityVexAssessmentRemediationRemediationType"
-        },
-        "remediationDate": {
-          "type": "string",
-          "format": "date-time",
-          "description": "Contains the date from which the remediation is available."
-        },
-        "details": {
-          "type": "string",
-          "description": "Contains a comprehensive human-readable discussion of the remediation."
-        },
-        "url": {
-          "$ref": "#/definitions/v1beta1RelatedUrl",
-          "description": "Contains the URL where to obtain the remediation."
-        }
-      },
-      "description": "Specifies details on how to handle (and presumably, fix) a vulnerability."
-    },
-    "VulnerabilityVexAssessmentRemediationRemediationType": {
-      "type": "string",
-      "enum": [
-        "REMEDIATION_TYPE_UNSPECIFIED",
-        "MITIGATION",
-        "NO_FIX_PLANNED",
-        "NONE_AVAILABLE",
-        "VENDOR_FIX",
-        "WORKAROUND"
-      ],
-      "default": "REMEDIATION_TYPE_UNSPECIFIED"
-    },
-    "VulnerabilityVexAssessmentStatus": {
-      "type": "string",
-      "enum": [
-        "STATUS_UNSPECIFIED",
-        "AFFECTED",
-        "NOT_AFFECTED",
-        "FIXED",
-        "UNDER_INVESTIGATION"
-      ],
-      "default": "STATUS_UNSPECIFIED",
-      "description": " - AFFECTED: This product is known to be affected by this vulnerability.\n - NOT_AFFECTED: This product is known to be not affected by this vulnerability.\n - FIXED: This product contains a fix for this vulnerability.\n - UNDER_INVESTIGATION: It is not known yet whether these versions are or are not affected\nby the vulnerability. However, it is still under investigation."
-    },
-    "VulnerabilityVexAssessmentThreat": {
-      "type": "object",
-      "properties": {
-        "threatType": {
-          "$ref": "#/definitions/VulnerabilityVexAssessmentThreatThreatType"
-        },
-        "details": {
-          "type": "string",
-          "description": "Represents a thorough human-readable discussion of the threat."
-        }
-      },
-      "description": "Contains the vulnerability kinetic information.\nThis information can change as the vulnerability ages and new\ninformation becomes available."
-    },
-    "VulnerabilityVexAssessmentThreatThreatType": {
-      "type": "string",
-      "enum": [
-        "THREAT_TYPE_UNSPECIFIED",
-        "IMPACT",
-        "EXPLOID_STATUS"
-      ],
-      "default": "THREAT_TYPE_UNSPECIFIED"
     },
     "VulnerabilityWindowsDetail": {
       "type": "object",
@@ -1535,12 +1619,12 @@
         "analysisError": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/googlerpcStatus"
+            "$ref": "#/definitions/rpcStatus"
           },
           "description": "Indicates any errors encountered during analysis of a resource. There\ncould be 0 or more of these errors."
         },
         "analysisStatusError": {
-          "$ref": "#/definitions/googlerpcStatus",
+          "$ref": "#/definitions/rpcStatus",
           "description": "When an error is encountered this will contain a LocalizedMessage under\ndetails to show to the user. The LocalizedMessage is output only and\npopulated by the API."
         }
       },
@@ -1555,29 +1639,6 @@
         }
       },
       "description": "A note that indicates a type of analysis a provider would perform. This note\nexists in a provider's project. A `Discovery` occurrence is created in a\nconsumer's project at the start of analysis."
-    },
-    "googlerpcStatus": {
-      "type": "object",
-      "properties": {
-        "code": {
-          "type": "integer",
-          "format": "int32",
-          "description": "The status code, which should be an enum value of [google.rpc.Code][google.rpc.Code]."
-        },
-        "message": {
-          "type": "string",
-          "description": "A developer-facing error message, which should be in English. Any\nuser-facing error message should be localized and sent in the\n[google.rpc.Status.details][google.rpc.Status.details] field, or localized by the client."
-        },
-        "details": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/protobufAny"
-          },
-          "description": "A list of messages that carry the error details.  There is a common set of\nmessage types for APIs to use."
-        }
-      },
-      "description": "- Simple to use and understand for most users\n- Flexible enough to meet unexpected needs\n\n# Overview\n\nThe `Status` message contains three pieces of data: error code, error message,\nand error details. The error code should be an enum value of\n[google.rpc.Code][google.rpc.Code], but it may accept additional error codes if needed.  The\nerror message should be a developer-facing English message that helps\ndevelopers *understand* and *resolve* the error. If a localized user-facing\nerror message is needed, put the localized message in the error details or\nlocalize it in the client. The optional error details may contain arbitrary\ninformation about the error. There is a predefined set of error detail types\nin the package `google.rpc` that can be used for common error conditions.\n\n# Language mapping\n\nThe `Status` message is the logical representation of the error model, but it\nis not necessarily the actual wire format. When the `Status` message is\nexposed in different client libraries and different wire protocols, it can be\nmapped differently. For example, it will likely be mapped to some exceptions\nin Java, but more likely mapped to some error codes in C.\n\n# Other uses\n\nThe error model and the `Status` message can be used in a variety of\nenvironments, either with or without APIs, to provide a\nconsistent developer experience across different environments.\n\nExample uses of this error model include:\n\n- Partial errors. If a service needs to return partial errors to the client,\n    it may embed the `Status` in the normal response to indicate the partial\n    errors.\n\n- Workflow errors. A typical workflow has multiple steps. Each step may\n    have a `Status` message for error reporting.\n\n- Batch operations. If a client uses batch request and batch response, the\n    `Status` message should be used directly inside batch response, one for\n    each error sub-response.\n\n- Asynchronous operations. If an API call embeds asynchronous operation\n    results in its response, the status of those operations should be\n    represented directly using the `Status` message.\n\n- Logging. If some API errors are stored in logs, the message `Status` could\n    be used directly after any stripping needed for security/privacy reasons.",
-      "title": "The `Status` type defines a logical error model that is suitable for different\nprogramming environments, including REST APIs and RPC APIs. It is used by\n[gRPC](https://github.com/grpc). The error model is designed to be:"
     },
     "grafeasv1beta1Signature": {
       "type": "object",
@@ -2165,6 +2226,29 @@
         }
       },
       "description": "Source describes the location of the source used for the build."
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32",
+          "description": "The status code, which should be an enum value of [google.rpc.Code][google.rpc.Code]."
+        },
+        "message": {
+          "type": "string",
+          "description": "A developer-facing error message, which should be in English. Any\nuser-facing error message should be localized and sent in the\n[google.rpc.Status.details][google.rpc.Status.details] field, or localized by the client."
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          },
+          "description": "A list of messages that carry the error details.  There is a common set of\nmessage types for APIs to use."
+        }
+      },
+      "description": "- Simple to use and understand for most users\n- Flexible enough to meet unexpected needs\n\n# Overview\n\nThe `Status` message contains three pieces of data: error code, error message,\nand error details. The error code should be an enum value of\n[google.rpc.Code][google.rpc.Code], but it may accept additional error codes if needed.  The\nerror message should be a developer-facing English message that helps\ndevelopers *understand* and *resolve* the error. If a localized user-facing\nerror message is needed, put the localized message in the error details or\nlocalize it in the client. The optional error details may contain arbitrary\ninformation about the error. There is a predefined set of error detail types\nin the package `google.rpc` that can be used for common error conditions.\n\n# Language mapping\n\nThe `Status` message is the logical representation of the error model, but it\nis not necessarily the actual wire format. When the `Status` message is\nexposed in different client libraries and different wire protocols, it can be\nmapped differently. For example, it will likely be mapped to some exceptions\nin Java, but more likely mapped to some error codes in C.\n\n# Other uses\n\nThe error model and the `Status` message can be used in a variety of\nenvironments, either with or without APIs, to provide a\nconsistent developer experience across different environments.\n\nExample uses of this error model include:\n\n- Partial errors. If a service needs to return partial errors to the client,\n    it may embed the `Status` in the normal response to indicate the partial\n    errors.\n\n- Workflow errors. A typical workflow has multiple steps. Each step may\n    have a `Status` message for error reporting.\n\n- Batch operations. If a client uses batch request and batch response, the\n    `Status` message should be used directly inside batch response, one for\n    each error sub-response.\n\n- Asynchronous operations. If an API call embeds asynchronous operation\n    results in its response, the status of those operations should be\n    represented directly using the `Status` message.\n\n- Logging. If some API errors are stored in logs, the message `Status` could\n    be used directly after any stripping needed for security/privacy reasons.",
+      "title": "The `Status` type defines a logical error model that is suitable for different\nprogramming environments, including REST APIs and RPC APIs. It is used by\n[gRPC](https://github.com/grpc). The error model is designed to be:"
     },
     "sourceAliasContext": {
       "type": "object",
@@ -3216,156 +3300,12 @@
           "$ref": "#/definitions/vulnerabilityCVSSVersion",
           "description": "Output only. CVSS version used to populate cvss_score and severity.",
           "readOnly": true
+        },
+        "vexAssessment": {
+          "$ref": "#/definitions/DetailsVexAssessment"
         }
       },
       "description": "Details of a vulnerability Occurrence."
-    },
-    "vexAssessment": {
-      "type": "object",
-      "properties": {
-        "cve": {
-          "type": "string",
-          "description": "Holds the MITRE standard Common Vulnerabilities and Exposures (CVE)\ntracking number for the vulnerability."
-        },
-        "relatedUrls": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/v1beta1RelatedUrl"
-          },
-          "description": "Holds a list of references associated with this vulnerability item and assessment."
-        },
-        "status": {
-          "$ref": "#/definitions/vexAssessmentStatus",
-          "description": "Provides the status of this Vulnerability assessment."
-        },
-        "threats": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/vexAssessmentThreat"
-          },
-          "description": "Contains information about this vulnerability, this will change with time."
-        },
-        "remediations": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/vexAssessmentRemediation"
-          },
-          "description": "Specifies details on how to handle (and presumably, fix) a vulnerability."
-        }
-      },
-      "description": "Assessment provides all information that is related to a single vulnerability\nfor this product."
-    },
-    "vexAssessmentRemediation": {
-      "type": "object",
-      "properties": {
-        "remediationType": {
-          "$ref": "#/definitions/vexAssessmentRemediationRemediationType"
-        },
-        "remediationDate": {
-          "type": "string",
-          "format": "date-time",
-          "description": "Contains the date from which the remediation is available."
-        },
-        "details": {
-          "type": "string",
-          "description": "Contains a comprehensive human-readable discussion of the remediation."
-        },
-        "url": {
-          "$ref": "#/definitions/v1beta1RelatedUrl",
-          "description": "Contains the URL where to obtain the remediation."
-        }
-      },
-      "description": "Specifies details on how to handle (and presumably, fix) a vulnerability."
-    },
-    "vexAssessmentRemediationRemediationType": {
-      "type": "string",
-      "enum": [
-        "REMEDIATION_TYPE_UNSPECIFIED",
-        "MITIGATION",
-        "NO_FIX_PLANNED",
-        "NONE_AVAILABLE",
-        "VENDOR_FIX",
-        "WORKAROUND"
-      ],
-      "default": "REMEDIATION_TYPE_UNSPECIFIED"
-    },
-    "vexAssessmentStatus": {
-      "type": "string",
-      "enum": [
-        "STATUS_UNSPECIFIED",
-        "AFFECTED",
-        "NOT_AFFECTED",
-        "FIXED",
-        "UNDER_INVESTIGATION"
-      ],
-      "default": "STATUS_UNSPECIFIED",
-      "description": " - AFFECTED: This product is known to be affected by this vulnerability.\n - NOT_AFFECTED: This product is known to be not affected by this vulnerability.\n - FIXED: This product contains a fix for this vulnerability.\n - UNDER_INVESTIGATION: It is not known yet whether these versions are or are not affected\nby the vulnerability. However, it is still under investigation."
-    },
-    "vexAssessmentThreat": {
-      "type": "object",
-      "properties": {
-        "threatType": {
-          "$ref": "#/definitions/vexAssessmentThreatThreatType"
-        },
-        "details": {
-          "type": "string",
-          "description": "Represents a thorough human-readable discussion of the threat."
-        }
-      },
-      "description": "Contains the vulnerability kinetic information.\nThis information can change as the vulnerability ages and new\ninformation becomes available."
-    },
-    "vexAssessmentThreatThreatType": {
-      "type": "string",
-      "enum": [
-        "THREAT_TYPE_UNSPECIFIED",
-        "IMPACT",
-        "EXPLOID_STATUS"
-      ],
-      "default": "THREAT_TYPE_UNSPECIFIED"
-    },
-    "vexProduct": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "description": "Name of the product."
-        },
-        "id": {
-          "type": "string",
-          "description": "Token required to identify a group of products so that it can be\nreferred to from other parts in the document. There is no predefined\nor required format for the product_group_id as long as it uniquely\nidentifies a group in the context of the current document."
-        },
-        "productIdentifier": {
-          "$ref": "#/definitions/vexProductIdentifier",
-          "description": "Prodivdes information to help in identifying the product."
-        }
-      }
-    },
-    "vexProductIdentifier": {
-      "type": "object",
-      "properties": {
-        "genericUri": {
-          "$ref": "#/definitions/v1beta1RelatedUrl",
-          "description": "Contains a URI which is vendor-specific.\nExample: The artifact repository URL of an image."
-        }
-      }
-    },
-    "vexPublisher": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "description": "Name of the publisher.\nExamples: 'Google', 'Google Cloud Platform'."
-        },
-        "issuingAuthority": {
-          "type": "string",
-          "description": "Provides information about the authority of the issuing party to\nrelease the document, in particular, the party's constituency and\nresponsibilities or other obligations."
-        },
-        "namespace": {
-          "type": "string",
-          "title": "Contains a URL which is under control of the issuing party and can\nbe used as a globally unique identifier for that issuing party.\nExample: https://csaf.io"
-        }
-      },
-      "description": "Publisher provides information about the publisher of\nthis Note."
     },
     "vexVulnerabilityAssessmentNote": {
       "type": "object",
@@ -3376,28 +3316,26 @@
         },
         "shortDescription": {
           "type": "string",
-          "description": "Output only. A one sentence description of this Vex.",
-          "readOnly": true
+          "description": "A one sentence description of this Vex."
         },
         "longDescription": {
           "type": "string",
-          "description": "Output only. A detailed description of this Vex.",
-          "readOnly": true
+          "description": "A detailed description of this Vex."
         },
-        "language": {
+        "languageCode": {
           "type": "string",
           "description": "Identifies the language used by this document,\ncorresponding to IETF BCP 47 / RFC 5646."
         },
         "publisher": {
-          "$ref": "#/definitions/vexPublisher",
+          "$ref": "#/definitions/VulnerabilityAssessmentNotePublisher",
           "description": "Publisher details of this Note."
         },
         "product": {
-          "$ref": "#/definitions/vexProduct",
+          "$ref": "#/definitions/VulnerabilityAssessmentNoteProduct",
           "description": "The product affected by this vex."
         },
         "assessment": {
-          "$ref": "#/definitions/vexAssessment",
+          "$ref": "#/definitions/VulnerabilityAssessmentNoteAssessment",
           "description": "Represents a vulnerability assessment for the product."
         }
       },
@@ -3548,9 +3486,6 @@
         "cvssVersion": {
           "$ref": "#/definitions/vulnerabilityCVSSVersion",
           "description": "CVSS version used to populate cvss_score and severity."
-        },
-        "vexAssessment": {
-          "$ref": "#/definitions/VulnerabilityVexAssessment"
         }
       },
       "description": "Vulnerability provides metadata about a security vulnerability in a Note."

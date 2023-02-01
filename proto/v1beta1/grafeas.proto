@@ -38,8 +38,8 @@ import "proto/v1beta1/intoto.proto";
 import "proto/v1beta1/package.proto";
 import "proto/v1beta1/provenance.proto";
 import "proto/v1beta1/spdx.proto";
-import "proto/v1beta1/vulnerability.proto";
 import "proto/v1beta1/vex.proto";
+import "proto/v1beta1/vulnerability.proto";
 
 // [Grafeas](grafeas.io) API.
 //
