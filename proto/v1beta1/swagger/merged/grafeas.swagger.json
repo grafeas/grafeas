@@ -1001,9 +1001,9 @@
           },
           "description": "Holds a list of references associated with this vulnerability item and\nassessment."
         },
-        "note": {
+        "noteName": {
           "type": "string",
-          "description": "The VulnerabilityAssessment note from which this VexAssessment was\ngenerated."
+          "title": "The VulnerabilityAssessment note from which this VexAssessment was\ngenerated.\nThis will be of the form: `projects/[PROJECT_ID]/notes/[NOTE_ID]`.\n(-- api-linter: core::0122::name-suffix=disabled\n    aip.dev/not-precedent: The suffix is kept for consistency. --)"
         },
         "state": {
           "$ref": "#/definitions/AssessmentState",
@@ -1250,7 +1250,7 @@
           "items": {
             "$ref": "#/definitions/v1beta1RelatedUrl"
           },
-          "description": "Holds a list of references associated with this vulnerability item and\nassessment."
+          "description": "Holds a list of references associated with this vulnerability item and\nassessment. These uris have additional information about the\nvulnerability and the assessment itself. E.g. Link to a document which\ndetails how this assessment concluded the state of this vulnerability."
         },
         "state": {
           "$ref": "#/definitions/AssessmentState",
@@ -1285,7 +1285,7 @@
           "description": "Token that identifies a product so that it can be referred to from other\nparts in the document. There is no predefined format as long as it\nuniquely identifies a group in the context of the current document."
         },
         "genericUri": {
-          "$ref": "#/definitions/v1beta1RelatedUrl",
+          "type": "string",
           "description": "Contains a URI which is vendor-specific.\nExample: The artifact repository URL of an image."
         }
       },

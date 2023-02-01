@@ -80,7 +80,7 @@ message VulnerabilityAssessmentNote {
     oneof identifier {
       // Contains a URI which is vendor-specific.
       // Example: The artifact repository URL of an image.
-      grafeas.v1beta1.RelatedUrl  generic_uri = 3;
+      string generic_uri = 3;
     }
   }
 
@@ -101,7 +101,9 @@ message VulnerabilityAssessmentNote {
     string long_description = 3;
 
     // Holds a list of references associated with this vulnerability item and
-    // assessment.
+    // assessment. These uris have additional information about the
+    // vulnerability and the assessment itself. E.g. Link to a document which
+    // details how this assessment concluded the state of this vulnerability.
     repeated grafeas.v1beta1.RelatedUrl related_uris = 4;
 
     // Provides the state of this Vulnerability assessment.
