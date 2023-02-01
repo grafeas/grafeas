@@ -109,4 +109,9 @@
 //go:generate mkdir spdx_go_proto
 //go:generate mv spdx.pb.go spdx_go_proto
 
+//go:generate protoc vex.proto
+//go:generate rm -rf vex_go_proto
+//go:generate mkdir vex_go_proto
+//go:generate mv vex.pb.go vex_go_proto
+
 package v1beta1
