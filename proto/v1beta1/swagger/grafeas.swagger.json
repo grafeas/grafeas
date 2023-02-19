@@ -3130,14 +3130,6 @@
         },
         "vexAssessment": {
           "$ref": "#/definitions/DetailsVexAssessment"
-        },
-        "cvssV2": {
-          "$ref": "#/definitions/vulnerabilityCVSS",
-          "description": "The cvss v2 score for the vulnerability."
-        },
-        "cvssV3": {
-          "$ref": "#/definitions/vulnerabilityCVSS",
-          "description": "The cvss v3 score for the vulnerability."
         }
       },
       "description": "Details of a vulnerability Occurrence."
