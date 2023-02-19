@@ -3128,10 +3128,6 @@
         "cvssVersion": {
           "$ref": "#/definitions/v1CVSSVersion",
           "description": "CVSS version used to populate cvss_score and severity."
-        },
-        "cvssV2": {
-          "$ref": "#/definitions/v1CVSS",
-          "description": "The full description of the v2 CVSS for this vulnerability."
         }
       },
       "description": "A security vulnerability that can be found in resources."
@@ -3196,10 +3192,6 @@
           "$ref": "#/definitions/v1CVSSVersion",
           "description": "Output only. CVSS version used to populate cvss_score and severity.",
           "readOnly": true
-        },
-        "cvssV2": {
-          "$ref": "#/definitions/v1CVSS",
-          "description": "The cvss v2 score for the vulnerability."
         }
       },
       "description": "An occurrence of a severity vulnerability on a resource."
