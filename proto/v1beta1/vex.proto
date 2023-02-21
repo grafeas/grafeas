@@ -124,30 +124,48 @@ message VulnerabilityAssessmentNote {
     // Provides the state of this Vulnerability assessment.
     State state = 5;
 
-    // Contains the vulnerability kinetic information.
-    // This information can change as the vulnerability ages and new
-    // information becomes available.
-    message Threat {
-      // The type of threat.
-      enum ThreatType {
-        // No threat type specified.
-        THREAT_TYPE_UNSPECIFIED = 0;
-        // IMPACT
-        IMPACT = 1;
-        // EXPLOIT_STATUS
-        EXPLOIT_STATUS = 2;
+    // Contains information about the impact of this vulnerability,
+    // this will change with time.
+    repeated string impacts = 8;
+
+    // Justification provides the justification when the state of the
+    // assessment if NOT_AFFECTED.
+    message Justification {
+      // Provides the type of justification.
+      enum JustificationType {
+        // JUSTIFICATION_TYPE_UNSPECIFIED.
+        JUSTIFICATION_TYPE_UNSPECIFIED = 0;
+        // The vulnerable component is not present in the product.
+        COMPONENT_NOT_PRESENT = 1;
+        // The vulnerable code is not present. Typically this case
+        // occurs when source code is configured or built in a way that excludes
+        // the vulnerable code.
+        CODE_NOT_PRESENT = 2;
+        // The vulnerable code can not be executed.
+        // Typically this case occurs when the product includes the vulnerable
+        // code but does not call or use the vulnerable code.
+        CODE_NOT_IN_EXECUTE_PATH = 3;
+        // The vulnerable code cannot be controlled by an attacker to exploit
+        // the vulnerability.
+        CANNOT_BE_CONTROLLED_BY_ADVERSARY = 4;
+        // The product includes built-in protections or features that prevent
+        // exploitation of the vulnerability. These built-in protections cannot
+        // be subverted by the attacker and cannot be configured or disabled by
+        // the user. These mitigations completely prevent exploitation based on
+        // known attack vectors.
+        MITIGATIONS_EXIST = 5;
       }
 
-      // The type of threat.
-      ThreatType threat_type = 1;
+      // The justification type for this vulnerability.
+      JustificationType justification_type = 1;
 
-      // Represents a thorough human-readable discussion of the threat.
+      // Additional details on why this justfication was chosen.
       string details = 2;
     }
 
-    // Contains information about this vulnerability, this will change with
-    // time.
-    repeated Threat threats = 6;
+    // Justification provides the justification when the state of the
+    // assessment if NOT_AFFECTED.
+    Justification justification = 9;
 
     // Specifies details on how to handle (and presumably, fix) a vulnerability.
     message Remediation {
