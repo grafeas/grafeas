@@ -147,7 +147,7 @@ message VulnerabilityAssessmentNote {
         CODE_NOT_IN_EXECUTE_PATH = 3;
         // The vulnerable code cannot be controlled by an attacker to exploit
         // the vulnerability.
-        CANNOT_BE_CONTROLLED_BY_ADVESARY = 4;
+        CANNOT_BE_CONTROLLED_BY_ADVERSARY = 4;
         // The product includes built-in protections or features that prevent
         // exploitation of the vulnerability. These built-in protections cannot
         // be subverted by the attacker and cannot be configured or disabled by
