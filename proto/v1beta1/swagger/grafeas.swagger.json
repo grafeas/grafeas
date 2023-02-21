@@ -690,6 +690,20 @@
       "default": "KIND_UNSPECIFIED",
       "description": "The type of an alias.\n\n - KIND_UNSPECIFIED: Unknown.\n - FIXED: Git tag.\n - MOVABLE: Git branch.\n - OTHER: Used to specify non-standard aliases. For example, if a Git repo has a\nref named \"refs/foo/bar\"."
     },
+    "AssessmentJustification": {
+      "type": "object",
+      "properties": {
+        "justificationType": {
+          "$ref": "#/definitions/JustificationJustificationType",
+          "description": "The justification type for this vulnerability."
+        },
+        "details": {
+          "type": "string",
+          "description": "Additional details on why this justfication was chosen."
+        }
+      },
+      "description": "Justification provides the justification when the state of the\nassessment if NOT_AFFECTED."
+    },
     "AssessmentRemediation": {
       "type": "object",
       "properties": {
@@ -724,20 +738,6 @@
       ],
       "default": "STATE_UNSPECIFIED",
       "description": "Provides the state of this Vulnerability assessment.\n\n - STATE_UNSPECIFIED: No state is specified.\n - AFFECTED: This product is known to be affected by this vulnerability.\n - NOT_AFFECTED: This product is known to be not affected by this vulnerability.\n - FIXED: This product contains a fix for this vulnerability.\n - UNDER_INVESTIGATION: It is not known yet whether these versions are or are not affected\nby the vulnerability. However, it is still under investigation."
-    },
-    "AssessmentThreat": {
-      "type": "object",
-      "properties": {
-        "threatType": {
-          "$ref": "#/definitions/ThreatThreatType",
-          "description": "The type of threat."
-        },
-        "details": {
-          "type": "string",
-          "description": "Represents a thorough human-readable discussion of the threat."
-        }
-      },
-      "description": "Contains the vulnerability kinetic information.\nThis information can change as the vulnerability ages and new\ninformation becomes available."
     },
     "AuthorityHint": {
       "type": "object",
@@ -863,12 +863,12 @@
           "$ref": "#/definitions/AssessmentState",
           "description": "Provides the state of this Vulnerability assessment."
         },
-        "threats": {
+        "impacts": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/AssessmentThreat"
+            "type": "string"
           },
-          "description": "Contains information about this vulnerability, this will change with\ntime."
+          "description": "Contains information about the impact of this vulnerability,\nthis will change with time."
         },
         "remediations": {
           "type": "array",
@@ -876,6 +876,10 @@
             "$ref": "#/definitions/AssessmentRemediation"
           },
           "description": "Specifies details on how to handle (and presumably, fix) a vulnerability."
+        },
+        "justification": {
+          "$ref": "#/definitions/AssessmentJustification",
+          "description": "Justification provides the justification when the state of the\nassessment if NOT_AFFECTED."
         }
       },
       "description": "VexAssessment provides all publisher provided Vex information that is\nrelated to this vulnerability."
@@ -970,6 +974,19 @@
       },
       "title": "Defines an object to declare an in-toto artifact rule"
     },
+    "JustificationJustificationType": {
+      "type": "string",
+      "enum": [
+        "JUSTIFICATION_TYPE_UNSPECIFIED",
+        "COMPONENT_NOT_PRESENT",
+        "CODE_NOT_PRESENT",
+        "CODE_NOT_IN_EXECUTE_PATH",
+        "CANNOT_BE_CONTROLLED_BY_ADVESARY",
+        "MITIGATIONS_EXIST"
+      ],
+      "default": "JUSTIFICATION_TYPE_UNSPECIFIED",
+      "description": "Provides the type of justification.\n\n - JUSTIFICATION_TYPE_UNSPECIFIED: JUSTIFICATION_TYPE_UNSPECIFIED.\n - COMPONENT_NOT_PRESENT: The vulnerable component is not present in the product.\n - CODE_NOT_PRESENT: The vulnerable code is not present. Typically this case\noccurs when source code is configured or built in a way that excludes\nthe vulnerable code.\n - CODE_NOT_IN_EXECUTE_PATH: The vulnerable code can not be executed.\nTypically this case occurs when the product includes the vulnerable\ncode but does not call or use the vulnerable code.\n - CANNOT_BE_CONTROLLED_BY_ADVESARY: The vulnerable code cannot be controlled by an attacker to exploit\nthe vulnerability.\n - MITIGATIONS_EXIST: The product includes built-in protections or features that prevent\nexploitation of the vulnerability. These built-in protections cannot\nbe subverted by the attacker and cannot be configured or disabled by\nthe user. These mitigations completely prevent exploitation based on\nknown attack vectors."
+    },
     "LayerDirective": {
       "type": "string",
       "enum": [
@@ -1063,16 +1080,6 @@
       "default": "REMEDIATION_TYPE_UNSPECIFIED",
       "description": "The type of remediation that can be applied.\n\n - REMEDIATION_TYPE_UNSPECIFIED: No remediation type specified.\n - MITIGATION: A MITIGATION is available.\n - NO_FIX_PLANNED: No fix is planned.\n - NONE_AVAILABLE: Not available.\n - VENDOR_FIX: A vendor fix is available.\n - WORKAROUND: A workaround is available."
     },
-    "ThreatThreatType": {
-      "type": "string",
-      "enum": [
-        "THREAT_TYPE_UNSPECIFIED",
-        "IMPACT",
-        "EXPLOIT_STATUS"
-      ],
-      "default": "THREAT_TYPE_UNSPECIFIED",
-      "description": "The type of threat.\n\n - THREAT_TYPE_UNSPECIFIED: No threat type specified.\n - IMPACT: IMPACT\n - EXPLOIT_STATUS: EXPLOIT_STATUS"
-    },
     "VersionVersionKind": {
       "type": "string",
       "enum": [
@@ -1110,12 +1117,16 @@
           "$ref": "#/definitions/AssessmentState",
           "description": "Provides the state of this Vulnerability assessment."
         },
-        "threats": {
+        "impacts": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/AssessmentThreat"
+            "type": "string"
           },
-          "description": "Contains information about this vulnerability, this will change with\ntime."
+          "description": "Contains information about the impact of this vulnerability,\nthis will change with time."
+        },
+        "justification": {
+          "$ref": "#/definitions/AssessmentJustification",
+          "description": "Justification provides the justification when the state of the\nassessment if NOT_AFFECTED."
         },
         "remediations": {
           "type": "array",
