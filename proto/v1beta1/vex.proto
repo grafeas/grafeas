@@ -140,26 +140,26 @@ message VulnerabilityAssessmentNote {
         // The vulnerable code is not present. Typically this case
         // occurs when source code is configured or built in a way that excludes
         // the vulnerable code.
-        CODE_NOT_PRESENT = 2;
+        VULNERABLE_CODE_NOT_PRESENT = 2;
         // The vulnerable code can not be executed.
         // Typically this case occurs when the product includes the vulnerable
         // code but does not call or use the vulnerable code.
-        CODE_NOT_IN_EXECUTE_PATH = 3;
+        VULNERABLE_CODE_NOT_IN_EXECUTE_PATH = 3;
         // The vulnerable code cannot be controlled by an attacker to exploit
         // the vulnerability.
-        CANNOT_BE_CONTROLLED_BY_ADVERSARY = 4;
+        VULNERABLE_CODE_CANNOT_BE_CONTROLLED_BY_ADVERSARY = 4;
         // The product includes built-in protections or features that prevent
         // exploitation of the vulnerability. These built-in protections cannot
         // be subverted by the attacker and cannot be configured or disabled by
         // the user. These mitigations completely prevent exploitation based on
         // known attack vectors.
-        MITIGATIONS_EXIST = 5;
+        INLINE_MITIGATIONS_ALREADY_EXIST = 5;
       }
 
       // The justification type for this vulnerability.
       JustificationType justification_type = 1;
 
-      // Additional details on why this justfication was chosen.
+      // Additional details on why this justification was chosen.
       string details = 2;
     }
 

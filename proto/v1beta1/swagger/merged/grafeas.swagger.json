@@ -845,7 +845,7 @@
         },
         "details": {
           "type": "string",
-          "description": "Additional details on why this justfication was chosen."
+          "description": "Additional details on why this justification was chosen."
         }
       },
       "description": "Justification provides the justification when the state of the\nassessment if NOT_AFFECTED."
@@ -1125,13 +1125,13 @@
       "enum": [
         "JUSTIFICATION_TYPE_UNSPECIFIED",
         "COMPONENT_NOT_PRESENT",
-        "CODE_NOT_PRESENT",
-        "CODE_NOT_IN_EXECUTE_PATH",
-        "CANNOT_BE_CONTROLLED_BY_ADVERSARY",
-        "MITIGATIONS_EXIST"
+        "VULNERABLE_CODE_NOT_PRESENT",
+        "VULNERABLE_CODE_NOT_IN_EXECUTE_PATH",
+        "VULNERABLE_CODE_CANNOT_BE_CONTROLLED_BY_ADVERSARY",
+        "INLINE_MITIGATIONS_ALREADY_EXIST"
       ],
       "default": "JUSTIFICATION_TYPE_UNSPECIFIED",
-      "description": "Provides the type of justification.\n\n - JUSTIFICATION_TYPE_UNSPECIFIED: JUSTIFICATION_TYPE_UNSPECIFIED.\n - COMPONENT_NOT_PRESENT: The vulnerable component is not present in the product.\n - CODE_NOT_PRESENT: The vulnerable code is not present. Typically this case\noccurs when source code is configured or built in a way that excludes\nthe vulnerable code.\n - CODE_NOT_IN_EXECUTE_PATH: The vulnerable code can not be executed.\nTypically this case occurs when the product includes the vulnerable\ncode but does not call or use the vulnerable code.\n - CANNOT_BE_CONTROLLED_BY_ADVERSARY: The vulnerable code cannot be controlled by an attacker to exploit\nthe vulnerability.\n - MITIGATIONS_EXIST: The product includes built-in protections or features that prevent\nexploitation of the vulnerability. These built-in protections cannot\nbe subverted by the attacker and cannot be configured or disabled by\nthe user. These mitigations completely prevent exploitation based on\nknown attack vectors."
+      "description": "Provides the type of justification.\n\n - JUSTIFICATION_TYPE_UNSPECIFIED: JUSTIFICATION_TYPE_UNSPECIFIED.\n - COMPONENT_NOT_PRESENT: The vulnerable component is not present in the product.\n - VULNERABLE_CODE_NOT_PRESENT: The vulnerable code is not present. Typically this case\noccurs when source code is configured or built in a way that excludes\nthe vulnerable code.\n - VULNERABLE_CODE_NOT_IN_EXECUTE_PATH: The vulnerable code can not be executed.\nTypically this case occurs when the product includes the vulnerable\ncode but does not call or use the vulnerable code.\n - VULNERABLE_CODE_CANNOT_BE_CONTROLLED_BY_ADVERSARY: The vulnerable code cannot be controlled by an attacker to exploit\nthe vulnerability.\n - INLINE_MITIGATIONS_ALREADY_EXIST: The product includes built-in protections or features that prevent\nexploitation of the vulnerability. These built-in protections cannot\nbe subverted by the attacker and cannot be configured or disabled by\nthe user. These mitigations completely prevent exploitation based on\nknown attack vectors."
     },
     "LayerDirective": {
       "type": "string",
