@@ -33,6 +33,7 @@
 //go:generate protoc ../../proto/v1/cvss.proto
 //go:generate protoc ../../proto/v1/discovery.proto
 //go:generate protoc ../../proto/v1/image.proto
+//go:generate protoc ../../proto/v1/vex.proto
 //go:generate protoc ../../proto/v1/vulnerability.proto
 //go:generate protoc ../../proto/v1/upgrade.proto
 //go:generate protoc ../../proto/v1/compliance.proto
