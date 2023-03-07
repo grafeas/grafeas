@@ -21,7 +21,6 @@ option java_multiple_files = true;
 option java_package = "io.grafeas.v1beta1.vex";
 option objc_class_prefix = "GRA";
 
-import "google/protobuf/timestamp.proto";
 import "proto/v1beta1/common.proto";
 
 // A single VulnerabilityAssessmentNote represents
@@ -58,7 +57,7 @@ message VulnerabilityAssessmentNote {
     // Contains a URL which is under control of the issuing party and can
     // be used as a globally unique identifier for that issuing party.
     // Example: https://csaf.io
-    string context = 3;
+    string publisher_namespace = 3;
   }
 
   // Publisher details of this Note.
@@ -187,9 +186,6 @@ message VulnerabilityAssessmentNote {
 
       // The type of remediation that can be applied.
       RemediationType remediation_type = 1;
-
-      // Contains the date from which the remediation is available.
-      google.protobuf.Timestamp remediation_time = 2;
 
       // Contains a comprehensive human-readable discussion of the remediation.
       string details = 4;

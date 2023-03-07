@@ -857,11 +857,6 @@
           "$ref": "#/definitions/RemediationRemediationType",
           "description": "The type of remediation that can be applied."
         },
-        "remediationTime": {
-          "type": "string",
-          "format": "date-time",
-          "description": "Contains the date from which the remediation is available."
-        },
         "details": {
           "type": "string",
           "description": "Contains a comprehensive human-readable discussion of the remediation."
@@ -1313,7 +1308,7 @@
           "type": "string",
           "description": "Provides information about the authority of the issuing party to\nrelease the document, in particular, the party's constituency and\nresponsibilities or other obligations."
         },
-        "context": {
+        "publisherNamespace": {
           "type": "string",
           "title": "The context or namespace.\nContains a URL which is under control of the issuing party and can\nbe used as a globally unique identifier for that issuing party.\nExample: https://csaf.io"
         }
