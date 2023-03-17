@@ -14,7 +14,7 @@
 
 syntax = "proto3";
 
-package grafeas.v1beta1.sbom_reference;
+package grafeas.v1beta1.sbom;
 
 import "proto/v1beta1/common.proto";
 
