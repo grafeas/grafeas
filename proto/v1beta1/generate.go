@@ -114,4 +114,9 @@
 //go:generate mkdir vex_go_proto
 //go:generate mv vex.pb.go vex_go_proto
 
+//go:generate protoc sbom_reference.proto
+//go:generate rm -rf sbom_reference_go_proto
+//go:generate mkdir sbom_reference_go_proto
+//go:generate mv sbom_reference.pb.go sbom_reference_go_proto
+
 package v1beta1
