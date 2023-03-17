@@ -147,7 +147,7 @@ message Digest {
   bytes digest_bytes = 2;
 }
 
-message IntotoStatement {
+message InTotoStatement {
   message Subject {
     string name = 1;
     // `"<ALGORITHM>": "<HEX_VALUE>"`
