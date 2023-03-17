@@ -37,7 +37,7 @@ message SBOMReferenceOccurrence {
 message SbomReferenceIntotoPayload {
   string type = 1 [json_name = "_type"];
   string predicate_type = 2;
-  repeated IntotoStatement.Subject subject = 3;
+  repeated InTotoStatement.Subject subject = 3;
   SbomReferenceIntotoPredicate predicate = 4;
 }
 
