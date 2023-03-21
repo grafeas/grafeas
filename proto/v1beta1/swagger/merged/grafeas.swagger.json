@@ -1849,6 +1849,21 @@
       },
       "description": "This defines the format used to record keys used in the software supply\nchain. An in-toto link is attested using one or more keys defined in the\nin-toto layout. An example of this is:\n{\n  \"key_id\": \"776a00e29f3559e0141b3b096f696abc6cfb0c657ab40f441132b345b0...\",\n  \"key_type\": \"rsa\",\n  \"public_key_value\": \"-----BEGIN PUBLIC KEY-----\\nMIIBojANBgkqhkiG9w0B...\",\n  \"key_scheme\": \"rsassa-pss-sha256\"\n}\nThe format for in-toto's key definition can be found in section 4.2 of the\nin-toto specification."
     },
+    "intotoSubject": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "digest": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "`\"\u003cALGORITHM\u003e\": \"\u003cHEX_VALUE\u003e\"`\nAlgorithms can be e.g. sha256, sha512\nSee https://github.com/in-toto/attestation/blob/main/spec/field_types.md#DigestSet"
+        }
+      }
+    },
     "packageArchitecture": {
       "type": "string",
       "enum": [
@@ -2255,6 +2270,74 @@
       },
       "description": "- Simple to use and understand for most users\n- Flexible enough to meet unexpected needs\n\n# Overview\n\nThe `Status` message contains three pieces of data: error code, error message,\nand error details. The error code should be an enum value of\n[google.rpc.Code][google.rpc.Code], but it may accept additional error codes if needed.  The\nerror message should be a developer-facing English message that helps\ndevelopers *understand* and *resolve* the error. If a localized user-facing\nerror message is needed, put the localized message in the error details or\nlocalize it in the client. The optional error details may contain arbitrary\ninformation about the error. There is a predefined set of error detail types\nin the package `google.rpc` that can be used for common error conditions.\n\n# Language mapping\n\nThe `Status` message is the logical representation of the error model, but it\nis not necessarily the actual wire format. When the `Status` message is\nexposed in different client libraries and different wire protocols, it can be\nmapped differently. For example, it will likely be mapped to some exceptions\nin Java, but more likely mapped to some error codes in C.\n\n# Other uses\n\nThe error model and the `Status` message can be used in a variety of\nenvironments, either with or without APIs, to provide a\nconsistent developer experience across different environments.\n\nExample uses of this error model include:\n\n- Partial errors. If a service needs to return partial errors to the client,\n    it may embed the `Status` in the normal response to indicate the partial\n    errors.\n\n- Workflow errors. A typical workflow has multiple steps. Each step may\n    have a `Status` message for error reporting.\n\n- Batch operations. If a client uses batch request and batch response, the\n    `Status` message should be used directly inside batch response, one for\n    each error sub-response.\n\n- Asynchronous operations. If an API call embeds asynchronous operation\n    results in its response, the status of those operations should be\n    represented directly using the `Status` message.\n\n- Logging. If some API errors are stored in logs, the message `Status` could\n    be used directly after any stripping needed for security/privacy reasons.",
       "title": "The `Status` type defines a logical error model that is suitable for different\nprogramming environments, including REST APIs and RPC APIs. It is used by\n[gRPC](https://github.com/grpc). The error model is designed to be:"
+    },
+    "sbomSBOMReferenceNote": {
+      "type": "object",
+      "properties": {
+        "format": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        }
+      }
+    },
+    "sbomSBOMReferenceOccurrence": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "$ref": "#/definitions/sbomSbomReferenceIntotoPayload"
+        },
+        "payloadType": {
+          "type": "string"
+        },
+        "signatures": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1beta1EnvelopeSignature"
+          }
+        }
+      }
+    },
+    "sbomSbomReferenceIntotoPayload": {
+      "type": "object",
+      "properties": {
+        "_type": {
+          "type": "string"
+        },
+        "predicateType": {
+          "type": "string"
+        },
+        "subject": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/intotoSubject"
+          }
+        },
+        "predicate": {
+          "$ref": "#/definitions/sbomSbomReferenceIntotoPredicate"
+        }
+      }
+    },
+    "sbomSbomReferenceIntotoPredicate": {
+      "type": "object",
+      "properties": {
+        "referrerId": {
+          "type": "string"
+        },
+        "location": {
+          "type": "string"
+        },
+        "mimeType": {
+          "type": "string"
+        },
+        "digest": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
     },
     "sourceAliasContext": {
       "type": "object",
@@ -2963,6 +3046,10 @@
         "vulnerabilityAssessment": {
           "$ref": "#/definitions/vexVulnerabilityAssessmentNote",
           "description": "A note describing a vulnerability assessment."
+        },
+        "sbomReference": {
+          "$ref": "#/definitions/sbomSBOMReferenceNote",
+          "description": "A note describing an SBOM reference."
         }
       },
       "description": "A type of analysis that can be done for a resource."
@@ -3076,6 +3163,9 @@
         "envelope": {
           "$ref": "#/definitions/v1beta1Envelope",
           "title": "https://github.com/secure-systems-lab/dsse"
+        },
+        "sbomReference": {
+          "$ref": "#/definitions/sbomSBOMReferenceOccurrence"
         }
       },
       "description": "An instance of an analysis type that has been found on a resource."

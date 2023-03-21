@@ -168,3 +168,12 @@ message Link {
   // }
  Environment environment = 5;
 }
+
+message Subject {
+  string name = 1;
+  // `"<ALGORITHM>": "<HEX_VALUE>"`
+  // Algorithms can be e.g. sha256, sha512
+  // See https://github.com/in-toto/attestation/blob/main/spec/field_types.md#DigestSet
+  map<string, string> digest = 2;
+}
+
