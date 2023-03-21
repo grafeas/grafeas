@@ -452,6 +452,64 @@ func (x *Link) GetEnvironment() *Link_Environment {
 	return nil
 }
 
+type Subject struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	// `"<ALGORITHM>": "<HEX_VALUE>"`
+	// Algorithms can be e.g. sha256, sha512
+	// See https://github.com/in-toto/attestation/blob/main/spec/field_types.md#DigestSet
+	Digest map[string]string `protobuf:"bytes,2,rep,name=digest,proto3" json:"digest,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+}
+
+func (x *Subject) Reset() {
+	*x = Subject{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_intoto_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Subject) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Subject) ProtoMessage() {}
+
+func (x *Subject) ProtoReflect() protoreflect.Message {
+	mi := &file_intoto_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Subject.ProtoReflect.Descriptor instead.
+func (*Subject) Descriptor() ([]byte, []int) {
+	return file_intoto_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *Subject) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *Subject) GetDigest() map[string]string {
+	if x != nil {
+		return x.Digest
+	}
+	return nil
+}
+
 // Defines an object to declare an in-toto artifact rule
 type InToto_ArtifactRule struct {
 	state         protoimpl.MessageState
@@ -464,7 +522,7 @@ type InToto_ArtifactRule struct {
 func (x *InToto_ArtifactRule) Reset() {
 	*x = InToto_ArtifactRule{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_intoto_proto_msgTypes[5]
+		mi := &file_intoto_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -477,7 +535,7 @@ func (x *InToto_ArtifactRule) String() string {
 func (*InToto_ArtifactRule) ProtoMessage() {}
 
 func (x *InToto_ArtifactRule) ProtoReflect() protoreflect.Message {
-	mi := &file_intoto_proto_msgTypes[5]
+	mi := &file_intoto_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -512,7 +570,7 @@ type Link_ArtifactHashes struct {
 func (x *Link_ArtifactHashes) Reset() {
 	*x = Link_ArtifactHashes{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_intoto_proto_msgTypes[6]
+		mi := &file_intoto_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -525,7 +583,7 @@ func (x *Link_ArtifactHashes) String() string {
 func (*Link_ArtifactHashes) ProtoMessage() {}
 
 func (x *Link_ArtifactHashes) ProtoReflect() protoreflect.Message {
-	mi := &file_intoto_proto_msgTypes[6]
+	mi := &file_intoto_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -560,7 +618,7 @@ type Link_Artifact struct {
 func (x *Link_Artifact) Reset() {
 	*x = Link_Artifact{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_intoto_proto_msgTypes[7]
+		mi := &file_intoto_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -573,7 +631,7 @@ func (x *Link_Artifact) String() string {
 func (*Link_Artifact) ProtoMessage() {}
 
 func (x *Link_Artifact) ProtoReflect() protoreflect.Message {
-	mi := &file_intoto_proto_msgTypes[7]
+	mi := &file_intoto_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -616,7 +674,7 @@ type Link_ByProducts struct {
 func (x *Link_ByProducts) Reset() {
 	*x = Link_ByProducts{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_intoto_proto_msgTypes[8]
+		mi := &file_intoto_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -629,7 +687,7 @@ func (x *Link_ByProducts) String() string {
 func (*Link_ByProducts) ProtoMessage() {}
 
 func (x *Link_ByProducts) ProtoReflect() protoreflect.Message {
-	mi := &file_intoto_proto_msgTypes[8]
+	mi := &file_intoto_proto_msgTypes[9]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -665,7 +723,7 @@ type Link_Environment struct {
 func (x *Link_Environment) Reset() {
 	*x = Link_Environment{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_intoto_proto_msgTypes[9]
+		mi := &file_intoto_proto_msgTypes[10]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -678,7 +736,7 @@ func (x *Link_Environment) String() string {
 func (*Link_Environment) ProtoMessage() {}
 
 func (x *Link_Environment) ProtoReflect() protoreflect.Message {
-	mi := &file_intoto_proto_msgTypes[9]
+	mi := &file_intoto_proto_msgTypes[10]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -805,6 +863,16 @@ var file_intoto_proto_rawDesc = []byte{
 	0x75, 0x73, 0x74, 0x6f, 0x6d, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79,
 	0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b,
 	0x65, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x22, 0x9d, 0x01, 0x0a,
+	0x07, 0x53, 0x75, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x43, 0x0a, 0x06,
+	0x64, 0x69, 0x67, 0x65, 0x73, 0x74, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x2b, 0x2e, 0x67,
+	0x72, 0x61, 0x66, 0x65, 0x61, 0x73, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x69,
+	0x6e, 0x74, 0x6f, 0x74, 0x6f, 0x2e, 0x53, 0x75, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x2e, 0x44, 0x69,
+	0x67, 0x65, 0x73, 0x74, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x06, 0x64, 0x69, 0x67, 0x65, 0x73,
+	0x74, 0x1a, 0x39, 0x0a, 0x0b, 0x44, 0x69, 0x67, 0x65, 0x73, 0x74, 0x45, 0x6e, 0x74, 0x72, 0x79,
+	0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b,
+	0x65, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28,
 	0x09, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x42, 0x6f, 0x0a, 0x19,
 	0x69, 0x6f, 0x2e, 0x67, 0x72, 0x61, 0x66, 0x65, 0x61, 0x73, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74,
 	0x61, 0x31, 0x2e, 0x69, 0x6e, 0x74, 0x6f, 0x74, 0x6f, 0x42, 0x10, 0x49, 0x6e, 0x54, 0x6f, 0x74,
@@ -828,39 +896,42 @@ func file_intoto_proto_rawDescGZIP() []byte {
 	return file_intoto_proto_rawDescData
 }
 
-var file_intoto_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
+var file_intoto_proto_msgTypes = make([]protoimpl.MessageInfo, 14)
 var file_intoto_proto_goTypes = []interface{}{
 	(*InToto)(nil),              // 0: grafeas.v1beta1.intoto.InToto
 	(*SigningKey)(nil),          // 1: grafeas.v1beta1.intoto.SigningKey
 	(*Details)(nil),             // 2: grafeas.v1beta1.intoto.Details
 	(*Signature)(nil),           // 3: grafeas.v1beta1.intoto.Signature
 	(*Link)(nil),                // 4: grafeas.v1beta1.intoto.Link
-	(*InToto_ArtifactRule)(nil), // 5: grafeas.v1beta1.intoto.InToto.ArtifactRule
-	(*Link_ArtifactHashes)(nil), // 6: grafeas.v1beta1.intoto.Link.ArtifactHashes
-	(*Link_Artifact)(nil),       // 7: grafeas.v1beta1.intoto.Link.Artifact
-	(*Link_ByProducts)(nil),     // 8: grafeas.v1beta1.intoto.Link.ByProducts
-	(*Link_Environment)(nil),    // 9: grafeas.v1beta1.intoto.Link.Environment
-	nil,                         // 10: grafeas.v1beta1.intoto.Link.ByProducts.CustomValuesEntry
-	nil,                         // 11: grafeas.v1beta1.intoto.Link.Environment.CustomValuesEntry
+	(*Subject)(nil),             // 5: grafeas.v1beta1.intoto.Subject
+	(*InToto_ArtifactRule)(nil), // 6: grafeas.v1beta1.intoto.InToto.ArtifactRule
+	(*Link_ArtifactHashes)(nil), // 7: grafeas.v1beta1.intoto.Link.ArtifactHashes
+	(*Link_Artifact)(nil),       // 8: grafeas.v1beta1.intoto.Link.Artifact
+	(*Link_ByProducts)(nil),     // 9: grafeas.v1beta1.intoto.Link.ByProducts
+	(*Link_Environment)(nil),    // 10: grafeas.v1beta1.intoto.Link.Environment
+	nil,                         // 11: grafeas.v1beta1.intoto.Link.ByProducts.CustomValuesEntry
+	nil,                         // 12: grafeas.v1beta1.intoto.Link.Environment.CustomValuesEntry
+	nil,                         // 13: grafeas.v1beta1.intoto.Subject.DigestEntry
 }
 var file_intoto_proto_depIdxs = []int32{
 	1,  // 0: grafeas.v1beta1.intoto.InToto.signing_keys:type_name -> grafeas.v1beta1.intoto.SigningKey
-	5,  // 1: grafeas.v1beta1.intoto.InToto.expected_materials:type_name -> grafeas.v1beta1.intoto.InToto.ArtifactRule
-	5,  // 2: grafeas.v1beta1.intoto.InToto.expected_products:type_name -> grafeas.v1beta1.intoto.InToto.ArtifactRule
+	6,  // 1: grafeas.v1beta1.intoto.InToto.expected_materials:type_name -> grafeas.v1beta1.intoto.InToto.ArtifactRule
+	6,  // 2: grafeas.v1beta1.intoto.InToto.expected_products:type_name -> grafeas.v1beta1.intoto.InToto.ArtifactRule
 	3,  // 3: grafeas.v1beta1.intoto.Details.signatures:type_name -> grafeas.v1beta1.intoto.Signature
 	4,  // 4: grafeas.v1beta1.intoto.Details.link:type_name -> grafeas.v1beta1.intoto.Link
-	7,  // 5: grafeas.v1beta1.intoto.Link.materials:type_name -> grafeas.v1beta1.intoto.Link.Artifact
-	7,  // 6: grafeas.v1beta1.intoto.Link.products:type_name -> grafeas.v1beta1.intoto.Link.Artifact
-	8,  // 7: grafeas.v1beta1.intoto.Link.byproducts:type_name -> grafeas.v1beta1.intoto.Link.ByProducts
-	9,  // 8: grafeas.v1beta1.intoto.Link.environment:type_name -> grafeas.v1beta1.intoto.Link.Environment
-	6,  // 9: grafeas.v1beta1.intoto.Link.Artifact.hashes:type_name -> grafeas.v1beta1.intoto.Link.ArtifactHashes
-	10, // 10: grafeas.v1beta1.intoto.Link.ByProducts.custom_values:type_name -> grafeas.v1beta1.intoto.Link.ByProducts.CustomValuesEntry
-	11, // 11: grafeas.v1beta1.intoto.Link.Environment.custom_values:type_name -> grafeas.v1beta1.intoto.Link.Environment.CustomValuesEntry
-	12, // [12:12] is the sub-list for method output_type
-	12, // [12:12] is the sub-list for method input_type
-	12, // [12:12] is the sub-list for extension type_name
-	12, // [12:12] is the sub-list for extension extendee
-	0,  // [0:12] is the sub-list for field type_name
+	8,  // 5: grafeas.v1beta1.intoto.Link.materials:type_name -> grafeas.v1beta1.intoto.Link.Artifact
+	8,  // 6: grafeas.v1beta1.intoto.Link.products:type_name -> grafeas.v1beta1.intoto.Link.Artifact
+	9,  // 7: grafeas.v1beta1.intoto.Link.byproducts:type_name -> grafeas.v1beta1.intoto.Link.ByProducts
+	10, // 8: grafeas.v1beta1.intoto.Link.environment:type_name -> grafeas.v1beta1.intoto.Link.Environment
+	13, // 9: grafeas.v1beta1.intoto.Subject.digest:type_name -> grafeas.v1beta1.intoto.Subject.DigestEntry
+	7,  // 10: grafeas.v1beta1.intoto.Link.Artifact.hashes:type_name -> grafeas.v1beta1.intoto.Link.ArtifactHashes
+	11, // 11: grafeas.v1beta1.intoto.Link.ByProducts.custom_values:type_name -> grafeas.v1beta1.intoto.Link.ByProducts.CustomValuesEntry
+	12, // 12: grafeas.v1beta1.intoto.Link.Environment.custom_values:type_name -> grafeas.v1beta1.intoto.Link.Environment.CustomValuesEntry
+	13, // [13:13] is the sub-list for method output_type
+	13, // [13:13] is the sub-list for method input_type
+	13, // [13:13] is the sub-list for extension type_name
+	13, // [13:13] is the sub-list for extension extendee
+	0,  // [0:13] is the sub-list for field type_name
 }
 
 func init() { file_intoto_proto_init() }
@@ -930,7 +1001,7 @@ func file_intoto_proto_init() {
 			}
 		}
 		file_intoto_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*InToto_ArtifactRule); i {
+			switch v := v.(*Subject); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -942,7 +1013,7 @@ func file_intoto_proto_init() {
 			}
 		}
 		file_intoto_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Link_ArtifactHashes); i {
+			switch v := v.(*InToto_ArtifactRule); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -954,7 +1025,7 @@ func file_intoto_proto_init() {
 			}
 		}
 		file_intoto_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Link_Artifact); i {
+			switch v := v.(*Link_ArtifactHashes); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -966,7 +1037,7 @@ func file_intoto_proto_init() {
 			}
 		}
 		file_intoto_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Link_ByProducts); i {
+			switch v := v.(*Link_Artifact); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -978,6 +1049,18 @@ func file_intoto_proto_init() {
 			}
 		}
 		file_intoto_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Link_ByProducts); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_intoto_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Link_Environment); i {
 			case 0:
 				return &v.state
@@ -996,7 +1079,7 @@ func file_intoto_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_intoto_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   12,
+			NumMessages:   14,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

@@ -17,6 +17,7 @@ syntax = "proto3";
 package grafeas.v1beta1.sbom;
 
 import "proto/v1beta1/common.proto";
+import "proto/v1beta1/intoto.proto";
 
 option go_package = "github.com/grafeas/grafeas/proto/v1beta1/sbom_go_proto";
 option java_multiple_files = true;
@@ -37,7 +38,7 @@ message SBOMReferenceOccurrence {
 message SbomReferenceIntotoPayload {
   string type = 1 [json_name = "_type"];
   string predicate_type = 2;
-  repeated InTotoStatement.Subject subject = 3;
+  repeated intoto.Subject subject = 3;
   SbomReferenceIntotoPredicate predicate = 4;
 }
 

@@ -1115,21 +1115,6 @@
       },
       "title": "Defines an object to declare an in-toto artifact rule"
     },
-    "IntotoStatementSubject": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string"
-        },
-        "digest": {
-          "type": "object",
-          "additionalProperties": {
-            "type": "string"
-          },
-          "title": "`\"\u003cALGORITHM\u003e\": \"\u003cHEX_VALUE\u003e\"`\nAlgorithms can be e.g. sha256, sha512\nSee\nhttps://github.com/in-toto/attestation/blob/main/spec/field_types.md#DigestSet"
-        }
-      }
-    },
     "JustificationJustificationType": {
       "type": "string",
       "enum": [
@@ -1864,6 +1849,21 @@
       },
       "description": "This defines the format used to record keys used in the software supply\nchain. An in-toto link is attested using one or more keys defined in the\nin-toto layout. An example of this is:\n{\n  \"key_id\": \"776a00e29f3559e0141b3b096f696abc6cfb0c657ab40f441132b345b0...\",\n  \"key_type\": \"rsa\",\n  \"public_key_value\": \"-----BEGIN PUBLIC KEY-----\\nMIIBojANBgkqhkiG9w0B...\",\n  \"key_scheme\": \"rsassa-pss-sha256\"\n}\nThe format for in-toto's key definition can be found in section 4.2 of the\nin-toto specification."
     },
+    "intotoSubject": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "digest": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "`\"\u003cALGORITHM\u003e\": \"\u003cHEX_VALUE\u003e\"`\nAlgorithms can be e.g. sha256, sha512\nSee https://github.com/in-toto/attestation/blob/main/spec/field_types.md#DigestSet"
+        }
+      }
+    },
     "packageArchitecture": {
       "type": "string",
       "enum": [
@@ -2311,7 +2311,7 @@
         "subject": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/IntotoStatementSubject"
+            "$ref": "#/definitions/intotoSubject"
           }
         },
         "predicate": {
