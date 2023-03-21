@@ -32,7 +32,7 @@ import (
 	intoto_go_proto "github.com/grafeas/grafeas/proto/v1beta1/intoto_go_proto"
 	package_go_proto "github.com/grafeas/grafeas/proto/v1beta1/package_go_proto"
 	provenance_go_proto "github.com/grafeas/grafeas/proto/v1beta1/provenance_go_proto"
-	sbom_reference_go_proto "github.com/grafeas/grafeas/proto/v1beta1/sbom_reference_go_proto"
+	sbom_go_proto "github.com/grafeas/grafeas/proto/v1beta1/sbom_go_proto"
 	spdx_go_proto "github.com/grafeas/grafeas/proto/v1beta1/spdx_go_proto"
 	vex_go_proto "github.com/grafeas/grafeas/proto/v1beta1/vex_go_proto"
 	vulnerability_go_proto "github.com/grafeas/grafeas/proto/v1beta1/vulnerability_go_proto"
@@ -94,8 +94,8 @@ type Occurrence struct {
 	//	*Occurrence_SpdxRelationship
 	Details isOccurrence_Details `protobuf_oneof:"details"`
 	// https://github.com/secure-systems-lab/dsse
-	Envelope      *common_go_proto.Envelope                        `protobuf:"bytes,20,opt,name=envelope,proto3" json:"envelope,omitempty"`
-	SbomReference *sbom_reference_go_proto.SBOMReferenceOccurrence `protobuf:"bytes,21,opt,name=sbom_reference,json=sbomReference,proto3" json:"sbom_reference,omitempty"`
+	Envelope      *common_go_proto.Envelope              `protobuf:"bytes,20,opt,name=envelope,proto3" json:"envelope,omitempty"`
+	SbomReference *sbom_go_proto.SBOMReferenceOccurrence `protobuf:"bytes,21,opt,name=sbom_reference,json=sbomReference,proto3" json:"sbom_reference,omitempty"`
 }
 
 func (x *Occurrence) Reset() {
@@ -277,7 +277,7 @@ func (x *Occurrence) GetEnvelope() *common_go_proto.Envelope {
 	return nil
 }
 
-func (x *Occurrence) GetSbomReference() *sbom_reference_go_proto.SBOMReferenceOccurrence {
+func (x *Occurrence) GetSbomReference() *sbom_go_proto.SBOMReferenceOccurrence {
 	if x != nil {
 		return x.SbomReference
 	}
@@ -694,7 +694,7 @@ func (x *Note) GetVulnerabilityAssessment() *vex_go_proto.VulnerabilityAssessmen
 	return nil
 }
 
-func (x *Note) GetSbomReference() *sbom_reference_go_proto.SBOMReferenceNote {
+func (x *Note) GetSbomReference() *sbom_go_proto.SBOMReferenceNote {
 	if x, ok := x.GetType().(*Note_SbomReference); ok {
 		return x.SbomReference
 	}
@@ -772,7 +772,7 @@ type Note_VulnerabilityAssessment struct {
 
 type Note_SbomReference struct {
 	// A note describing an SBOM reference.
-	SbomReference *sbom_reference_go_proto.SBOMReferenceNote `protobuf:"bytes,23,opt,name=sbom_reference,json=sbomReference,proto3,oneof"`
+	SbomReference *sbom_go_proto.SBOMReferenceNote `protobuf:"bytes,23,opt,name=sbom_reference,json=sbomReference,proto3,oneof"`
 }
 
 func (*Note_Vulnerability) isNote_Type() {}
@@ -2777,7 +2777,7 @@ var file_grafeas_proto_goTypes = []interface{}{
 	(*spdx_go_proto.FileOccurrence)(nil),                         // 38: grafeas.v1beta1.spdx.FileOccurrence
 	(*spdx_go_proto.RelationshipOccurrence)(nil),                 // 39: grafeas.v1beta1.spdx.RelationshipOccurrence
 	(*common_go_proto.Envelope)(nil),                             // 40: grafeas.v1beta1.Envelope
-	(*sbom_reference_go_proto.SBOMReferenceOccurrence)(nil),      // 41: grafeas.v1beta1.sbom.SBOMReferenceOccurrence
+	(*sbom_go_proto.SBOMReferenceOccurrence)(nil),                // 41: grafeas.v1beta1.sbom.SBOMReferenceOccurrence
 	(*provenance_go_proto.Hash)(nil),                             // 42: grafeas.v1beta1.provenance.Hash
 	(*common_go_proto.RelatedUrl)(nil),                           // 43: grafeas.v1beta1.RelatedUrl
 	(*vulnerability_go_proto.Vulnerability)(nil),                 // 44: grafeas.v1beta1.vulnerability.Vulnerability
@@ -2793,7 +2793,7 @@ var file_grafeas_proto_goTypes = []interface{}{
 	(*spdx_go_proto.FileNote)(nil),                               // 54: grafeas.v1beta1.spdx.FileNote
 	(*spdx_go_proto.RelationshipNote)(nil),                       // 55: grafeas.v1beta1.spdx.RelationshipNote
 	(*vex_go_proto.VulnerabilityAssessmentNote)(nil),             // 56: grafeas.v1beta1.vex.VulnerabilityAssessmentNote
-	(*sbom_reference_go_proto.SBOMReferenceNote)(nil),            // 57: grafeas.v1beta1.sbom.SBOMReferenceNote
+	(*sbom_go_proto.SBOMReferenceNote)(nil),                      // 57: grafeas.v1beta1.sbom.SBOMReferenceNote
 	(*field_mask.FieldMask)(nil),                                 // 58: google.protobuf.FieldMask
 	(vulnerability_go_proto.Severity)(0),                         // 59: grafeas.v1beta1.vulnerability.Severity
 	(*empty.Empty)(nil),                                          // 60: google.protobuf.Empty
