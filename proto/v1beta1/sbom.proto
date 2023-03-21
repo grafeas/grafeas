@@ -48,3 +48,4 @@ message SbomReferenceIntotoPredicate {
   string mime_type = 3;
   map<string, string> digest = 4;
 }
+
