@@ -256,12 +256,12 @@ message Occurrence {
     grafeas.v1beta1.spdx.FileOccurrence spdx_file = 18;
     // Describes a specific SPDX Relationship.
     grafeas.v1beta1.spdx.RelationshipOccurrence spdx_relationship = 19;
+    // Describes a specific SBOM reference occurrences.
+    grafeas.v1beta1.sbom.SBOMReferenceOccurrence sbom_reference = 21;
   }
 
   // https://github.com/secure-systems-lab/dsse
   grafeas.v1beta1.Envelope envelope = 20;
-
-  grafeas.v1beta1.sbom.SBOMReferenceOccurrence sbom_reference = 21;
 
   // next_id = 22;
 }
