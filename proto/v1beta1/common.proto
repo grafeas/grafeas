@@ -51,6 +51,8 @@ enum NoteKind {
   SPDX_RELATIONSHIP = 12;
   // This represents a Vulnerability Assessment.
   VULNERABILITY_ASSESSMENT = 13;
+  // This represents an SBOM Reference.
+  SBOM_REFERENCE = 14;
 }
 
 // Metadata for any related URL information.
