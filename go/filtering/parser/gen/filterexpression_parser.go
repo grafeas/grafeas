@@ -1,201 +1,223 @@
-// Code generated from FilterExpression.g4 by ANTLR 4.7.1. DO NOT EDIT.
+// Code generated from FilterExpression.g4 by ANTLR 4.11.1. DO NOT EDIT.
 
 package gen // FilterExpression
 import (
 	"fmt"
-	"reflect"
 	"strconv"
+	"sync"
 
-	"github.com/antlr/antlr4/runtime/Go/antlr"
+	"github.com/antlr/antlr4/runtime/Go/antlr/v4"
 )
 
 // Suppress unused import errors
 var _ = fmt.Printf
-var _ = reflect.Copy
 var _ = strconv.Itoa
-
-var parserATN = []uint16{
-	3, 24715, 42794, 33075, 47597, 16764, 15335, 30598, 22884, 3, 30, 303,
-	4, 2, 9, 2, 4, 3, 9, 3, 4, 4, 9, 4, 4, 5, 9, 5, 4, 6, 9, 6, 4, 7, 9, 7,
-	4, 8, 9, 8, 4, 9, 9, 9, 4, 10, 9, 10, 4, 11, 9, 11, 4, 12, 9, 12, 4, 13,
-	9, 13, 4, 14, 9, 14, 4, 15, 9, 15, 4, 16, 9, 16, 4, 17, 9, 17, 4, 18, 9,
-	18, 4, 19, 9, 19, 4, 20, 9, 20, 4, 21, 9, 21, 4, 22, 9, 22, 4, 23, 9, 23,
-	3, 2, 5, 2, 48, 10, 2, 3, 2, 7, 2, 51, 10, 2, 12, 2, 14, 2, 54, 11, 2,
-	3, 2, 3, 2, 3, 3, 3, 3, 3, 3, 3, 3, 7, 3, 62, 10, 3, 12, 3, 14, 3, 65,
-	11, 3, 3, 4, 3, 4, 6, 4, 69, 10, 4, 13, 4, 14, 4, 70, 3, 4, 7, 4, 74, 10,
-	4, 12, 4, 14, 4, 77, 11, 4, 3, 5, 3, 5, 3, 5, 3, 5, 7, 5, 83, 10, 5, 12,
-	5, 14, 5, 86, 11, 5, 3, 6, 5, 6, 89, 10, 6, 3, 6, 3, 6, 3, 7, 3, 7, 7,
-	7, 95, 10, 7, 12, 7, 14, 7, 98, 11, 7, 3, 7, 3, 7, 7, 7, 102, 10, 7, 12,
-	7, 14, 7, 105, 11, 7, 3, 7, 3, 7, 5, 7, 109, 10, 7, 3, 8, 3, 8, 5, 8, 113,
-	10, 8, 3, 9, 3, 9, 3, 10, 3, 10, 3, 10, 3, 10, 3, 10, 3, 10, 3, 10, 3,
-	10, 5, 10, 125, 10, 10, 3, 10, 5, 10, 128, 10, 10, 3, 10, 3, 10, 3, 10,
-	7, 10, 133, 10, 10, 12, 10, 14, 10, 136, 11, 10, 3, 10, 3, 10, 7, 10, 140,
-	10, 10, 12, 10, 14, 10, 143, 11, 10, 3, 10, 3, 10, 7, 10, 147, 10, 10,
-	12, 10, 14, 10, 150, 11, 10, 3, 11, 3, 11, 3, 11, 3, 11, 5, 11, 156, 10,
-	11, 3, 11, 5, 11, 159, 10, 11, 3, 11, 5, 11, 162, 10, 11, 3, 12, 7, 12,
-	165, 10, 12, 12, 12, 14, 12, 168, 11, 12, 3, 12, 3, 12, 3, 12, 3, 12, 7,
-	12, 174, 10, 12, 12, 12, 14, 12, 177, 11, 12, 3, 12, 7, 12, 180, 10, 12,
-	12, 12, 14, 12, 183, 11, 12, 3, 13, 3, 13, 7, 13, 187, 10, 13, 12, 13,
-	14, 13, 190, 11, 13, 3, 13, 3, 13, 7, 13, 194, 10, 13, 12, 13, 14, 13,
-	197, 11, 13, 3, 13, 3, 13, 3, 14, 3, 14, 7, 14, 203, 10, 14, 12, 14, 14,
-	14, 206, 11, 14, 3, 15, 3, 15, 3, 15, 5, 15, 211, 10, 15, 3, 16, 3, 16,
-	5, 16, 215, 10, 16, 3, 17, 5, 17, 218, 10, 17, 3, 17, 6, 17, 221, 10, 17,
-	13, 17, 14, 17, 222, 3, 17, 5, 17, 226, 10, 17, 3, 17, 5, 17, 229, 10,
-	17, 3, 18, 5, 18, 232, 10, 18, 3, 18, 6, 18, 235, 10, 18, 13, 18, 14, 18,
-	236, 3, 18, 3, 18, 7, 18, 241, 10, 18, 12, 18, 14, 18, 244, 11, 18, 3,
-	18, 3, 18, 6, 18, 248, 10, 18, 13, 18, 14, 18, 249, 5, 18, 252, 10, 18,
-	3, 18, 5, 18, 255, 10, 18, 3, 19, 3, 19, 3, 20, 3, 20, 3, 20, 6, 20, 262,
-	10, 20, 13, 20, 14, 20, 263, 5, 20, 266, 10, 20, 3, 21, 6, 21, 269, 10,
-	21, 13, 21, 14, 21, 270, 3, 21, 3, 21, 6, 21, 275, 10, 21, 13, 21, 14,
-	21, 276, 3, 22, 6, 22, 280, 10, 22, 13, 22, 14, 22, 281, 3, 22, 3, 22,
-	6, 22, 286, 10, 22, 13, 22, 14, 22, 287, 3, 23, 7, 23, 291, 10, 23, 12,
-	23, 14, 23, 294, 11, 23, 3, 23, 3, 23, 7, 23, 298, 10, 23, 12, 23, 14,
-	23, 301, 11, 23, 3, 23, 2, 3, 18, 24, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20,
-	22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 2, 6, 4, 2, 4, 4, 15, 20,
-	5, 2, 21, 21, 26, 26, 29, 29, 5, 2, 21, 22, 26, 26, 29, 29, 3, 2, 5, 7,
-	2, 328, 2, 47, 3, 2, 2, 2, 4, 57, 3, 2, 2, 2, 6, 66, 3, 2, 2, 2, 8, 78,
-	3, 2, 2, 2, 10, 88, 3, 2, 2, 2, 12, 92, 3, 2, 2, 2, 14, 112, 3, 2, 2, 2,
-	16, 114, 3, 2, 2, 2, 18, 116, 3, 2, 2, 2, 20, 161, 3, 2, 2, 2, 22, 166,
-	3, 2, 2, 2, 24, 184, 3, 2, 2, 2, 26, 200, 3, 2, 2, 2, 28, 210, 3, 2, 2,
-	2, 30, 214, 3, 2, 2, 2, 32, 228, 3, 2, 2, 2, 34, 231, 3, 2, 2, 2, 36, 256,
-	3, 2, 2, 2, 38, 265, 3, 2, 2, 2, 40, 268, 3, 2, 2, 2, 42, 279, 3, 2, 2,
-	2, 44, 292, 3, 2, 2, 2, 46, 48, 5, 4, 3, 2, 47, 46, 3, 2, 2, 2, 47, 48,
-	3, 2, 2, 2, 48, 52, 3, 2, 2, 2, 49, 51, 7, 25, 2, 2, 50, 49, 3, 2, 2, 2,
-	51, 54, 3, 2, 2, 2, 52, 50, 3, 2, 2, 2, 52, 53, 3, 2, 2, 2, 53, 55, 3,
-	2, 2, 2, 54, 52, 3, 2, 2, 2, 55, 56, 7, 2, 2, 3, 56, 3, 3, 2, 2, 2, 57,
-	63, 5, 6, 4, 2, 58, 59, 5, 40, 21, 2, 59, 60, 5, 6, 4, 2, 60, 62, 3, 2,
-	2, 2, 61, 58, 3, 2, 2, 2, 62, 65, 3, 2, 2, 2, 63, 61, 3, 2, 2, 2, 63, 64,
-	3, 2, 2, 2, 64, 5, 3, 2, 2, 2, 65, 63, 3, 2, 2, 2, 66, 75, 5, 8, 5, 2,
-	67, 69, 7, 25, 2, 2, 68, 67, 3, 2, 2, 2, 69, 70, 3, 2, 2, 2, 70, 68, 3,
-	2, 2, 2, 70, 71, 3, 2, 2, 2, 71, 72, 3, 2, 2, 2, 72, 74, 5, 8, 5, 2, 73,
-	68, 3, 2, 2, 2, 74, 77, 3, 2, 2, 2, 75, 73, 3, 2, 2, 2, 75, 76, 3, 2, 2,
-	2, 76, 7, 3, 2, 2, 2, 77, 75, 3, 2, 2, 2, 78, 84, 5, 10, 6, 2, 79, 80,
-	5, 42, 22, 2, 80, 81, 5, 10, 6, 2, 81, 83, 3, 2, 2, 2, 82, 79, 3, 2, 2,
-	2, 83, 86, 3, 2, 2, 2, 84, 82, 3, 2, 2, 2, 84, 85, 3, 2, 2, 2, 85, 9, 3,
-	2, 2, 2, 86, 84, 3, 2, 2, 2, 87, 89, 5, 38, 20, 2, 88, 87, 3, 2, 2, 2,
-	88, 89, 3, 2, 2, 2, 89, 90, 3, 2, 2, 2, 90, 91, 5, 12, 7, 2, 91, 11, 3,
-	2, 2, 2, 92, 108, 5, 14, 8, 2, 93, 95, 7, 25, 2, 2, 94, 93, 3, 2, 2, 2,
-	95, 98, 3, 2, 2, 2, 96, 94, 3, 2, 2, 2, 96, 97, 3, 2, 2, 2, 97, 99, 3,
-	2, 2, 2, 98, 96, 3, 2, 2, 2, 99, 103, 5, 16, 9, 2, 100, 102, 7, 25, 2,
-	2, 101, 100, 3, 2, 2, 2, 102, 105, 3, 2, 2, 2, 103, 101, 3, 2, 2, 2, 103,
-	104, 3, 2, 2, 2, 104, 106, 3, 2, 2, 2, 105, 103, 3, 2, 2, 2, 106, 107,
-	5, 14, 8, 2, 107, 109, 3, 2, 2, 2, 108, 96, 3, 2, 2, 2, 108, 109, 3, 2,
-	2, 2, 109, 13, 3, 2, 2, 2, 110, 113, 5, 30, 16, 2, 111, 113, 5, 18, 10,
-	2, 112, 110, 3, 2, 2, 2, 112, 111, 3, 2, 2, 2, 113, 15, 3, 2, 2, 2, 114,
-	115, 9, 2, 2, 2, 115, 17, 3, 2, 2, 2, 116, 117, 8, 10, 1, 2, 117, 118,
-	5, 20, 11, 2, 118, 148, 3, 2, 2, 2, 119, 120, 12, 4, 2, 2, 120, 121, 7,
-	3, 2, 2, 121, 127, 5, 28, 15, 2, 122, 124, 7, 8, 2, 2, 123, 125, 5, 22,
-	12, 2, 124, 123, 3, 2, 2, 2, 124, 125, 3, 2, 2, 2, 125, 126, 3, 2, 2, 2,
-	126, 128, 7, 9, 2, 2, 127, 122, 3, 2, 2, 2, 127, 128, 3, 2, 2, 2, 128,
-	147, 3, 2, 2, 2, 129, 130, 12, 3, 2, 2, 130, 134, 7, 10, 2, 2, 131, 133,
-	7, 25, 2, 2, 132, 131, 3, 2, 2, 2, 133, 136, 3, 2, 2, 2, 134, 132, 3, 2,
-	2, 2, 134, 135, 3, 2, 2, 2, 135, 137, 3, 2, 2, 2, 136, 134, 3, 2, 2, 2,
-	137, 141, 5, 14, 8, 2, 138, 140, 7, 25, 2, 2, 139, 138, 3, 2, 2, 2, 140,
-	143, 3, 2, 2, 2, 141, 139, 3, 2, 2, 2, 141, 142, 3, 2, 2, 2, 142, 144,
-	3, 2, 2, 2, 143, 141, 3, 2, 2, 2, 144, 145, 7, 11, 2, 2, 145, 147, 3, 2,
-	2, 2, 146, 119, 3, 2, 2, 2, 146, 129, 3, 2, 2, 2, 147, 150, 3, 2, 2, 2,
-	148, 146, 3, 2, 2, 2, 148, 149, 3, 2, 2, 2, 149, 19, 3, 2, 2, 2, 150, 148,
-	3, 2, 2, 2, 151, 162, 5, 24, 13, 2, 152, 158, 5, 26, 14, 2, 153, 155, 7,
-	8, 2, 2, 154, 156, 5, 22, 12, 2, 155, 154, 3, 2, 2, 2, 155, 156, 3, 2,
-	2, 2, 156, 157, 3, 2, 2, 2, 157, 159, 7, 9, 2, 2, 158, 153, 3, 2, 2, 2,
-	158, 159, 3, 2, 2, 2, 159, 162, 3, 2, 2, 2, 160, 162, 7, 24, 2, 2, 161,
-	151, 3, 2, 2, 2, 161, 152, 3, 2, 2, 2, 161, 160, 3, 2, 2, 2, 162, 21, 3,
-	2, 2, 2, 163, 165, 7, 25, 2, 2, 164, 163, 3, 2, 2, 2, 165, 168, 3, 2, 2,
-	2, 166, 164, 3, 2, 2, 2, 166, 167, 3, 2, 2, 2, 167, 169, 3, 2, 2, 2, 168,
-	166, 3, 2, 2, 2, 169, 175, 5, 14, 8, 2, 170, 171, 5, 44, 23, 2, 171, 172,
-	5, 14, 8, 2, 172, 174, 3, 2, 2, 2, 173, 170, 3, 2, 2, 2, 174, 177, 3, 2,
-	2, 2, 175, 173, 3, 2, 2, 2, 175, 176, 3, 2, 2, 2, 176, 181, 3, 2, 2, 2,
-	177, 175, 3, 2, 2, 2, 178, 180, 7, 25, 2, 2, 179, 178, 3, 2, 2, 2, 180,
-	183, 3, 2, 2, 2, 181, 179, 3, 2, 2, 2, 181, 182, 3, 2, 2, 2, 182, 23, 3,
-	2, 2, 2, 183, 181, 3, 2, 2, 2, 184, 188, 7, 8, 2, 2, 185, 187, 7, 25, 2,
-	2, 186, 185, 3, 2, 2, 2, 187, 190, 3, 2, 2, 2, 188, 186, 3, 2, 2, 2, 188,
-	189, 3, 2, 2, 2, 189, 191, 3, 2, 2, 2, 190, 188, 3, 2, 2, 2, 191, 195,
-	5, 4, 3, 2, 192, 194, 7, 25, 2, 2, 193, 192, 3, 2, 2, 2, 194, 197, 3, 2,
-	2, 2, 195, 193, 3, 2, 2, 2, 195, 196, 3, 2, 2, 2, 196, 198, 3, 2, 2, 2,
-	197, 195, 3, 2, 2, 2, 198, 199, 7, 9, 2, 2, 199, 25, 3, 2, 2, 2, 200, 204,
-	9, 3, 2, 2, 201, 203, 9, 4, 2, 2, 202, 201, 3, 2, 2, 2, 203, 206, 3, 2,
-	2, 2, 204, 202, 3, 2, 2, 2, 204, 205, 3, 2, 2, 2, 205, 27, 3, 2, 2, 2,
-	206, 204, 3, 2, 2, 2, 207, 211, 5, 26, 14, 2, 208, 211, 7, 24, 2, 2, 209,
-	211, 5, 36, 19, 2, 210, 207, 3, 2, 2, 2, 210, 208, 3, 2, 2, 2, 210, 209,
-	3, 2, 2, 2, 211, 29, 3, 2, 2, 2, 212, 215, 5, 34, 18, 2, 213, 215, 5, 32,
-	17, 2, 214, 212, 3, 2, 2, 2, 214, 213, 3, 2, 2, 2, 215, 31, 3, 2, 2, 2,
-	216, 218, 7, 22, 2, 2, 217, 216, 3, 2, 2, 2, 217, 218, 3, 2, 2, 2, 218,
-	220, 3, 2, 2, 2, 219, 221, 7, 26, 2, 2, 220, 219, 3, 2, 2, 2, 221, 222,
-	3, 2, 2, 2, 222, 220, 3, 2, 2, 2, 222, 223, 3, 2, 2, 2, 223, 229, 3, 2,
-	2, 2, 224, 226, 7, 22, 2, 2, 225, 224, 3, 2, 2, 2, 225, 226, 3, 2, 2, 2,
-	226, 227, 3, 2, 2, 2, 227, 229, 7, 27, 2, 2, 228, 217, 3, 2, 2, 2, 228,
-	225, 3, 2, 2, 2, 229, 33, 3, 2, 2, 2, 230, 232, 7, 22, 2, 2, 231, 230,
-	3, 2, 2, 2, 231, 232, 3, 2, 2, 2, 232, 251, 3, 2, 2, 2, 233, 235, 7, 26,
-	2, 2, 234, 233, 3, 2, 2, 2, 235, 236, 3, 2, 2, 2, 236, 234, 3, 2, 2, 2,
-	236, 237, 3, 2, 2, 2, 237, 238, 3, 2, 2, 2, 238, 242, 7, 3, 2, 2, 239,
-	241, 7, 26, 2, 2, 240, 239, 3, 2, 2, 2, 241, 244, 3, 2, 2, 2, 242, 240,
-	3, 2, 2, 2, 242, 243, 3, 2, 2, 2, 243, 252, 3, 2, 2, 2, 244, 242, 3, 2,
-	2, 2, 245, 247, 7, 3, 2, 2, 246, 248, 7, 26, 2, 2, 247, 246, 3, 2, 2, 2,
-	248, 249, 3, 2, 2, 2, 249, 247, 3, 2, 2, 2, 249, 250, 3, 2, 2, 2, 250,
-	252, 3, 2, 2, 2, 251, 234, 3, 2, 2, 2, 251, 245, 3, 2, 2, 2, 252, 254,
-	3, 2, 2, 2, 253, 255, 7, 28, 2, 2, 254, 253, 3, 2, 2, 2, 254, 255, 3, 2,
-	2, 2, 255, 35, 3, 2, 2, 2, 256, 257, 9, 5, 2, 2, 257, 37, 3, 2, 2, 2, 258,
-	266, 7, 22, 2, 2, 259, 261, 7, 7, 2, 2, 260, 262, 7, 25, 2, 2, 261, 260,
-	3, 2, 2, 2, 262, 263, 3, 2, 2, 2, 263, 261, 3, 2, 2, 2, 263, 264, 3, 2,
-	2, 2, 264, 266, 3, 2, 2, 2, 265, 258, 3, 2, 2, 2, 265, 259, 3, 2, 2, 2,
-	266, 39, 3, 2, 2, 2, 267, 269, 7, 25, 2, 2, 268, 267, 3, 2, 2, 2, 269,
-	270, 3, 2, 2, 2, 270, 268, 3, 2, 2, 2, 270, 271, 3, 2, 2, 2, 271, 272,
-	3, 2, 2, 2, 272, 274, 7, 6, 2, 2, 273, 275, 7, 25, 2, 2, 274, 273, 3, 2,
-	2, 2, 275, 276, 3, 2, 2, 2, 276, 274, 3, 2, 2, 2, 276, 277, 3, 2, 2, 2,
-	277, 41, 3, 2, 2, 2, 278, 280, 7, 25, 2, 2, 279, 278, 3, 2, 2, 2, 280,
-	281, 3, 2, 2, 2, 281, 279, 3, 2, 2, 2, 281, 282, 3, 2, 2, 2, 282, 283,
-	3, 2, 2, 2, 283, 285, 7, 5, 2, 2, 284, 286, 7, 25, 2, 2, 285, 284, 3, 2,
-	2, 2, 286, 287, 3, 2, 2, 2, 287, 285, 3, 2, 2, 2, 287, 288, 3, 2, 2, 2,
-	288, 43, 3, 2, 2, 2, 289, 291, 7, 25, 2, 2, 290, 289, 3, 2, 2, 2, 291,
-	294, 3, 2, 2, 2, 292, 290, 3, 2, 2, 2, 292, 293, 3, 2, 2, 2, 293, 295,
-	3, 2, 2, 2, 294, 292, 3, 2, 2, 2, 295, 299, 7, 14, 2, 2, 296, 298, 7, 25,
-	2, 2, 297, 296, 3, 2, 2, 2, 298, 301, 3, 2, 2, 2, 299, 297, 3, 2, 2, 2,
-	299, 300, 3, 2, 2, 2, 300, 45, 3, 2, 2, 2, 301, 299, 3, 2, 2, 2, 48, 47,
-	52, 63, 70, 75, 84, 88, 96, 103, 108, 112, 124, 127, 134, 141, 146, 148,
-	155, 158, 161, 166, 175, 181, 188, 195, 204, 210, 214, 217, 222, 225, 228,
-	231, 236, 242, 249, 251, 254, 263, 265, 270, 276, 281, 287, 292, 299,
-}
-var deserializer = antlr.NewATNDeserializer(nil)
-var deserializedATN = deserializer.DeserializeFromUInt16(parserATN)
-
-var literalNames = []string{
-	"", "'.'", "':'", "'OR'", "'AND'", "'NOT'", "'('", "')'", "'['", "']'",
-	"'{'", "'}'", "','", "'<'", "'<='", "'>'", "'>='", "'!='", "'='", "'!'",
-	"'-'", "'+'", "", "", "", "", "", "", "'\\'",
-}
-var symbolicNames = []string{
-	"", "DOT", "HAS", "OR", "AND", "NOT", "LPAREN", "RPAREN", "LBRACE", "RBRACE",
-	"LBRACKET", "RBRACKET", "COMMA", "LESS_THAN", "LESS_EQUALS", "GREATER_THAN",
-	"GREATER_EQUALS", "NOT_EQUALS", "EQUALS", "EXCLAIM", "MINUS", "PLUS", "STRING",
-	"WS", "DIGIT", "HEX_DIGIT", "EXPONENT", "TEXT", "BACKSLASH",
-}
-
-var ruleNames = []string{
-	"filter", "expression", "sequence", "factor", "term", "restriction", "comparable",
-	"comparator", "value", "primary", "argList", "composite", "text", "field",
-	"number", "intVal", "floatVal", "keyword", "notOp", "andOp", "orOp", "sep",
-}
-var decisionToDFA = make([]*antlr.DFA, len(deserializedATN.DecisionToState))
-
-func init() {
-	for index, ds := range deserializedATN.DecisionToState {
-		decisionToDFA[index] = antlr.NewDFA(ds, index)
-	}
-}
+var _ = sync.Once{}
 
 type FilterExpression struct {
 	*antlr.BaseParser
 }
 
+var filterexpressionParserStaticData struct {
+	once                   sync.Once
+	serializedATN          []int32
+	literalNames           []string
+	symbolicNames          []string
+	ruleNames              []string
+	predictionContextCache *antlr.PredictionContextCache
+	atn                    *antlr.ATN
+	decisionToDFA          []*antlr.DFA
+}
+
+func filterexpressionParserInit() {
+	staticData := &filterexpressionParserStaticData
+	staticData.literalNames = []string{
+		"", "'.'", "':'", "'OR'", "'AND'", "'NOT'", "'('", "')'", "'['", "']'",
+		"'{'", "'}'", "','", "'<'", "'<='", "'>'", "'>='", "'!='", "'='", "'!'",
+		"'-'", "'+'", "", "", "", "", "", "", "'\\'",
+	}
+	staticData.symbolicNames = []string{
+		"", "DOT", "HAS", "OR", "AND", "NOT", "LPAREN", "RPAREN", "LBRACE",
+		"RBRACE", "LBRACKET", "RBRACKET", "COMMA", "LESS_THAN", "LESS_EQUALS",
+		"GREATER_THAN", "GREATER_EQUALS", "NOT_EQUALS", "EQUALS", "EXCLAIM",
+		"MINUS", "PLUS", "STRING", "WS", "DIGIT", "HEX_DIGIT", "EXPONENT", "TEXT",
+		"BACKSLASH",
+	}
+	staticData.ruleNames = []string{
+		"filter", "expression", "sequence", "factor", "term", "restriction",
+		"comparable", "comparator", "value", "primary", "argList", "composite",
+		"text", "field", "number", "intVal", "floatVal", "notOp", "andOp", "orOp",
+		"sep", "keyword",
+	}
+	staticData.predictionContextCache = antlr.NewPredictionContextCache()
+	staticData.serializedATN = []int32{
+		4, 1, 28, 301, 2, 0, 7, 0, 2, 1, 7, 1, 2, 2, 7, 2, 2, 3, 7, 3, 2, 4, 7,
+		4, 2, 5, 7, 5, 2, 6, 7, 6, 2, 7, 7, 7, 2, 8, 7, 8, 2, 9, 7, 9, 2, 10, 7,
+		10, 2, 11, 7, 11, 2, 12, 7, 12, 2, 13, 7, 13, 2, 14, 7, 14, 2, 15, 7, 15,
+		2, 16, 7, 16, 2, 17, 7, 17, 2, 18, 7, 18, 2, 19, 7, 19, 2, 20, 7, 20, 2,
+		21, 7, 21, 1, 0, 3, 0, 46, 8, 0, 1, 0, 5, 0, 49, 8, 0, 10, 0, 12, 0, 52,
+		9, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 5, 1, 60, 8, 1, 10, 1, 12, 1,
+		63, 9, 1, 1, 2, 1, 2, 4, 2, 67, 8, 2, 11, 2, 12, 2, 68, 1, 2, 5, 2, 72,
+		8, 2, 10, 2, 12, 2, 75, 9, 2, 1, 3, 1, 3, 1, 3, 1, 3, 5, 3, 81, 8, 3, 10,
+		3, 12, 3, 84, 9, 3, 1, 4, 3, 4, 87, 8, 4, 1, 4, 1, 4, 1, 5, 1, 5, 5, 5,
+		93, 8, 5, 10, 5, 12, 5, 96, 9, 5, 1, 5, 1, 5, 5, 5, 100, 8, 5, 10, 5, 12,
+		5, 103, 9, 5, 1, 5, 1, 5, 3, 5, 107, 8, 5, 1, 6, 1, 6, 3, 6, 111, 8, 6,
+		1, 7, 1, 7, 1, 8, 1, 8, 1, 8, 1, 8, 1, 8, 1, 8, 1, 8, 1, 8, 3, 8, 123,
+		8, 8, 1, 8, 3, 8, 126, 8, 8, 1, 8, 1, 8, 1, 8, 5, 8, 131, 8, 8, 10, 8,
+		12, 8, 134, 9, 8, 1, 8, 1, 8, 5, 8, 138, 8, 8, 10, 8, 12, 8, 141, 9, 8,
+		1, 8, 1, 8, 5, 8, 145, 8, 8, 10, 8, 12, 8, 148, 9, 8, 1, 9, 1, 9, 1, 9,
+		1, 9, 3, 9, 154, 8, 9, 1, 9, 3, 9, 157, 8, 9, 1, 9, 3, 9, 160, 8, 9, 1,
+		10, 5, 10, 163, 8, 10, 10, 10, 12, 10, 166, 9, 10, 1, 10, 1, 10, 1, 10,
+		1, 10, 5, 10, 172, 8, 10, 10, 10, 12, 10, 175, 9, 10, 1, 10, 5, 10, 178,
+		8, 10, 10, 10, 12, 10, 181, 9, 10, 1, 11, 1, 11, 5, 11, 185, 8, 11, 10,
+		11, 12, 11, 188, 9, 11, 1, 11, 1, 11, 5, 11, 192, 8, 11, 10, 11, 12, 11,
+		195, 9, 11, 1, 11, 1, 11, 1, 12, 1, 12, 5, 12, 201, 8, 12, 10, 12, 12,
+		12, 204, 9, 12, 1, 13, 1, 13, 1, 13, 3, 13, 209, 8, 13, 1, 14, 1, 14, 3,
+		14, 213, 8, 14, 1, 15, 3, 15, 216, 8, 15, 1, 15, 4, 15, 219, 8, 15, 11,
+		15, 12, 15, 220, 1, 15, 3, 15, 224, 8, 15, 1, 15, 3, 15, 227, 8, 15, 1,
+		16, 3, 16, 230, 8, 16, 1, 16, 4, 16, 233, 8, 16, 11, 16, 12, 16, 234, 1,
+		16, 1, 16, 5, 16, 239, 8, 16, 10, 16, 12, 16, 242, 9, 16, 1, 16, 1, 16,
+		4, 16, 246, 8, 16, 11, 16, 12, 16, 247, 3, 16, 250, 8, 16, 1, 16, 3, 16,
+		253, 8, 16, 1, 17, 1, 17, 1, 17, 4, 17, 258, 8, 17, 11, 17, 12, 17, 259,
+		3, 17, 262, 8, 17, 1, 18, 4, 18, 265, 8, 18, 11, 18, 12, 18, 266, 1, 18,
+		1, 18, 4, 18, 271, 8, 18, 11, 18, 12, 18, 272, 1, 19, 4, 19, 276, 8, 19,
+		11, 19, 12, 19, 277, 1, 19, 1, 19, 4, 19, 282, 8, 19, 11, 19, 12, 19, 283,
+		1, 20, 5, 20, 287, 8, 20, 10, 20, 12, 20, 290, 9, 20, 1, 20, 1, 20, 5,
+		20, 294, 8, 20, 10, 20, 12, 20, 297, 9, 20, 1, 21, 1, 21, 1, 21, 0, 1,
+		16, 22, 0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32,
+		34, 36, 38, 40, 42, 0, 4, 2, 0, 2, 2, 13, 18, 3, 0, 19, 19, 24, 24, 27,
+		27, 3, 0, 19, 20, 24, 24, 27, 27, 1, 0, 3, 5, 326, 0, 45, 1, 0, 0, 0, 2,
+		55, 1, 0, 0, 0, 4, 64, 1, 0, 0, 0, 6, 76, 1, 0, 0, 0, 8, 86, 1, 0, 0, 0,
+		10, 90, 1, 0, 0, 0, 12, 110, 1, 0, 0, 0, 14, 112, 1, 0, 0, 0, 16, 114,
+		1, 0, 0, 0, 18, 159, 1, 0, 0, 0, 20, 164, 1, 0, 0, 0, 22, 182, 1, 0, 0,
+		0, 24, 198, 1, 0, 0, 0, 26, 208, 1, 0, 0, 0, 28, 212, 1, 0, 0, 0, 30, 226,
+		1, 0, 0, 0, 32, 229, 1, 0, 0, 0, 34, 261, 1, 0, 0, 0, 36, 264, 1, 0, 0,
+		0, 38, 275, 1, 0, 0, 0, 40, 288, 1, 0, 0, 0, 42, 298, 1, 0, 0, 0, 44, 46,
+		3, 2, 1, 0, 45, 44, 1, 0, 0, 0, 45, 46, 1, 0, 0, 0, 46, 50, 1, 0, 0, 0,
+		47, 49, 5, 23, 0, 0, 48, 47, 1, 0, 0, 0, 49, 52, 1, 0, 0, 0, 50, 48, 1,
+		0, 0, 0, 50, 51, 1, 0, 0, 0, 51, 53, 1, 0, 0, 0, 52, 50, 1, 0, 0, 0, 53,
+		54, 5, 0, 0, 1, 54, 1, 1, 0, 0, 0, 55, 61, 3, 4, 2, 0, 56, 57, 3, 36, 18,
+		0, 57, 58, 3, 4, 2, 0, 58, 60, 1, 0, 0, 0, 59, 56, 1, 0, 0, 0, 60, 63,
+		1, 0, 0, 0, 61, 59, 1, 0, 0, 0, 61, 62, 1, 0, 0, 0, 62, 3, 1, 0, 0, 0,
+		63, 61, 1, 0, 0, 0, 64, 73, 3, 6, 3, 0, 65, 67, 5, 23, 0, 0, 66, 65, 1,
+		0, 0, 0, 67, 68, 1, 0, 0, 0, 68, 66, 1, 0, 0, 0, 68, 69, 1, 0, 0, 0, 69,
+		70, 1, 0, 0, 0, 70, 72, 3, 6, 3, 0, 71, 66, 1, 0, 0, 0, 72, 75, 1, 0, 0,
+		0, 73, 71, 1, 0, 0, 0, 73, 74, 1, 0, 0, 0, 74, 5, 1, 0, 0, 0, 75, 73, 1,
+		0, 0, 0, 76, 82, 3, 8, 4, 0, 77, 78, 3, 38, 19, 0, 78, 79, 3, 8, 4, 0,
+		79, 81, 1, 0, 0, 0, 80, 77, 1, 0, 0, 0, 81, 84, 1, 0, 0, 0, 82, 80, 1,
+		0, 0, 0, 82, 83, 1, 0, 0, 0, 83, 7, 1, 0, 0, 0, 84, 82, 1, 0, 0, 0, 85,
+		87, 3, 34, 17, 0, 86, 85, 1, 0, 0, 0, 86, 87, 1, 0, 0, 0, 87, 88, 1, 0,
+		0, 0, 88, 89, 3, 10, 5, 0, 89, 9, 1, 0, 0, 0, 90, 106, 3, 12, 6, 0, 91,
+		93, 5, 23, 0, 0, 92, 91, 1, 0, 0, 0, 93, 96, 1, 0, 0, 0, 94, 92, 1, 0,
+		0, 0, 94, 95, 1, 0, 0, 0, 95, 97, 1, 0, 0, 0, 96, 94, 1, 0, 0, 0, 97, 101,
+		3, 14, 7, 0, 98, 100, 5, 23, 0, 0, 99, 98, 1, 0, 0, 0, 100, 103, 1, 0,
+		0, 0, 101, 99, 1, 0, 0, 0, 101, 102, 1, 0, 0, 0, 102, 104, 1, 0, 0, 0,
+		103, 101, 1, 0, 0, 0, 104, 105, 3, 12, 6, 0, 105, 107, 1, 0, 0, 0, 106,
+		94, 1, 0, 0, 0, 106, 107, 1, 0, 0, 0, 107, 11, 1, 0, 0, 0, 108, 111, 3,
+		28, 14, 0, 109, 111, 3, 16, 8, 0, 110, 108, 1, 0, 0, 0, 110, 109, 1, 0,
+		0, 0, 111, 13, 1, 0, 0, 0, 112, 113, 7, 0, 0, 0, 113, 15, 1, 0, 0, 0, 114,
+		115, 6, 8, -1, 0, 115, 116, 3, 18, 9, 0, 116, 146, 1, 0, 0, 0, 117, 118,
+		10, 2, 0, 0, 118, 119, 5, 1, 0, 0, 119, 125, 3, 26, 13, 0, 120, 122, 5,
+		6, 0, 0, 121, 123, 3, 20, 10, 0, 122, 121, 1, 0, 0, 0, 122, 123, 1, 0,
+		0, 0, 123, 124, 1, 0, 0, 0, 124, 126, 5, 7, 0, 0, 125, 120, 1, 0, 0, 0,
+		125, 126, 1, 0, 0, 0, 126, 145, 1, 0, 0, 0, 127, 128, 10, 1, 0, 0, 128,
+		132, 5, 8, 0, 0, 129, 131, 5, 23, 0, 0, 130, 129, 1, 0, 0, 0, 131, 134,
+		1, 0, 0, 0, 132, 130, 1, 0, 0, 0, 132, 133, 1, 0, 0, 0, 133, 135, 1, 0,
+		0, 0, 134, 132, 1, 0, 0, 0, 135, 139, 3, 12, 6, 0, 136, 138, 5, 23, 0,
+		0, 137, 136, 1, 0, 0, 0, 138, 141, 1, 0, 0, 0, 139, 137, 1, 0, 0, 0, 139,
+		140, 1, 0, 0, 0, 140, 142, 1, 0, 0, 0, 141, 139, 1, 0, 0, 0, 142, 143,
+		5, 9, 0, 0, 143, 145, 1, 0, 0, 0, 144, 117, 1, 0, 0, 0, 144, 127, 1, 0,
+		0, 0, 145, 148, 1, 0, 0, 0, 146, 144, 1, 0, 0, 0, 146, 147, 1, 0, 0, 0,
+		147, 17, 1, 0, 0, 0, 148, 146, 1, 0, 0, 0, 149, 160, 3, 22, 11, 0, 150,
+		156, 3, 24, 12, 0, 151, 153, 5, 6, 0, 0, 152, 154, 3, 20, 10, 0, 153, 152,
+		1, 0, 0, 0, 153, 154, 1, 0, 0, 0, 154, 155, 1, 0, 0, 0, 155, 157, 5, 7,
+		0, 0, 156, 151, 1, 0, 0, 0, 156, 157, 1, 0, 0, 0, 157, 160, 1, 0, 0, 0,
+		158, 160, 5, 22, 0, 0, 159, 149, 1, 0, 0, 0, 159, 150, 1, 0, 0, 0, 159,
+		158, 1, 0, 0, 0, 160, 19, 1, 0, 0, 0, 161, 163, 5, 23, 0, 0, 162, 161,
+		1, 0, 0, 0, 163, 166, 1, 0, 0, 0, 164, 162, 1, 0, 0, 0, 164, 165, 1, 0,
+		0, 0, 165, 167, 1, 0, 0, 0, 166, 164, 1, 0, 0, 0, 167, 173, 3, 12, 6, 0,
+		168, 169, 3, 40, 20, 0, 169, 170, 3, 12, 6, 0, 170, 172, 1, 0, 0, 0, 171,
+		168, 1, 0, 0, 0, 172, 175, 1, 0, 0, 0, 173, 171, 1, 0, 0, 0, 173, 174,
+		1, 0, 0, 0, 174, 179, 1, 0, 0, 0, 175, 173, 1, 0, 0, 0, 176, 178, 5, 23,
+		0, 0, 177, 176, 1, 0, 0, 0, 178, 181, 1, 0, 0, 0, 179, 177, 1, 0, 0, 0,
+		179, 180, 1, 0, 0, 0, 180, 21, 1, 0, 0, 0, 181, 179, 1, 0, 0, 0, 182, 186,
+		5, 6, 0, 0, 183, 185, 5, 23, 0, 0, 184, 183, 1, 0, 0, 0, 185, 188, 1, 0,
+		0, 0, 186, 184, 1, 0, 0, 0, 186, 187, 1, 0, 0, 0, 187, 189, 1, 0, 0, 0,
+		188, 186, 1, 0, 0, 0, 189, 193, 3, 2, 1, 0, 190, 192, 5, 23, 0, 0, 191,
+		190, 1, 0, 0, 0, 192, 195, 1, 0, 0, 0, 193, 191, 1, 0, 0, 0, 193, 194,
+		1, 0, 0, 0, 194, 196, 1, 0, 0, 0, 195, 193, 1, 0, 0, 0, 196, 197, 5, 7,
+		0, 0, 197, 23, 1, 0, 0, 0, 198, 202, 7, 1, 0, 0, 199, 201, 7, 2, 0, 0,
+		200, 199, 1, 0, 0, 0, 201, 204, 1, 0, 0, 0, 202, 200, 1, 0, 0, 0, 202,
+		203, 1, 0, 0, 0, 203, 25, 1, 0, 0, 0, 204, 202, 1, 0, 0, 0, 205, 209, 3,
+		24, 12, 0, 206, 209, 5, 22, 0, 0, 207, 209, 3, 42, 21, 0, 208, 205, 1,
+		0, 0, 0, 208, 206, 1, 0, 0, 0, 208, 207, 1, 0, 0, 0, 209, 27, 1, 0, 0,
+		0, 210, 213, 3, 32, 16, 0, 211, 213, 3, 30, 15, 0, 212, 210, 1, 0, 0, 0,
+		212, 211, 1, 0, 0, 0, 213, 29, 1, 0, 0, 0, 214, 216, 5, 20, 0, 0, 215,
+		214, 1, 0, 0, 0, 215, 216, 1, 0, 0, 0, 216, 218, 1, 0, 0, 0, 217, 219,
+		5, 24, 0, 0, 218, 217, 1, 0, 0, 0, 219, 220, 1, 0, 0, 0, 220, 218, 1, 0,
+		0, 0, 220, 221, 1, 0, 0, 0, 221, 227, 1, 0, 0, 0, 222, 224, 5, 20, 0, 0,
+		223, 222, 1, 0, 0, 0, 223, 224, 1, 0, 0, 0, 224, 225, 1, 0, 0, 0, 225,
+		227, 5, 25, 0, 0, 226, 215, 1, 0, 0, 0, 226, 223, 1, 0, 0, 0, 227, 31,
+		1, 0, 0, 0, 228, 230, 5, 20, 0, 0, 229, 228, 1, 0, 0, 0, 229, 230, 1, 0,
+		0, 0, 230, 249, 1, 0, 0, 0, 231, 233, 5, 24, 0, 0, 232, 231, 1, 0, 0, 0,
+		233, 234, 1, 0, 0, 0, 234, 232, 1, 0, 0, 0, 234, 235, 1, 0, 0, 0, 235,
+		236, 1, 0, 0, 0, 236, 240, 5, 1, 0, 0, 237, 239, 5, 24, 0, 0, 238, 237,
+		1, 0, 0, 0, 239, 242, 1, 0, 0, 0, 240, 238, 1, 0, 0, 0, 240, 241, 1, 0,
+		0, 0, 241, 250, 1, 0, 0, 0, 242, 240, 1, 0, 0, 0, 243, 245, 5, 1, 0, 0,
+		244, 246, 5, 24, 0, 0, 245, 244, 1, 0, 0, 0, 246, 247, 1, 0, 0, 0, 247,
+		245, 1, 0, 0, 0, 247, 248, 1, 0, 0, 0, 248, 250, 1, 0, 0, 0, 249, 232,
+		1, 0, 0, 0, 249, 243, 1, 0, 0, 0, 250, 252, 1, 0, 0, 0, 251, 253, 5, 26,
+		0, 0, 252, 251, 1, 0, 0, 0, 252, 253, 1, 0, 0, 0, 253, 33, 1, 0, 0, 0,
+		254, 262, 5, 20, 0, 0, 255, 257, 5, 5, 0, 0, 256, 258, 5, 23, 0, 0, 257,
+		256, 1, 0, 0, 0, 258, 259, 1, 0, 0, 0, 259, 257, 1, 0, 0, 0, 259, 260,
+		1, 0, 0, 0, 260, 262, 1, 0, 0, 0, 261, 254, 1, 0, 0, 0, 261, 255, 1, 0,
+		0, 0, 262, 35, 1, 0, 0, 0, 263, 265, 5, 23, 0, 0, 264, 263, 1, 0, 0, 0,
+		265, 266, 1, 0, 0, 0, 266, 264, 1, 0, 0, 0, 266, 267, 1, 0, 0, 0, 267,
+		268, 1, 0, 0, 0, 268, 270, 5, 4, 0, 0, 269, 271, 5, 23, 0, 0, 270, 269,
+		1, 0, 0, 0, 271, 272, 1, 0, 0, 0, 272, 270, 1, 0, 0, 0, 272, 273, 1, 0,
+		0, 0, 273, 37, 1, 0, 0, 0, 274, 276, 5, 23, 0, 0, 275, 274, 1, 0, 0, 0,
+		276, 277, 1, 0, 0, 0, 277, 275, 1, 0, 0, 0, 277, 278, 1, 0, 0, 0, 278,
+		279, 1, 0, 0, 0, 279, 281, 5, 3, 0, 0, 280, 282, 5, 23, 0, 0, 281, 280,
+		1, 0, 0, 0, 282, 283, 1, 0, 0, 0, 283, 281, 1, 0, 0, 0, 283, 284, 1, 0,
+		0, 0, 284, 39, 1, 0, 0, 0, 285, 287, 5, 23, 0, 0, 286, 285, 1, 0, 0, 0,
+		287, 290, 1, 0, 0, 0, 288, 286, 1, 0, 0, 0, 288, 289, 1, 0, 0, 0, 289,
+		291, 1, 0, 0, 0, 290, 288, 1, 0, 0, 0, 291, 295, 5, 12, 0, 0, 292, 294,
+		5, 23, 0, 0, 293, 292, 1, 0, 0, 0, 294, 297, 1, 0, 0, 0, 295, 293, 1, 0,
+		0, 0, 295, 296, 1, 0, 0, 0, 296, 41, 1, 0, 0, 0, 297, 295, 1, 0, 0, 0,
+		298, 299, 7, 3, 0, 0, 299, 43, 1, 0, 0, 0, 46, 45, 50, 61, 68, 73, 82,
+		86, 94, 101, 106, 110, 122, 125, 132, 139, 144, 146, 153, 156, 159, 164,
+		173, 179, 186, 193, 202, 208, 212, 215, 220, 223, 226, 229, 234, 240, 247,
+		249, 252, 259, 261, 266, 272, 277, 283, 288, 295,
+	}
+	deserializer := antlr.NewATNDeserializer(nil)
+	staticData.atn = deserializer.Deserialize(staticData.serializedATN)
+	atn := staticData.atn
+	staticData.decisionToDFA = make([]*antlr.DFA, len(atn.DecisionToState))
+	decisionToDFA := staticData.decisionToDFA
+	for index, state := range atn.DecisionToState {
+		decisionToDFA[index] = antlr.NewDFA(state, index)
+	}
+}
+
+// FilterExpressionInit initializes any static state used to implement FilterExpression. By default the
+// static state used to implement the parser is lazily initialized during the first call to
+// NewFilterExpression(). You can call this function if you wish to initialize the static state ahead
+// of time.
+func FilterExpressionInit() {
+	staticData := &filterexpressionParserStaticData
+	staticData.once.Do(filterexpressionParserInit)
+}
+
+// NewFilterExpression produces a new parser instance for the optional input antlr.TokenStream.
 func NewFilterExpression(input antlr.TokenStream) *FilterExpression {
+	FilterExpressionInit()
 	this := new(FilterExpression)
-
 	this.BaseParser = antlr.NewBaseParser(input)
-
-	this.Interpreter = antlr.NewParserATNSimulator(this, deserializedATN, decisionToDFA, antlr.NewPredictionContextCache())
-	this.RuleNames = ruleNames
-	this.LiteralNames = literalNames
-	this.SymbolicNames = symbolicNames
+	staticData := &filterexpressionParserStaticData
+	this.Interpreter = antlr.NewParserATNSimulator(this, staticData.atn, staticData.decisionToDFA, staticData.predictionContextCache)
+	this.RuleNames = staticData.ruleNames
+	this.LiteralNames = staticData.literalNames
+	this.SymbolicNames = staticData.symbolicNames
 	this.GrammarFileName = "FilterExpression.g4"
 
 	return this
@@ -253,11 +275,11 @@ const (
 	FilterExpressionRULE_number      = 14
 	FilterExpressionRULE_intVal      = 15
 	FilterExpressionRULE_floatVal    = 16
-	FilterExpressionRULE_keyword     = 17
-	FilterExpressionRULE_notOp       = 18
-	FilterExpressionRULE_andOp       = 19
-	FilterExpressionRULE_orOp        = 20
-	FilterExpressionRULE_sep         = 21
+	FilterExpressionRULE_notOp       = 17
+	FilterExpressionRULE_andOp       = 18
+	FilterExpressionRULE_orOp        = 19
+	FilterExpressionRULE_sep         = 20
+	FilterExpressionRULE_keyword     = 21
 )
 
 // IFilterContext is an interface to support dynamic dispatch.
@@ -303,7 +325,13 @@ func (s *FilterContext) EOF() antlr.TerminalNode {
 }
 
 func (s *FilterContext) Expression() IExpressionContext {
-	var t = s.GetTypedRuleContext(reflect.TypeOf((*IExpressionContext)(nil)).Elem(), 0)
+	var t antlr.RuleContext
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(IExpressionContext); ok {
+			t = ctx.(antlr.RuleContext)
+			break
+		}
+	}
 
 	if t == nil {
 		return nil
@@ -339,6 +367,9 @@ func (s *FilterContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
 }
 
 func (p *FilterExpression) Filter() (localctx IFilterContext) {
+	this := p
+	_ = this
+
 	localctx = NewFilterContext(p, p.GetParserRuleContext(), p.GetState())
 	p.EnterRule(localctx, 0, FilterExpressionRULE_filter)
 	var _la int
@@ -364,7 +395,7 @@ func (p *FilterExpression) Filter() (localctx IFilterContext) {
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
-	if ((_la)&-(0x1f+1)) == 0 && ((1<<uint(_la))&((1<<FilterExpressionDOT)|(1<<FilterExpressionNOT)|(1<<FilterExpressionLPAREN)|(1<<FilterExpressionEXCLAIM)|(1<<FilterExpressionMINUS)|(1<<FilterExpressionSTRING)|(1<<FilterExpressionDIGIT)|(1<<FilterExpressionHEX_DIGIT)|(1<<FilterExpressionTEXT))) != 0 {
+	if (int64(_la) & ^0x3f) == 0 && ((int64(1)<<_la)&190316642) != 0 {
 		{
 			p.SetState(44)
 			p.Expression()
@@ -487,12 +518,20 @@ func (s *ExpressionContext) SetOp(v []IAndOpContext) { s.op = v }
 func (s *ExpressionContext) SetRest(v []ISequenceContext) { s.rest = v }
 
 func (s *ExpressionContext) AllSequence() []ISequenceContext {
-	var ts = s.GetTypedRuleContexts(reflect.TypeOf((*ISequenceContext)(nil)).Elem())
-	var tst = make([]ISequenceContext, len(ts))
+	children := s.GetChildren()
+	len := 0
+	for _, ctx := range children {
+		if _, ok := ctx.(ISequenceContext); ok {
+			len++
+		}
+	}
 
-	for i, t := range ts {
-		if t != nil {
+	tst := make([]ISequenceContext, len)
+	i := 0
+	for _, ctx := range children {
+		if t, ok := ctx.(ISequenceContext); ok {
 			tst[i] = t.(ISequenceContext)
+			i++
 		}
 	}
 
@@ -500,7 +539,17 @@ func (s *ExpressionContext) AllSequence() []ISequenceContext {
 }
 
 func (s *ExpressionContext) Sequence(i int) ISequenceContext {
-	var t = s.GetTypedRuleContext(reflect.TypeOf((*ISequenceContext)(nil)).Elem(), i)
+	var t antlr.RuleContext
+	j := 0
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(ISequenceContext); ok {
+			if j == i {
+				t = ctx.(antlr.RuleContext)
+				break
+			}
+			j++
+		}
+	}
 
 	if t == nil {
 		return nil
@@ -510,12 +559,20 @@ func (s *ExpressionContext) Sequence(i int) ISequenceContext {
 }
 
 func (s *ExpressionContext) AllAndOp() []IAndOpContext {
-	var ts = s.GetTypedRuleContexts(reflect.TypeOf((*IAndOpContext)(nil)).Elem())
-	var tst = make([]IAndOpContext, len(ts))
+	children := s.GetChildren()
+	len := 0
+	for _, ctx := range children {
+		if _, ok := ctx.(IAndOpContext); ok {
+			len++
+		}
+	}
 
-	for i, t := range ts {
-		if t != nil {
+	tst := make([]IAndOpContext, len)
+	i := 0
+	for _, ctx := range children {
+		if t, ok := ctx.(IAndOpContext); ok {
 			tst[i] = t.(IAndOpContext)
+			i++
 		}
 	}
 
@@ -523,7 +580,17 @@ func (s *ExpressionContext) AllAndOp() []IAndOpContext {
 }
 
 func (s *ExpressionContext) AndOp(i int) IAndOpContext {
-	var t = s.GetTypedRuleContext(reflect.TypeOf((*IAndOpContext)(nil)).Elem(), i)
+	var t antlr.RuleContext
+	j := 0
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(IAndOpContext); ok {
+			if j == i {
+				t = ctx.(antlr.RuleContext)
+				break
+			}
+			j++
+		}
+	}
 
 	if t == nil {
 		return nil
@@ -551,6 +618,9 @@ func (s *ExpressionContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
 }
 
 func (p *FilterExpression) Expression() (localctx IExpressionContext) {
+	this := p
+	_ = this
+
 	localctx = NewExpressionContext(p, p.GetParserRuleContext(), p.GetState())
 	p.EnterRule(localctx, 2, FilterExpressionRULE_expression)
 
@@ -684,12 +754,20 @@ func (s *SequenceContext) GetRest() []IFactorContext { return s.rest }
 func (s *SequenceContext) SetRest(v []IFactorContext) { s.rest = v }
 
 func (s *SequenceContext) AllFactor() []IFactorContext {
-	var ts = s.GetTypedRuleContexts(reflect.TypeOf((*IFactorContext)(nil)).Elem())
-	var tst = make([]IFactorContext, len(ts))
+	children := s.GetChildren()
+	len := 0
+	for _, ctx := range children {
+		if _, ok := ctx.(IFactorContext); ok {
+			len++
+		}
+	}
 
-	for i, t := range ts {
-		if t != nil {
+	tst := make([]IFactorContext, len)
+	i := 0
+	for _, ctx := range children {
+		if t, ok := ctx.(IFactorContext); ok {
 			tst[i] = t.(IFactorContext)
+			i++
 		}
 	}
 
@@ -697,7 +775,17 @@ func (s *SequenceContext) AllFactor() []IFactorContext {
 }
 
 func (s *SequenceContext) Factor(i int) IFactorContext {
-	var t = s.GetTypedRuleContext(reflect.TypeOf((*IFactorContext)(nil)).Elem(), i)
+	var t antlr.RuleContext
+	j := 0
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(IFactorContext); ok {
+			if j == i {
+				t = ctx.(antlr.RuleContext)
+				break
+			}
+			j++
+		}
+	}
 
 	if t == nil {
 		return nil
@@ -733,6 +821,9 @@ func (s *SequenceContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
 }
 
 func (p *FilterExpression) Sequence() (localctx ISequenceContext) {
+	this := p
+	_ = this
+
 	localctx = NewSequenceContext(p, p.GetParserRuleContext(), p.GetState())
 	p.EnterRule(localctx, 4, FilterExpressionRULE_sequence)
 	var _la int
@@ -895,12 +986,20 @@ func (s *FactorContext) SetOp(v []IOrOpContext) { s.op = v }
 func (s *FactorContext) SetRest(v []ITermContext) { s.rest = v }
 
 func (s *FactorContext) AllTerm() []ITermContext {
-	var ts = s.GetTypedRuleContexts(reflect.TypeOf((*ITermContext)(nil)).Elem())
-	var tst = make([]ITermContext, len(ts))
+	children := s.GetChildren()
+	len := 0
+	for _, ctx := range children {
+		if _, ok := ctx.(ITermContext); ok {
+			len++
+		}
+	}
 
-	for i, t := range ts {
-		if t != nil {
+	tst := make([]ITermContext, len)
+	i := 0
+	for _, ctx := range children {
+		if t, ok := ctx.(ITermContext); ok {
 			tst[i] = t.(ITermContext)
+			i++
 		}
 	}
 
@@ -908,7 +1007,17 @@ func (s *FactorContext) AllTerm() []ITermContext {
 }
 
 func (s *FactorContext) Term(i int) ITermContext {
-	var t = s.GetTypedRuleContext(reflect.TypeOf((*ITermContext)(nil)).Elem(), i)
+	var t antlr.RuleContext
+	j := 0
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(ITermContext); ok {
+			if j == i {
+				t = ctx.(antlr.RuleContext)
+				break
+			}
+			j++
+		}
+	}
 
 	if t == nil {
 		return nil
@@ -918,12 +1027,20 @@ func (s *FactorContext) Term(i int) ITermContext {
 }
 
 func (s *FactorContext) AllOrOp() []IOrOpContext {
-	var ts = s.GetTypedRuleContexts(reflect.TypeOf((*IOrOpContext)(nil)).Elem())
-	var tst = make([]IOrOpContext, len(ts))
+	children := s.GetChildren()
+	len := 0
+	for _, ctx := range children {
+		if _, ok := ctx.(IOrOpContext); ok {
+			len++
+		}
+	}
 
-	for i, t := range ts {
-		if t != nil {
+	tst := make([]IOrOpContext, len)
+	i := 0
+	for _, ctx := range children {
+		if t, ok := ctx.(IOrOpContext); ok {
 			tst[i] = t.(IOrOpContext)
+			i++
 		}
 	}
 
@@ -931,7 +1048,17 @@ func (s *FactorContext) AllOrOp() []IOrOpContext {
 }
 
 func (s *FactorContext) OrOp(i int) IOrOpContext {
-	var t = s.GetTypedRuleContext(reflect.TypeOf((*IOrOpContext)(nil)).Elem(), i)
+	var t antlr.RuleContext
+	j := 0
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(IOrOpContext); ok {
+			if j == i {
+				t = ctx.(antlr.RuleContext)
+				break
+			}
+			j++
+		}
+	}
 
 	if t == nil {
 		return nil
@@ -959,6 +1086,9 @@ func (s *FactorContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
 }
 
 func (p *FilterExpression) Factor() (localctx IFactorContext) {
+	this := p
+	_ = this
+
 	localctx = NewFactorContext(p, p.GetParserRuleContext(), p.GetState())
 	p.EnterRule(localctx, 6, FilterExpressionRULE_factor)
 
@@ -1081,7 +1211,13 @@ func (s *TermContext) SetOp(v INotOpContext) { s.op = v }
 func (s *TermContext) SetExpr(v IRestrictionContext) { s.expr = v }
 
 func (s *TermContext) Restriction() IRestrictionContext {
-	var t = s.GetTypedRuleContext(reflect.TypeOf((*IRestrictionContext)(nil)).Elem(), 0)
+	var t antlr.RuleContext
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(IRestrictionContext); ok {
+			t = ctx.(antlr.RuleContext)
+			break
+		}
+	}
 
 	if t == nil {
 		return nil
@@ -1091,7 +1227,13 @@ func (s *TermContext) Restriction() IRestrictionContext {
 }
 
 func (s *TermContext) NotOp() INotOpContext {
-	var t = s.GetTypedRuleContext(reflect.TypeOf((*INotOpContext)(nil)).Elem(), 0)
+	var t antlr.RuleContext
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(INotOpContext); ok {
+			t = ctx.(antlr.RuleContext)
+			break
+		}
+	}
 
 	if t == nil {
 		return nil
@@ -1119,6 +1261,9 @@ func (s *TermContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
 }
 
 func (p *FilterExpression) Term() (localctx ITermContext) {
+	this := p
+	_ = this
+
 	localctx = NewTermContext(p, p.GetParserRuleContext(), p.GetState())
 	p.EnterRule(localctx, 8, FilterExpressionRULE_term)
 
@@ -1235,12 +1380,20 @@ func (s *RestrictionContext) SetOp(v IComparatorContext) { s.op = v }
 func (s *RestrictionContext) SetRest(v IComparableContext) { s.rest = v }
 
 func (s *RestrictionContext) AllComparable() []IComparableContext {
-	var ts = s.GetTypedRuleContexts(reflect.TypeOf((*IComparableContext)(nil)).Elem())
-	var tst = make([]IComparableContext, len(ts))
+	children := s.GetChildren()
+	len := 0
+	for _, ctx := range children {
+		if _, ok := ctx.(IComparableContext); ok {
+			len++
+		}
+	}
 
-	for i, t := range ts {
-		if t != nil {
+	tst := make([]IComparableContext, len)
+	i := 0
+	for _, ctx := range children {
+		if t, ok := ctx.(IComparableContext); ok {
 			tst[i] = t.(IComparableContext)
+			i++
 		}
 	}
 
@@ -1248,7 +1401,17 @@ func (s *RestrictionContext) AllComparable() []IComparableContext {
 }
 
 func (s *RestrictionContext) Comparable(i int) IComparableContext {
-	var t = s.GetTypedRuleContext(reflect.TypeOf((*IComparableContext)(nil)).Elem(), i)
+	var t antlr.RuleContext
+	j := 0
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(IComparableContext); ok {
+			if j == i {
+				t = ctx.(antlr.RuleContext)
+				break
+			}
+			j++
+		}
+	}
 
 	if t == nil {
 		return nil
@@ -1258,7 +1421,13 @@ func (s *RestrictionContext) Comparable(i int) IComparableContext {
 }
 
 func (s *RestrictionContext) Comparator() IComparatorContext {
-	var t = s.GetTypedRuleContext(reflect.TypeOf((*IComparatorContext)(nil)).Elem(), 0)
+	var t antlr.RuleContext
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(IComparatorContext); ok {
+			t = ctx.(antlr.RuleContext)
+			break
+		}
+	}
 
 	if t == nil {
 		return nil
@@ -1294,6 +1463,9 @@ func (s *RestrictionContext) Accept(visitor antlr.ParseTreeVisitor) interface{} 
 }
 
 func (p *FilterExpression) Restriction() (localctx IRestrictionContext) {
+	this := p
+	_ = this
+
 	localctx = NewRestrictionContext(p, p.GetParserRuleContext(), p.GetState())
 	p.EnterRule(localctx, 10, FilterExpressionRULE_restriction)
 	var _la int
@@ -1413,7 +1585,13 @@ func NewComparableContext(parser antlr.Parser, parent antlr.ParserRuleContext, i
 func (s *ComparableContext) GetParser() antlr.Parser { return s.parser }
 
 func (s *ComparableContext) Number() INumberContext {
-	var t = s.GetTypedRuleContext(reflect.TypeOf((*INumberContext)(nil)).Elem(), 0)
+	var t antlr.RuleContext
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(INumberContext); ok {
+			t = ctx.(antlr.RuleContext)
+			break
+		}
+	}
 
 	if t == nil {
 		return nil
@@ -1423,7 +1601,13 @@ func (s *ComparableContext) Number() INumberContext {
 }
 
 func (s *ComparableContext) Value() IValueContext {
-	var t = s.GetTypedRuleContext(reflect.TypeOf((*IValueContext)(nil)).Elem(), 0)
+	var t antlr.RuleContext
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(IValueContext); ok {
+			t = ctx.(antlr.RuleContext)
+			break
+		}
+	}
 
 	if t == nil {
 		return nil
@@ -1451,6 +1635,9 @@ func (s *ComparableContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
 }
 
 func (p *FilterExpression) Comparable() (localctx IComparableContext) {
+	this := p
+	_ = this
+
 	localctx = NewComparableContext(p, p.GetParserRuleContext(), p.GetState())
 	p.EnterRule(localctx, 12, FilterExpressionRULE_comparable)
 
@@ -1577,6 +1764,9 @@ func (s *ComparatorContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
 }
 
 func (p *FilterExpression) Comparator() (localctx IComparatorContext) {
+	this := p
+	_ = this
+
 	localctx = NewComparatorContext(p, p.GetParserRuleContext(), p.GetState())
 	p.EnterRule(localctx, 14, FilterExpressionRULE_comparator)
 	var _la int
@@ -1602,7 +1792,7 @@ func (p *FilterExpression) Comparator() (localctx IComparatorContext) {
 		p.SetState(112)
 		_la = p.GetTokenStream().LA(1)
 
-		if !(((_la)&-(0x1f+1)) == 0 && ((1<<uint(_la))&((1<<FilterExpressionHAS)|(1<<FilterExpressionLESS_THAN)|(1<<FilterExpressionLESS_EQUALS)|(1<<FilterExpressionGREATER_THAN)|(1<<FilterExpressionGREATER_EQUALS)|(1<<FilterExpressionNOT_EQUALS)|(1<<FilterExpressionEQUALS))) != 0) {
+		if !((int64(_la) & ^0x3f) == 0 && ((int64(1)<<_la)&516100) != 0) {
 			p.GetErrorHandler().RecoverInline(p)
 		} else {
 			p.GetErrorHandler().ReportMatch(p)
@@ -1692,7 +1882,13 @@ func (s *SelectOrCallContext) GetRuleContext() antlr.RuleContext {
 }
 
 func (s *SelectOrCallContext) Value() IValueContext {
-	var t = s.GetTypedRuleContext(reflect.TypeOf((*IValueContext)(nil)).Elem(), 0)
+	var t antlr.RuleContext
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(IValueContext); ok {
+			t = ctx.(antlr.RuleContext)
+			break
+		}
+	}
 
 	if t == nil {
 		return nil
@@ -1702,7 +1898,13 @@ func (s *SelectOrCallContext) Value() IValueContext {
 }
 
 func (s *SelectOrCallContext) Field() IFieldContext {
-	var t = s.GetTypedRuleContext(reflect.TypeOf((*IFieldContext)(nil)).Elem(), 0)
+	var t antlr.RuleContext
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(IFieldContext); ok {
+			t = ctx.(antlr.RuleContext)
+			break
+		}
+	}
 
 	if t == nil {
 		return nil
@@ -1724,7 +1926,13 @@ func (s *SelectOrCallContext) LPAREN() antlr.TerminalNode {
 }
 
 func (s *SelectOrCallContext) ArgList() IArgListContext {
-	var t = s.GetTypedRuleContext(reflect.TypeOf((*IArgListContext)(nil)).Elem(), 0)
+	var t antlr.RuleContext
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(IArgListContext); ok {
+			t = ctx.(antlr.RuleContext)
+			break
+		}
+	}
 
 	if t == nil {
 		return nil
@@ -1772,7 +1980,13 @@ func (s *DynamicIndexContext) GetRuleContext() antlr.RuleContext {
 }
 
 func (s *DynamicIndexContext) Value() IValueContext {
-	var t = s.GetTypedRuleContext(reflect.TypeOf((*IValueContext)(nil)).Elem(), 0)
+	var t antlr.RuleContext
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(IValueContext); ok {
+			t = ctx.(antlr.RuleContext)
+			break
+		}
+	}
 
 	if t == nil {
 		return nil
@@ -1790,7 +2004,13 @@ func (s *DynamicIndexContext) LBRACE() antlr.TerminalNode {
 }
 
 func (s *DynamicIndexContext) Comparable() IComparableContext {
-	var t = s.GetTypedRuleContext(reflect.TypeOf((*IComparableContext)(nil)).Elem(), 0)
+	var t antlr.RuleContext
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(IComparableContext); ok {
+			t = ctx.(antlr.RuleContext)
+			break
+		}
+	}
 
 	if t == nil {
 		return nil
@@ -1836,7 +2056,13 @@ func (s *PrimaryExprContext) GetRuleContext() antlr.RuleContext {
 }
 
 func (s *PrimaryExprContext) Primary() IPrimaryContext {
-	var t = s.GetTypedRuleContext(reflect.TypeOf((*IPrimaryContext)(nil)).Elem(), 0)
+	var t antlr.RuleContext
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(IPrimaryContext); ok {
+			t = ctx.(antlr.RuleContext)
+			break
+		}
+	}
 
 	if t == nil {
 		return nil
@@ -1860,6 +2086,9 @@ func (p *FilterExpression) Value() (localctx IValueContext) {
 }
 
 func (p *FilterExpression) value(_p int) (localctx IValueContext) {
+	this := p
+	_ = this
+
 	var _parentctx antlr.ParserRuleContext = p.GetParserRuleContext()
 	_parentState := p.GetState()
 	localctx = NewValueContext(p, p.GetParserRuleContext(), _parentState)
@@ -1945,7 +2174,7 @@ func (p *FilterExpression) value(_p int) (localctx IValueContext) {
 					p.GetErrorHandler().Sync(p)
 					_la = p.GetTokenStream().LA(1)
 
-					if ((_la)&-(0x1f+1)) == 0 && ((1<<uint(_la))&((1<<FilterExpressionDOT)|(1<<FilterExpressionLPAREN)|(1<<FilterExpressionEXCLAIM)|(1<<FilterExpressionMINUS)|(1<<FilterExpressionSTRING)|(1<<FilterExpressionWS)|(1<<FilterExpressionDIGIT)|(1<<FilterExpressionHEX_DIGIT)|(1<<FilterExpressionTEXT))) != 0 {
+					if (int64(_la) & ^0x3f) == 0 && ((int64(1)<<_la)&198705218) != 0 {
 						{
 							p.SetState(121)
 							p.ArgList()
@@ -2131,7 +2360,13 @@ func (s *NestedExprContext) GetRuleContext() antlr.RuleContext {
 }
 
 func (s *NestedExprContext) Composite() ICompositeContext {
-	var t = s.GetTypedRuleContext(reflect.TypeOf((*ICompositeContext)(nil)).Elem(), 0)
+	var t antlr.RuleContext
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(ICompositeContext); ok {
+			t = ctx.(antlr.RuleContext)
+			break
+		}
+	}
 
 	if t == nil {
 		return nil
@@ -2179,7 +2414,13 @@ func (s *IdentOrGlobalCallContext) GetRuleContext() antlr.RuleContext {
 }
 
 func (s *IdentOrGlobalCallContext) Text() ITextContext {
-	var t = s.GetTypedRuleContext(reflect.TypeOf((*ITextContext)(nil)).Elem(), 0)
+	var t antlr.RuleContext
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(ITextContext); ok {
+			t = ctx.(antlr.RuleContext)
+			break
+		}
+	}
 
 	if t == nil {
 		return nil
@@ -2197,7 +2438,13 @@ func (s *IdentOrGlobalCallContext) LPAREN() antlr.TerminalNode {
 }
 
 func (s *IdentOrGlobalCallContext) ArgList() IArgListContext {
-	var t = s.GetTypedRuleContext(reflect.TypeOf((*IArgListContext)(nil)).Elem(), 0)
+	var t antlr.RuleContext
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(IArgListContext); ok {
+			t = ctx.(antlr.RuleContext)
+			break
+		}
+	}
 
 	if t == nil {
 		return nil
@@ -2217,6 +2464,9 @@ func (s *IdentOrGlobalCallContext) Accept(visitor antlr.ParseTreeVisitor) interf
 }
 
 func (p *FilterExpression) Primary() (localctx IPrimaryContext) {
+	this := p
+	_ = this
+
 	localctx = NewPrimaryContext(p, p.GetParserRuleContext(), p.GetState())
 	p.EnterRule(localctx, 18, FilterExpressionRULE_primary)
 	var _la int
@@ -2274,7 +2524,7 @@ func (p *FilterExpression) Primary() (localctx IPrimaryContext) {
 			p.GetErrorHandler().Sync(p)
 			_la = p.GetTokenStream().LA(1)
 
-			if ((_la)&-(0x1f+1)) == 0 && ((1<<uint(_la))&((1<<FilterExpressionDOT)|(1<<FilterExpressionLPAREN)|(1<<FilterExpressionEXCLAIM)|(1<<FilterExpressionMINUS)|(1<<FilterExpressionSTRING)|(1<<FilterExpressionWS)|(1<<FilterExpressionDIGIT)|(1<<FilterExpressionHEX_DIGIT)|(1<<FilterExpressionTEXT))) != 0 {
+			if (int64(_la) & ^0x3f) == 0 && ((int64(1)<<_la)&198705218) != 0 {
 				{
 					p.SetState(152)
 					p.ArgList()
@@ -2367,12 +2617,20 @@ func (s *ArgListContext) GetArgs() []IComparableContext { return s.args }
 func (s *ArgListContext) SetArgs(v []IComparableContext) { s.args = v }
 
 func (s *ArgListContext) AllComparable() []IComparableContext {
-	var ts = s.GetTypedRuleContexts(reflect.TypeOf((*IComparableContext)(nil)).Elem())
-	var tst = make([]IComparableContext, len(ts))
+	children := s.GetChildren()
+	len := 0
+	for _, ctx := range children {
+		if _, ok := ctx.(IComparableContext); ok {
+			len++
+		}
+	}
 
-	for i, t := range ts {
-		if t != nil {
+	tst := make([]IComparableContext, len)
+	i := 0
+	for _, ctx := range children {
+		if t, ok := ctx.(IComparableContext); ok {
 			tst[i] = t.(IComparableContext)
+			i++
 		}
 	}
 
@@ -2380,7 +2638,17 @@ func (s *ArgListContext) AllComparable() []IComparableContext {
 }
 
 func (s *ArgListContext) Comparable(i int) IComparableContext {
-	var t = s.GetTypedRuleContext(reflect.TypeOf((*IComparableContext)(nil)).Elem(), i)
+	var t antlr.RuleContext
+	j := 0
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(IComparableContext); ok {
+			if j == i {
+				t = ctx.(antlr.RuleContext)
+				break
+			}
+			j++
+		}
+	}
 
 	if t == nil {
 		return nil
@@ -2398,12 +2666,20 @@ func (s *ArgListContext) WS(i int) antlr.TerminalNode {
 }
 
 func (s *ArgListContext) AllSep() []ISepContext {
-	var ts = s.GetTypedRuleContexts(reflect.TypeOf((*ISepContext)(nil)).Elem())
-	var tst = make([]ISepContext, len(ts))
+	children := s.GetChildren()
+	len := 0
+	for _, ctx := range children {
+		if _, ok := ctx.(ISepContext); ok {
+			len++
+		}
+	}
 
-	for i, t := range ts {
-		if t != nil {
+	tst := make([]ISepContext, len)
+	i := 0
+	for _, ctx := range children {
+		if t, ok := ctx.(ISepContext); ok {
 			tst[i] = t.(ISepContext)
+			i++
 		}
 	}
 
@@ -2411,7 +2687,17 @@ func (s *ArgListContext) AllSep() []ISepContext {
 }
 
 func (s *ArgListContext) Sep(i int) ISepContext {
-	var t = s.GetTypedRuleContext(reflect.TypeOf((*ISepContext)(nil)).Elem(), i)
+	var t antlr.RuleContext
+	j := 0
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(ISepContext); ok {
+			if j == i {
+				t = ctx.(antlr.RuleContext)
+				break
+			}
+			j++
+		}
+	}
 
 	if t == nil {
 		return nil
@@ -2439,6 +2725,9 @@ func (s *ArgListContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
 }
 
 func (p *FilterExpression) ArgList() (localctx IArgListContext) {
+	this := p
+	_ = this
+
 	localctx = NewArgListContext(p, p.GetParserRuleContext(), p.GetState())
 	p.EnterRule(localctx, 20, FilterExpressionRULE_argList)
 	var _la int
@@ -2569,7 +2858,13 @@ func (s *CompositeContext) LPAREN() antlr.TerminalNode {
 }
 
 func (s *CompositeContext) Expression() IExpressionContext {
-	var t = s.GetTypedRuleContext(reflect.TypeOf((*IExpressionContext)(nil)).Elem(), 0)
+	var t antlr.RuleContext
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(IExpressionContext); ok {
+			t = ctx.(antlr.RuleContext)
+			break
+		}
+	}
 
 	if t == nil {
 		return nil
@@ -2609,6 +2904,9 @@ func (s *CompositeContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
 }
 
 func (p *FilterExpression) Composite() (localctx ICompositeContext) {
+	this := p
+	_ = this
+
 	localctx = NewCompositeContext(p, p.GetParserRuleContext(), p.GetState())
 	p.EnterRule(localctx, 22, FilterExpressionRULE_composite)
 	var _la int
@@ -2763,6 +3061,9 @@ func (s *TextContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
 }
 
 func (p *FilterExpression) Text() (localctx ITextContext) {
+	this := p
+	_ = this
+
 	localctx = NewTextContext(p, p.GetParserRuleContext(), p.GetState())
 	p.EnterRule(localctx, 24, FilterExpressionRULE_text)
 	var _la int
@@ -2790,7 +3091,7 @@ func (p *FilterExpression) Text() (localctx ITextContext) {
 		p.SetState(198)
 		_la = p.GetTokenStream().LA(1)
 
-		if !(((_la)&-(0x1f+1)) == 0 && ((1<<uint(_la))&((1<<FilterExpressionEXCLAIM)|(1<<FilterExpressionDIGIT)|(1<<FilterExpressionTEXT))) != 0) {
+		if !((int64(_la) & ^0x3f) == 0 && ((int64(1)<<_la)&151519232) != 0) {
 			p.GetErrorHandler().RecoverInline(p)
 		} else {
 			p.GetErrorHandler().ReportMatch(p)
@@ -2807,7 +3108,7 @@ func (p *FilterExpression) Text() (localctx ITextContext) {
 				p.SetState(199)
 				_la = p.GetTokenStream().LA(1)
 
-				if !(((_la)&-(0x1f+1)) == 0 && ((1<<uint(_la))&((1<<FilterExpressionEXCLAIM)|(1<<FilterExpressionMINUS)|(1<<FilterExpressionDIGIT)|(1<<FilterExpressionTEXT))) != 0) {
+				if !((int64(_la) & ^0x3f) == 0 && ((int64(1)<<_la)&152567808) != 0) {
 					p.GetErrorHandler().RecoverInline(p)
 				} else {
 					p.GetErrorHandler().ReportMatch(p)
@@ -2885,7 +3186,13 @@ func (s *FieldContext) GetId() ITextContext { return s.id }
 func (s *FieldContext) SetId(v ITextContext) { s.id = v }
 
 func (s *FieldContext) Text() ITextContext {
-	var t = s.GetTypedRuleContext(reflect.TypeOf((*ITextContext)(nil)).Elem(), 0)
+	var t antlr.RuleContext
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(ITextContext); ok {
+			t = ctx.(antlr.RuleContext)
+			break
+		}
+	}
 
 	if t == nil {
 		return nil
@@ -2899,7 +3206,13 @@ func (s *FieldContext) STRING() antlr.TerminalNode {
 }
 
 func (s *FieldContext) Keyword() IKeywordContext {
-	var t = s.GetTypedRuleContext(reflect.TypeOf((*IKeywordContext)(nil)).Elem(), 0)
+	var t antlr.RuleContext
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(IKeywordContext); ok {
+			t = ctx.(antlr.RuleContext)
+			break
+		}
+	}
 
 	if t == nil {
 		return nil
@@ -2927,6 +3240,9 @@ func (s *FieldContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
 }
 
 func (p *FilterExpression) Field() (localctx IFieldContext) {
+	this := p
+	_ = this
+
 	localctx = NewFieldContext(p, p.GetParserRuleContext(), p.GetState())
 	p.EnterRule(localctx, 26, FilterExpressionRULE_field)
 
@@ -3023,7 +3339,13 @@ func NewNumberContext(parser antlr.Parser, parent antlr.ParserRuleContext, invok
 func (s *NumberContext) GetParser() antlr.Parser { return s.parser }
 
 func (s *NumberContext) FloatVal() IFloatValContext {
-	var t = s.GetTypedRuleContext(reflect.TypeOf((*IFloatValContext)(nil)).Elem(), 0)
+	var t antlr.RuleContext
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(IFloatValContext); ok {
+			t = ctx.(antlr.RuleContext)
+			break
+		}
+	}
 
 	if t == nil {
 		return nil
@@ -3033,7 +3355,13 @@ func (s *NumberContext) FloatVal() IFloatValContext {
 }
 
 func (s *NumberContext) IntVal() IIntValContext {
-	var t = s.GetTypedRuleContext(reflect.TypeOf((*IIntValContext)(nil)).Elem(), 0)
+	var t antlr.RuleContext
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(IIntValContext); ok {
+			t = ctx.(antlr.RuleContext)
+			break
+		}
+	}
 
 	if t == nil {
 		return nil
@@ -3061,6 +3389,9 @@ func (s *NumberContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
 }
 
 func (p *FilterExpression) Number() (localctx INumberContext) {
+	this := p
+	_ = this
+
 	localctx = NewNumberContext(p, p.GetParserRuleContext(), p.GetState())
 	p.EnterRule(localctx, 28, FilterExpressionRULE_number)
 
@@ -3175,6 +3506,9 @@ func (s *IntValContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
 }
 
 func (p *FilterExpression) IntVal() (localctx IIntValContext) {
+	this := p
+	_ = this
+
 	localctx = NewIntValContext(p, p.GetParserRuleContext(), p.GetState())
 	p.EnterRule(localctx, 30, FilterExpressionRULE_intVal)
 	var _la int
@@ -3326,6 +3660,9 @@ func (s *FloatValContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
 }
 
 func (p *FilterExpression) FloatVal() (localctx IFloatValContext) {
+	this := p
+	_ = this
+
 	localctx = NewFloatValContext(p, p.GetParserRuleContext(), p.GetState())
 	p.EnterRule(localctx, 32, FilterExpressionRULE_floatVal)
 	var _la int
@@ -3434,111 +3771,6 @@ func (p *FilterExpression) FloatVal() (localctx IFloatValContext) {
 	return localctx
 }
 
-// IKeywordContext is an interface to support dynamic dispatch.
-type IKeywordContext interface {
-	antlr.ParserRuleContext
-
-	// GetParser returns the parser.
-	GetParser() antlr.Parser
-
-	// IsKeywordContext differentiates from other interfaces.
-	IsKeywordContext()
-}
-
-type KeywordContext struct {
-	*antlr.BaseParserRuleContext
-	parser antlr.Parser
-}
-
-func NewEmptyKeywordContext() *KeywordContext {
-	var p = new(KeywordContext)
-	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(nil, -1)
-	p.RuleIndex = FilterExpressionRULE_keyword
-	return p
-}
-
-func (*KeywordContext) IsKeywordContext() {}
-
-func NewKeywordContext(parser antlr.Parser, parent antlr.ParserRuleContext, invokingState int) *KeywordContext {
-	var p = new(KeywordContext)
-
-	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(parent, invokingState)
-
-	p.parser = parser
-	p.RuleIndex = FilterExpressionRULE_keyword
-
-	return p
-}
-
-func (s *KeywordContext) GetParser() antlr.Parser { return s.parser }
-
-func (s *KeywordContext) OR() antlr.TerminalNode {
-	return s.GetToken(FilterExpressionOR, 0)
-}
-
-func (s *KeywordContext) AND() antlr.TerminalNode {
-	return s.GetToken(FilterExpressionAND, 0)
-}
-
-func (s *KeywordContext) NOT() antlr.TerminalNode {
-	return s.GetToken(FilterExpressionNOT, 0)
-}
-
-func (s *KeywordContext) GetRuleContext() antlr.RuleContext {
-	return s
-}
-
-func (s *KeywordContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) string {
-	return antlr.TreesStringTree(s, ruleNames, recog)
-}
-
-func (s *KeywordContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
-	switch t := visitor.(type) {
-	case FilterExpressionVisitor:
-		return t.VisitKeyword(s)
-
-	default:
-		return t.VisitChildren(s)
-	}
-}
-
-func (p *FilterExpression) Keyword() (localctx IKeywordContext) {
-	localctx = NewKeywordContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 34, FilterExpressionRULE_keyword)
-	var _la int
-
-	defer func() {
-		p.ExitRule()
-	}()
-
-	defer func() {
-		if err := recover(); err != nil {
-			if v, ok := err.(antlr.RecognitionException); ok {
-				localctx.SetException(v)
-				p.GetErrorHandler().ReportError(p, v)
-				p.GetErrorHandler().Recover(p, v)
-			} else {
-				panic(err)
-			}
-		}
-	}()
-
-	p.EnterOuterAlt(localctx, 1)
-	{
-		p.SetState(254)
-		_la = p.GetTokenStream().LA(1)
-
-		if !(((_la)&-(0x1f+1)) == 0 && ((1<<uint(_la))&((1<<FilterExpressionOR)|(1<<FilterExpressionAND)|(1<<FilterExpressionNOT))) != 0) {
-			p.GetErrorHandler().RecoverInline(p)
-		} else {
-			p.GetErrorHandler().ReportMatch(p)
-			p.Consume()
-		}
-	}
-
-	return localctx
-}
-
 // INotOpContext is an interface to support dynamic dispatch.
 type INotOpContext interface {
 	antlr.ParserRuleContext
@@ -3612,8 +3844,11 @@ func (s *NotOpContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
 }
 
 func (p *FilterExpression) NotOp() (localctx INotOpContext) {
+	this := p
+	_ = this
+
 	localctx = NewNotOpContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 36, FilterExpressionRULE_notOp)
+	p.EnterRule(localctx, 34, FilterExpressionRULE_notOp)
 	var _la int
 
 	defer func() {
@@ -3632,34 +3867,34 @@ func (p *FilterExpression) NotOp() (localctx INotOpContext) {
 		}
 	}()
 
-	p.SetState(263)
+	p.SetState(261)
 	p.GetErrorHandler().Sync(p)
 
 	switch p.GetTokenStream().LA(1) {
 	case FilterExpressionMINUS:
 		p.EnterOuterAlt(localctx, 1)
 		{
-			p.SetState(256)
+			p.SetState(254)
 			p.Match(FilterExpressionMINUS)
 		}
 
 	case FilterExpressionNOT:
 		p.EnterOuterAlt(localctx, 2)
 		{
-			p.SetState(257)
+			p.SetState(255)
 			p.Match(FilterExpressionNOT)
 		}
-		p.SetState(259)
+		p.SetState(257)
 		p.GetErrorHandler().Sync(p)
 		_la = p.GetTokenStream().LA(1)
 
 		for ok := true; ok; ok = _la == FilterExpressionWS {
 			{
-				p.SetState(258)
+				p.SetState(256)
 				p.Match(FilterExpressionWS)
 			}
 
-			p.SetState(261)
+			p.SetState(259)
 			p.GetErrorHandler().Sync(p)
 			_la = p.GetTokenStream().LA(1)
 		}
@@ -3740,8 +3975,11 @@ func (s *AndOpContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
 }
 
 func (p *FilterExpression) AndOp() (localctx IAndOpContext) {
+	this := p
+	_ = this
+
 	localctx = NewAndOpContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 38, FilterExpressionRULE_andOp)
+	p.EnterRule(localctx, 36, FilterExpressionRULE_andOp)
 	var _la int
 
 	defer func() {
@@ -3761,35 +3999,35 @@ func (p *FilterExpression) AndOp() (localctx IAndOpContext) {
 	}()
 
 	p.EnterOuterAlt(localctx, 1)
-	p.SetState(266)
+	p.SetState(264)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
 	for ok := true; ok; ok = _la == FilterExpressionWS {
 		{
-			p.SetState(265)
+			p.SetState(263)
 			p.Match(FilterExpressionWS)
 		}
 
-		p.SetState(268)
+		p.SetState(266)
 		p.GetErrorHandler().Sync(p)
 		_la = p.GetTokenStream().LA(1)
 	}
 	{
-		p.SetState(270)
+		p.SetState(268)
 		p.Match(FilterExpressionAND)
 	}
-	p.SetState(272)
+	p.SetState(270)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
 	for ok := true; ok; ok = _la == FilterExpressionWS {
 		{
-			p.SetState(271)
+			p.SetState(269)
 			p.Match(FilterExpressionWS)
 		}
 
-		p.SetState(274)
+		p.SetState(272)
 		p.GetErrorHandler().Sync(p)
 		_la = p.GetTokenStream().LA(1)
 	}
@@ -3866,8 +4104,11 @@ func (s *OrOpContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
 }
 
 func (p *FilterExpression) OrOp() (localctx IOrOpContext) {
+	this := p
+	_ = this
+
 	localctx = NewOrOpContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 40, FilterExpressionRULE_orOp)
+	p.EnterRule(localctx, 38, FilterExpressionRULE_orOp)
 	var _la int
 
 	defer func() {
@@ -3887,35 +4128,35 @@ func (p *FilterExpression) OrOp() (localctx IOrOpContext) {
 	}()
 
 	p.EnterOuterAlt(localctx, 1)
-	p.SetState(277)
+	p.SetState(275)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
 	for ok := true; ok; ok = _la == FilterExpressionWS {
 		{
-			p.SetState(276)
+			p.SetState(274)
 			p.Match(FilterExpressionWS)
 		}
 
-		p.SetState(279)
+		p.SetState(277)
 		p.GetErrorHandler().Sync(p)
 		_la = p.GetTokenStream().LA(1)
 	}
 	{
-		p.SetState(281)
+		p.SetState(279)
 		p.Match(FilterExpressionOR)
 	}
-	p.SetState(283)
+	p.SetState(281)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
 	for ok := true; ok; ok = _la == FilterExpressionWS {
 		{
-			p.SetState(282)
+			p.SetState(280)
 			p.Match(FilterExpressionWS)
 		}
 
-		p.SetState(285)
+		p.SetState(283)
 		p.GetErrorHandler().Sync(p)
 		_la = p.GetTokenStream().LA(1)
 	}
@@ -3992,8 +4233,11 @@ func (s *SepContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
 }
 
 func (p *FilterExpression) Sep() (localctx ISepContext) {
+	this := p
+	_ = this
+
 	localctx = NewSepContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 42, FilterExpressionRULE_sep)
+	p.EnterRule(localctx, 40, FilterExpressionRULE_sep)
 	var _la int
 
 	defer func() {
@@ -4013,37 +4257,145 @@ func (p *FilterExpression) Sep() (localctx ISepContext) {
 	}()
 
 	p.EnterOuterAlt(localctx, 1)
-	p.SetState(290)
+	p.SetState(288)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
 	for _la == FilterExpressionWS {
 		{
-			p.SetState(287)
+			p.SetState(285)
 			p.Match(FilterExpressionWS)
 		}
 
-		p.SetState(292)
+		p.SetState(290)
 		p.GetErrorHandler().Sync(p)
 		_la = p.GetTokenStream().LA(1)
 	}
 	{
-		p.SetState(293)
+		p.SetState(291)
 		p.Match(FilterExpressionCOMMA)
 	}
-	p.SetState(297)
+	p.SetState(295)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
 	for _la == FilterExpressionWS {
 		{
-			p.SetState(294)
+			p.SetState(292)
 			p.Match(FilterExpressionWS)
 		}
 
-		p.SetState(299)
+		p.SetState(297)
 		p.GetErrorHandler().Sync(p)
 		_la = p.GetTokenStream().LA(1)
+	}
+
+	return localctx
+}
+
+// IKeywordContext is an interface to support dynamic dispatch.
+type IKeywordContext interface {
+	antlr.ParserRuleContext
+
+	// GetParser returns the parser.
+	GetParser() antlr.Parser
+
+	// IsKeywordContext differentiates from other interfaces.
+	IsKeywordContext()
+}
+
+type KeywordContext struct {
+	*antlr.BaseParserRuleContext
+	parser antlr.Parser
+}
+
+func NewEmptyKeywordContext() *KeywordContext {
+	var p = new(KeywordContext)
+	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(nil, -1)
+	p.RuleIndex = FilterExpressionRULE_keyword
+	return p
+}
+
+func (*KeywordContext) IsKeywordContext() {}
+
+func NewKeywordContext(parser antlr.Parser, parent antlr.ParserRuleContext, invokingState int) *KeywordContext {
+	var p = new(KeywordContext)
+
+	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(parent, invokingState)
+
+	p.parser = parser
+	p.RuleIndex = FilterExpressionRULE_keyword
+
+	return p
+}
+
+func (s *KeywordContext) GetParser() antlr.Parser { return s.parser }
+
+func (s *KeywordContext) OR() antlr.TerminalNode {
+	return s.GetToken(FilterExpressionOR, 0)
+}
+
+func (s *KeywordContext) AND() antlr.TerminalNode {
+	return s.GetToken(FilterExpressionAND, 0)
+}
+
+func (s *KeywordContext) NOT() antlr.TerminalNode {
+	return s.GetToken(FilterExpressionNOT, 0)
+}
+
+func (s *KeywordContext) GetRuleContext() antlr.RuleContext {
+	return s
+}
+
+func (s *KeywordContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) string {
+	return antlr.TreesStringTree(s, ruleNames, recog)
+}
+
+func (s *KeywordContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case FilterExpressionVisitor:
+		return t.VisitKeyword(s)
+
+	default:
+		return t.VisitChildren(s)
+	}
+}
+
+func (p *FilterExpression) Keyword() (localctx IKeywordContext) {
+	this := p
+	_ = this
+
+	localctx = NewKeywordContext(p, p.GetParserRuleContext(), p.GetState())
+	p.EnterRule(localctx, 42, FilterExpressionRULE_keyword)
+	var _la int
+
+	defer func() {
+		p.ExitRule()
+	}()
+
+	defer func() {
+		if err := recover(); err != nil {
+			if v, ok := err.(antlr.RecognitionException); ok {
+				localctx.SetException(v)
+				p.GetErrorHandler().ReportError(p, v)
+				p.GetErrorHandler().Recover(p, v)
+			} else {
+				panic(err)
+			}
+		}
+	}()
+
+	p.EnterOuterAlt(localctx, 1)
+	{
+		p.SetState(298)
+		_la = p.GetTokenStream().LA(1)
+
+		if !((int64(_la) & ^0x3f) == 0 && ((int64(1)<<_la)&56) != 0) {
+			p.GetErrorHandler().RecoverInline(p)
+		} else {
+			p.GetErrorHandler().ReportMatch(p)
+			p.Consume()
+		}
 	}
 
 	return localctx
@@ -4064,6 +4416,9 @@ func (p *FilterExpression) Sempred(localctx antlr.RuleContext, ruleIndex, predIn
 }
 
 func (p *FilterExpression) Value_Sempred(localctx antlr.RuleContext, predIndex int) bool {
+	this := p
+	_ = this
+
 	switch predIndex {
 	case 0:
 		return p.Precpred(p.GetParserRuleContext(), 2)
