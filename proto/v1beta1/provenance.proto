@@ -113,6 +113,10 @@ message Hash {
     HASH_TYPE_UNSPECIFIED = 0;
     // A SHA-256 hash.
     SHA256 = 1;
+    // Dirhash of a Go module's source code which is then hex-encoded.
+    GO_MODULE_H1 = 3;
+    // A SHA-512 hash.
+    SHA512 = 4;
   }
 
   // Required. The type of hash that was performed.
