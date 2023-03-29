@@ -452,11 +452,13 @@ func (x *Link) GetEnvironment() *Link_Environment {
 	return nil
 }
 
+// Set of software artifacts that the attestation applies to. Each element represents a single software artifact.
 type Subject struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// Identifier to distinguish this artifact from others within the subject.
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	// `"<ALGORITHM>": "<HEX_VALUE>"`
 	// Algorithms can be e.g. sha256, sha512
