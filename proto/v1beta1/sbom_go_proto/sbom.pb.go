@@ -36,13 +36,17 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// The note representing an SBOM reference.
 type SBOMReferenceNote struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Format  string `protobuf:"bytes,1,opt,name=format,proto3" json:"format,omitempty"`   // e.g. spdx
-	Version string `protobuf:"bytes,2,opt,name=version,proto3" json:"version,omitempty"` // e.g. 2.3
+	// The format that SBOM takes. E.g. may be spdx, cyclonedx, etc...
+	Format string `protobuf:"bytes,1,opt,name=format,proto3" json:"format,omitempty"`
+	// The version of the format that the SBOM takes. E.g. if the format
+	// is spdx, the version may be 2.3.
+	Version string `protobuf:"bytes,2,opt,name=version,proto3" json:"version,omitempty"`
 }
 
 func (x *SBOMReferenceNote) Reset() {
@@ -91,14 +95,21 @@ func (x *SBOMReferenceNote) GetVersion() string {
 	return ""
 }
 
+// The occurrence representing an SBOM reference as applied to a specific resource.
+// The occurrence follows the DSSE specification. See
+// https://github.com/secure-systems-lab/dsse/blob/master/envelope.md for more details.
 type SBOMReferenceOccurrence struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Payload     *SbomReferenceIntotoPayload          `protobuf:"bytes,1,opt,name=payload,proto3" json:"payload,omitempty"`
-	PayloadType string                               `protobuf:"bytes,2,opt,name=payload_type,json=payloadType,proto3" json:"payload_type,omitempty"`
-	Signatures  []*common_go_proto.EnvelopeSignature `protobuf:"bytes,3,rep,name=signatures,proto3" json:"signatures,omitempty"` // Signature over the payload
+	// The actual payload that contains the SBOM reference data.
+	Payload *SbomReferenceIntotoPayload `protobuf:"bytes,1,opt,name=payload,proto3" json:"payload,omitempty"`
+	// The kind of payload that SbomReferenceIntotoPayload takes. Since it's in the intoto
+	// format, this value is expected to be 'application/vnd.in-toto+json'.
+	PayloadType string `protobuf:"bytes,2,opt,name=payload_type,json=payloadType,proto3" json:"payload_type,omitempty"`
+	// The signatures over the payload.
+	Signatures []*common_go_proto.EnvelopeSignature `protobuf:"bytes,3,rep,name=signatures,proto3" json:"signatures,omitempty"`
 }
 
 func (x *SBOMReferenceOccurrence) Reset() {
@@ -154,15 +165,23 @@ func (x *SBOMReferenceOccurrence) GetSignatures() []*common_go_proto.EnvelopeSig
 	return nil
 }
 
+// The actual payload that contains the SBOM Reference data.
+// The payload follows the intoto statement specification. See
+// https://github.com/in-toto/attestation/blob/main/spec/v1.0/statement.md
+// for more details.
 type SbomReferenceIntotoPayload struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Type          string                        `protobuf:"bytes,1,opt,name=type,json=_type,proto3" json:"type,omitempty"`
-	PredicateType string                        `protobuf:"bytes,2,opt,name=predicate_type,json=predicateType,proto3" json:"predicate_type,omitempty"`
-	Subject       []*intoto_go_proto.Subject    `protobuf:"bytes,3,rep,name=subject,proto3" json:"subject,omitempty"`
-	Predicate     *SbomReferenceIntotoPredicate `protobuf:"bytes,4,opt,name=predicate,proto3" json:"predicate,omitempty"`
+	// Identifier for the schema of the Statement.
+	Type string `protobuf:"bytes,1,opt,name=type,json=_type,proto3" json:"type,omitempty"`
+	// URI identifying the type of the Predicate.
+	PredicateType string `protobuf:"bytes,2,opt,name=predicate_type,json=predicateType,proto3" json:"predicate_type,omitempty"`
+	// Set of software artifacts that the attestation applies to. Each element represents a single software artifact.
+	Subject []*intoto_go_proto.Subject `protobuf:"bytes,3,rep,name=subject,proto3" json:"subject,omitempty"`
+	// Additional parameters of the Predicate. Includes the actual data about the SBOM.
+	Predicate *SbomReferenceIntotoPredicate `protobuf:"bytes,4,opt,name=predicate,proto3" json:"predicate,omitempty"`
 }
 
 func (x *SbomReferenceIntotoPayload) Reset() {
@@ -225,15 +244,20 @@ func (x *SbomReferenceIntotoPayload) GetPredicate() *SbomReferenceIntotoPredicat
 	return nil
 }
 
+// A predicate which describes the SBOM being referenced.
 type SbomReferenceIntotoPredicate struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	ReferrerId string            `protobuf:"bytes,1,opt,name=referrer_id,json=referrerId,proto3" json:"referrer_id,omitempty"`
-	Location   string            `protobuf:"bytes,2,opt,name=location,proto3" json:"location,omitempty"`
-	MimeType   string            `protobuf:"bytes,3,opt,name=mime_type,json=mimeType,proto3" json:"mime_type,omitempty"`
-	Digest     map[string]string `protobuf:"bytes,4,rep,name=digest,proto3" json:"digest,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	// The person or system referring this predicate to the consumer.
+	ReferrerId string `protobuf:"bytes,1,opt,name=referrer_id,json=referrerId,proto3" json:"referrer_id,omitempty"`
+	// The location of the SBOM.
+	Location string `protobuf:"bytes,2,opt,name=location,proto3" json:"location,omitempty"`
+	// The mime type of the SBOM.
+	MimeType string `protobuf:"bytes,3,opt,name=mime_type,json=mimeType,proto3" json:"mime_type,omitempty"`
+	// A map of algorithm to digest of the contents of the SBOM.
+	Digest map[string]string `protobuf:"bytes,4,rep,name=digest,proto3" json:"digest,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 }
 
 func (x *SbomReferenceIntotoPredicate) Reset() {
