@@ -66,17 +66,6 @@ type PgSQLConfig struct {
 	PaginationKey string `mapstructure:"paginationkey"`
 }
 
-type MySQLConfig struct {
-	Host     string `mapstructure:"host"`
-	DbName   string `mapstructure:"dbname"`
-	User     string `mapstructure:"user"`
-	Password string `mapstructure:"password"`
-	// Valid sslmodes: disable, allow, prefer, require, verify-ca, verify-full.
-	// See https://www.postgresql.org/docs/current/static/libpq-connect.html for details
-	SSLMode       string `mapstructure:"sslmode"`
-	PaginationKey string `mapstructure:"paginationkey"`
-}
-
 // defaultConfig is a configuration that can be used as a fallback value.
 var defaultConfig = []byte(`
 grafeas:

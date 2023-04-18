@@ -13,20 +13,29 @@ image:
 nameOverride: "grafeas-server"
 fullnameOverride: "grafeas-server"
 
-# The name of persistent volume to use
-# persistent volume is used for storing the embedded grafeas data
-persistentVolumeClaimName: "grafeas"
-
-# The type of storage used, supported options: memstore or embedded
-# REMARK: embedded storage requires a persistent volume
-storageType: "memstore"
-
+## Specify a service type
+## ClusterIP is default
+## ref: http://kubernetes.io/docs/user-guide/services/
+##
 service:
   type: ClusterIP
   port: 8080
 
 container:
   port: 8080
+
+## Persist data to a persistent volume. This is both a volume for certificates, Grafeas config and data volume.
+## enabled: false results in no persistent volumes and persistent volume claims being created
+## ref: https://kubernetes.io/docs/concepts/storage/persistent-volumes/
+##
+persistence:
+  enabled: false
+  # The name of persistent volume to use
+  # persistent volume is used for storing the embedded grafeas data
+  claimName: "grafeas"
+  # The type of storage used, supported options: memstore or embedded
+  # REMARK: embedded storage requires a persistent volume
+  storageType: "memstore"
 
 # Certificates for mutual authentication
 certificates:

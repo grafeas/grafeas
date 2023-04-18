@@ -7,9 +7,8 @@ require (
 	github.com/boltdb/bolt v1.3.1
 	github.com/cockroachdb/cmux v0.0.0-20170110192607-30d10be49292
 	github.com/fernet/fernet-go v0.0.0-20180830025343-9eac43b88a5e
-	github.com/go-sql-driver/mysql v1.5.0
-	github.com/golang/protobuf v1.4.0-rc.4.0.20200313231945-b860323f09d0
-	github.com/google/go-cmp v0.4.0
+	github.com/golang/protobuf v1.3.5
+	github.com/google/go-cmp v0.3.1
 	github.com/google/logger v1.0.1
 	github.com/google/uuid v1.1.1
 	github.com/grpc-ecosystem/grpc-gateway v1.9.6
@@ -20,6 +19,5 @@ require (
 	golang.org/x/sys v0.0.0-20190826190057-c7b8b68b1456 // indirect
 	golang.org/x/text v0.3.2 // indirect
 	google.golang.org/genproto v0.0.0-20190819201941-24fa4b261c55
-	google.golang.org/grpc v1.28.1
-	google.golang.org/protobuf v1.21.0
+	google.golang.org/grpc v1.23.0
 )

@@ -17,7 +17,7 @@ data:
 {{- end }}
         cors_allowed_origins:
         # - "http://example.net"
-      storage_type: {{ .Values.storageType }}
+      storage_type: {{ .Values.persistence.storageType }}
       embedded:
         # Path to embedded database
         path: "/data/grafeas.db"

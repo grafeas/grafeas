@@ -24,8 +24,6 @@ import (
 	pkgpb "github.com/grafeas/grafeas/proto/v1beta1/package_go_proto"
 	provpb "github.com/grafeas/grafeas/proto/v1beta1/provenance_go_proto"
 	vpb "github.com/grafeas/grafeas/proto/v1beta1/vulnerability_go_proto"
-	bpb "github.com/grafeas/grafeas/proto/v1beta1/build_go_proto"
-	atpb "github.com/grafeas/grafeas/proto/v1beta1/attestation_go_proto"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -216,59 +214,6 @@ func TestListOccurrencesErrors(t *testing.T) {
 		if status.Code(err) != tt.wantErrStatus {
 			t.Errorf("%q: got error status %v, want %v", tt.desc, status.Code(err), tt.wantErrStatus)
 		}
-	}
-}
-func TestCreatePgpSignedAttestationOccurrence(t *testing.T) {
-	ctx := context.Background()
-	g := &API{
-		Storage:           newFakeStorage(),
-		Auth:              &fakeAuth{},
-		Filter:            &fakeFilter{},
-		Logger:            &fakeLogger{},
-		EnforceValidation: true,
-	}
-
-	req := &gpb.CreateOccurrenceRequest{
-		Parent:     "projects/consumer1",
-		Occurrence: pgpSignedAttesOcc(t, "consumer1", "projects/goog-vulnz/notes/CVE-UH-OH", "debian"),
-	}
-	createdOcc, err := g.CreateOccurrence(ctx, req)
-	if err != nil {
-		t.Fatalf("Got err %v, want success", err)
-	}
-
-	// TODO: migrate to protocolbuffers/protobuf-go when it is stable so we can use
-	// protocmp.IgnoreFields instead.
-	createdOcc.Name = ""
-	if diff := cmp.Diff(req.Occurrence, createdOcc, cmp.Comparer(proto.Equal)); diff != "" {
-		t.Errorf("CreateOccurrence(%v) returned diff (want -> got):\n%s", req, diff)
-	}
-}
-
-func TestCreateBuildOccurrence(t *testing.T) {
-	ctx := context.Background()
-	g := &API{
-		Storage:           newFakeStorage(),
-		Auth:              &fakeAuth{},
-		Filter:            &fakeFilter{},
-		Logger:            &fakeLogger{},
-		EnforceValidation: true,
-	}
-
-	req := &gpb.CreateOccurrenceRequest{
-		Parent:     "projects/consumer1",
-		Occurrence: buildOCC(t, "consumer1", "projects/goog-vulnz/notes/CVE-UH-OH", "debian"),
-	}
-	createdOcc, err := g.CreateOccurrence(ctx, req)
-	if err != nil {
-		t.Fatalf("Got err %v, want success", err)
-	}
-
-	// TODO: migrate to protocolbuffers/protobuf-go when it is stable so we can use
-	// protocmp.IgnoreFields instead.
-	createdOcc.Name = ""
-	if diff := cmp.Diff(req.Occurrence, createdOcc, cmp.Comparer(proto.Equal)); diff != "" {
-		t.Errorf("CreateOccurrence(%v) returned diff (want -> got):\n%s", req, diff)
 	}
 }
 
@@ -1019,45 +964,4 @@ func vulnzOccs(t *testing.T, pID, noteName, imageNamePrefix string, num int) []*
 		occs = append(occs, vulnzOcc(t, pID, noteName, fmt.Sprintf("%s%d", imageNamePrefix, i)))
 	}
 	return occs
-}
-
-
-// buildOCC returns a fake v1beta1 valid build occurrence for testing.
-func buildOCC(t *testing.T, pID, noteName, imageName string) *gpb.Occurrence {
-	t.Helper()
-	return &gpb.Occurrence{
-		Resource: &gpb.Resource{
-			Uri: fmt.Sprintf("https://some-uri/%s/%s/", pID, imageName),
-		},
-		NoteName: noteName,
-		Details: &gpb.Occurrence_Build{
-			Build: &bpb.Details{
-				Provenance: &provpb.BuildProvenance {
-					Id: "test_build_occurrence",
-				},
-			},
-		},
-	}
-}
-
-// attesOcc returns a fake v1beta1 valid build occurrence for testing.
-func pgpSignedAttesOcc(t *testing.T, pID, noteName, imageName string) *gpb.Occurrence {
-	t.Helper()
-	return &gpb.Occurrence{
-		Resource: &gpb.Resource{
-			Uri: fmt.Sprintf("https://some-uri/%s/%s/", pID, imageName),
-		},
-		NoteName: noteName,
-		Details: &gpb.Occurrence_Attestation{
-			Attestation: &atpb.Details{
-				Attestation: &atpb.Attestation {
-					Signature: &atpb.Attestation_PgpSignedAttestation{
-						PgpSignedAttestation: &atpb.PgpSignedAttestation{
-							Signature: "some_signature",
-						},
-					},
-				},
-			},
-		},
-	}
 }
