@@ -1,6 +1,6 @@
 module github.com/grafeas/grafeas
 
-go 1.18
+go 1.20
 
 require (
 	github.com/antlr/antlr4/runtime/Go/antlr/v4 v4.0.0-20221202181307-76fa05c21b12
