@@ -1,6 +1,22 @@
 This is the changelog of Grafeas server releases. For more information on
 versioning, see [versioning](docs/versioning.md) document.
 
+v0.2.2
+  * Enhanced support for Vulnerability Notes and Occurrences, with the following changes:
+    * Indicate the location at which an affected package was found in the container image.
+    * CVSS proto compatible with v2 and v3.
+    * More detailed status of language package scans in the Discovery occurrence.
+    * Added cvss_version field to indicate which version was used to populate fields: cvss_score and severity.
+    * Added support for Vex Assessments.
+  * Added support for language packages in Package Notes and Occurrences.
+  * Enhanced SLSA support.
+    * Added support for SLSA v0.2 to the intoto statement.
+    * Added SLSA v0.2 converter.
+  * Added SBOM support.
+  * Updated versions of frameworks and libraries
+    * Use ANTLR v4.
+    * Golang 1.20.
+
 v0.2.1:
   * Update grpc-gateway v2.7.3 to generate compatible openapi spec.
 
