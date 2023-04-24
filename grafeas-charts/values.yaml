@@ -7,7 +7,7 @@ secret:
 image:
   repository: us.gcr.io/grafeas
   name: grafeas-server
-  tag: v0.2.1
+  tag: v0.2.2
   pullPolicy: IfNotPresent
 
 nameOverride: "grafeas-server"
