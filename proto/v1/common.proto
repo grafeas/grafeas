@@ -48,7 +48,7 @@ enum NoteKind {
   // This represents a Vulnerability Assessment.
   VULNERABILITY_ASSESSMENT = 11;
   // This represents an SBOM Reference.
-  SBOM_REFERENCE = 14;
+  SBOM_REFERENCE = 12;
 }
 
 // Metadata for any related URL information.
