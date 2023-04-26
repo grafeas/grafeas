@@ -2656,6 +2656,10 @@
         "vulnerabilityAssessment": {
           "$ref": "#/definitions/v1VulnerabilityAssessmentNote",
           "description": "A note describing a vulnerability assessment."
+        },
+        "sbomReference": {
+          "$ref": "#/definitions/v1SBOMReferenceNote",
+          "description": "A note describing an SBOM reference."
         }
       },
       "description": "A type of analysis that can be done for a resource."
@@ -2674,10 +2678,11 @@
         "UPGRADE",
         "COMPLIANCE",
         "DSSE_ATTESTATION",
-        "VULNERABILITY_ASSESSMENT"
+        "VULNERABILITY_ASSESSMENT",
+        "SBOM_REFERENCE"
       ],
       "default": "NOTE_KIND_UNSPECIFIED",
-      "description": "Kind represents the kinds of notes supported.\n\n - NOTE_KIND_UNSPECIFIED: Default value. This value is unused.\n - VULNERABILITY: The note and occurrence represent a package vulnerability.\n - BUILD: The note and occurrence assert build provenance.\n - IMAGE: This represents an image basis relationship.\n - PACKAGE: This represents a package installed via a package manager.\n - DEPLOYMENT: The note and occurrence track deployment events.\n - DISCOVERY: The note and occurrence track the initial discovery status of a resource.\n - ATTESTATION: This represents a logical \"role\" that can attest to artifacts.\n - UPGRADE: This represents an available package upgrade.\n - COMPLIANCE: This represents a Compliance Note\n - DSSE_ATTESTATION: This represents a DSSE attestation Note\n - VULNERABILITY_ASSESSMENT: This represents a Vulnerability Assessment."
+      "description": "Kind represents the kinds of notes supported.\n\n - NOTE_KIND_UNSPECIFIED: Default value. This value is unused.\n - VULNERABILITY: The note and occurrence represent a package vulnerability.\n - BUILD: The note and occurrence assert build provenance.\n - IMAGE: This represents an image basis relationship.\n - PACKAGE: This represents a package installed via a package manager.\n - DEPLOYMENT: The note and occurrence track deployment events.\n - DISCOVERY: The note and occurrence track the initial discovery status of a resource.\n - ATTESTATION: This represents a logical \"role\" that can attest to artifacts.\n - UPGRADE: This represents an available package upgrade.\n - COMPLIANCE: This represents a Compliance Note\n - DSSE_ATTESTATION: This represents a DSSE attestation Note\n - VULNERABILITY_ASSESSMENT: This represents a Vulnerability Assessment.\n - SBOM_REFERENCE: This represents an SBOM Reference."
     },
     "v1Occurrence": {
       "type": "object",
@@ -2755,6 +2760,10 @@
         "dsseAttestation": {
           "$ref": "#/definitions/v1DSSEAttestationOccurrence",
           "description": "Describes an attestation of an artifact using dsse."
+        },
+        "sbomReference": {
+          "$ref": "#/definitions/v1SBOMReferenceOccurrence",
+          "description": "Describes a specific SBOM reference occurrences."
         },
         "envelope": {
           "$ref": "#/definitions/v1Envelope",
@@ -2945,6 +2954,91 @@
         }
       },
       "description": "A unique identifier for a Cloud Repo."
+    },
+    "v1SBOMReferenceNote": {
+      "type": "object",
+      "properties": {
+        "format": {
+          "type": "string",
+          "description": "The format that SBOM takes. E.g. may be spdx, cyclonedx, etc..."
+        },
+        "version": {
+          "type": "string",
+          "description": "The version of the format that the SBOM takes. E.g. if the format\nis spdx, the version may be 2.3."
+        }
+      },
+      "description": "The note representing an SBOM reference."
+    },
+    "v1SBOMReferenceOccurrence": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "$ref": "#/definitions/v1SbomReferenceIntotoPayload",
+          "description": "The actual payload that contains the SBOM reference data."
+        },
+        "payloadType": {
+          "type": "string",
+          "description": "The kind of payload that SbomReferenceIntotoPayload takes. Since it's in\nthe intoto format, this value is expected to be\n'application/vnd.in-toto+json'."
+        },
+        "signatures": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1EnvelopeSignature"
+          },
+          "description": "The signatures over the payload."
+        }
+      },
+      "description": "The occurrence representing an SBOM reference as applied to a specific\nresource. The occurrence follows the DSSE specification. See\nhttps://github.com/secure-systems-lab/dsse/blob/master/envelope.md for more\ndetails."
+    },
+    "v1SbomReferenceIntotoPayload": {
+      "type": "object",
+      "properties": {
+        "_type": {
+          "type": "string",
+          "description": "Identifier for the schema of the Statement."
+        },
+        "predicateType": {
+          "type": "string",
+          "description": "URI identifying the type of the Predicate."
+        },
+        "subject": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1Subject"
+          },
+          "description": "Set of software artifacts that the attestation applies to. Each element\nrepresents a single software artifact."
+        },
+        "predicate": {
+          "$ref": "#/definitions/v1SbomReferenceIntotoPredicate",
+          "description": "Additional parameters of the Predicate. Includes the actual data about the\nSBOM."
+        }
+      },
+      "description": "The actual payload that contains the SBOM Reference data.\nThe payload follows the intoto statement specification. See\nhttps://github.com/in-toto/attestation/blob/main/spec/v1.0/statement.md\nfor more details."
+    },
+    "v1SbomReferenceIntotoPredicate": {
+      "type": "object",
+      "properties": {
+        "referrerId": {
+          "type": "string",
+          "description": "The person or system referring this predicate to the consumer."
+        },
+        "location": {
+          "type": "string",
+          "description": "The location of the SBOM."
+        },
+        "mimeType": {
+          "type": "string",
+          "description": "The mime type of the SBOM."
+        },
+        "digest": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "A map of algorithm to digest of the contents of the SBOM."
+        }
+      },
+      "description": "A predicate which describes the SBOM being referenced."
     },
     "v1Severity": {
       "type": "string",
