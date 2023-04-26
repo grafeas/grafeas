@@ -1707,7 +1707,8 @@
       "type": "object",
       "properties": {
         "name": {
-          "type": "string"
+          "type": "string",
+          "description": "Identifier to distinguish this artifact from others within the subject."
         },
         "digest": {
           "type": "object",
@@ -1716,7 +1717,8 @@
           },
           "title": "`\"\u003cALGORITHM\u003e\": \"\u003cHEX_VALUE\u003e\"`\nAlgorithms can be e.g. sha256, sha512\nSee https://github.com/in-toto/attestation/blob/main/spec/field_types.md#DigestSet"
         }
-      }
+      },
+      "description": "Set of software artifacts that the attestation applies to. Each element represents a single software artifact."
     },
     "packageArchitecture": {
       "type": "string",
@@ -2102,69 +2104,86 @@
       "type": "object",
       "properties": {
         "format": {
-          "type": "string"
+          "type": "string",
+          "description": "The format that SBOM takes. E.g. may be spdx, cyclonedx, etc..."
         },
         "version": {
-          "type": "string"
+          "type": "string",
+          "description": "The version of the format that the SBOM takes. E.g. if the format\nis spdx, the version may be 2.3."
         }
-      }
+      },
+      "description": "The note representing an SBOM reference."
     },
     "sbomSBOMReferenceOccurrence": {
       "type": "object",
       "properties": {
         "payload": {
-          "$ref": "#/definitions/sbomSbomReferenceIntotoPayload"
+          "$ref": "#/definitions/sbomSbomReferenceIntotoPayload",
+          "description": "The actual payload that contains the SBOM reference data."
         },
         "payloadType": {
-          "type": "string"
+          "type": "string",
+          "description": "The kind of payload that SbomReferenceIntotoPayload takes. Since it's in the intoto\nformat, this value is expected to be 'application/vnd.in-toto+json'."
         },
         "signatures": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/v1beta1EnvelopeSignature"
-          }
+          },
+          "description": "The signatures over the payload."
         }
-      }
+      },
+      "description": "The occurrence representing an SBOM reference as applied to a specific resource.\nThe occurrence follows the DSSE specification. See\nhttps://github.com/secure-systems-lab/dsse/blob/master/envelope.md for more details."
     },
     "sbomSbomReferenceIntotoPayload": {
       "type": "object",
       "properties": {
         "_type": {
-          "type": "string"
+          "type": "string",
+          "description": "Identifier for the schema of the Statement."
         },
         "predicateType": {
-          "type": "string"
+          "type": "string",
+          "description": "URI identifying the type of the Predicate."
         },
         "subject": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/intotoSubject"
-          }
+          },
+          "description": "Set of software artifacts that the attestation applies to. Each element represents a single software artifact."
         },
         "predicate": {
-          "$ref": "#/definitions/sbomSbomReferenceIntotoPredicate"
+          "$ref": "#/definitions/sbomSbomReferenceIntotoPredicate",
+          "description": "Additional parameters of the Predicate. Includes the actual data about the SBOM."
         }
-      }
+      },
+      "description": "The actual payload that contains the SBOM Reference data.\nThe payload follows the intoto statement specification. See\nhttps://github.com/in-toto/attestation/blob/main/spec/v1.0/statement.md\nfor more details."
     },
     "sbomSbomReferenceIntotoPredicate": {
       "type": "object",
       "properties": {
         "referrerId": {
-          "type": "string"
+          "type": "string",
+          "description": "The person or system referring this predicate to the consumer."
         },
         "location": {
-          "type": "string"
+          "type": "string",
+          "description": "The location of the SBOM."
         },
         "mimeType": {
-          "type": "string"
+          "type": "string",
+          "description": "The mime type of the SBOM."
         },
         "digest": {
           "type": "object",
           "additionalProperties": {
             "type": "string"
-          }
+          },
+          "description": "A map of algorithm to digest of the contents of the SBOM."
         }
-      }
+      },
+      "description": "A predicate which describes the SBOM being referenced."
     },
     "sourceAliasContext": {
       "type": "object",
@@ -2897,10 +2916,11 @@
         "SPDX_PACKAGE",
         "SPDX_FILE",
         "SPDX_RELATIONSHIP",
-        "VULNERABILITY_ASSESSMENT"
+        "VULNERABILITY_ASSESSMENT",
+        "SBOM_REFERENCE"
       ],
       "default": "NOTE_KIND_UNSPECIFIED",
-      "description": "Kind represents the kinds of notes supported.\n\n - NOTE_KIND_UNSPECIFIED: Default value. This value is unused.\n - VULNERABILITY: The note and occurrence represent a package vulnerability.\n - BUILD: The note and occurrence assert build provenance.\n - IMAGE: This represents an image basis relationship.\n - PACKAGE: This represents a package installed via a package manager.\n - DEPLOYMENT: The note and occurrence track deployment events.\n - DISCOVERY: The note and occurrence track the initial discovery status of a resource.\n - ATTESTATION: This represents a logical \"role\" that can attest to artifacts.\n - INTOTO: This represents an in-toto link.\n - SBOM: This represents a software bill of materials.\n - SPDX_PACKAGE: This represents an SPDX Package.\n - SPDX_FILE: This represents an SPDX File.\n - SPDX_RELATIONSHIP: This represents an SPDX Relationship.\n - VULNERABILITY_ASSESSMENT: This represents a Vulnerability Assessment."
+      "description": "Kind represents the kinds of notes supported.\n\n - NOTE_KIND_UNSPECIFIED: Default value. This value is unused.\n - VULNERABILITY: The note and occurrence represent a package vulnerability.\n - BUILD: The note and occurrence assert build provenance.\n - IMAGE: This represents an image basis relationship.\n - PACKAGE: This represents a package installed via a package manager.\n - DEPLOYMENT: The note and occurrence track deployment events.\n - DISCOVERY: The note and occurrence track the initial discovery status of a resource.\n - ATTESTATION: This represents a logical \"role\" that can attest to artifacts.\n - INTOTO: This represents an in-toto link.\n - SBOM: This represents a software bill of materials.\n - SPDX_PACKAGE: This represents an SPDX Package.\n - SPDX_FILE: This represents an SPDX File.\n - SPDX_RELATIONSHIP: This represents an SPDX Relationship.\n - VULNERABILITY_ASSESSMENT: This represents a Vulnerability Assessment.\n - SBOM_REFERENCE: This represents an SBOM Reference."
     },
     "v1beta1Occurrence": {
       "type": "object",
@@ -2987,12 +3007,13 @@
           "$ref": "#/definitions/spdxRelationshipOccurrence",
           "description": "Describes a specific SPDX Relationship."
         },
+        "sbomReference": {
+          "$ref": "#/definitions/sbomSBOMReferenceOccurrence",
+          "description": "Describes a specific SBOM reference occurrences."
+        },
         "envelope": {
           "$ref": "#/definitions/v1beta1Envelope",
           "title": "https://github.com/secure-systems-lab/dsse"
-        },
-        "sbomReference": {
-          "$ref": "#/definitions/sbomSBOMReferenceOccurrence"
         }
       },
       "description": "An instance of an analysis type that has been found on a resource."
