@@ -54,9 +54,11 @@ func validateSignature(s *bpb.BuildSignature) []error {
 // ValidateDetails validates that a details has all its required fields filled in.
 func ValidateDetails(d *bpb.Details) []error {
 	errs := []error{}
+	p := d.GetProvenance()
+	ip := d.GetInTotoSlsaProvenanceV1()
 
-	if p := d.GetProvenance(); p == nil {
-		errs = append(errs, errors.New("provenance is required"))
+	if p == nil && ip == nil {
+		errs = append(errs, errors.New("provenance or inTotoSlsaProvenanceV1 is required"))
 	} else {
 		for _, err := range provenance.ValidateBuildProvenance(p) {
 			errs = append(errs, fmt.Errorf("provenance.%s", err))

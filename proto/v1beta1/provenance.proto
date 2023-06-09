@@ -22,6 +22,7 @@ option java_package = "io.grafeas.v1beta1.provenance";
 option objc_class_prefix = "GRA";
 
 import "google/protobuf/timestamp.proto";
+import "google/protobuf/struct.proto";
 import "proto/v1beta1/source.proto";
 
 // Provenance of a build. Contains all information needed to verify the full
@@ -161,4 +162,45 @@ message Artifact {
   // single Artifact ID can have multiple names, for example if two tags are
   // applied to one image.
   repeated string names = 3;
+}
+
+// Keep in sync with schema at https://github.com/slsa-framework/slsa/blob/main/docs/provenance/schema/v1/provenance.proto
+message InTotoSlsaProvenanceV1 {
+  BuildDefinition build_definition = 1;
+  RunDetails run_details = 2;
+
+  message BuildDefinition {
+    string build_type = 1;
+    google.protobuf.Struct external_parameters = 2;
+    google.protobuf.Struct internal_parameters = 3;
+    repeated ResourceDescriptor resolved_dependencies = 4;
+  }
+
+  message ResourceDescriptor {
+    string name = 1;
+    string uri = 2;
+    map<string, string> digest = 3;
+    bytes content = 4;
+    string downloadLocation = 5;
+    string mediaType = 6;
+    map<string, google.protobuf.Struct> annotations = 7;
+  }
+
+  message RunDetails {
+    Builder builder = 1;
+    BuildMetadata metadata = 2;
+    repeated ResourceDescriptor byproducts = 3;
+  }
+
+  message Builder {
+    string id = 1;
+    map<string, string> version = 2;
+    repeated ResourceDescriptor builder_dependencies = 3;
+  }
+
+  message BuildMetadata {
+    string invocation_id = 1;
+    google.protobuf.Timestamp started_on = 2;
+    google.protobuf.Timestamp finished_on = 3;
+  }
 }
