@@ -1005,7 +1005,7 @@
         }
       }
     },
-    "InTotoSlsaProvenanceV1Builder": {
+    "InTotoSlsaProvenanceV1ProvenanceBuilder": {
       "type": "object",
       "properties": {
         "id": {
@@ -1029,7 +1029,7 @@
       "type": "object",
       "properties": {
         "builder": {
-          "$ref": "#/definitions/InTotoSlsaProvenanceV1Builder"
+          "$ref": "#/definitions/InTotoSlsaProvenanceV1ProvenanceBuilder"
         },
         "metadata": {
           "$ref": "#/definitions/InTotoSlsaProvenanceV1BuildMetadata"
@@ -2140,7 +2140,7 @@
           "$ref": "#/definitions/InTotoSlsaProvenanceV1RunDetails"
         }
       },
-      "title": "Keep in sync with schema at https://github.com/slsa-framework/slsa/blob/main/docs/provenance/schema/v1/provenance.proto"
+      "description": "Keep in sync with schema at\nhttps://github.com/slsa-framework/slsa/blob/main/docs/provenance/schema/v1/provenance.proto\nBuilder renamed to ProvenanceBuilder because of Java conflicts."
     },
     "provenanceInTotoSlsaProvenanceV1ResourceDescriptor": {
       "type": "object",

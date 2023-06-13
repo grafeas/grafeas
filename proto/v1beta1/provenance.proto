@@ -168,7 +168,9 @@ message Artifact {
   repeated string names = 3;
 }
 
-// Keep in sync with schema at https://github.com/slsa-framework/slsa/blob/main/docs/provenance/schema/v1/provenance.proto
+// Keep in sync with schema at
+// https://github.com/slsa-framework/slsa/blob/main/docs/provenance/schema/v1/provenance.proto
+// Builder renamed to ProvenanceBuilder because of Java conflicts.
 message InTotoSlsaProvenanceV1 {
   BuildDefinition build_definition = 1;
   RunDetails run_details = 2;
@@ -191,12 +193,12 @@ message InTotoSlsaProvenanceV1 {
   }
 
   message RunDetails {
-    Builder builder = 1;
+    ProvenanceBuilder builder = 1;
     BuildMetadata metadata = 2;
     repeated ResourceDescriptor byproducts = 3;
   }
 
-  message Builder {
+  message ProvenanceBuilder {
     string id = 1;
     map<string, string> version = 2;
     repeated ResourceDescriptor builder_dependencies = 3;
