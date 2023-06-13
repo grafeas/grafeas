@@ -94,5 +94,5 @@ message Details {
   // future changes.
   string provenance_bytes = 2;
 
-  grafeas.v1beta1.provenance.InTotoSlsaProvenanceV1 inTotoSlsaProvenanceV1 = 3;
+  grafeas.v1beta1.provenance.InTotoSlsaProvenanceV1 in_toto_slsa_provenance_v1 = 3;
 }

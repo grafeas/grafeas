@@ -2312,7 +2312,8 @@
         "runDetails": {
           "$ref": "#/definitions/InTotoSlsaProvenanceV1RunDetails"
         }
-      }
+      },
+      "title": "Keep in sync with schema at https://github.com/slsa-framework/slsa/blob/main/docs/provenance/schema/v1/provenance.proto"
     },
     "provenanceInTotoSlsaProvenanceV1ResourceDescriptor": {
       "type": "object",
