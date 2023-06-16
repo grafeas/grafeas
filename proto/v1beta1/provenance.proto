@@ -189,7 +189,7 @@ message InTotoSlsaProvenanceV1 {
     bytes content = 4;
     string download_location = 5;
     string media_type = 6;
-    map<string, google.protobuf.Struct> annotations = 7;
+    map<string, google.protobuf.Value> annotations = 7;
   }
 
   message RunDetails {
