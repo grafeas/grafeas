@@ -1061,6 +1061,17 @@
       "default": "CONTINUOUS_ANALYSIS_UNSPECIFIED",
       "description": "Whether the resource is continuously analyzed.\n\n - CONTINUOUS_ANALYSIS_UNSPECIFIED: Unknown.\n - ACTIVE: The resource is continuously analyzed.\n - INACTIVE: The resource is ignored for continuous analysis."
     },
+    "DiscoveredSBOMStatus": {
+      "type": "object",
+      "properties": {
+        "sbomState": {
+          "$ref": "#/definitions/SBOMStatusSBOMState"
+        },
+        "error": {
+          "type": "string"
+        }
+      }
+    },
     "ExternalRefCategory": {
       "type": "string",
       "enum": [
@@ -1293,6 +1304,16 @@
       ],
       "default": "REMEDIATION_TYPE_UNSPECIFIED",
       "description": "The type of remediation that can be applied.\n\n - REMEDIATION_TYPE_UNSPECIFIED: No remediation type specified.\n - MITIGATION: A MITIGATION is available.\n - NO_FIX_PLANNED: No fix is planned.\n - NONE_AVAILABLE: Not available.\n - VENDOR_FIX: A vendor fix is available.\n - WORKAROUND: A workaround is available."
+    },
+    "SBOMStatusSBOMState": {
+      "type": "string",
+      "enum": [
+        "SBOM_STATE_UNSPECIFIED",
+        "PENDING",
+        "COMPLETE"
+      ],
+      "default": "SBOM_STATE_UNSPECIFIED",
+      "description": " - SBOM_STATE_UNSPECIFIED: Default unknown state.\n - PENDING: SBOM scanning is pending.\n - COMPLETE: SBOM scanning has completed."
     },
     "VersionVersionKind": {
       "type": "string",
@@ -1705,6 +1726,9 @@
         "analysisStatusError": {
           "$ref": "#/definitions/rpcStatus",
           "description": "When an error is encountered this will contain a LocalizedMessage under\ndetails to show to the user. The LocalizedMessage is output only and\npopulated by the API."
+        },
+        "sbomStatus": {
+          "$ref": "#/definitions/DiscoveredSBOMStatus"
         }
       },
       "description": "Provides information about the analysis status of a discovered resource."
