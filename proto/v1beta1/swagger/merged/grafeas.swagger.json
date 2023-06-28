@@ -1065,12 +1065,15 @@
       "type": "object",
       "properties": {
         "sbomState": {
-          "$ref": "#/definitions/SBOMStatusSBOMState"
+          "$ref": "#/definitions/SBOMStatusSBOMState",
+          "description": "The progress of the SBOM generation."
         },
         "error": {
-          "type": "string"
+          "type": "string",
+          "description": "If there was an error generating an SBOM, this will indicate what that\nerror was."
         }
-      }
+      },
+      "description": "The status of an SBOM generation."
     },
     "ExternalRefCategory": {
       "type": "string",
@@ -1125,79 +1128,6 @@
         }
       },
       "title": "Defines an object to declare an in-toto artifact rule"
-    },
-    "InTotoSlsaProvenanceV1BuildDefinition": {
-      "type": "object",
-      "properties": {
-        "buildType": {
-          "type": "string"
-        },
-        "externalParameters": {
-          "type": "object"
-        },
-        "internalParameters": {
-          "type": "object"
-        },
-        "resolvedDependencies": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/provenanceInTotoSlsaProvenanceV1ResourceDescriptor"
-          }
-        }
-      }
-    },
-    "InTotoSlsaProvenanceV1BuildMetadata": {
-      "type": "object",
-      "properties": {
-        "invocationId": {
-          "type": "string"
-        },
-        "startedOn": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "finishedOn": {
-          "type": "string",
-          "format": "date-time"
-        }
-      }
-    },
-    "InTotoSlsaProvenanceV1ProvenanceBuilder": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "version": {
-          "type": "object",
-          "additionalProperties": {
-            "type": "string"
-          }
-        },
-        "builderDependencies": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/provenanceInTotoSlsaProvenanceV1ResourceDescriptor"
-          }
-        }
-      }
-    },
-    "InTotoSlsaProvenanceV1RunDetails": {
-      "type": "object",
-      "properties": {
-        "builder": {
-          "$ref": "#/definitions/InTotoSlsaProvenanceV1ProvenanceBuilder"
-        },
-        "metadata": {
-          "$ref": "#/definitions/InTotoSlsaProvenanceV1BuildMetadata"
-        },
-        "byproducts": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/provenanceInTotoSlsaProvenanceV1ResourceDescriptor"
-          }
-        }
-      }
     },
     "JustificationJustificationType": {
       "type": "string",
@@ -1313,7 +1243,7 @@
         "COMPLETE"
       ],
       "default": "SBOM_STATE_UNSPECIFIED",
-      "description": " - SBOM_STATE_UNSPECIFIED: Default unknown state.\n - PENDING: SBOM scanning is pending.\n - COMPLETE: SBOM scanning has completed."
+      "description": "An enum indicating the progress of the SBOM generation.\n\n - SBOM_STATE_UNSPECIFIED: Default unknown state.\n - PENDING: SBOM scanning is pending.\n - COMPLETE: SBOM scanning has completed."
     },
     "VersionVersionKind": {
       "type": "string",
@@ -1728,7 +1658,8 @@
           "description": "When an error is encountered this will contain a LocalizedMessage under\ndetails to show to the user. The LocalizedMessage is output only and\npopulated by the API."
         },
         "sbomStatus": {
-          "$ref": "#/definitions/DiscoveredSBOMStatus"
+          "$ref": "#/definitions/DiscoveredSBOMStatus",
+          "description": "The status of an SBOM generation."
         }
       },
       "description": "Provides information about the analysis status of a discovered resource."
@@ -2182,14 +2113,6 @@
       "additionalProperties": {},
       "description": "`Any` contains an arbitrary serialized protocol buffer message along with a\nURL that describes the type of the serialized message.\n\nProtobuf library provides support to pack/unpack Any values in the form\nof utility functions or additional generated methods of the Any type.\n\nExample 1: Pack and unpack a message in C++.\n\n    Foo foo = ...;\n    Any any;\n    any.PackFrom(foo);\n    ...\n    if (any.UnpackTo(\u0026foo)) {\n      ...\n    }\n\nExample 2: Pack and unpack a message in Java.\n\n    Foo foo = ...;\n    Any any = Any.pack(foo);\n    ...\n    if (any.is(Foo.class)) {\n      foo = any.unpack(Foo.class);\n    }\n\n Example 3: Pack and unpack a message in Python.\n\n    foo = Foo(...)\n    any = Any()\n    any.Pack(foo)\n    ...\n    if any.Is(Foo.DESCRIPTOR):\n      any.Unpack(foo)\n      ...\n\n Example 4: Pack and unpack a message in Go\n\n     foo := \u0026pb.Foo{...}\n     any, err := ptypes.MarshalAny(foo)\n     ...\n     foo := \u0026pb.Foo{}\n     if err := ptypes.UnmarshalAny(any, foo); err != nil {\n       ...\n     }\n\nThe pack methods provided by protobuf library will by default use\n'type.googleapis.com/full.type.name' as the type URL and the unpack\nmethods only use the fully qualified type name after the last '/'\nin the type URL, for example \"foo.bar.com/x/y.z\" will yield type\nname \"y.z\".\n\n\nJSON\n====\nThe JSON representation of an `Any` value uses the regular\nrepresentation of the deserialized, embedded message, with an\nadditional field `@type` which contains the type URL. Example:\n\n    package google.profile;\n    message Person {\n      string first_name = 1;\n      string last_name = 2;\n    }\n\n    {\n      \"@type\": \"type.googleapis.com/google.profile.Person\",\n      \"firstName\": \u003cstring\u003e,\n      \"lastName\": \u003cstring\u003e\n    }\n\nIf the embedded message type is well-known and has a custom JSON\nrepresentation, that representation will be embedded adding a field\n`value` which holds the custom JSON in addition to the `@type`\nfield. Example (for message [google.protobuf.Duration][]):\n\n    {\n      \"@type\": \"type.googleapis.com/google.protobuf.Duration\",\n      \"value\": \"1.212s\"\n    }"
     },
-    "protobufNullValue": {
-      "type": "string",
-      "enum": [
-        "NULL_VALUE"
-      ],
-      "default": "NULL_VALUE",
-      "description": "`NullValue` is a singleton enumeration to represent the null value for the\n`Value` type union.\n\n The JSON representation for `NullValue` is JSON `null`.\n\n - NULL_VALUE: Null value."
-    },
     "provenanceBuildProvenance": {
       "type": "object",
       "properties": {
@@ -2328,49 +2251,7 @@
       "description": "Container message for hash values."
     },
     "provenanceInTotoSlsaProvenanceV1": {
-      "type": "object",
-      "properties": {
-        "buildDefinition": {
-          "$ref": "#/definitions/InTotoSlsaProvenanceV1BuildDefinition"
-        },
-        "runDetails": {
-          "$ref": "#/definitions/InTotoSlsaProvenanceV1RunDetails"
-        }
-      },
-      "description": "Keep in sync with schema at\nhttps://github.com/slsa-framework/slsa/blob/main/docs/provenance/schema/v1/provenance.proto\nBuilder renamed to ProvenanceBuilder because of Java conflicts."
-    },
-    "provenanceInTotoSlsaProvenanceV1ResourceDescriptor": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string"
-        },
-        "uri": {
-          "type": "string"
-        },
-        "digest": {
-          "type": "object",
-          "additionalProperties": {
-            "type": "string"
-          }
-        },
-        "content": {
-          "type": "string",
-          "format": "byte"
-        },
-        "downloadLocation": {
-          "type": "string"
-        },
-        "mediaType": {
-          "type": "string"
-        },
-        "annotations": {
-          "type": "object",
-          "additionalProperties": {
-            "type": "object"
-          }
-        }
-      }
+      "type": "object"
     },
     "provenanceSource": {
       "type": "object",

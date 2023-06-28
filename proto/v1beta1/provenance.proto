@@ -24,6 +24,7 @@ option objc_class_prefix = "GRA";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/struct.proto";
 import "proto/v1beta1/source.proto";
+import "proto/v1beta1/intoto.proto";
 
 // Provenance of a build. Contains all information needed to verify the full
 // details about the build from source to completion.
@@ -164,12 +165,22 @@ message Artifact {
   repeated string names = 3;
 }
 
-// Keep in sync with schema at
-// https://github.com/slsa-framework/slsa/blob/main/docs/provenance/schema/v1/provenance.proto
-// Builder renamed to ProvenanceBuilder because of Java conflicts.
 message InTotoSlsaProvenanceV1 {
-  BuildDefinition build_definition = 1;
-  RunDetails run_details = 2;
+  // InToto spec defined at https://github.com/in-toto/attestation/tree/main/spec#statement
+  message InTotoStatement {
+    string type = 1 [json_name = "_type"];
+    repeated intoto.Subject subject = 2;
+    string predicate_type = 3;
+    SlsaProvenanceV1 predicate = 4;
+  }
+
+  // Keep in sync with schema at
+  // https://github.com/slsa-framework/slsa/blob/main/docs/provenance/schema/v1/provenance.proto
+  // Builder renamed to ProvenanceBuilder because of Java conflicts.
+  message SlsaProvenanceV1 {
+    BuildDefinition build_definition = 1;
+    RunDetails run_details = 2;
+  }
 
   message BuildDefinition {
     string build_type = 1;
