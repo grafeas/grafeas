@@ -171,12 +171,10 @@ message Artifact {
 
 message InTotoSlsaProvenanceV1 {
   // InToto spec defined at https://github.com/in-toto/attestation/tree/main/spec#statement
-  message InTotoStatement {
-    string type = 1 [json_name = "_type"];
-    repeated intoto.Subject subject = 2;
-    string predicate_type = 3;
-    SlsaProvenanceV1 predicate = 4;
-  }
+  string type = 1 [json_name = "_type"];
+  repeated intoto.Subject subject = 2;
+  string predicate_type = 3;
+  SlsaProvenanceV1 predicate = 4;
 
   // Keep in sync with schema at
   // https://github.com/slsa-framework/slsa/blob/main/docs/provenance/schema/v1/provenance.proto
