@@ -334,8 +334,9 @@ type Discovered struct {
 	// When an error is encountered this will contain a LocalizedMessage under
 	// details to show to the user. The LocalizedMessage is output only and
 	// populated by the API.
-	AnalysisStatusError *status.Status         `protobuf:"bytes,4,opt,name=analysis_status_error,json=analysisStatusError,proto3" json:"analysis_status_error,omitempty"`
-	SbomStatus          *Discovered_SBOMStatus `protobuf:"bytes,9,opt,name=sbom_status,json=sbomStatus,proto3" json:"sbom_status,omitempty"`
+	AnalysisStatusError *status.Status `protobuf:"bytes,4,opt,name=analysis_status_error,json=analysisStatusError,proto3" json:"analysis_status_error,omitempty"`
+	// The status of an SBOM generation.
+	SbomStatus *Discovered_SBOMStatus `protobuf:"bytes,9,opt,name=sbom_status,json=sbomStatus,proto3" json:"sbom_status,omitempty"`
 }
 
 func (x *Discovered) Reset() {
@@ -468,13 +469,17 @@ func (x *Discovered_AnalysisCompleted) GetAnalysisType() []string {
 	return nil
 }
 
+// The status of an SBOM generation.
 type Discovered_SBOMStatus struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// The progress of the SBOM generation.
 	SbomState Discovered_SBOMStatus_SBOMState `protobuf:"varint,1,opt,name=sbom_state,json=sbomState,proto3,enum=grafeas.v1beta1.discovery.Discovered_SBOMStatus_SBOMState" json:"sbom_state,omitempty"`
-	Error     string                          `protobuf:"bytes,2,opt,name=error,proto3" json:"error,omitempty"`
+	// If there was an error generating an SBOM, this will indicate what that
+	// error was.
+	Error string `protobuf:"bytes,2,opt,name=error,proto3" json:"error,omitempty"`
 }
 
 func (x *Discovered_SBOMStatus) Reset() {
