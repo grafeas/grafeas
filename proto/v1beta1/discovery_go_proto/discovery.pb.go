@@ -161,6 +161,7 @@ func (Discovered_AnalysisStatus) EnumDescriptor() ([]byte, []int) {
 	return file_discovery_proto_rawDescGZIP(), []int{2, 1}
 }
 
+// An enum indicating the progress of the SBOM generation.
 type Discovered_SBOMStatus_SBOMState int32
 
 const (
