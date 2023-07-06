@@ -930,6 +930,20 @@
       "default": "CONTINUOUS_ANALYSIS_UNSPECIFIED",
       "description": "Whether the resource is continuously analyzed.\n\n - CONTINUOUS_ANALYSIS_UNSPECIFIED: Unknown.\n - ACTIVE: The resource is continuously analyzed.\n - INACTIVE: The resource is ignored for continuous analysis."
     },
+    "DiscoveryOccurrenceSBOMStatus": {
+      "type": "object",
+      "properties": {
+        "sbomState": {
+          "$ref": "#/definitions/SBOMStatusSBOMState",
+          "description": "The progress of the SBOM generation."
+        },
+        "error": {
+          "type": "string",
+          "description": "If there was an error generating an SBOM, this will indicate what that\nerror was."
+        }
+      },
+      "description": "The status of an SBOM generation."
+    },
     "JustificationJustificationType": {
       "type": "string",
       "enum": [
@@ -955,6 +969,16 @@
       ],
       "default": "REMEDIATION_TYPE_UNSPECIFIED",
       "description": "The type of remediation that can be applied.\n\n - REMEDIATION_TYPE_UNSPECIFIED: No remediation type specified.\n - MITIGATION: A MITIGATION is available.\n - NO_FIX_PLANNED: No fix is planned.\n - NONE_AVAILABLE: Not available.\n - VENDOR_FIX: A vendor fix is available.\n - WORKAROUND: A workaround is available."
+    },
+    "SBOMStatusSBOMState": {
+      "type": "string",
+      "enum": [
+        "SBOM_STATE_UNSPECIFIED",
+        "PENDING",
+        "COMPLETE"
+      ],
+      "default": "SBOM_STATE_UNSPECIFIED",
+      "description": "An enum indicating the progress of the SBOM generation.\n\n - SBOM_STATE_UNSPECIFIED: Default unknown state.\n - PENDING: SBOM scanning is pending.\n - COMPLETE: SBOM scanning has completed."
     },
     "SlsaProvenanceMaterial": {
       "type": "object",
@@ -2164,6 +2188,10 @@
           "format": "date-time",
           "description": "The time occurrences related to this discovery occurrence were archived.",
           "readOnly": true
+        },
+        "sbomStatus": {
+          "$ref": "#/definitions/DiscoveryOccurrenceSBOMStatus",
+          "description": "The status of an SBOM generation."
         }
       },
       "description": "Provides information about the analysis status of a discovered resource."
