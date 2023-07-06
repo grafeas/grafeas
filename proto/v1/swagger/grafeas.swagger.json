@@ -944,6 +944,91 @@
       },
       "description": "The status of an SBOM generation."
     },
+    "InTotoSlsaProvenanceV1BuildDefinition": {
+      "type": "object",
+      "properties": {
+        "buildType": {
+          "type": "string"
+        },
+        "externalParameters": {
+          "type": "object"
+        },
+        "internalParameters": {
+          "type": "object"
+        },
+        "resolvedDependencies": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1InTotoSlsaProvenanceV1ResourceDescriptor"
+          }
+        }
+      }
+    },
+    "InTotoSlsaProvenanceV1BuildMetadata": {
+      "type": "object",
+      "properties": {
+        "invocationId": {
+          "type": "string"
+        },
+        "startedOn": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "finishedOn": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "InTotoSlsaProvenanceV1ProvenanceBuilder": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "version": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "builderDependencies": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1InTotoSlsaProvenanceV1ResourceDescriptor"
+          }
+        }
+      }
+    },
+    "InTotoSlsaProvenanceV1RunDetails": {
+      "type": "object",
+      "properties": {
+        "builder": {
+          "$ref": "#/definitions/InTotoSlsaProvenanceV1ProvenanceBuilder"
+        },
+        "metadata": {
+          "$ref": "#/definitions/InTotoSlsaProvenanceV1BuildMetadata"
+        },
+        "byproducts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1InTotoSlsaProvenanceV1ResourceDescriptor"
+          }
+        }
+      }
+    },
+    "InTotoSlsaProvenanceV1SlsaProvenanceV1": {
+      "type": "object",
+      "properties": {
+        "buildDefinition": {
+          "$ref": "#/definitions/InTotoSlsaProvenanceV1BuildDefinition"
+        },
+        "runDetails": {
+          "$ref": "#/definitions/InTotoSlsaProvenanceV1RunDetails"
+        }
+      },
+      "description": "Keep in sync with schema at\nhttps://github.com/slsa-framework/slsa/blob/main/docs/provenance/schema/v1/provenance.proto\nBuilder renamed to ProvenanceBuilder because of Java conflicts."
+    },
     "JustificationJustificationType": {
       "type": "string",
       "enum": [
@@ -1606,6 +1691,10 @@
         "intotoStatement": {
           "$ref": "#/definitions/v1InTotoStatement",
           "description": "In-toto Statement representation as defined in spec.\nThe intoto_statement can contain any type of provenance. The serialized\npayload of the statement can be stored and signed in the Occurrence's\nenvelope."
+        },
+        "inTotoSlsaProvenanceV1": {
+          "$ref": "#/definitions/v1InTotoSlsaProvenanceV1",
+          "description": "In-Toto Slsa Provenance V1 represents a slsa provenance meeting the slsa\nspec, wrapped in an in-toto statement. This allows for direct\njsonification of a to-spec in-toto slsa statement with a to-spec\nslsa provenance."
         }
       },
       "description": "Details of a build occurrence."
@@ -2420,6 +2509,60 @@
             "type": "string"
           },
           "description": "The collection of artifacts that influenced the build including sources, dependencies, build tools, base images, and so on.\nThis is considered to be incomplete unless metadata.completeness.materials is true. Unset or null is equivalent to empty."
+        }
+      }
+    },
+    "v1InTotoSlsaProvenanceV1": {
+      "type": "object",
+      "properties": {
+        "_type": {
+          "type": "string",
+          "title": "InToto spec defined at https://github.com/in-toto/attestation/tree/main/spec#statement"
+        },
+        "subject": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1Subject"
+          }
+        },
+        "predicateType": {
+          "type": "string"
+        },
+        "predicate": {
+          "$ref": "#/definitions/InTotoSlsaProvenanceV1SlsaProvenanceV1"
+        }
+      }
+    },
+    "v1InTotoSlsaProvenanceV1ResourceDescriptor": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "uri": {
+          "type": "string"
+        },
+        "digest": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "content": {
+          "type": "string",
+          "format": "byte"
+        },
+        "downloadLocation": {
+          "type": "string"
+        },
+        "mediaType": {
+          "type": "string"
+        },
+        "annotations": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object"
+          }
         }
       }
     },
