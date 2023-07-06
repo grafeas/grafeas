@@ -43,7 +43,7 @@ func ValidateOccurrence(d *gpb.BuildOccurrence) []error {
 	i := d.GetIntotoProvenance()
 	s := d.GetIntotoStatement()
 	itsp := d.GetInTotoSlsaProvenanceV1()
-	if p == nil && i == nil && s == nil || itsp == nil {
+	if p == nil && i == nil && s == nil && itsp == nil {
 		errs = append(errs, errors.New(`
 		either Provenance or intotoProvenance or intotoStatement or inTotoStatementSlsaProvenanceV1 is required
 		`))

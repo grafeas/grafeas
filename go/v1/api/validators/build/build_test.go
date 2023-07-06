@@ -88,6 +88,15 @@ func TestValidateOccurrence(t *testing.T) {
 			},
 			wantErrs: false,
 		},
+		{
+    	desc: "valid details with intotostatement, want success",
+    	d: &gpb.BuildOccurrence{
+    		IntotoSlsaProvenanceV1: &gpb.IntotoSlsaProvenanceV1{
+    			Type: "my_type",
+    		},
+    	},
+    	wantErrs: false,
+    },
 	}
 
 	for _, tt := range tests {
