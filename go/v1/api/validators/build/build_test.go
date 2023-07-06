@@ -91,7 +91,7 @@ func TestValidateOccurrence(t *testing.T) {
 		{
     	desc: "valid details with intoto slsa provenance v1, want success",
     	d: &gpb.BuildOccurrence{
-    		IntotoSlsaProvenanceV1: &gpb.IntotoSlsaProvenanceV1{
+    		InTotoSlsaProvenanceV1: &gpb.InTotoSlsaProvenanceV1{
     			Type: "my_type",
     		},
     	},
