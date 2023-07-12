@@ -987,7 +987,11 @@
       "properties": {
         "cve": {
           "type": "string",
-          "description": "Holds the MITRE standard Common Vulnerabilities and Exposures (CVE)\ntracking number for the vulnerability."
+          "description": "Holds the MITRE standard Common Vulnerabilities and Exposures (CVE)\ntracking number for the vulnerability.\nDeprecated: Use vulnerability_id instead to denote CVEs."
+        },
+        "vulnerabilityId": {
+          "type": "string",
+          "description": "The vulnerability identifier for this Assessment. Will hold one of\ncommon identifiers e.g. CVE, GHSA etc."
         },
         "relatedUris": {
           "type": "array",
@@ -1112,10 +1116,12 @@
       "type": "string",
       "enum": [
         "HASH_TYPE_UNSPECIFIED",
-        "SHA256"
+        "SHA256",
+        "GO_MODULE_H1",
+        "SHA512"
       ],
       "default": "HASH_TYPE_UNSPECIFIED",
-      "description": "Specifies the hash algorithm.\n\n - HASH_TYPE_UNSPECIFIED: Unknown.\n - SHA256: A SHA-256 hash."
+      "description": "Specifies the hash algorithm.\n\n - HASH_TYPE_UNSPECIFIED: Unknown.\n - SHA256: A SHA-256 hash.\n - GO_MODULE_H1: Dirhash of a Go module's source code which is then hex-encoded.\n - SHA512: A SHA-512 hash."
     },
     "InTotoArtifactRule": {
       "type": "object",
@@ -1346,7 +1352,11 @@
       "properties": {
         "cve": {
           "type": "string",
-          "description": "Holds the MITRE standard Common Vulnerabilities and Exposures (CVE)\ntracking number for the vulnerability."
+          "description": "Holds the MITRE standard Common Vulnerabilities and Exposures (CVE)\ntracking number for the vulnerability.\nDeprecated: Use vulnerability_id instead to denote CVEs."
+        },
+        "vulnerabilityId": {
+          "type": "string",
+          "description": "The vulnerability identifier for this Assessment. Will hold one of\ncommon identifiers e.g. CVE, GHSA etc."
         },
         "shortDescription": {
           "type": "string",
