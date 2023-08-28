@@ -1,6 +1,11 @@
 This is the changelog of Grafeas server releases. For more information on
 versioning, see [versioning](docs/versioning.md) document.
 
+v0.2.3
+  * SBOM enhancements.
+  * SLSA enhancements.
+  * Vex Assessment enhancements.
+
 v0.2.2
   * Enhanced support for Vulnerability Notes and Occurrences, with the following changes:
     * Indicate the location at which an affected package was found in the container image.
