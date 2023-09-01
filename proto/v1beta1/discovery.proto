@@ -121,4 +121,9 @@ message Discovered {
 
   // The status of an SBOM generation.
   SBOMStatus sbom_status = 9;
+
+  // The last time this resource was scanned.
+  google.protobuf.Timestamp last_scan_time = 10;
+  
+  // Next ID: 11
 }
