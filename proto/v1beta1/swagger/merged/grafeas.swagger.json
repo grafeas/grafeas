@@ -1755,6 +1755,11 @@
         "sbomStatus": {
           "$ref": "#/definitions/DiscoveredSBOMStatus",
           "description": "The status of an SBOM generation."
+        },
+        "lastScanTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The last time this resource was scanned."
         }
       },
       "description": "Provides information about the analysis status of a discovered resource."
