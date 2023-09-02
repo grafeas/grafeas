@@ -839,10 +839,6 @@
     "DetailsVexAssessment": {
       "type": "object",
       "properties": {
-        "cve": {
-          "type": "string",
-          "description": "Holds the MITRE standard Common Vulnerabilities and Exposures (CVE)\ntracking number for the vulnerability.\nDeprecated: Use vulnerability_id instead to denote CVEs."
-        },
         "vulnerabilityId": {
           "type": "string",
           "description": "The vulnerability identifier for this Assessment. Will hold one of\ncommon identifiers e.g. CVE, GHSA etc."
@@ -1204,10 +1200,6 @@
     "VulnerabilityAssessmentNoteAssessment": {
       "type": "object",
       "properties": {
-        "cve": {
-          "type": "string",
-          "description": "Holds the MITRE standard Common Vulnerabilities and Exposures (CVE)\ntracking number for the vulnerability.\nDeprecated: Use vulnerability_id instead to denote CVEs."
-        },
         "vulnerabilityId": {
           "type": "string",
           "description": "The vulnerability identifier for this Assessment. Will hold one of\ncommon identifiers e.g. CVE, GHSA etc."
