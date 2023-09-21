@@ -3448,6 +3448,10 @@
         "cvssV3": {
           "$ref": "#/definitions/vulnerabilityCVSS",
           "description": "The cvss v3 score for the vulnerability."
+        },
+        "extraDetails": {
+          "type": "string",
+          "description": "Occurrence-specific extra details about the vulnerability."
         }
       },
       "description": "Details of a vulnerability Occurrence."
@@ -3631,10 +3635,6 @@
         "cvssVersion": {
           "$ref": "#/definitions/vulnerabilityCVSSVersion",
           "description": "CVSS version used to populate cvss_score and severity."
-        },
-        "extraDetails": {
-          "type": "string",
-          "description": "Occurrence-specific extra details about the vulnerability."
         }
       },
       "description": "Vulnerability provides metadata about a security vulnerability in a Note."

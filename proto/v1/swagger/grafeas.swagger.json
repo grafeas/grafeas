@@ -3643,10 +3643,6 @@
         "cvssV2": {
           "$ref": "#/definitions/v1CVSS",
           "description": "The full description of the v2 CVSS for this vulnerability."
-        },
-        "extraDetails": {
-          "type": "string",
-          "description": "Occurrence-specific extra details about the vulnerability."
         }
       },
       "description": "A security vulnerability that can be found in resources."
@@ -3718,6 +3714,10 @@
         },
         "vexAssessment": {
           "$ref": "#/definitions/VulnerabilityOccurrenceVexAssessment"
+        },
+        "extraDetails": {
+          "type": "string",
+          "description": "Occurrence-specific extra details about the vulnerability."
         }
       },
       "description": "An occurrence of a severity vulnerability on a resource."
