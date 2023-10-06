@@ -2113,6 +2113,9 @@
           "type": "string",
           "format": "byte",
           "description": "Serialized scan instructions with a predefined format."
+        },
+        "impact": {
+          "type": "string"
         }
       }
     },
