@@ -28,27 +28,54 @@ import (
 
 func TestCreateNote(t *testing.T) {
 	ctx := context.Background()
-	g := &API{
-		Storage:           newFakeStorage(),
-		Auth:              &fakeAuth{},
-		EnforceValidation: true,
+
+	tests := []struct {
+		desc string
+		req  *gpb.CreateNoteRequest
+	}{
+		{
+			desc: "vulnz note",
+			req: &gpb.CreateNoteRequest{
+				Parent: "projects/goog-vulnz",
+				NoteId: "CVE-UH-OH",
+				Note:   vulnzNote(t),
+			},
+		},
+		{
+			desc: "compliance note",
+			req: &gpb.CreateNoteRequest{
+				Parent: "projects/goog-compliance",
+				NoteId: "AComplianceNote",
+				Note:   complianceNote(t),
+			},
+		},
+		{
+			desc: "compliance note w/ impact",
+			req: &gpb.CreateNoteRequest{
+				Parent: "projects/goog-compliance",
+				NoteId: "AComplianceNoteWImpact",
+				Note:   complianceNoteWImpact(t),
+			},
+		},
 	}
 
-	req := &gpb.CreateNoteRequest{
-		Parent: "projects/goog-vulnz",
-		NoteId: "CVE-UH-OH",
-		Note:   vulnzNote(t),
-	}
-	createdNote, err := g.CreateNote(ctx, req)
-	if err != nil {
-		t.Fatalf("Got err %v, want success", err)
-	}
+	for _, tt := range tests {
+		g := &API{
+			Storage:           newFakeStorage(),
+			Auth:              &fakeAuth{},
+			EnforceValidation: true,
+		}
 
-	// TODO: migrate to protocolbuffers/protobuf-go when it is stable so we can use
-	// protocmp.IgnoreFields instead.
-	createdNote.Name = ""
-	if diff := cmp.Diff(req.Note, createdNote, cmp.Comparer(proto.Equal)); diff != "" {
-		t.Errorf("CreateNote(%v) returned diff (want -> got):\n%s", req, diff)
+		createdNote, err := g.CreateNote(ctx, tt.req)
+		if err != nil {
+			t.Fatalf("Got err %v, want success", err)
+		}
+		// TODO: migrate to protocolbuffers/protobuf-go when it is stable so we can use
+		// protocmp.IgnoreFields instead.
+		createdNote.Name = ""
+		if diff := cmp.Diff(tt.req.Note, createdNote, cmp.Comparer(proto.Equal)); diff != "" {
+			t.Errorf("CreateNote(%v) returned diff (want -> got):\n%s", tt.req, diff)
+		}
 	}
 }
 
@@ -875,4 +902,53 @@ func vulnzNotes(t *testing.T, num int) map[string]*gpb.Note {
 		notes[fmt.Sprintf("CVE-UH-OH-%d", i)] = vulnzNote(t)
 	}
 	return notes
+}
+
+// complianceNote returns a fake v1 valid compliance note, for testing.
+func complianceNote(t *testing.T) *gpb.Note {
+	t.Helper()
+	return &gpb.Note{
+		Type: &gpb.Note_Compliance{
+			Compliance: &gpb.ComplianceNote{
+				Title:       "Ensure whatever",
+				Description: "A reasonble ask",
+				Version: []*gpb.ComplianceVersion{
+					{
+						CpeUri:            "fallback",
+						Version:           "0.0.1",
+						BenchmarkDocument: "SIC Distribution Independent",
+					},
+				},
+				Rationale:        "You should not do this",
+				Remediation:      "Just run `rm -rf / --no-preserve-root",
+				ScanInstructions: []byte("scan_type_specific:{instance_scanning:{}}"),
+			},
+		},
+	}
+}
+
+// complianceNoteWImpact returns a fake v1 valid compliance note with impact field, for testing.
+func complianceNoteWImpact(t *testing.T) *gpb.Note {
+	t.Helper()
+	return &gpb.Note{
+		Type: &gpb.Note_Compliance{
+			Compliance: &gpb.ComplianceNote{
+				Title:       "Ensure whatever second",
+				Description: "A reasonble second ask",
+				Version: []*gpb.ComplianceVersion{
+					{
+						CpeUri:            "fallback",
+						Version:           "0.0.2",
+						BenchmarkDocument: "SIC Distribution Independent take two",
+					},
+				},
+				Rationale:        "You also should not do this",
+				Remediation:      "Just run `chown -R root:root /",
+				ScanInstructions: []byte("scan_type_specific:{image_scanning:{}}"),
+				PotentialImpact: &gpb.ComplianceNote_Impact{
+					Impact: "Will make your system unavailable to users.",
+				},
+			},
+		},
+	}
 }
