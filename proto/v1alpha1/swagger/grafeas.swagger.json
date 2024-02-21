@@ -100,13 +100,13 @@
     },
     "/v1alpha1/{name_1}": {
       "get": {
-        "summary": "Returns the requested `Note`.",
-        "operationId": "Grafeas_GetNote",
+        "summary": "Returns the requested `Occurrence`.",
+        "operationId": "Grafeas_GetOccurrence2",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/apiNote"
+              "$ref": "#/definitions/apiOccurrence"
             }
           },
           "default": {
@@ -119,11 +119,11 @@
         "parameters": [
           {
             "name": "name_1",
-            "description": "The name of the note in the form of\n\"providers/{provider_id}/notes/{NOTE_ID}\"",
+            "description": "The name of the occurrence of the form\n\"projects/{project_id}/occurrences/{OCCURRENCE_ID}\"",
             "in": "path",
             "required": true,
             "type": "string",
-            "pattern": "projects/[^/]+/notes/[^/]+"
+            "pattern": "projects/[^/]+/locations/[^/]+/occurrences/[^/]+"
           }
         ],
         "tags": [
@@ -209,15 +209,103 @@
         ]
       }
     },
-    "/v1alpha1/{name_2}": {
+    "/v1alpha1/{name_1}/notes": {
       "get": {
-        "summary": "Gets the specified project.",
-        "operationId": "GrafeasProjects_GetProject",
+        "summary": "Gets the `Note` attached to the given `Occurrence`.",
+        "operationId": "Grafeas_GetOccurrenceNote2",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/apiProject"
+              "$ref": "#/definitions/apiNote"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "name_1",
+            "description": "The name of the occurrence in the form\n\"projects/{project_id}/occurrences/{OCCURRENCE_ID}\"",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "pattern": "projects/[^/]+/locations/[^/]+/occurrences/[^/]+"
+          }
+        ],
+        "tags": [
+          "Grafeas"
+        ]
+      }
+    },
+    "/v1alpha1/{name_1}/occurrences": {
+      "get": {
+        "summary": "Lists `Occurrences` referencing the specified `Note`. Use this method to\nget all occurrences referencing your `Note` across all your customer\nprojects.",
+        "operationId": "Grafeas_ListNoteOccurrences2",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiListNoteOccurrencesResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "name_1",
+            "description": "The name field will contain the note name for example:\n  \"provider/{provider_id}/notes/{note_id}\"",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "pattern": "projects/[^/]+/locations/[^/]+/notes/[^/]+"
+          },
+          {
+            "name": "filter",
+            "description": "The filter expression.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pageSize",
+            "description": "Number of notes to return in the list.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pageToken",
+            "description": "Token to provide to skip to a particular spot in the list.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Grafeas"
+        ]
+      }
+    },
+    "/v1alpha1/{name_2}": {
+      "get": {
+        "summary": "Returns the requested `Note`.",
+        "operationId": "Grafeas_GetNote",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiNote"
             }
           },
           "default": {
@@ -230,15 +318,15 @@
         "parameters": [
           {
             "name": "name_2",
-            "description": "The name of the project in the form of `projects/{PROJECT_ID}`.",
+            "description": "The name of the note in the form of\n\"providers/{provider_id}/notes/{NOTE_ID}\"",
             "in": "path",
             "required": true,
             "type": "string",
-            "pattern": "projects/[^/]+"
+            "pattern": "projects/[^/]+/notes/[^/]+"
           }
         ],
         "tags": [
-          "GrafeasProjects"
+          "Grafeas"
         ]
       },
       "delete": {
@@ -316,6 +404,72 @@
         ],
         "tags": [
           "Grafeas"
+        ]
+      }
+    },
+    "/v1alpha1/{name_3}": {
+      "get": {
+        "summary": "Returns the requested `Note`.",
+        "operationId": "Grafeas_GetNote2",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiNote"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "name_3",
+            "description": "The name of the note in the form of\n\"providers/{provider_id}/notes/{NOTE_ID}\"",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "pattern": "projects/[^/]+/locations/[^/]+/notes/[^/]+"
+          }
+        ],
+        "tags": [
+          "Grafeas"
+        ]
+      }
+    },
+    "/v1alpha1/{name_4}": {
+      "get": {
+        "summary": "Gets the specified project.",
+        "operationId": "GrafeasProjects_GetProject",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiProject"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "name_4",
+            "description": "The name of the project in the form of `projects/{PROJECT_ID}`.",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "pattern": "projects/[^/]+"
+          }
+        ],
+        "tags": [
+          "GrafeasProjects"
         ]
       }
     },
@@ -500,6 +654,116 @@
           {
             "name": "pageSize",
             "description": "Number of notes to return in the list.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pageToken",
+            "description": "Token to provide to skip to a particular spot in the list.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Grafeas"
+        ]
+      }
+    },
+    "/v1alpha1/{parent_1}/notes": {
+      "get": {
+        "summary": "Lists all `Notes` for a given project.",
+        "operationId": "Grafeas_ListNotes2",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiListNotesResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "parent_1",
+            "description": "This field contains the project ID for example: \"projects/{project_id}\".",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "pattern": "projects/[^/]+/locations/[^/]+"
+          },
+          {
+            "name": "filter",
+            "description": "The filter expression.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pageSize",
+            "description": "Number of notes to return in the list.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pageToken",
+            "description": "Token to provide to skip to a particular spot in the list.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Grafeas"
+        ]
+      }
+    },
+    "/v1alpha1/{parent_1}/occurrences": {
+      "get": {
+        "summary": "Lists active `Occurrences` for a given project matching the filters.",
+        "operationId": "Grafeas_ListOccurrences2",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiListOccurrencesResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "parent_1",
+            "description": "This contains the project Id for example: projects/{project_id}.",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "pattern": "projects/[^/]+/locations/[^/]+"
+          },
+          {
+            "name": "filter",
+            "description": "The filter expression.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pageSize",
+            "description": "Number of occurrences to return in the list.",
             "in": "query",
             "required": false,
             "type": "integer",

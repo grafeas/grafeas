@@ -100,13 +100,13 @@
     },
     "/v1beta1/{name_1}": {
       "get": {
-        "summary": "Gets the specified note.",
-        "operationId": "GrafeasV1Beta1_GetNote",
+        "summary": "Gets the specified occurrence.",
+        "operationId": "GrafeasV1Beta1_GetOccurrence2",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1beta1Note"
+              "$ref": "#/definitions/v1beta1Occurrence"
             }
           },
           "default": {
@@ -119,11 +119,11 @@
         "parameters": [
           {
             "name": "name_1",
-            "description": "The name of the note in the form of\n`projects/[PROVIDER_ID]/notes/[NOTE_ID]`.",
+            "description": "The name of the occurrence in the form of\n`projects/[PROJECT_ID]/occurrences/[OCCURRENCE_ID]`.",
             "in": "path",
             "required": true,
             "type": "string",
-            "pattern": "projects/[^/]+/notes/[^/]+"
+            "pattern": "projects/[^/]+/locations/[^/]+/occurrences/[^/]+"
           }
         ],
         "tags": [
@@ -209,15 +209,103 @@
         ]
       }
     },
-    "/v1beta1/{name_2}": {
+    "/v1beta1/{name_1}/notes": {
       "get": {
-        "summary": "Gets the specified project.",
-        "operationId": "Projects_GetProject",
+        "summary": "Gets the note attached to the specified occurrence. Consumer projects can\nuse this method to get a note that belongs to a provider project.",
+        "operationId": "GrafeasV1Beta1_GetOccurrenceNote2",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/projectProject"
+              "$ref": "#/definitions/v1beta1Note"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "name_1",
+            "description": "The name of the occurrence in the form of\n`projects/[PROJECT_ID]/occurrences/[OCCURRENCE_ID]`.",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "pattern": "projects/[^/]+/locations/[^/]+/occurrences/[^/]+"
+          }
+        ],
+        "tags": [
+          "GrafeasV1Beta1"
+        ]
+      }
+    },
+    "/v1beta1/{name_1}/occurrences": {
+      "get": {
+        "summary": "Lists occurrences referencing the specified note. Provider projects can use\nthis method to get all occurrences across consumer projects referencing the\nspecified note.",
+        "operationId": "GrafeasV1Beta1_ListNoteOccurrences2",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1beta1ListNoteOccurrencesResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "name_1",
+            "description": "The name of the note to list occurrences for in the form of\n`projects/[PROVIDER_ID]/notes/[NOTE_ID]`.",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "pattern": "projects/[^/]+/locations/[^/]+/notes/[^/]+"
+          },
+          {
+            "name": "filter",
+            "description": "The filter expression.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pageSize",
+            "description": "Number of occurrences to return in the list.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pageToken",
+            "description": "Token to provide to skip to a particular spot in the list.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "GrafeasV1Beta1"
+        ]
+      }
+    },
+    "/v1beta1/{name_2}": {
+      "get": {
+        "summary": "Gets the specified note.",
+        "operationId": "GrafeasV1Beta1_GetNote",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1beta1Note"
             }
           },
           "default": {
@@ -230,15 +318,15 @@
         "parameters": [
           {
             "name": "name_2",
-            "description": "The name of the project in the form of `projects/{PROJECT_ID}`.",
+            "description": "The name of the note in the form of\n`projects/[PROVIDER_ID]/notes/[NOTE_ID]`.",
             "in": "path",
             "required": true,
             "type": "string",
-            "pattern": "projects/[^/]+"
+            "pattern": "projects/[^/]+/notes/[^/]+"
           }
         ],
         "tags": [
-          "Projects"
+          "GrafeasV1Beta1"
         ]
       },
       "delete": {
@@ -261,6 +349,72 @@
         "parameters": [
           {
             "name": "name_2",
+            "description": "The name of the project in the form of `projects/{PROJECT_ID}`.",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "pattern": "projects/[^/]+"
+          }
+        ],
+        "tags": [
+          "Projects"
+        ]
+      }
+    },
+    "/v1beta1/{name_3}": {
+      "get": {
+        "summary": "Gets the specified note.",
+        "operationId": "GrafeasV1Beta1_GetNote2",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1beta1Note"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "name_3",
+            "description": "The name of the note in the form of\n`projects/[PROVIDER_ID]/notes/[NOTE_ID]`.",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "pattern": "projects/[^/]+/locations/[^/]+/notes/[^/]+"
+          }
+        ],
+        "tags": [
+          "GrafeasV1Beta1"
+        ]
+      }
+    },
+    "/v1beta1/{name_4}": {
+      "get": {
+        "summary": "Gets the specified project.",
+        "operationId": "Projects_GetProject",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/projectProject"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "name_4",
             "description": "The name of the project in the form of `projects/{PROJECT_ID}`.",
             "in": "path",
             "required": true,
@@ -462,6 +616,156 @@
           {
             "name": "pageToken",
             "description": "Token to provide to skip to a particular spot in the list.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "GrafeasV1Beta1"
+        ]
+      }
+    },
+    "/v1beta1/{parent_1}/notes": {
+      "get": {
+        "summary": "Lists notes for the specified project.",
+        "operationId": "GrafeasV1Beta1_ListNotes2",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1beta1ListNotesResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "parent_1",
+            "description": "The name of the project to list notes for in the form of\n`projects/[PROJECT_ID]`.",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "pattern": "projects/[^/]+/locations/[^/]+"
+          },
+          {
+            "name": "filter",
+            "description": "The filter expression.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pageSize",
+            "description": "Number of notes to return in the list. Must be positive. Max allowed page\nsize is 1000. If not specified, page size defaults to 20.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pageToken",
+            "description": "Token to provide to skip to a particular spot in the list.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "GrafeasV1Beta1"
+        ]
+      }
+    },
+    "/v1beta1/{parent_1}/occurrences": {
+      "get": {
+        "summary": "Lists occurrences for the specified project.",
+        "operationId": "GrafeasV1Beta1_ListOccurrences2",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1beta1ListOccurrencesResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "parent_1",
+            "description": "The name of the project to list occurrences for in the form of\n`projects/[PROJECT_ID]`.",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "pattern": "projects/[^/]+/locations/[^/]+"
+          },
+          {
+            "name": "filter",
+            "description": "The filter expression.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pageSize",
+            "description": "Number of occurrences to return in the list. Must be positive. Max allowed\npage size is 1000. If not specified, page size defaults to 20.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pageToken",
+            "description": "Token to provide to skip to a particular spot in the list.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "GrafeasV1Beta1"
+        ]
+      }
+    },
+    "/v1beta1/{parent_1}/occurrences:vulnerabilitySummary": {
+      "get": {
+        "summary": "Gets a summary of the number and severity of occurrences.",
+        "operationId": "GrafeasV1Beta1_GetVulnerabilityOccurrencesSummary2",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1beta1VulnerabilityOccurrencesSummary"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "parent_1",
+            "description": "The name of the project to get a vulnerability summary for in the form of\n`projects/[PROJECT_ID]`.",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "pattern": "projects/[^/]+/locations/[^/]+"
+          },
+          {
+            "name": "filter",
+            "description": "The filter expression.",
             "in": "query",
             "required": false,
             "type": "string"

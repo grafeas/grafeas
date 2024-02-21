@@ -61,6 +61,9 @@ service GrafeasV1Beta1 {
   rpc GetOccurrence(GetOccurrenceRequest) returns (Occurrence) {
     option (google.api.http) = {
       get: "/v1beta1/{name=projects/*/occurrences/*}"
+      additional_bindings {
+        get: "/v1beta1/{name=projects/*/locations/*/occurrences/*}"
+      }
     };
     option (google.api.method_signature) = "name";
   };
@@ -70,6 +73,9 @@ service GrafeasV1Beta1 {
       returns (ListOccurrencesResponse) {
     option (google.api.http) = {
       get: "/v1beta1/{parent=projects/*}/occurrences"
+      additional_bindings {
+        get: "/v1beta1/{parent=projects/*/locations/*}/occurrences"
+      }
     };
     option (google.api.method_signature) = "parent,filter";
   };
@@ -118,6 +124,9 @@ service GrafeasV1Beta1 {
   rpc GetOccurrenceNote(GetOccurrenceNoteRequest) returns (Note) {
     option (google.api.http) = {
       get: "/v1beta1/{name=projects/*/occurrences/*}/notes"
+      additional_bindings {
+        get: "/v1beta1/{name=projects/*/locations/*/occurrences/*}/notes"
+      }
     };
     option (google.api.method_signature) = "name";
   };
@@ -126,6 +135,9 @@ service GrafeasV1Beta1 {
   rpc GetNote(GetNoteRequest) returns (Note) {
     option (google.api.http) = {
       get: "/v1beta1/{name=projects/*/notes/*}"
+      additional_bindings {
+        get: "/v1beta1/{name=projects/*/locations/*/notes/*}"
+      }
     };
     option (google.api.method_signature) = "name";
   };
@@ -134,6 +146,9 @@ service GrafeasV1Beta1 {
   rpc ListNotes(ListNotesRequest) returns (ListNotesResponse) {
     option (google.api.http) = {
       get: "/v1beta1/{parent=projects/*}/notes"
+      additional_bindings {
+        get: "/v1beta1/{parent=projects/*/locations/*}/notes"
+      }
     };
     option (google.api.method_signature) = "parent,filter";
   };
@@ -181,6 +196,9 @@ service GrafeasV1Beta1 {
       returns (ListNoteOccurrencesResponse) {
     option (google.api.http) = {
       get: "/v1beta1/{name=projects/*/notes/*}/occurrences"
+      additional_bindings {
+        get: "/v1beta1/{name=projects/*/locations/*/notes/*}/occurrences"
+      }
     };
     option (google.api.method_signature) = "name,filter";
   };
@@ -191,6 +209,9 @@ service GrafeasV1Beta1 {
       returns (VulnerabilityOccurrencesSummary) {
     option (google.api.http) = {
       get: "/v1beta1/{parent=projects/*}/occurrences:vulnerabilitySummary"
+      additional_bindings {
+        get: "/v1beta1/{parent=projects/*/locations/*}/occurrences:vulnerabilitySummary"
+      }
     };
     option (google.api.method_signature) = "parent,filter";
   };

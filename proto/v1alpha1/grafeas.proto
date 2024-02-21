@@ -1296,6 +1296,9 @@ service Grafeas {
   rpc GetOccurrence(GetOccurrenceRequest) returns (Occurrence) {
     option (google.api.http) = {
       get: "/v1alpha1/{name=projects/*/occurrences/*}"
+      additional_bindings {
+        get: "/v1alpha1/{name=projects/*/locations/*/occurrences/*}"
+      }
     };
   }
 
@@ -1304,6 +1307,9 @@ service Grafeas {
       returns (ListOccurrencesResponse) {
     option (google.api.http) = {
       get: "/v1alpha1/{parent=projects/*}/occurrences"
+      additional_bindings {
+        get: "/v1alpha1/{parent=projects/*/locations/*}/occurrences"
+      }
     };
   }
 
@@ -1337,6 +1343,9 @@ service Grafeas {
   rpc GetOccurrenceNote(GetOccurrenceNoteRequest) returns (Note) {
     option (google.api.http) = {
       get: "/v1alpha1/{name=projects/*/occurrences/*}/notes"
+      additional_bindings {
+        get: "/v1alpha1/{name=projects/*/locations/*/occurrences/*}/notes"
+      }
     };
   }
 
@@ -1344,6 +1353,9 @@ service Grafeas {
   rpc GetNote(GetNoteRequest) returns (Note) {
     option (google.api.http) = {
       get: "/v1alpha1/{name=projects/*/notes/*}"
+      additional_bindings {
+        get: "/v1alpha1/{name=projects/*/locations/*/notes/*}"
+      }
     };
   }
 
@@ -1351,6 +1363,9 @@ service Grafeas {
   rpc ListNotes(ListNotesRequest) returns (ListNotesResponse) {
     option (google.api.http) = {
       get: "/v1alpha1/{parent=projects/*}/notes"
+      additional_bindings {
+        get: "/v1alpha1/{parent=projects/*/locations/*}/notes"
+      }
     };
   }
 
@@ -1384,6 +1399,9 @@ service Grafeas {
       returns (ListNoteOccurrencesResponse) {
     option (google.api.http) = {
       get: "/v1alpha1/{name=projects/*/notes/*}/occurrences"
+      additional_bindings {
+        get: "/v1alpha1/{name=projects/*/locations/*/notes/*}/occurrences"
+      }
     };
   }
 
