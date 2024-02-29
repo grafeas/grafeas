@@ -4,7 +4,7 @@ steps:
     args: ["build", "-f", "Dockerfile",
            "-t", "us.gcr.io/grafeas/grafeas-server:$TAG_NAME", "."]
   - name: "gcr.io/cloud-builders/docker"
-    args: ["build", "-f", "Dockerfile_helm_release",
+    args: ["build", "-f", "grafeas-charts/Dockerfile",
            "-t", "us.gcr.io/grafeas/helm-release:$TAG_NAME", "."]
   - name: "us.gcr.io/grafeas/helm-release:$TAG_NAME"
 images: ["us.gcr.io/grafeas/grafeas-server:$TAG_NAME"]
