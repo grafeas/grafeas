@@ -2394,6 +2394,10 @@
         },
         "nonComplianceReason": {
           "type": "string"
+        },
+        "version": {
+          "$ref": "#/definitions/v1ComplianceVersion",
+          "description": "The OS and config version the benchmark was run on."
         }
       },
       "description": "An indication that the compliance checks in the associated ComplianceNote\nwere not satisfied for particular resources or a specified reason."
