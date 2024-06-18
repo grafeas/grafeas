@@ -1208,6 +1208,25 @@
       },
       "description": "The status of an SBOM generation."
     },
+    "DiscoveryOccurrenceVulnerabilityAttestation": {
+      "type": "object",
+      "properties": {
+        "lastAttemptTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The last time we attempted to generate an attestation."
+        },
+        "state": {
+          "$ref": "#/definitions/VulnerabilityAttestationVulnerabilityAttestationState",
+          "description": "The success/failure state of the latest attestation attempt."
+        },
+        "error": {
+          "type": "string",
+          "description": "If failure, the error reason for why the attestation generation failed."
+        }
+      },
+      "description": "The status of an vulnerability attestation generation."
+    },
     "InTotoSlsaProvenanceV1BuildDefinition": {
       "type": "object",
       "properties": {
@@ -1515,6 +1534,16 @@
         }
       },
       "title": "Publisher contains information about the publisher of\nthis Note.\n(-- api-linter: core::0123::resource-annotation=disabled\n    aip.dev/not-precedent: Publisher is not a separate resource. --)"
+    },
+    "VulnerabilityAttestationVulnerabilityAttestationState": {
+      "type": "string",
+      "enum": [
+        "VULNERABILITY_ATTESTATION_STATE_UNSPECIFIED",
+        "SUCCESS",
+        "FAILURE"
+      ],
+      "default": "VULNERABILITY_ATTESTATION_STATE_UNSPECIFIED",
+      "description": "An enum indicating the state of the attestation generation.\n\n - VULNERABILITY_ATTESTATION_STATE_UNSPECIFIED: Default unknown state.\n - SUCCESS: Attestation was successfully generated and stored.\n - FAILURE: Attestation was unsuccessfully generated and stored."
     },
     "VulnerabilityNoteDetail": {
       "type": "object",
@@ -2563,6 +2592,10 @@
         "sbomStatus": {
           "$ref": "#/definitions/DiscoveryOccurrenceSBOMStatus",
           "description": "The status of an SBOM generation."
+        },
+        "vulnerabilityAttestation": {
+          "$ref": "#/definitions/DiscoveryOccurrenceVulnerabilityAttestation",
+          "description": "The status of an vulnerability attestation generation."
         }
       },
       "description": "Provides information about the analysis status of a discovered resource."
