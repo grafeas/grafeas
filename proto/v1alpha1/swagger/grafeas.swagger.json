@@ -131,8 +131,8 @@
         ]
       },
       "delete": {
-        "summary": "Deletes the given `Note` from the system.",
-        "operationId": "Grafeas_DeleteNote",
+        "summary": "Deletes the given `Occurrence` from the system. Use this when\nan `Occurrence` is no longer applicable for the given resource.",
+        "operationId": "Grafeas_DeleteOccurrence2",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -150,11 +150,11 @@
         "parameters": [
           {
             "name": "name_1",
-            "description": "The name of the note in the form of\n\"providers/{provider_id}/notes/{NOTE_ID}\"",
+            "description": "The name of the occurrence in the form of\n\"projects/{project_id}/occurrences/{OCCURRENCE_ID}\"",
             "in": "path",
             "required": true,
             "type": "string",
-            "pattern": "projects/[^/]+/notes/[^/]+"
+            "pattern": "projects/[^/]+/locations/[^/]+/occurrences/[^/]+"
           }
         ],
         "tags": [
@@ -162,13 +162,13 @@
         ]
       },
       "patch": {
-        "summary": "Updates an existing `Note`.",
-        "operationId": "Grafeas_UpdateNote",
+        "summary": "Updates an existing occurrence.",
+        "operationId": "Grafeas_UpdateOccurrence2",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/apiNote"
+              "$ref": "#/definitions/apiOccurrence"
             }
           },
           "default": {
@@ -181,19 +181,19 @@
         "parameters": [
           {
             "name": "name_1",
-            "description": "The name of the note.\nShould be of the form \"projects/{provider_id}/notes/{note_id}\".",
+            "description": "The name of the occurrence.\nShould be of the form \"projects/{project_id}/occurrences/{OCCURRENCE_ID}\".",
             "in": "path",
             "required": true,
             "type": "string",
-            "pattern": "projects/[^/]+/notes/[^/]+"
+            "pattern": "projects/[^/]+/locations/[^/]+/occurrences/[^/]+"
           },
           {
             "name": "body",
-            "description": "The updated note.",
+            "description": "The updated occurrence.",
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/apiNote"
+              "$ref": "#/definitions/apiOccurrence"
             }
           },
           {
@@ -330,8 +330,8 @@
         ]
       },
       "delete": {
-        "summary": "Deletes the specified project.",
-        "operationId": "GrafeasProjects_DeleteProject",
+        "summary": "Deletes the given `Note` from the system.",
+        "operationId": "Grafeas_DeleteNote",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -349,25 +349,25 @@
         "parameters": [
           {
             "name": "name_2",
-            "description": "The name of the project in the form of `projects/{PROJECT_ID}`.",
+            "description": "The name of the note in the form of\n\"providers/{provider_id}/notes/{NOTE_ID}\"",
             "in": "path",
             "required": true,
             "type": "string",
-            "pattern": "projects/[^/]+"
+            "pattern": "projects/[^/]+/notes/[^/]+"
           }
         ],
         "tags": [
-          "GrafeasProjects"
+          "Grafeas"
         ]
       },
       "patch": {
-        "summary": "Updates an existing operation returns an error if operation\n does not exist. The only valid operations are to update mark the done bit\nchange the result.",
-        "operationId": "Grafeas_UpdateOperation",
+        "summary": "Updates an existing `Note`.",
+        "operationId": "Grafeas_UpdateNote",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/googlelongrunningOperation"
+              "$ref": "#/definitions/apiNote"
             }
           },
           "default": {
@@ -380,26 +380,27 @@
         "parameters": [
           {
             "name": "name_2",
-            "description": "The name of the Operation.\nShould be of the form \"projects/{provider_id}/operations/{operation_id}\".",
+            "description": "The name of the note.\nShould be of the form \"projects/{provider_id}/notes/{note_id}\".",
             "in": "path",
             "required": true,
             "type": "string",
-            "pattern": "projects/[^/]+/operations/[^/]+"
+            "pattern": "projects/[^/]+/notes/[^/]+"
           },
           {
             "name": "body",
+            "description": "The updated note.",
             "in": "body",
             "required": true,
             "schema": {
-              "type": "object",
-              "properties": {
-                "operation": {
-                  "$ref": "#/definitions/googlelongrunningOperation",
-                  "description": "The operation to create."
-                }
-              },
-              "title": "Request for updating an existing operation"
+              "$ref": "#/definitions/apiNote"
             }
+          },
+          {
+            "name": "updateMask",
+            "description": "The fields to update.",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
@@ -438,6 +439,84 @@
         "tags": [
           "Grafeas"
         ]
+      },
+      "delete": {
+        "summary": "Deletes the given `Note` from the system.",
+        "operationId": "Grafeas_DeleteNote2",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "properties": {}
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "name_3",
+            "description": "The name of the note in the form of\n\"providers/{provider_id}/notes/{NOTE_ID}\"",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "pattern": "projects/[^/]+/locations/[^/]+/notes/[^/]+"
+          }
+        ],
+        "tags": [
+          "Grafeas"
+        ]
+      },
+      "patch": {
+        "summary": "Updates an existing `Note`.",
+        "operationId": "Grafeas_UpdateNote2",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiNote"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "name_3",
+            "description": "The name of the note.\nShould be of the form \"projects/{provider_id}/notes/{note_id}\".",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "pattern": "projects/[^/]+/locations/[^/]+/notes/[^/]+"
+          },
+          {
+            "name": "body",
+            "description": "The updated note.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/apiNote"
+            }
+          },
+          {
+            "name": "updateMask",
+            "description": "The fields to update.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Grafeas"
+        ]
       }
     },
     "/v1alpha1/{name_4}": {
@@ -470,6 +549,131 @@
         ],
         "tags": [
           "GrafeasProjects"
+        ]
+      },
+      "delete": {
+        "summary": "Deletes the specified project.",
+        "operationId": "GrafeasProjects_DeleteProject",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "properties": {}
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "name_4",
+            "description": "The name of the project in the form of `projects/{PROJECT_ID}`.",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "pattern": "projects/[^/]+"
+          }
+        ],
+        "tags": [
+          "GrafeasProjects"
+        ]
+      },
+      "patch": {
+        "summary": "Updates an existing operation returns an error if operation\n does not exist. The only valid operations are to update mark the done bit\nchange the result.",
+        "operationId": "Grafeas_UpdateOperation",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/googlelongrunningOperation"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "name_4",
+            "description": "The name of the Operation.\nShould be of the form \"projects/{provider_id}/operations/{operation_id}\".",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "pattern": "projects/[^/]+/operations/[^/]+"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "operation": {
+                  "$ref": "#/definitions/googlelongrunningOperation",
+                  "description": "The operation to create."
+                }
+              },
+              "title": "Request for updating an existing operation"
+            }
+          }
+        ],
+        "tags": [
+          "Grafeas"
+        ]
+      }
+    },
+    "/v1alpha1/{name_5}": {
+      "patch": {
+        "summary": "Updates an existing operation returns an error if operation\n does not exist. The only valid operations are to update mark the done bit\nchange the result.",
+        "operationId": "Grafeas_UpdateOperation2",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/googlelongrunningOperation"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "name_5",
+            "description": "The name of the Operation.\nShould be of the form \"projects/{provider_id}/operations/{operation_id}\".",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "pattern": "projects/[^/]+/locations/[^/]+/operations/[^/]+"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "operation": {
+                  "$ref": "#/definitions/googlelongrunningOperation",
+                  "description": "The operation to create."
+                }
+              },
+              "title": "Request for updating an existing operation"
+            }
+          }
+        ],
+        "tags": [
+          "Grafeas"
         ]
       }
     },
@@ -725,6 +929,53 @@
         "tags": [
           "Grafeas"
         ]
+      },
+      "post": {
+        "summary": "Creates a new `Note`.",
+        "operationId": "Grafeas_CreateNote2",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiNote"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "parent_1",
+            "description": "This field contains the project Id for example:\n\"project/{project_id}",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "pattern": "projects/[^/]+/locations/[^/]+"
+          },
+          {
+            "name": "body",
+            "description": "The Note to be inserted",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/apiNote"
+            }
+          },
+          {
+            "name": "noteId",
+            "description": "The ID to use for this note.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Grafeas"
+        ]
       }
     },
     "/v1alpha1/{parent_1}/occurrences": {
@@ -775,6 +1026,98 @@
             "in": "query",
             "required": false,
             "type": "string"
+          }
+        ],
+        "tags": [
+          "Grafeas"
+        ]
+      },
+      "post": {
+        "summary": "Creates a new `Occurrence`. Use this method to create `Occurrences`\nfor a resource.",
+        "operationId": "Grafeas_CreateOccurrence2",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiOccurrence"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "parent_1",
+            "description": "This field contains the project Id for example: \"projects/{project_id}\"",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "pattern": "projects/[^/]+/locations/[^/]+"
+          },
+          {
+            "name": "body",
+            "description": "The occurrence to be inserted.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/apiOccurrence"
+            }
+          }
+        ],
+        "tags": [
+          "Grafeas"
+        ]
+      }
+    },
+    "/v1alpha1/{parent_1}/operations": {
+      "post": {
+        "summary": "Creates a new `Operation`.",
+        "operationId": "Grafeas_CreateOperation2",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/googlelongrunningOperation"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "parent_1",
+            "description": "The projectId that this operation should be created under.",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "pattern": "projects/[^/]+/locations/[^/]+"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "operationId": {
+                  "type": "string",
+                  "description": "The ID to use for this operation."
+                },
+                "operation": {
+                  "$ref": "#/definitions/googlelongrunningOperation",
+                  "description": "The operation to create."
+                }
+              },
+              "title": "Request for creating an operation"
+            }
           }
         ],
         "tags": [

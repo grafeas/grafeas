@@ -1319,6 +1319,9 @@ service Grafeas {
       returns (google.protobuf.Empty) {
     option (google.api.http) = {
       delete: "/v1alpha1/{name=projects/*/occurrences/*}"
+      additional_bindings {
+        delete: "/v1alpha1/{name=projects/*/locations/*/occurrences/*}"
+      }
     };
   }
 
@@ -1328,6 +1331,10 @@ service Grafeas {
     option (google.api.http) = {
       post: "/v1alpha1/{parent=projects/*}/occurrences"
       body: "occurrence"
+      additional_bindings {
+        post: "/v1alpha1/{parent=projects/*/locations/*}/occurrences"
+        body: "occurrence"
+      }
     };
   }
 
@@ -1336,6 +1343,10 @@ service Grafeas {
     option (google.api.http) = {
       patch: "/v1alpha1/{name=projects/*/occurrences/*}"
       body: "occurrence"
+      additional_bindings {
+        patch: "/v1alpha1/{name=projects/*/locations/*/occurrences/*}"
+        body: "occurrence"
+      }
     };
   }
 
@@ -1373,6 +1384,9 @@ service Grafeas {
   rpc DeleteNote(DeleteNoteRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
       delete: "/v1alpha1/{name=projects/*/notes/*}"
+      additional_bindings {
+        delete: "/v1alpha1/{name=projects/*/locations/*/notes/*}"
+      }
     };
   }
 
@@ -1381,6 +1395,10 @@ service Grafeas {
     option (google.api.http) = {
       post: "/v1alpha1/{parent=projects/*}/notes"
       body: "note"
+      additional_bindings {
+        post: "/v1alpha1/{parent=projects/*/locations/*}/notes"
+        body: "note"
+      }
     };
   }
 
@@ -1389,6 +1407,10 @@ service Grafeas {
     option (google.api.http) = {
       patch: "/v1alpha1/{name=projects/*/notes/*}"
       body: "note"
+      additional_bindings {
+        patch: "/v1alpha1/{name=projects/*/locations/*/notes/*}"
+        body: "note"
+      }
     };
   }
 
@@ -1411,6 +1433,10 @@ service Grafeas {
     option (google.api.http) = {
       post: "/v1alpha1/{parent=projects/*}/operations"
       body: "*"
+      additional_bindings {
+        post: "/v1alpha1/{parent=projects/*/locations/*}/operations"
+        body: "*"
+      }
     };
   };
 
@@ -1422,6 +1448,10 @@ service Grafeas {
     option (google.api.http) = {
       patch: "/v1alpha1/{name=projects/*/operations/*}"
       body: "*"
+      additional_bindings {
+        patch: "/v1alpha1/{name=projects/*/locations/*/operations/*}"
+        body: "*"
+      }
     };
   };
 }
