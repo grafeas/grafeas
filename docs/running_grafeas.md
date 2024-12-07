@@ -2,8 +2,7 @@
 
 ## Pre-requisites
 
-* [Docker](https://www.docker.com/get-started), if planning to use Grafeas
-  Docker image or build one
+* [Docker](https://www.docker.com/get-started), if planning to build the image from the Dockerfile
 * [openssl](https://www.openssl.org/), if planning to use certificates
 
 ### Checkout your fork
@@ -38,16 +37,6 @@ fork](https://help.github.com/articles/syncing-a-fork/)._
 ## Start Grafeas
 
 The following options will start the Grafeas gRPC and REST APIs on `localhost:8080`.
-
-### Using published Docker image
-
-To start the Grafeas server from the publicly published Docker image, do:
-
-```bash
-docker pull us.gcr.io/grafeas/grafeas-server:v0.1.0
-docker run -p 8080:8080 --name grafeas \
-  us.gcr.io/grafeas/grafeas-server:v0.1.0
-```
 
 ### Using Dockerfile
 
