@@ -4324,6 +4324,24 @@
       },
       "description": "A single VulnerabilityAssessmentNote represents\none particular product's vulnerability assessment for one CVE."
     },
+    "vulnerabilityBaseImage": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the base image."
+        },
+        "repository": {
+          "type": "string",
+          "description": "The repository name in which the base image is from."
+        },
+        "numLayers": {
+          "type": "string",
+          "description": "The number of layers that the base image is composed of."
+        }
+      },
+      "description": "BaseImage describes a base image of a container image."
+    },
     "vulnerabilityCVSS": {
       "type": "object",
       "properties": {
@@ -4381,6 +4399,32 @@
       "default": "CVSS_VERSION_UNSPECIFIED",
       "description": "CVSS Version."
     },
+    "vulnerabilityLayerDetails": {
+      "type": "object",
+      "properties": {
+        "index": {
+          "type": "integer",
+          "format": "int32",
+          "description": "The index of the layer in the container image."
+        },
+        "diffId": {
+          "type": "string",
+          "description": "The diff ID (sha256 hash) of the layer in the container image."
+        },
+        "command": {
+          "type": "string",
+          "description": "The layer build command that was used to build the layer. This may not be\nfound in all layers depending on how the container image is built."
+        },
+        "baseImages": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/vulnerabilityBaseImage"
+          },
+          "description": "The base images the layer is found within."
+        }
+      },
+      "description": "Details about the layer a package was found in. This should be the same as\nthe LayerDetails message in\ngoogle3/third_party/scalibr/binary/proto/scan_result.proto."
+    },
     "vulnerabilityPackageIssue": {
       "type": "object",
       "properties": {
@@ -4403,6 +4447,10 @@
         "effectiveSeverity": {
           "$ref": "#/definitions/vulnerabilitySeverity",
           "description": "The distro or language system assigned severity for this vulnerability\nwhen that is available and note provider assigned severity when it is not\navailable."
+        },
+        "layerDetails": {
+          "$ref": "#/definitions/vulnerabilityLayerDetails",
+          "description": "Each package should have its own layer metadata (that is, information\nfrom the origin layer of the package)."
         }
       },
       "description": "This message wraps a location affected by a vulnerability and its\nassociated fix (if one is available)."

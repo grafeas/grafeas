@@ -130,6 +130,30 @@ message FileLocation {
   string file_path = 1;
 }
 
+// BaseImage describes a base image of a container image.
+message BaseImage {
+  // The name of the base image.
+  string name = 1;
+  // The repository name in which the base image is from.
+  string repository = 2;
+  // The number of layers that the base image is composed of.
+  string num_layers = 3;
+}
+
+// Details about the layer a package was found in.
+message LayerDetails {
+  // The index of the layer in the container image.
+  int32 index = 1;
+  // The diff ID (typically a sha256 hash) of the layer in the container image.
+  string diff_id = 2;
+  // The layer build command that was used to build the layer. This may not be
+  // found in all layers depending on how the container image is built.
+  string command = 3;
+  // The base images the layer is found within.
+  repeated BaseImage base_images = 4;
+}
+
+
 // License information.
 message License {
   // Often a single license can be used to represent the licensing terms.
