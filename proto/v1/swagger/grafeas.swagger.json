@@ -2295,6 +2295,24 @@
       },
       "description": "Occurrence that represents a single \"attestation\". The authenticity of an\nattestation can be verified using the attached signature. If the verifier\ntrusts the public key of the signer, then verifying the signature is\nsufficient to establish trust. In this circumstance, the authority to which\nthis attestation is attached is primarily useful for lookup (how to find\nthis attestation if you already know the authority and artifact to be\nverified) and intent (for which authority this attestation was intended to\nsign."
     },
+    "v1BaseImage": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the base image."
+        },
+        "repository": {
+          "type": "string",
+          "description": "The repository name in which the base image is from."
+        },
+        "numLayers": {
+          "type": "string",
+          "description": "The number of layers that the base image is composed of."
+        }
+      },
+      "description": "BaseImage describes a base image of a container image."
+    },
     "v1BatchCreateNotesResponse": {
       "type": "object",
       "properties": {
@@ -3043,6 +3061,10 @@
         "filePath": {
           "type": "string",
           "description": "For jars that are contained inside .war files, this filepath\ncan indicate the path to war file combined with the path to jar file."
+        },
+        "layerDetails": {
+          "$ref": "#/definitions/v1LayerDetails",
+          "description": "Each package found in a file should have its own layer metadata (that is, information\nfrom the origin layer of the package)."
         }
       },
       "description": "Indicates the location at which a package was found."
@@ -3289,6 +3311,32 @@
         }
       },
       "description": "Layer holds metadata specific to a layer of a Docker image."
+    },
+    "v1LayerDetails": {
+      "type": "object",
+      "properties": {
+        "index": {
+          "type": "integer",
+          "format": "int32",
+          "description": "The index of the layer in the container image."
+        },
+        "diffId": {
+          "type": "string",
+          "description": "The diff ID (typically a sha256 hash) of the layer in the container image."
+        },
+        "command": {
+          "type": "string",
+          "description": "The layer build command that was used to build the layer. This may not be\nfound in all layers depending on how the container image is built."
+        },
+        "baseImages": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1BaseImage"
+          },
+          "description": "The base images the layer is found within."
+        }
+      },
+      "description": "Details about the layer a package was found in."
     },
     "v1License": {
       "type": "object",
