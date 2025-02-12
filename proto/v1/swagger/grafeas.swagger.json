@@ -2307,7 +2307,8 @@
           "description": "The repository name in which the base image is from."
         },
         "numLayers": {
-          "type": "string",
+          "type": "integer",
+          "format": "int32",
           "description": "The number of layers that the base image is composed of."
         }
       },
