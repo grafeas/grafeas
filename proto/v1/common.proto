@@ -140,7 +140,7 @@ message BaseImage {
   // The repository name in which the base image is from.
   string repository = 2;
   // The number of layers that the base image is composed of.
-  int32  num_layers = 3;
+  int32  layer_count = 3;
 }
 
 // Details about the layer a package was found in.
