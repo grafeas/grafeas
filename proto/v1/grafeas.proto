@@ -296,7 +296,7 @@ message Occurrence {
     // Describes a specific SBOM reference occurrences.
     grafeas.v1.SBOMReferenceOccurrence sbom_reference = 19;
     // Describes a secret.
-    grafeas.v1.SecretOccurrence secret = 27;
+    grafeas.v1.SecretOccurrence secret = 20;
   }
 
   // https://github.com/secure-systems-lab/dsse
