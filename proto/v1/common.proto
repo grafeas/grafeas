@@ -49,6 +49,8 @@ enum NoteKind {
   VULNERABILITY_ASSESSMENT = 11;
   // This represents an SBOM Reference.
   SBOM_REFERENCE = 12;
+  // This represents a secret.
+  SECRET = 18;
 }
 
 // Metadata for any related URL information.
