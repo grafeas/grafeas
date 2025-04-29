@@ -50,7 +50,7 @@ enum NoteKind {
   // This represents an SBOM Reference.
   SBOM_REFERENCE = 12;
   // This represents a secret.
-  SECRET = 18;
+  SECRET = 13;
 }
 
 // Metadata for any related URL information.
