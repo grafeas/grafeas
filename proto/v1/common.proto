@@ -151,6 +151,9 @@ message LayerDetails {
   int32 index = 1;
   // The diff ID (typically a sha256 hash) of the layer in the container image.
   string diff_id = 2;
+  // The layer chain ID (sha256 hash) of the layer in the container image.
+  // https://github.com/opencontainers/image-spec/blob/main/config.md#layer-chainid
+  string chain_id = 5;
   // The layer build command that was used to build the layer. This may not be
   // found in all layers depending on how the container image is built.
   string command = 3;

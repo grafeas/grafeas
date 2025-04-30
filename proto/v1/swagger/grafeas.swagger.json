@@ -3325,6 +3325,10 @@
           "type": "string",
           "description": "The diff ID (typically a sha256 hash) of the layer in the container image."
         },
+        "chainId": {
+          "type": "string",
+          "title": "The layer chain ID (sha256 hash) of the layer in the container image.\nhttps://github.com/opencontainers/image-spec/blob/main/config.md#layer-chainid"
+        },
         "command": {
           "type": "string",
           "description": "The layer build command that was used to build the layer. This may not be\nfound in all layers depending on how the container image is built."
