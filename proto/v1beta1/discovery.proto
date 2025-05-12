@@ -124,6 +124,14 @@ message Discovered {
 
   // The last time this resource was scanned.
   google.protobuf.Timestamp last_scan_time = 10;
-  
-  // Next ID: 11
+
+  message File {
+    string name = 1;
+    map<string, string> digest = 2;
+  }
+
+  // Files that make up the resource described by the occurrence.
+  repeated File files = 11;
+
+  // Next ID: 12
 }
