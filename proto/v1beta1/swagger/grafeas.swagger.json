@@ -1580,6 +1580,20 @@
       "default": "CONTINUOUS_ANALYSIS_UNSPECIFIED",
       "description": "Whether the resource is continuously analyzed.\n\n - CONTINUOUS_ANALYSIS_UNSPECIFIED: Unknown.\n - ACTIVE: The resource is continuously analyzed.\n - INACTIVE: The resource is ignored for continuous analysis."
     },
+    "DiscoveredFile": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "digest": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
+    },
     "DiscoveredSBOMStatus": {
       "type": "object",
       "properties": {
@@ -2275,6 +2289,13 @@
           "type": "string",
           "format": "date-time",
           "description": "The last time this resource was scanned."
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DiscoveredFile"
+          },
+          "description": "Files that make up the resource described by the occurrence."
         }
       },
       "description": "Provides information about the analysis status of a discovered resource."
