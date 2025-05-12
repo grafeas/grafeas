@@ -121,4 +121,12 @@ message DiscoveryOccurrence {
 
   // The status of an SBOM generation.
   SBOMStatus sbom_status = 9;
+
+  message File {
+    string name = 1;
+    map<string, string> digest = 2;
+  }
+
+  // Files that make up the resource described by the occurrence.
+  repeated File files = 10;
 }
