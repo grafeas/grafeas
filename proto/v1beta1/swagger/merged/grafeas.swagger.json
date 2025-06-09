@@ -830,6 +830,13 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "returnPartialSuccess",
+            "description": "If set, the request will return all reachable Notes\nand report all unreachable regions in the `unreachable` field in\nthe response.\n\nOnly applicable for requests in the global region.",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
           }
         ],
         "tags": [
@@ -989,6 +996,13 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "returnPartialSuccess",
+            "description": "If set, the request will return all reachable Occurrences\nand report all unreachable regions in the `unreachable` field in\nthe response.\n\nOnly applicable for requests in the global region.",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
           }
         ],
         "tags": [
@@ -1126,6 +1140,13 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "returnPartialSuccess",
+            "description": "If set, the request will return all reachable occurrence summaries\nand report all unreachable regions in the `unreachable` field in\nthe response.\n\nOnly applicable for requests in the global region.",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
           }
         ],
         "tags": [
@@ -1181,6 +1202,13 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "returnPartialSuccess",
+            "description": "If set, the request will return all reachable Notes\nand report all unreachable regions in the `unreachable` field in\nthe response.\n\nOnly applicable for requests in the global region.",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
           }
         ],
         "tags": [
@@ -1340,6 +1368,13 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "returnPartialSuccess",
+            "description": "If set, the request will return all reachable Occurrences\nand report all unreachable regions in the `unreachable` field in\nthe response.\n\nOnly applicable for requests in the global region.",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
           }
         ],
         "tags": [
@@ -1477,6 +1512,13 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "returnPartialSuccess",
+            "description": "If set, the request will return all reachable occurrence summaries\nand report all unreachable regions in the `unreachable` field in\nthe response.\n\nOnly applicable for requests in the global region.",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
           }
         ],
         "tags": [
@@ -3813,6 +3855,13 @@
         "nextPageToken": {
           "type": "string",
           "description": "The next pagination token in the list response. It should be used as\n`page_token` for the following request. An empty value means no more\nresults."
+        },
+        "unreachable": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Unreachable regions. Populated for requests from the global region\nwhen `return_partial_success` is set.\n\nFormat: projects/\u003cproject\u003e/locations/\u003clocation\u003e"
         }
       },
       "description": "Response for listing notes."
@@ -3830,6 +3879,13 @@
         "nextPageToken": {
           "type": "string",
           "description": "The next pagination token in the list response. It should be used as\n`page_token` for the following request. An empty value means no more\nresults."
+        },
+        "unreachable": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Unreachable regions. Populated for requests from the global region\nwhen `return_partial_success` is set.\n\nFormat: projects/\u003cproject\u003e/locations/\u003clocation\u003e"
         }
       },
       "description": "Response for listing occurrences."
@@ -4104,6 +4160,13 @@
             "$ref": "#/definitions/VulnerabilityOccurrencesSummaryFixableTotalByDigest"
           },
           "description": "A listing by resource of the number of fixable and total vulnerabilities."
+        },
+        "unreachable": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Unreachable regions. Populated for requests from the global region\nwhen `return_partial_success` is set.\n\nFormat: projects/\u003cproject\u003e/locations/\u003clocation\u003e"
         }
       },
       "description": "A summary of how many vulnerability occurrences there are per resource and\nseverity type."
