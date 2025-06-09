@@ -439,7 +439,14 @@ message ListOccurrencesRequest {
   // Token to provide to skip to a particular spot in the list.
   string page_token = 4;
 
-  // next_id = 7;
+  // If set, the request will return all reachable Occurrences
+  // and report all unreachable regions in the `unreachable` field in
+  // the response.
+  //
+  // Only applicable for requests in the global region.
+  bool return_partial_success = 7;
+
+  // next_id = 8;
 }
 
 // Response for listing occurrences.
@@ -450,6 +457,13 @@ message ListOccurrencesResponse {
   // `page_token` for the following request. An empty value means no more
   // results.
   string next_page_token = 2;
+  // Unreachable regions. Populated for requests from the global region
+  // when `return_partial_success` is set.
+  //
+  // Format: projects/<project>/locations/<location>
+  repeated string unreachable = 3 [
+    (google.api.field_behavior) = UNORDERED_LIST
+  ];
 }
 
 // Request to delete a occurrence.
@@ -526,6 +540,13 @@ message ListNotesRequest {
 
   // Token to provide to skip to a particular spot in the list.
   string page_token = 4;
+
+  // If set, the request will return all reachable Notes
+  // and report all unreachable regions in the `unreachable` field in
+  // the response.
+  //
+  // Only applicable for requests in the global region.
+  bool return_partial_success = 5;
 }
 
 // Response for listing notes.
@@ -536,6 +557,13 @@ message ListNotesResponse {
   // `page_token` for the following request. An empty value means no more
   // results.
   string next_page_token = 2;
+  // Unreachable regions. Populated for requests from the global region
+  // when `return_partial_success` is set.
+  //
+  // Format: projects/<project>/locations/<location>
+  repeated string unreachable = 3 [
+    (google.api.field_behavior) = UNORDERED_LIST
+  ];
 }
 
 // Request to delete a note.
@@ -648,6 +676,13 @@ message GetVulnerabilityOccurrencesSummaryRequest {
   ];
   // The filter expression.
   string filter = 2;
+
+  // If set, the request will return all reachable occurrence summaries
+  // and report all unreachable regions in the `unreachable` field in
+  // the response.
+  //
+  // Only applicable for requests in the global region.
+  bool return_partial_success = 3;
 }
 
 // A summary of how many vulnerability occurrences there are per resource and
@@ -668,4 +703,12 @@ message VulnerabilityOccurrencesSummary {
     // The total number of vulnerabilities associated with this resource.
     int64 total_count = 4;
   }
+
+  // Unreachable regions. Populated for requests from the global region
+  // when `return_partial_success` is set.
+  //
+  // Format: projects/<project>/locations/<location>
+  repeated string unreachable = 3 [
+    (google.api.field_behavior) = UNORDERED_LIST
+  ];
 }
