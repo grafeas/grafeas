@@ -2496,6 +2496,15 @@
         }
       }
     },
+    "v1CISAKnownExploitedVulnerabilities": {
+      "type": "object",
+      "properties": {
+        "knownRansomwareCampaignUse": {
+          "type": "string",
+          "description": "Whether the vulnerability is known to have been leveraged as part of a ransomware campaign."
+        }
+      }
+    },
     "v1CVSS": {
       "type": "object",
       "properties": {
@@ -3089,6 +3098,21 @@
         },
         "keyid": {
           "type": "string"
+        }
+      }
+    },
+    "v1ExploitPredictionScoringSystem": {
+      "type": "object",
+      "properties": {
+        "percentile": {
+          "type": "number",
+          "format": "double",
+          "title": "The percentile of the current score, the proportion of all scored vulnerabilities with the same or a lower EPSS score"
+        },
+        "score": {
+          "type": "number",
+          "format": "double",
+          "title": "The EPSS score representing the probability [0-1] of exploitation in the wild in the next 30 days"
         }
       }
     },
@@ -3920,6 +3944,19 @@
       },
       "description": "A unique identifier for a Cloud Repo."
     },
+    "v1Risk": {
+      "type": "object",
+      "properties": {
+        "cisaKev": {
+          "$ref": "#/definitions/v1CISAKnownExploitedVulnerabilities",
+          "description": "CISA maintains the authoritative source of vulnerabilities that have been exploited in the wild."
+        },
+        "epss": {
+          "$ref": "#/definitions/v1ExploitPredictionScoringSystem",
+          "description": "The Exploit Prediction Scoring System (EPSS) estimates the likelihood (probability) that a software vulnerability will be exploited in the wild."
+        }
+      }
+    },
     "v1SBOMReferenceNote": {
       "type": "object",
       "properties": {
@@ -4582,6 +4619,10 @@
         "extraDetails": {
           "type": "string",
           "description": "Occurrence-specific extra details about the vulnerability."
+        },
+        "risk": {
+          "$ref": "#/definitions/v1Risk",
+          "description": "Risk information about the vulnerability, such as CISA, EPSS, etc."
         }
       },
       "description": "An occurrence of a severity vulnerability on a resource."
