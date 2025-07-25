@@ -3688,7 +3688,7 @@
           "items": {
             "type": "string"
           },
-          "description": "Unreachable regions. Populated for requests from the global region\nwhen `return_partial_success` is set.\n\nFormat: projects/\u003cproject\u003e/locations/\u003clocation\u003e"
+          "description": "Unreachable regions. Populated for requests from the global region\nwhen `return_partial_success` is set.\n\nFormat: `projects/[PROJECT_ID]/locations/[LOCATION]`"
         }
       },
       "description": "Response for listing notes."
@@ -3712,7 +3712,7 @@
           "items": {
             "type": "string"
           },
-          "description": "Unreachable regions. Populated for requests from the global region\nwhen `return_partial_success` is set.\n\nFormat: projects/\u003cproject\u003e/locations/\u003clocation\u003e"
+          "description": "Unreachable regions. Populated for requests from the global region\nwhen `return_partial_success` is set.\n\nFormat: `projects/[PROJECT_ID]/locations/[LOCATION]`"
         }
       },
       "description": "Response for listing occurrences."
@@ -3993,7 +3993,7 @@
           "items": {
             "type": "string"
           },
-          "description": "Unreachable regions. Populated for requests from the global region\nwhen `return_partial_success` is set.\n\nFormat: projects/\u003cproject\u003e/locations/\u003clocation\u003e"
+          "description": "Unreachable regions. Populated for requests from the global region\nwhen `return_partial_success` is set.\n\nFormat: `projects/[PROJECT_ID]/locations/[LOCATION]`"
         }
       },
       "description": "A summary of how many vulnerability occurrences there are per resource and\nseverity type."
