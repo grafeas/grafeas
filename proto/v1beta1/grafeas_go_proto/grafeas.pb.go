@@ -966,7 +966,7 @@ type ListOccurrencesResponse struct {
 	// Unreachable regions. Populated for requests from the global region
 	// when `return_partial_success` is set.
 	//
-	// Format: projects/<project>/locations/<location>
+	// Format: `projects/[PROJECT_ID]/locations/[LOCATION]`
 	Unreachable []string `protobuf:"bytes,3,rep,name=unreachable,proto3" json:"unreachable,omitempty"`
 }
 
@@ -1406,7 +1406,7 @@ type ListNotesResponse struct {
 	// Unreachable regions. Populated for requests from the global region
 	// when `return_partial_success` is set.
 	//
-	// Format: projects/<project>/locations/<location>
+	// Format: `projects/[PROJECT_ID]/locations/[LOCATION]`
 	Unreachable []string `protobuf:"bytes,3,rep,name=unreachable,proto3" json:"unreachable,omitempty"`
 }
 
@@ -2084,7 +2084,7 @@ type VulnerabilityOccurrencesSummary struct {
 	// Unreachable regions. Populated for requests from the global region
 	// when `return_partial_success` is set.
 	//
-	// Format: projects/<project>/locations/<location>
+	// Format: `projects/[PROJECT_ID]/locations/[LOCATION]`
 	Unreachable []string `protobuf:"bytes,3,rep,name=unreachable,proto3" json:"unreachable,omitempty"`
 }
 
