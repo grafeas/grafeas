@@ -4086,6 +4086,10 @@
             "$ref": "#/definitions/v1SecretStatus"
           },
           "description": "Status of the secret."
+        },
+        "data": {
+          "$ref": "#/definitions/protobufAny",
+          "description": "Scan result of the secret."
         }
       },
       "description": "The occurrence provides details of a secret."
