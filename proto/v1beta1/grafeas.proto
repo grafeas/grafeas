@@ -38,6 +38,7 @@ import "proto/v1beta1/intoto.proto";
 import "proto/v1beta1/package.proto";
 import "proto/v1beta1/provenance.proto";
 import "proto/v1beta1/sbom.proto";
+import "proto/v1beta1/secret.proto";
 import "proto/v1beta1/spdx.proto";
 import "proto/v1beta1/vex.proto";
 import "proto/v1beta1/vulnerability.proto";
@@ -309,12 +310,14 @@ message Occurrence {
     grafeas.v1beta1.spdx.RelationshipOccurrence spdx_relationship = 19;
     // Describes a specific SBOM reference occurrences.
     grafeas.v1beta1.sbom.SBOMReferenceOccurrence sbom_reference = 21;
+    // Describes a secret.
+    grafeas.v1beta1.secret.SecretOccurrence secret = 22;
   }
 
   // https://github.com/secure-systems-lab/dsse
   grafeas.v1beta1.Envelope envelope = 20;
 
-  // next_id = 22;
+  // next_id = 23;
 }
 
 // An entity that can have metadata. For example, a Docker image.
@@ -405,9 +408,11 @@ message Note {
     grafeas.v1beta1.vex.VulnerabilityAssessmentNote vulnerability_assessment = 22;
     // A note describing an SBOM reference.
     grafeas.v1beta1.sbom.SBOMReferenceNote sbom_reference = 23;
+    // A note describing a secret.
+    grafeas.v1beta1.secret.SecretNote secret = 24;
   }
 
-  // next_id = 24;
+  // next_id = 25;
 }
 
 // Request to get an occurrence.
