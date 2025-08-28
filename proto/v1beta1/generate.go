@@ -119,4 +119,9 @@
 //go:generate mkdir sbom_go_proto
 //go:generate mv sbom.pb.go sbom_go_proto
 
+//go:generate protoc secret.proto
+//go:generate rm -rf secret_go_proto
+//go:generate mkdir secret_go_proto
+//go:generate mv secret.pb.go secret_go_proto
+
 package v1beta1
