@@ -3104,10 +3104,30 @@
       "enum": [
         "SECRET_KIND_UNSPECIFIED",
         "SECRET_KIND_UNKNOWN",
-        "SECRET_KIND_GCP_SERVICE_ACCOUNT_KEY"
+        "SECRET_KIND_GCP_SERVICE_ACCOUNT_KEY",
+        "SECRET_KIND_GCP_API_KEY",
+        "SECRET_KIND_GCP_OAUTH2_CLIENT_CREDENTIALS",
+        "SECRET_KIND_GCP_OAUTH2_ACCESS_TOKEN",
+        "SECRET_KIND_ANTHROPIC_ADMIN_API_KEY",
+        "SECRET_KIND_ANTHROPIC_API_KEY",
+        "SECRET_KIND_AZURE_ACCESS_TOKEN",
+        "SECRET_KIND_AZURE_IDENTITY_TOKEN",
+        "SECRET_KIND_DOCKER_HUB_PERSONAL_ACCESS_TOKEN",
+        "SECRET_KIND_GITHUB_APP_REFRESH_TOKEN",
+        "SECRET_KIND_GITHUB_APP_SERVER_TO_SERVER_TOKEN",
+        "SECRET_KIND_GITHUB_APP_USER_TO_SERVER_TOKEN",
+        "SECRET_KIND_GITHUB_CLASSIC_PERSONAL_ACCESS_TOKEN",
+        "SECRET_KIND_GITHUB_FINE_GRAINED_PERSONAL_ACCESS_TOKEN",
+        "SECRET_KIND_GITHUB_OAUTH_TOKEN",
+        "SECRET_KIND_HUGGINGFACE_API_KEY",
+        "SECRET_KIND_OPENAI_API_KEY",
+        "SECRET_KIND_PERPLEXITY_API_KEY",
+        "SECRET_KIND_STRIPE_SECRET_KEY",
+        "SECRET_KIND_STRIPE_RESTRICTED_KEY",
+        "SECRET_KIND_STRIPE_WEBHOOK_SECRET"
       ],
       "default": "SECRET_KIND_UNSPECIFIED",
-      "description": "Kind of secret.\n\n - SECRET_KIND_UNSPECIFIED: Unspecified\n - SECRET_KIND_UNKNOWN: The secret kind is unknown.\n - SECRET_KIND_GCP_SERVICE_ACCOUNT_KEY: A GCP service account key per:\nhttps://cloud.google.com/iam/docs/creating-managing-service-account-keys"
+      "description": "Kind of secret.\n\n - SECRET_KIND_UNSPECIFIED: Unspecified\n - SECRET_KIND_UNKNOWN: The secret kind is unknown.\n - SECRET_KIND_GCP_SERVICE_ACCOUNT_KEY: A Google Cloud service account key per:\nhttps://cloud.google.com/iam/docs/creating-managing-service-account-keys\n - SECRET_KIND_GCP_API_KEY: A Google Cloud API key per:\nhttps://cloud.google.com/docs/authentication/api-keys\n - SECRET_KIND_GCP_OAUTH2_CLIENT_CREDENTIALS: A Google Cloud OAuth2 client credentials per:\nhttps://developers.google.com/identity/protocols/oauth2\n - SECRET_KIND_GCP_OAUTH2_ACCESS_TOKEN: A Google Cloud OAuth2 access token per:\nhttps://cloud.google.com/docs/authentication/token-types#access\n - SECRET_KIND_ANTHROPIC_ADMIN_API_KEY: An Anthropic Admin API key.\n - SECRET_KIND_ANTHROPIC_API_KEY: An Anthropic API key.\n - SECRET_KIND_AZURE_ACCESS_TOKEN: An Azure access token.\n - SECRET_KIND_AZURE_IDENTITY_TOKEN: An Azure Identity Platform ID token.\n - SECRET_KIND_DOCKER_HUB_PERSONAL_ACCESS_TOKEN: A Docker Hub personal access token.\n - SECRET_KIND_GITHUB_APP_REFRESH_TOKEN: A GitHub App refresh token.\n - SECRET_KIND_GITHUB_APP_SERVER_TO_SERVER_TOKEN: A GitHub App server-to-server token.\n - SECRET_KIND_GITHUB_APP_USER_TO_SERVER_TOKEN: A GitHub App user-to-server token.\n - SECRET_KIND_GITHUB_CLASSIC_PERSONAL_ACCESS_TOKEN: A GitHub personal access token (classic).\n - SECRET_KIND_GITHUB_FINE_GRAINED_PERSONAL_ACCESS_TOKEN: A GitHub fine-grained personal access token.\n - SECRET_KIND_GITHUB_OAUTH_TOKEN: A GitHub OAuth token.\n - SECRET_KIND_HUGGINGFACE_API_KEY: A Hugging Face API key.\n - SECRET_KIND_OPENAI_API_KEY: An OpenAI API key.\n - SECRET_KIND_PERPLEXITY_API_KEY: A Perplexity API key.\n - SECRET_KIND_STRIPE_SECRET_KEY: A Stripe secret key.\n - SECRET_KIND_STRIPE_RESTRICTED_KEY: A Stripe restricted key.\n - SECRET_KIND_STRIPE_WEBHOOK_SECRET: A Stripe webhook secret."
     },
     "secretSecretLocation": {
       "type": "object",
