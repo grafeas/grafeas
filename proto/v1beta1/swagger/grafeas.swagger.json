@@ -3163,6 +3163,14 @@
             "$ref": "#/definitions/secretSecretStatus"
           },
           "description": "Status of the secret."
+        },
+        "data": {
+          "$ref": "#/definitions/protobufAny",
+          "description": "Scan result of the secret."
+        },
+        "digest": {
+          "$ref": "#/definitions/v1beta1Digest",
+          "description": "Hash value, typically a digest for the secret data, that allows unique\nidentification of a specific secret."
         }
       },
       "description": "The occurrence provides details of a secret."
