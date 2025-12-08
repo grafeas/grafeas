@@ -119,6 +119,8 @@ message Hash {
     GO_MODULE_H1 = 3;
     // A SHA-512 hash.
     SHA512 = 4;
+    // A Dirsum SHA-256 hash.
+    DIRSUM_SHA256 = 5;
   }
 
   // Required. The type of hash that was performed.
