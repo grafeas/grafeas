@@ -1689,10 +1689,11 @@
         "HASH_TYPE_UNSPECIFIED",
         "SHA256",
         "GO_MODULE_H1",
-        "SHA512"
+        "SHA512",
+        "DIRSUM_SHA256"
       ],
       "default": "HASH_TYPE_UNSPECIFIED",
-      "description": "Specifies the hash algorithm.\n\n - HASH_TYPE_UNSPECIFIED: Unknown.\n - SHA256: A SHA-256 hash.\n - GO_MODULE_H1: Dirhash of a Go module's source code which is then hex-encoded.\n - SHA512: A SHA-512 hash."
+      "description": "Specifies the hash algorithm.\n\n - HASH_TYPE_UNSPECIFIED: Unknown.\n - SHA256: A SHA-256 hash.\n - GO_MODULE_H1: Dirhash of a Go module's source code which is then hex-encoded.\n - SHA512: A SHA-512 hash.\n - DIRSUM_SHA256: A Dirsum SHA-256 hash."
     },
     "InTotoArtifactRule": {
       "type": "object",
@@ -2338,6 +2339,11 @@
             "$ref": "#/definitions/DiscoveredFile"
           },
           "description": "Files that make up the resource described by the occurrence."
+        },
+        "lastVulnerabilityUpdateTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The last time vulnerability scan results changed."
         }
       },
       "description": "Provides information about the analysis status of a discovered resource."
