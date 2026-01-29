@@ -2352,6 +2352,10 @@
           "type": "integer",
           "format": "int32",
           "description": "The number of layers that the base image is composed of."
+        },
+        "registry": {
+          "type": "string",
+          "description": "The registry in which the base image is from."
         }
       },
       "description": "BaseImage describes a base image of a container image."
