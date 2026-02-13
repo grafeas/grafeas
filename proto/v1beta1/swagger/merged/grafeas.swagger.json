@@ -4684,6 +4684,11 @@
         "cvssVersion": {
           "$ref": "#/definitions/vulnerabilityCVSSVersion",
           "description": "CVSS version used to populate cvss_score and severity."
+        },
+        "advisoryPublishTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The time this advisory was published by the source."
         }
       },
       "description": "Vulnerability provides metadata about a security vulnerability in a Note."

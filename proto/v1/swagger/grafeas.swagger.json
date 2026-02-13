@@ -4581,6 +4581,11 @@
         "cvssV2": {
           "$ref": "#/definitions/v1CVSS",
           "description": "The full description of the v2 CVSS for this vulnerability."
+        },
+        "advisoryPublishTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The time this advisory was published by the source."
         }
       },
       "description": "A security vulnerability that can be found in resources."
