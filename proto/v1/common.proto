@@ -133,6 +133,9 @@ message FileLocation {
   // Each package found in a file should have its own layer metadata (that is, information
   // from the origin layer of the package).
   LayerDetails layer_details = 2;
+  // The line number in the file where the packaged is referenced. 
+  // If value is 0, there is no line number set.
+  int32 line_number = 3;
 }
 
 // BaseImage describes a base image of a container image.
