@@ -4163,12 +4163,13 @@
           "$ref": "#/definitions/sbomSBOMReferenceNote",
           "description": "A note describing an SBOM reference."
         },
-        "aiSkillAnalysis": {
-          "$ref": "#/definitions/aiskillanalysisAISkillAnalysisNote",
-          "description": "A note describing an AI Skill analysis."
         "secret": {
           "$ref": "#/definitions/secretSecretNote",
           "description": "A note describing a secret."
+        },
+        "aiSkillAnalysis": {
+          "$ref": "#/definitions/aiskillanalysisAISkillAnalysisNote",
+          "description": "A note describing an AI Skill analysis."
         }
       },
       "description": "A type of analysis that can be done for a resource."
@@ -4288,6 +4289,7 @@
         "aiSkillAnalysis": {
           "$ref": "#/definitions/aiskillanalysisAISkillAnalysisOccurrence",
           "description": "Describes a specific AI Skill Analysis occurrence."
+        },
         "secret": {
           "$ref": "#/definitions/secretSecretOccurrence",
           "description": "Describes a secret."
