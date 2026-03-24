@@ -1340,6 +1340,32 @@
     }
   },
   "definitions": {
+    "AISkillAnalysisOccurrenceFinding": {
+      "type": "object",
+      "properties": {
+        "ruleId": {
+          "type": "string"
+        },
+        "category": {
+          "type": "string"
+        },
+        "severity": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "filePath": {
+          "type": "string"
+        },
+        "snippet": {
+          "type": "string"
+        }
+      }
+    },
     "AliasContextKind": {
       "type": "string",
       "enum": [
@@ -2076,6 +2102,23 @@
         "url": {
           "type": "string",
           "title": "A link to the KB in the Windows update catalog -\nhttps://www.catalog.update.microsoft.com/"
+        }
+      }
+    },
+    "aiskillanalysisAISkillAnalysisNote": {
+      "type": "object"
+    },
+    "aiskillanalysisAISkillAnalysisOccurrence": {
+      "type": "object",
+      "properties": {
+        "skillName": {
+          "type": "string"
+        },
+        "findings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AISkillAnalysisOccurrenceFinding"
+          }
         }
       }
     },
@@ -3768,6 +3811,10 @@
         "sbomReference": {
           "$ref": "#/definitions/sbomSBOMReferenceNote",
           "description": "A note describing an SBOM reference."
+        },
+        "aiSkillAnalysis": {
+          "$ref": "#/definitions/aiskillanalysisAISkillAnalysisNote",
+          "description": "A note describing an AI Skill analysis."
         }
       },
       "description": "A type of analysis that can be done for a resource."
@@ -3882,6 +3929,10 @@
         "sbomReference": {
           "$ref": "#/definitions/sbomSBOMReferenceOccurrence",
           "description": "Describes a specific SBOM reference occurrences."
+        },
+        "aiSkillAnalysis": {
+          "$ref": "#/definitions/aiskillanalysisAISkillAnalysisOccurrence",
+          "description": "Describes a specific AI Skill Analysis occurrence."
         },
         "envelope": {
           "$ref": "#/definitions/v1beta1Envelope",

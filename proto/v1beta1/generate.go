@@ -119,4 +119,9 @@
 //go:generate mkdir sbom_go_proto
 //go:generate mv sbom.pb.go sbom_go_proto
 
+//go:generate protoc ai_skill_analysis.proto
+//go:generate rm -rf ai_skill_analysis_go_proto
+//go:generate mkdir ai_skill_analysis_go_proto
+//go:generate mv ai_skill_analysis.pb.go ai_skill_analysis_go_proto
+
 package v1beta1

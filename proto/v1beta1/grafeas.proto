@@ -28,6 +28,7 @@ import "google/api/resource.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/field_mask.proto";
 import "google/protobuf/timestamp.proto";
+import "proto/v1beta1/ai_skill_analysis.proto";
 import "proto/v1beta1/attestation.proto";
 import "proto/v1beta1/build.proto";
 import "proto/v1beta1/common.proto";
@@ -309,6 +310,8 @@ message Occurrence {
     grafeas.v1beta1.spdx.RelationshipOccurrence spdx_relationship = 19;
     // Describes a specific SBOM reference occurrences.
     grafeas.v1beta1.sbom.SBOMReferenceOccurrence sbom_reference = 21;
+    // Describes a specific AI Skill Analysis occurrence.
+    grafeas.v1beta1.aiskillanalysis.AISkillAnalysisOccurrence ai_skill_analysis = 22;
   }
 
   // https://github.com/secure-systems-lab/dsse
@@ -405,6 +408,8 @@ message Note {
     grafeas.v1beta1.vex.VulnerabilityAssessmentNote vulnerability_assessment = 22;
     // A note describing an SBOM reference.
     grafeas.v1beta1.sbom.SBOMReferenceNote sbom_reference = 23;
+    // A note describing an AI Skill analysis.
+    grafeas.v1beta1.aiskillanalysis.AISkillAnalysisNote ai_skill_analysis = 24;
   }
 
   // next_id = 24;

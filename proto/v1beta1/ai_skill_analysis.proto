@@ -1,0 +1,39 @@
+// Copyright 2018 The Grafeas Authors. All rights reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto3";
+
+package grafeas.v1beta1.aiskillanalysis;
+
+option go_package = "github.com/grafeas/grafeas/proto/v1beta1/ai_skill_analysis_go_proto";
+option java_multiple_files = true;
+option java_package = "io.grafeas.v1beta1.aiskillanalysis";
+option objc_class_prefix = "GRA";
+
+message AISkillAnalysisNote {}
+
+message AISkillAnalysisOccurrence {
+  message Finding {
+    string rule_id = 1;
+    string category = 2;
+    string severity = 3;
+    string title = 4;
+    string description = 5;
+    string file_path = 6;
+    string snippet = 7;
+  }
+
+  string skill_name = 1;
+  repeated Finding findings = 2;
+}

@@ -42,6 +42,7 @@ import "proto/v1/dsse_attestation.proto";
 import "proto/v1/vex.proto";
 import "proto/v1/sbom.proto";
 import "proto/v1/secret.proto";
+import "proto/v1/ai_skill_analysis.proto";
 
 // [Grafeas](https://grafeas.io) API.
 //
@@ -297,6 +298,8 @@ message Occurrence {
     grafeas.v1.SBOMReferenceOccurrence sbom_reference = 19;
     // Describes a secret.
     grafeas.v1.SecretOccurrence secret = 20;
+    // Describes an AI skill analysis.
+    grafeas.v1.AISkillAnalysisOccurrence ai_skill_analysis = 21;
   }
 
   // https://github.com/secure-systems-lab/dsse
@@ -369,6 +372,8 @@ message Note {
     grafeas.v1.SBOMReferenceNote sbom_reference = 21;
     // A note describing a secret.
     grafeas.v1.SecretNote secret = 22;
+    // A note describing an AI skill analysis.
+    grafeas.v1.AISkillAnalysisNote ai_skill_analysis = 23;
   }
 }
 
