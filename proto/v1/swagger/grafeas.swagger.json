@@ -1434,6 +1434,32 @@
     }
   },
   "definitions": {
+    "AISkillAnalysisOccurrenceFinding": {
+      "type": "object",
+      "properties": {
+        "ruleId": {
+          "type": "string"
+        },
+        "category": {
+          "type": "string"
+        },
+        "severity": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "filePath": {
+          "type": "string"
+        },
+        "snippet": {
+          "type": "string"
+        }
+      }
+    },
     "AliasContextKind": {
       "type": "string",
       "enum": [
@@ -2256,6 +2282,23 @@
       ],
       "default": "NULL_VALUE",
       "description": "`NullValue` is a singleton enumeration to represent the null value for the\n`Value` type union.\n\n The JSON representation for `NullValue` is JSON `null`.\n\n - NULL_VALUE: Null value."
+    },
+    "v1AISkillAnalysisNote": {
+      "type": "object"
+    },
+    "v1AISkillAnalysisOccurrence": {
+      "type": "object",
+      "properties": {
+        "skillName": {
+          "type": "string"
+        },
+        "findings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AISkillAnalysisOccurrenceFinding"
+          }
+        }
+      }
     },
     "v1AliasContext": {
       "type": "object",
@@ -3658,6 +3701,10 @@
         "secret": {
           "$ref": "#/definitions/v1SecretNote",
           "description": "A note describing a secret."
+        },
+        "aiSkillAnalysis": {
+          "$ref": "#/definitions/v1AISkillAnalysisNote",
+          "description": "A note describing an AI skill analysis."
         }
       },
       "description": "A type of analysis that can be done for a resource."
@@ -3767,6 +3814,10 @@
         "secret": {
           "$ref": "#/definitions/v1SecretOccurrence",
           "description": "Describes a secret."
+        },
+        "aiSkillAnalysis": {
+          "$ref": "#/definitions/v1AISkillAnalysisOccurrence",
+          "description": "Describes an AI skill analysis."
         },
         "envelope": {
           "$ref": "#/definitions/v1Envelope",

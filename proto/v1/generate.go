@@ -41,6 +41,7 @@
 //go:generate protoc ../../proto/v1/severity.proto
 //go:generate protoc ../../proto/v1/secret.proto
 //go:generate protoc ../../proto/v1/risk.proto
+//go:generate protoc ../../proto/v1/ai_skill_analysis.proto
 
 //go:generate mv grafeas_go_proto tmp
 //go:generate mv tmp/github.com/grafeas/grafeas/proto/v1/grafeas_go_proto .
