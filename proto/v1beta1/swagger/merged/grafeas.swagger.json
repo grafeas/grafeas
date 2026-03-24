@@ -33,7 +33,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/googlerpcStatus"
             }
           }
         },
@@ -78,7 +78,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/googlerpcStatus"
             }
           }
         },
@@ -112,7 +112,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/googlerpcStatus"
             }
           }
         },
@@ -143,7 +143,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/googlerpcStatus"
             }
           }
         },
@@ -174,7 +174,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/googlerpcStatus"
             }
           }
         },
@@ -223,7 +223,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/googlerpcStatus"
             }
           }
         },
@@ -256,7 +256,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/googlerpcStatus"
             }
           }
         },
@@ -311,7 +311,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/googlerpcStatus"
             }
           }
         },
@@ -342,7 +342,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/googlerpcStatus"
             }
           }
         },
@@ -373,7 +373,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/googlerpcStatus"
             }
           }
         },
@@ -422,7 +422,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/googlerpcStatus"
             }
           }
         },
@@ -453,7 +453,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/googlerpcStatus"
             }
           }
         },
@@ -484,7 +484,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/googlerpcStatus"
             }
           }
         },
@@ -533,7 +533,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/googlerpcStatus"
             }
           }
         },
@@ -564,7 +564,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/googlerpcStatus"
             }
           }
         },
@@ -597,7 +597,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/googlerpcStatus"
             }
           }
         },
@@ -628,7 +628,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/googlerpcStatus"
             }
           }
         },
@@ -659,7 +659,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/googlerpcStatus"
             }
           }
         },
@@ -708,7 +708,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/googlerpcStatus"
             }
           }
         },
@@ -741,7 +741,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/googlerpcStatus"
             }
           }
         },
@@ -796,7 +796,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/googlerpcStatus"
             }
           }
         },
@@ -830,6 +830,13 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "returnPartialSuccess",
+            "description": "If set, the request will return all reachable Notes\nand report all unreachable regions in the `unreachable` field in\nthe response.\n\nOnly applicable for requests in the global region.",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
           }
         ],
         "tags": [
@@ -849,7 +856,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/googlerpcStatus"
             }
           }
         },
@@ -898,7 +905,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/googlerpcStatus"
             }
           }
         },
@@ -955,7 +962,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/googlerpcStatus"
             }
           }
         },
@@ -989,6 +996,13 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "returnPartialSuccess",
+            "description": "If set, the request will return all reachable Occurrences\nand report all unreachable regions in the `unreachable` field in\nthe response.\n\nOnly applicable for requests in the global region.",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
           }
         ],
         "tags": [
@@ -1008,7 +1022,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/googlerpcStatus"
             }
           }
         },
@@ -1050,7 +1064,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/googlerpcStatus"
             }
           }
         },
@@ -1107,7 +1121,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/googlerpcStatus"
             }
           }
         },
@@ -1126,6 +1140,13 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "returnPartialSuccess",
+            "description": "If set, the request will return all reachable occurrence summaries\nand report all unreachable regions in the `unreachable` field in\nthe response.\n\nOnly applicable for requests in the global region.",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
           }
         ],
         "tags": [
@@ -1147,7 +1168,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/googlerpcStatus"
             }
           }
         },
@@ -1181,6 +1202,13 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "returnPartialSuccess",
+            "description": "If set, the request will return all reachable Notes\nand report all unreachable regions in the `unreachable` field in\nthe response.\n\nOnly applicable for requests in the global region.",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
           }
         ],
         "tags": [
@@ -1200,7 +1228,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/googlerpcStatus"
             }
           }
         },
@@ -1249,7 +1277,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/googlerpcStatus"
             }
           }
         },
@@ -1306,7 +1334,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/googlerpcStatus"
             }
           }
         },
@@ -1340,6 +1368,13 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "returnPartialSuccess",
+            "description": "If set, the request will return all reachable Occurrences\nand report all unreachable regions in the `unreachable` field in\nthe response.\n\nOnly applicable for requests in the global region.",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
           }
         ],
         "tags": [
@@ -1359,7 +1394,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/googlerpcStatus"
             }
           }
         },
@@ -1401,7 +1436,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/googlerpcStatus"
             }
           }
         },
@@ -1458,7 +1493,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/googlerpcStatus"
             }
           }
         },
@@ -1477,6 +1512,13 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "returnPartialSuccess",
+            "description": "If set, the request will return all reachable occurrence summaries\nand report all unreachable regions in the `unreachable` field in\nthe response.\n\nOnly applicable for requests in the global region.",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
           }
         ],
         "tags": [
@@ -1819,10 +1861,11 @@
         "HASH_TYPE_UNSPECIFIED",
         "SHA256",
         "GO_MODULE_H1",
-        "SHA512"
+        "SHA512",
+        "DIRSUM_SHA256"
       ],
       "default": "HASH_TYPE_UNSPECIFIED",
-      "description": "Specifies the hash algorithm.\n\n - HASH_TYPE_UNSPECIFIED: Unknown.\n - SHA256: A SHA-256 hash.\n - GO_MODULE_H1: Dirhash of a Go module's source code which is then hex-encoded.\n - SHA512: A SHA-512 hash."
+      "description": "Specifies the hash algorithm.\n\n - HASH_TYPE_UNSPECIFIED: Unknown.\n - SHA256: A SHA-256 hash.\n - GO_MODULE_H1: Dirhash of a Go module's source code which is then hex-encoded.\n - SHA512: A SHA-512 hash.\n - DIRSUM_SHA256: A Dirsum SHA-256 hash."
     },
     "InTotoArtifactRule": {
       "type": "object",
@@ -2462,12 +2505,12 @@
         "analysisError": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/rpcStatus"
+            "$ref": "#/definitions/googlerpcStatus"
           },
           "description": "Indicates any errors encountered during analysis of a resource. There\ncould be 0 or more of these errors."
         },
         "analysisStatusError": {
-          "$ref": "#/definitions/rpcStatus",
+          "$ref": "#/definitions/googlerpcStatus",
           "description": "When an error is encountered this will contain a LocalizedMessage under\ndetails to show to the user. The LocalizedMessage is output only and\npopulated by the API."
         },
         "sbomStatus": {
@@ -2485,6 +2528,11 @@
             "$ref": "#/definitions/DiscoveredFile"
           },
           "description": "Files that make up the resource described by the occurrence."
+        },
+        "lastVulnerabilityUpdateTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The last time vulnerability scan results changed."
         }
       },
       "description": "Provides information about the analysis status of a discovered resource."
@@ -2498,6 +2546,29 @@
         }
       },
       "description": "A note that indicates a type of analysis a provider would perform. This note\nexists in a provider's project. A `Discovery` occurrence is created in a\nconsumer's project at the start of analysis."
+    },
+    "googlerpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32",
+          "description": "The status code, which should be an enum value of [google.rpc.Code][google.rpc.Code]."
+        },
+        "message": {
+          "type": "string",
+          "description": "A developer-facing error message, which should be in English. Any\nuser-facing error message should be localized and sent in the\n[google.rpc.Status.details][google.rpc.Status.details] field, or localized by the client."
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          },
+          "description": "A list of messages that carry the error details.  There is a common set of\nmessage types for APIs to use."
+        }
+      },
+      "description": "- Simple to use and understand for most users\n- Flexible enough to meet unexpected needs\n\n# Overview\n\nThe `Status` message contains three pieces of data: error code, error message,\nand error details. The error code should be an enum value of\n[google.rpc.Code][google.rpc.Code], but it may accept additional error codes if needed.  The\nerror message should be a developer-facing English message that helps\ndevelopers *understand* and *resolve* the error. If a localized user-facing\nerror message is needed, put the localized message in the error details or\nlocalize it in the client. The optional error details may contain arbitrary\ninformation about the error. There is a predefined set of error detail types\nin the package `google.rpc` that can be used for common error conditions.\n\n# Language mapping\n\nThe `Status` message is the logical representation of the error model, but it\nis not necessarily the actual wire format. When the `Status` message is\nexposed in different client libraries and different wire protocols, it can be\nmapped differently. For example, it will likely be mapped to some exceptions\nin Java, but more likely mapped to some error codes in C.\n\n# Other uses\n\nThe error model and the `Status` message can be used in a variety of\nenvironments, either with or without APIs, to provide a\nconsistent developer experience across different environments.\n\nExample uses of this error model include:\n\n- Partial errors. If a service needs to return partial errors to the client,\n    it may embed the `Status` in the normal response to indicate the partial\n    errors.\n\n- Workflow errors. A typical workflow has multiple steps. Each step may\n    have a `Status` message for error reporting.\n\n- Batch operations. If a client uses batch request and batch response, the\n    `Status` message should be used directly inside batch response, one for\n    each error sub-response.\n\n- Asynchronous operations. If an API call embeds asynchronous operation\n    results in its response, the status of those operations should be\n    represented directly using the `Status` message.\n\n- Logging. If some API errors are stored in logs, the message `Status` could\n    be used directly after any stripping needed for security/privacy reasons.",
+      "title": "The `Status` type defines a logical error model that is suitable for different\nprogramming environments, including REST APIs and RPC APIs. It is used by\n[gRPC](https://github.com/grpc). The error model is designed to be:"
     },
     "grafeasv1beta1Signature": {
       "type": "object",
@@ -3165,29 +3236,6 @@
       },
       "description": "Source describes the location of the source used for the build."
     },
-    "rpcStatus": {
-      "type": "object",
-      "properties": {
-        "code": {
-          "type": "integer",
-          "format": "int32",
-          "description": "The status code, which should be an enum value of [google.rpc.Code][google.rpc.Code]."
-        },
-        "message": {
-          "type": "string",
-          "description": "A developer-facing error message, which should be in English. Any\nuser-facing error message should be localized and sent in the\n[google.rpc.Status.details][google.rpc.Status.details] field, or localized by the client."
-        },
-        "details": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/protobufAny"
-          },
-          "description": "A list of messages that carry the error details.  There is a common set of\nmessage types for APIs to use."
-        }
-      },
-      "description": "- Simple to use and understand for most users\n- Flexible enough to meet unexpected needs\n\n# Overview\n\nThe `Status` message contains three pieces of data: error code, error message,\nand error details. The error code should be an enum value of\n[google.rpc.Code][google.rpc.Code], but it may accept additional error codes if needed.  The\nerror message should be a developer-facing English message that helps\ndevelopers *understand* and *resolve* the error. If a localized user-facing\nerror message is needed, put the localized message in the error details or\nlocalize it in the client. The optional error details may contain arbitrary\ninformation about the error. There is a predefined set of error detail types\nin the package `google.rpc` that can be used for common error conditions.\n\n# Language mapping\n\nThe `Status` message is the logical representation of the error model, but it\nis not necessarily the actual wire format. When the `Status` message is\nexposed in different client libraries and different wire protocols, it can be\nmapped differently. For example, it will likely be mapped to some exceptions\nin Java, but more likely mapped to some error codes in C.\n\n# Other uses\n\nThe error model and the `Status` message can be used in a variety of\nenvironments, either with or without APIs, to provide a\nconsistent developer experience across different environments.\n\nExample uses of this error model include:\n\n- Partial errors. If a service needs to return partial errors to the client,\n    it may embed the `Status` in the normal response to indicate the partial\n    errors.\n\n- Workflow errors. A typical workflow has multiple steps. Each step may\n    have a `Status` message for error reporting.\n\n- Batch operations. If a client uses batch request and batch response, the\n    `Status` message should be used directly inside batch response, one for\n    each error sub-response.\n\n- Asynchronous operations. If an API call embeds asynchronous operation\n    results in its response, the status of those operations should be\n    represented directly using the `Status` message.\n\n- Logging. If some API errors are stored in logs, the message `Status` could\n    be used directly after any stripping needed for security/privacy reasons.",
-      "title": "The `Status` type defines a logical error model that is suitable for different\nprogramming environments, including REST APIs and RPC APIs. It is used by\n[gRPC](https://github.com/grpc). The error model is designed to be:"
-    },
     "sbomSBOMReferenceNote": {
       "type": "object",
       "properties": {
@@ -3272,6 +3320,112 @@
         }
       },
       "description": "A predicate which describes the SBOM being referenced."
+    },
+    "secretSecretKind": {
+      "type": "string",
+      "enum": [
+        "SECRET_KIND_UNSPECIFIED",
+        "SECRET_KIND_UNKNOWN",
+        "SECRET_KIND_GCP_SERVICE_ACCOUNT_KEY",
+        "SECRET_KIND_GCP_API_KEY",
+        "SECRET_KIND_GCP_OAUTH2_CLIENT_CREDENTIALS",
+        "SECRET_KIND_GCP_OAUTH2_ACCESS_TOKEN",
+        "SECRET_KIND_ANTHROPIC_ADMIN_API_KEY",
+        "SECRET_KIND_ANTHROPIC_API_KEY",
+        "SECRET_KIND_AZURE_ACCESS_TOKEN",
+        "SECRET_KIND_AZURE_IDENTITY_TOKEN",
+        "SECRET_KIND_DOCKER_HUB_PERSONAL_ACCESS_TOKEN",
+        "SECRET_KIND_GITHUB_APP_REFRESH_TOKEN",
+        "SECRET_KIND_GITHUB_APP_SERVER_TO_SERVER_TOKEN",
+        "SECRET_KIND_GITHUB_APP_USER_TO_SERVER_TOKEN",
+        "SECRET_KIND_GITHUB_CLASSIC_PERSONAL_ACCESS_TOKEN",
+        "SECRET_KIND_GITHUB_FINE_GRAINED_PERSONAL_ACCESS_TOKEN",
+        "SECRET_KIND_GITHUB_OAUTH_TOKEN",
+        "SECRET_KIND_HUGGINGFACE_API_KEY",
+        "SECRET_KIND_OPENAI_API_KEY",
+        "SECRET_KIND_PERPLEXITY_API_KEY",
+        "SECRET_KIND_STRIPE_SECRET_KEY",
+        "SECRET_KIND_STRIPE_RESTRICTED_KEY",
+        "SECRET_KIND_STRIPE_WEBHOOK_SECRET"
+      ],
+      "default": "SECRET_KIND_UNSPECIFIED",
+      "description": "Kind of secret.\n\n - SECRET_KIND_UNSPECIFIED: Unspecified\n - SECRET_KIND_UNKNOWN: The secret kind is unknown.\n - SECRET_KIND_GCP_SERVICE_ACCOUNT_KEY: A Google Cloud service account key per:\nhttps://cloud.google.com/iam/docs/creating-managing-service-account-keys\n - SECRET_KIND_GCP_API_KEY: A Google Cloud API key per:\nhttps://cloud.google.com/docs/authentication/api-keys\n - SECRET_KIND_GCP_OAUTH2_CLIENT_CREDENTIALS: A Google Cloud OAuth2 client credentials per:\nhttps://developers.google.com/identity/protocols/oauth2\n - SECRET_KIND_GCP_OAUTH2_ACCESS_TOKEN: A Google Cloud OAuth2 access token per:\nhttps://cloud.google.com/docs/authentication/token-types#access\n - SECRET_KIND_ANTHROPIC_ADMIN_API_KEY: An Anthropic Admin API key.\n - SECRET_KIND_ANTHROPIC_API_KEY: An Anthropic API key.\n - SECRET_KIND_AZURE_ACCESS_TOKEN: An Azure access token.\n - SECRET_KIND_AZURE_IDENTITY_TOKEN: An Azure Identity Platform ID token.\n - SECRET_KIND_DOCKER_HUB_PERSONAL_ACCESS_TOKEN: A Docker Hub personal access token.\n - SECRET_KIND_GITHUB_APP_REFRESH_TOKEN: A GitHub App refresh token.\n - SECRET_KIND_GITHUB_APP_SERVER_TO_SERVER_TOKEN: A GitHub App server-to-server token.\n - SECRET_KIND_GITHUB_APP_USER_TO_SERVER_TOKEN: A GitHub App user-to-server token.\n - SECRET_KIND_GITHUB_CLASSIC_PERSONAL_ACCESS_TOKEN: A GitHub personal access token (classic).\n - SECRET_KIND_GITHUB_FINE_GRAINED_PERSONAL_ACCESS_TOKEN: A GitHub fine-grained personal access token.\n - SECRET_KIND_GITHUB_OAUTH_TOKEN: A GitHub OAuth token.\n - SECRET_KIND_HUGGINGFACE_API_KEY: A Hugging Face API key.\n - SECRET_KIND_OPENAI_API_KEY: An OpenAI API key.\n - SECRET_KIND_PERPLEXITY_API_KEY: A Perplexity API key.\n - SECRET_KIND_STRIPE_SECRET_KEY: A Stripe secret key.\n - SECRET_KIND_STRIPE_RESTRICTED_KEY: A Stripe restricted key.\n - SECRET_KIND_STRIPE_WEBHOOK_SECRET: A Stripe webhook secret."
+    },
+    "secretSecretLocation": {
+      "type": "object",
+      "properties": {
+        "fileLocation": {
+          "$ref": "#/definitions/v1beta1FileLocation",
+          "description": "The secret is found from a file."
+        }
+      },
+      "description": "The location of the secret."
+    },
+    "secretSecretNote": {
+      "type": "object",
+      "description": "The note representing a secret."
+    },
+    "secretSecretOccurrence": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "$ref": "#/definitions/secretSecretKind",
+          "description": "Type of secret."
+        },
+        "locations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/secretSecretLocation"
+          },
+          "description": "Locations where the secret is detected."
+        },
+        "statuses": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/secretSecretStatus"
+          },
+          "description": "Status of the secret."
+        },
+        "data": {
+          "$ref": "#/definitions/protobufAny",
+          "description": "Scan result of the secret."
+        },
+        "digest": {
+          "$ref": "#/definitions/v1beta1Digest",
+          "description": "Hash value, typically a digest for the secret data, that allows unique\nidentification of a specific secret."
+        }
+      },
+      "description": "The occurrence provides details of a secret."
+    },
+    "secretSecretStatus": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "$ref": "#/definitions/secretSecretStatusStatus",
+          "description": "The status of the secret."
+        },
+        "updateTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The time the secret status was last updated."
+        },
+        "message": {
+          "type": "string",
+          "description": "Optional message about the status code."
+        }
+      },
+      "description": "The status of the secret with a timestamp."
+    },
+    "secretSecretStatusStatus": {
+      "type": "string",
+      "enum": [
+        "STATUS_UNSPECIFIED",
+        "UNKNOWN",
+        "VALID",
+        "INVALID"
+      ],
+      "default": "STATUS_UNSPECIFIED",
+      "description": "The status of the secret.\n\n - STATUS_UNSPECIFIED: Unspecified\n - UNKNOWN: The status of the secret is unknown.\n - VALID: The secret is valid.\n - INVALID: The secret is invalid."
     },
     "sourceAliasContext": {
       "type": "object",
@@ -3812,6 +3966,16 @@
         }
       }
     },
+    "v1beta1FileLocation": {
+      "type": "object",
+      "properties": {
+        "filePath": {
+          "type": "string",
+          "description": "For jars that are contained inside .war files, this filepath\ncan indicate the path to war file combined with the path to jar file."
+        }
+      },
+      "description": "Indicates the location at which a package was found."
+    },
     "v1beta1License": {
       "type": "object",
       "properties": {
@@ -3856,6 +4020,13 @@
         "nextPageToken": {
           "type": "string",
           "description": "The next pagination token in the list response. It should be used as\n`page_token` for the following request. An empty value means no more\nresults."
+        },
+        "unreachable": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Unreachable regions. Populated for requests from the global region\nwhen `return_partial_success` is set.\n\nFormat: `projects/[PROJECT_ID]/locations/[LOCATION]`"
         }
       },
       "description": "Response for listing notes."
@@ -3873,6 +4044,13 @@
         "nextPageToken": {
           "type": "string",
           "description": "The next pagination token in the list response. It should be used as\n`page_token` for the following request. An empty value means no more\nresults."
+        },
+        "unreachable": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Unreachable regions. Populated for requests from the global region\nwhen `return_partial_success` is set.\n\nFormat: `projects/[PROJECT_ID]/locations/[LOCATION]`"
         }
       },
       "description": "Response for listing occurrences."
@@ -3988,6 +4166,9 @@
         "aiSkillAnalysis": {
           "$ref": "#/definitions/aiskillanalysisAISkillAnalysisNote",
           "description": "A note describing an AI Skill analysis."
+        "secret": {
+          "$ref": "#/definitions/secretSecretNote",
+          "description": "A note describing a secret."
         }
       },
       "description": "A type of analysis that can be done for a resource."
@@ -4009,10 +4190,11 @@
         "SPDX_FILE",
         "SPDX_RELATIONSHIP",
         "VULNERABILITY_ASSESSMENT",
-        "SBOM_REFERENCE"
+        "SBOM_REFERENCE",
+        "SECRET"
       ],
       "default": "NOTE_KIND_UNSPECIFIED",
-      "description": "Kind represents the kinds of notes supported.\n\n - NOTE_KIND_UNSPECIFIED: Default value. This value is unused.\n - VULNERABILITY: The note and occurrence represent a package vulnerability.\n - BUILD: The note and occurrence assert build provenance.\n - IMAGE: This represents an image basis relationship.\n - PACKAGE: This represents a package installed via a package manager.\n - DEPLOYMENT: The note and occurrence track deployment events.\n - DISCOVERY: The note and occurrence track the initial discovery status of a resource.\n - ATTESTATION: This represents a logical \"role\" that can attest to artifacts.\n - INTOTO: This represents an in-toto link.\n - SBOM: This represents a software bill of materials.\n - SPDX_PACKAGE: This represents an SPDX Package.\n - SPDX_FILE: This represents an SPDX File.\n - SPDX_RELATIONSHIP: This represents an SPDX Relationship.\n - VULNERABILITY_ASSESSMENT: This represents a Vulnerability Assessment.\n - SBOM_REFERENCE: This represents an SBOM Reference."
+      "description": "Kind represents the kinds of notes supported.\n\n - NOTE_KIND_UNSPECIFIED: Default value. This value is unused.\n - VULNERABILITY: The note and occurrence represent a package vulnerability.\n - BUILD: The note and occurrence assert build provenance.\n - IMAGE: This represents an image basis relationship.\n - PACKAGE: This represents a package installed via a package manager.\n - DEPLOYMENT: The note and occurrence track deployment events.\n - DISCOVERY: The note and occurrence track the initial discovery status of a resource.\n - ATTESTATION: This represents a logical \"role\" that can attest to artifacts.\n - INTOTO: This represents an in-toto link.\n - SBOM: This represents a software bill of materials.\n - SPDX_PACKAGE: This represents an SPDX Package.\n - SPDX_FILE: This represents an SPDX File.\n - SPDX_RELATIONSHIP: This represents an SPDX Relationship.\n - VULNERABILITY_ASSESSMENT: This represents a Vulnerability Assessment.\n - SBOM_REFERENCE: This represents an SBOM Reference.\n - SECRET: This represents a secret."
     },
     "v1beta1Occurrence": {
       "type": "object",
@@ -4106,6 +4288,9 @@
         "aiSkillAnalysis": {
           "$ref": "#/definitions/aiskillanalysisAISkillAnalysisOccurrence",
           "description": "Describes a specific AI Skill Analysis occurrence."
+        "secret": {
+          "$ref": "#/definitions/secretSecretOccurrence",
+          "description": "Describes a secret."
         },
         "envelope": {
           "$ref": "#/definitions/v1beta1Envelope",
@@ -4155,6 +4340,13 @@
             "$ref": "#/definitions/VulnerabilityOccurrencesSummaryFixableTotalByDigest"
           },
           "description": "A listing by resource of the number of fixable and total vulnerabilities."
+        },
+        "unreachable": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Unreachable regions. Populated for requests from the global region\nwhen `return_partial_success` is set.\n\nFormat: `projects/[PROJECT_ID]/locations/[LOCATION]`"
         }
       },
       "description": "A summary of how many vulnerability occurrences there are per resource and\nseverity type."
@@ -4541,6 +4733,11 @@
         "cvssVersion": {
           "$ref": "#/definitions/vulnerabilityCVSSVersion",
           "description": "CVSS version used to populate cvss_score and severity."
+        },
+        "advisoryPublishTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The time this advisory was published by the source."
         }
       },
       "description": "Vulnerability provides metadata about a security vulnerability in a Note."
