@@ -311,10 +311,10 @@ message Occurrence {
     grafeas.v1beta1.spdx.RelationshipOccurrence spdx_relationship = 19;
     // Describes a specific SBOM reference occurrences.
     grafeas.v1beta1.sbom.SBOMReferenceOccurrence sbom_reference = 21;
-    // Describes a specific AI Skill Analysis occurrence.
-    grafeas.v1beta1.aiskillanalysis.AISkillAnalysisOccurrence ai_skill_analysis = 22;
     // Describes a secret.
-    grafeas.v1beta1.secret.SecretOccurrence secret = 23;
+    grafeas.v1beta1.secret.SecretOccurrence secret = 22;
+    // Describes a specific AI Skill Analysis occurrence.
+    grafeas.v1beta1.aiskillanalysis.AISkillAnalysisOccurrence ai_skill_analysis = 23;
   }
 
   // https://github.com/secure-systems-lab/dsse
