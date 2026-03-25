@@ -314,13 +314,14 @@ message Occurrence {
     // Describes a secret.
     grafeas.v1beta1.secret.SecretOccurrence secret = 22;
     // Describes a specific AI Skill Analysis occurrence.
-    grafeas.v1beta1.aiskillanalysis.AISkillAnalysisOccurrence ai_skill_analysis = 23;
+    grafeas.v1beta1.aiskillanalysis.AISkillAnalysisOccurrence
+      ai_skill_analysis = 23;
   }
 
   // https://github.com/secure-systems-lab/dsse
   grafeas.v1beta1.Envelope envelope = 20;
 
-  // next_id = 23;
+  // next_id = 24;
 }
 
 // An entity that can have metadata. For example, a Docker image.
@@ -417,7 +418,7 @@ message Note {
     grafeas.v1beta1.aiskillanalysis.AISkillAnalysisNote ai_skill_analysis = 25;
   }
 
-  // next_id = 25;
+  // next_id = 26;
 }
 
 // Request to get an occurrence.

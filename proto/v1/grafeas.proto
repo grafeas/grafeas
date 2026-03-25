@@ -299,7 +299,7 @@ message Occurrence {
     // Describes a secret.
     grafeas.v1.SecretOccurrence secret = 20;
     // Describes an AI skill analysis.
-    grafeas.v1.AISkillAnalysisOccurrence ai_skill_analysis = 21;
+    grafeas.v1.AISkillAnalysisOccurrence ai_skill_analysis = 22;
   }
 
   // https://github.com/secure-systems-lab/dsse
