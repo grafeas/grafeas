@@ -4118,7 +4118,8 @@
           "description": "Describes a secret."
         },
         "aiSkillAnalysis": {
-          "$ref": "#/definitions/aiskillanalysisAISkillAnalysisOccurrence"
+          "$ref": "#/definitions/aiskillanalysisAISkillAnalysisOccurrence",
+          "description": "Describes a specific AI Skill Analysis occurrence."
         },
         "envelope": {
           "$ref": "#/definitions/v1beta1Envelope",
