@@ -4286,13 +4286,12 @@
           "$ref": "#/definitions/sbomSBOMReferenceOccurrence",
           "description": "Describes a specific SBOM reference occurrences."
         },
-        "aiSkillAnalysis": {
-          "$ref": "#/definitions/aiskillanalysisAISkillAnalysisOccurrence",
-          "description": "Describes a specific AI Skill Analysis occurrence."
-        },
         "secret": {
           "$ref": "#/definitions/secretSecretOccurrence",
           "description": "Describes a secret."
+        },
+        "aiSkillAnalysis": {
+          "$ref": "#/definitions/aiskillanalysisAISkillAnalysisOccurrence"
         },
         "envelope": {
           "$ref": "#/definitions/v1beta1Envelope",
