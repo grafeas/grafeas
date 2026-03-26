@@ -55,6 +55,8 @@ enum NoteKind {
   SBOM_REFERENCE = 14;
   // This represents a secret.
   SECRET = 15;
+  // This represents an AI skill analysis.
+  AI_SKILL_ANALYSIS = 16;
 }
 
 // Metadata for any related URL information.
