@@ -1637,7 +1637,18 @@
         "ATTACK_COMPLEXITY_HIGH",
         "ATTACK_COMPLEXITY_MEDIUM"
       ],
-      "default": "ATTACK_COMPLEXITY_UNSPECIFIED"
+      "default": "ATTACK_COMPLEXITY_UNSPECIFIED",
+      "description": "Attack Complexity.\n\n - ATTACK_COMPLEXITY_UNSPECIFIED: Unspecified.\n - ATTACK_COMPLEXITY_LOW: Low attack complexity (AC:L). Defined in CVSS v2, v3, v4.\n - ATTACK_COMPLEXITY_HIGH: High attack complexity (AC:H). Defined in CVSS v2, v3, v4.\n - ATTACK_COMPLEXITY_MEDIUM: Medium attack complexity (AC:M). Defined in CVSS v2."
+    },
+    "CVSSAttackRequirements": {
+      "type": "string",
+      "enum": [
+        "ATTACK_REQUIREMENTS_UNSPECIFIED",
+        "ATTACK_REQUIREMENTS_NONE",
+        "ATTACK_REQUIREMENTS_PRESENT"
+      ],
+      "default": "ATTACK_REQUIREMENTS_UNSPECIFIED",
+      "description": "Attack Requirements.\n\n - ATTACK_REQUIREMENTS_UNSPECIFIED: Unspecified.\n - ATTACK_REQUIREMENTS_NONE: No attack requirements (AT:N). Defined in CVSS v4.\n - ATTACK_REQUIREMENTS_PRESENT: Attack requirements: Present (AT:P). Defined in CVSS v4."
     },
     "CVSSAttackVector": {
       "type": "string",
@@ -1648,7 +1659,8 @@
         "ATTACK_VECTOR_LOCAL",
         "ATTACK_VECTOR_PHYSICAL"
       ],
-      "default": "ATTACK_VECTOR_UNSPECIFIED"
+      "default": "ATTACK_VECTOR_UNSPECIFIED",
+      "description": "Attack Vector.\n\n - ATTACK_VECTOR_UNSPECIFIED: Unspecified.\n - ATTACK_VECTOR_NETWORK: Attack Vector: Network (AV:N). Defined in CVSS v2, v3, v4.\n - ATTACK_VECTOR_ADJACENT: Attack Vector: Adjacent (AV:A). Defined in CVSS v2, v3, v4.\n - ATTACK_VECTOR_LOCAL: Attack Vector: Local (AV:L). Defined in CVSS v2, v3, v4.\n - ATTACK_VECTOR_PHYSICAL: Attack Vector: Physical (AV:P). Defined in CVSS v3, v4."
     },
     "CVSSAuthentication": {
       "type": "string",
@@ -1658,7 +1670,8 @@
         "AUTHENTICATION_SINGLE",
         "AUTHENTICATION_NONE"
       ],
-      "default": "AUTHENTICATION_UNSPECIFIED"
+      "default": "AUTHENTICATION_UNSPECIFIED",
+      "description": "Authentication.\n\n - AUTHENTICATION_UNSPECIFIED: Unspecified.\n - AUTHENTICATION_MULTIPLE: Multiple authentication required (Au:M). Defined in CVSS v2.\n - AUTHENTICATION_SINGLE: Single authentication required (Au:S). Defined in CVSS v2.\n - AUTHENTICATION_NONE: No authentication required (Au:N). Defined in CVSS v2."
     },
     "CVSSImpact": {
       "type": "string",
@@ -1670,7 +1683,8 @@
         "IMPACT_PARTIAL",
         "IMPACT_COMPLETE"
       ],
-      "default": "IMPACT_UNSPECIFIED"
+      "default": "IMPACT_UNSPECIFIED",
+      "description": "Impact.\n\n - IMPACT_UNSPECIFIED: Unspecified.\n - IMPACT_HIGH: High impact (H). Defined in CVSS v3, v4.\n - IMPACT_LOW: Low impact (L). Defined in CVSS v3, v4.\n - IMPACT_NONE: No impact (N). Defined in CVSS v2, v3, v4.\n - IMPACT_PARTIAL: Partial impact (P). Defined in CVSS v2.\n - IMPACT_COMPLETE: Complete impact (C). Defined in CVSS v2."
     },
     "CVSSPrivilegesRequired": {
       "type": "string",
@@ -1680,7 +1694,8 @@
         "PRIVILEGES_REQUIRED_LOW",
         "PRIVILEGES_REQUIRED_HIGH"
       ],
-      "default": "PRIVILEGES_REQUIRED_UNSPECIFIED"
+      "default": "PRIVILEGES_REQUIRED_UNSPECIFIED",
+      "description": "Privileges Required.\n\n - PRIVILEGES_REQUIRED_UNSPECIFIED: Unspecified.\n - PRIVILEGES_REQUIRED_NONE: No privileges required (PR:N). Defined in CVSS v3, v4.\n - PRIVILEGES_REQUIRED_LOW: Low privileges required (PR:L). Defined in CVSS v3, v4.\n - PRIVILEGES_REQUIRED_HIGH: High privileges required (PR:H). Defined in CVSS v3, v4."
     },
     "CVSSScope": {
       "type": "string",
@@ -1689,16 +1704,20 @@
         "SCOPE_UNCHANGED",
         "SCOPE_CHANGED"
       ],
-      "default": "SCOPE_UNSPECIFIED"
+      "default": "SCOPE_UNSPECIFIED",
+      "description": "Scope.\n\n - SCOPE_UNSPECIFIED: Unspecified.\n - SCOPE_UNCHANGED: Scope: Unchanged (S:U). Defined in CVSS v3.\n - SCOPE_CHANGED: Scope: Changed (S:C). Defined in CVSS v3."
     },
     "CVSSUserInteraction": {
       "type": "string",
       "enum": [
         "USER_INTERACTION_UNSPECIFIED",
         "USER_INTERACTION_NONE",
-        "USER_INTERACTION_REQUIRED"
+        "USER_INTERACTION_REQUIRED",
+        "USER_INTERACTION_PASSIVE",
+        "USER_INTERACTION_ACTIVE"
       ],
-      "default": "USER_INTERACTION_UNSPECIFIED"
+      "default": "USER_INTERACTION_UNSPECIFIED",
+      "description": "User Interaction.\n\n - USER_INTERACTION_UNSPECIFIED: Unspecified.\n - USER_INTERACTION_NONE: No user interaction required (UI:N). Defined in CVSS v3, v4.\n - USER_INTERACTION_REQUIRED: User interaction required (UI:R). Defined in CVSS v3.\n - USER_INTERACTION_PASSIVE: Passive user interaction required (UI:P). Defined in CVSS v4.\n - USER_INTERACTION_ACTIVE: Active user interaction required (UI:A). Defined in CVSS v4."
     },
     "DeploymentPlatform": {
       "type": "string",
@@ -4609,44 +4628,81 @@
         },
         "attackVector": {
           "$ref": "#/definitions/CVSSAttackVector",
-          "description": "Base Metrics\nRepresents the intrinsic characteristics of a vulnerability that are\nconstant over time and across user environments."
+          "description": "Attack Vector (AV). Defined in CVSS v2, v3, v4."
         },
         "attackComplexity": {
-          "$ref": "#/definitions/CVSSAttackComplexity"
+          "$ref": "#/definitions/CVSSAttackComplexity",
+          "description": "Attack Complexity (AC). Defined in CVSS v2, v3, v4."
         },
         "authentication": {
-          "$ref": "#/definitions/CVSSAuthentication"
+          "$ref": "#/definitions/CVSSAuthentication",
+          "description": "Authentication (Au). Defined in CVSS v2."
         },
         "privilegesRequired": {
-          "$ref": "#/definitions/CVSSPrivilegesRequired"
+          "$ref": "#/definitions/CVSSPrivilegesRequired",
+          "description": "Privileges Required (PR). Defined in CVSS v3, v4."
         },
         "userInteraction": {
-          "$ref": "#/definitions/CVSSUserInteraction"
+          "$ref": "#/definitions/CVSSUserInteraction",
+          "description": "User Interaction (UI). Defined in CVSS v3, v4."
         },
         "scope": {
-          "$ref": "#/definitions/CVSSScope"
+          "$ref": "#/definitions/CVSSScope",
+          "description": "Scope (S). Defined in CVSS v3."
         },
         "confidentialityImpact": {
-          "$ref": "#/definitions/CVSSImpact"
+          "$ref": "#/definitions/CVSSImpact",
+          "description": "Confidentiality Impact (C). Defined in CVSS v2, v3."
         },
         "integrityImpact": {
-          "$ref": "#/definitions/CVSSImpact"
+          "$ref": "#/definitions/CVSSImpact",
+          "description": "Integrity Impact (I). Defined in CVSS v2, v3."
         },
         "availabilityImpact": {
-          "$ref": "#/definitions/CVSSImpact"
+          "$ref": "#/definitions/CVSSImpact",
+          "description": "Availability Impact (A). Defined in CVSS v2, v3."
+        },
+        "attackRequirements": {
+          "$ref": "#/definitions/CVSSAttackRequirements",
+          "description": "Attack Requirements (AT). Defined in CVSS v4."
+        },
+        "vulnerableSystemConfidentialityImpact": {
+          "$ref": "#/definitions/CVSSImpact",
+          "description": "Vulnerable System Confidentiality Impact (VC). Defined in CVSS v4."
+        },
+        "vulnerableSystemIntegrityImpact": {
+          "$ref": "#/definitions/CVSSImpact",
+          "description": "Vulnerable System Integrity Impact (VI). Defined in CVSS v4."
+        },
+        "vulnerableSystemAvailabilityImpact": {
+          "$ref": "#/definitions/CVSSImpact",
+          "description": "Vulnerable System Availability Impact (VA). Defined in CVSS v4."
+        },
+        "subsequentSystemConfidentialityImpact": {
+          "$ref": "#/definitions/CVSSImpact",
+          "description": "Subsequent System Confidentiality Impact (SC). Defined in CVSS v4."
+        },
+        "subsequentSystemIntegrityImpact": {
+          "$ref": "#/definitions/CVSSImpact",
+          "description": "Subsequent System Integrity Impact (SI). Defined in CVSS v4."
+        },
+        "subsequentSystemAvailabilityImpact": {
+          "$ref": "#/definitions/CVSSImpact",
+          "description": "Subsequent System Availability Impact (SA). Defined in CVSS v4."
         }
       },
-      "title": "Common Vulnerability Scoring System.\nThis message is compatible with CVSS v2 and v3.\nFor CVSS v2 details, see https://www.first.org/cvss/v2/guide\nCVSS v2 calculator: https://nvd.nist.gov/vuln-metrics/cvss/v2-calculator\nFor CVSS v3 details, see https://www.first.org/cvss/specification-document\nCVSS v3 calculator: https://nvd.nist.gov/vuln-metrics/cvss/v3-calculator"
+      "title": "Common Vulnerability Scoring System.\nThis message is compatible with CVSS v2, v3, and v4.\nFor CVSS v2 details, see https://www.first.org/cvss/v2/guide\nCVSS v2 calculator: https://nvd.nist.gov/vuln-metrics/cvss/v2-calculator\nFor CVSS v3 details, see https://www.first.org/cvss/specification-document\nCVSS v3 calculator: https://nvd.nist.gov/vuln-metrics/cvss/v3-calculator\nFor CVSS v4 details, see https://www.first.org/cvss/v4.0/user-guide\nCVSS v4 calculator: https://nvd.nist.gov/vuln-metrics/cvss/v4-calculator"
     },
     "vulnerabilityCVSSVersion": {
       "type": "string",
       "enum": [
         "CVSS_VERSION_UNSPECIFIED",
         "CVSS_VERSION_2",
-        "CVSS_VERSION_3"
+        "CVSS_VERSION_3",
+        "CVSS_VERSION_4"
       ],
       "default": "CVSS_VERSION_UNSPECIFIED",
-      "description": "CVSS Version."
+      "description": "CVSS Version.\n\n - CVSS_VERSION_UNSPECIFIED: Unspecified.\n - CVSS_VERSION_2: CVSS v2.\n - CVSS_VERSION_3: CVSS v3.\n - CVSS_VERSION_4: CVSS v4."
     },
     "vulnerabilityPackageIssue": {
       "type": "object",
