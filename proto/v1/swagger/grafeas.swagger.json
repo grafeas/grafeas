@@ -4699,6 +4699,10 @@
           "type": "string",
           "format": "date-time",
           "description": "The time this advisory was published by the source."
+        },
+        "cvssV4": {
+          "$ref": "#/definitions/v1CVSS",
+          "description": "The full description of the v4 CVSS for this vulnerability."
         }
       },
       "description": "A security vulnerability that can be found in resources."
@@ -4778,6 +4782,10 @@
         "risk": {
           "$ref": "#/definitions/v1Risk",
           "description": "Risk information about the vulnerability, such as CISA, EPSS, etc."
+        },
+        "cvssV4": {
+          "$ref": "#/definitions/v1CVSS",
+          "description": "The cvss v4 score for the vulnerability."
         }
       },
       "description": "An occurrence of a severity vulnerability on a resource."
