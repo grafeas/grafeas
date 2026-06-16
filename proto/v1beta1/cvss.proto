@@ -74,6 +74,8 @@ message CVSS {
   Impact subsequent_system_integrity_impact = 18;
   // Subsequent System Availability Impact (SA). Defined in CVSS v4.
   Impact subsequent_system_availability_impact = 19;
+  // Exploit Maturity (E). Defined in CVSS v4.
+  ExploitMaturity exploit_maturity = 20;
 
   // Attack Vector.
   enum AttackVector {
@@ -173,6 +175,20 @@ message CVSS {
     ATTACK_REQUIREMENTS_NONE = 1;
     // Attack requirements: Present (AT:P). Defined in CVSS v4.
     ATTACK_REQUIREMENTS_PRESENT = 2;
+  }
+
+  // Exploit Maturity (E). Defined in CVSS v4.
+  enum ExploitMaturity {
+    // Unspecified.
+    EXPLOIT_MATURITY_UNSPECIFIED = 0;
+    // Exploit maturity: Not defined (E:X). Defined in CVSS v4.
+    EXPLOIT_MATURITY_NOT_DEFINED = 1;
+    // Exploit maturity: Attacked (E:A). Defined in CVSS v4.
+    EXPLOIT_MATURITY_ATTACKED = 2;
+    // Exploit maturity: Proof-of-concept (E:P). Defined in CVSS v4.
+    EXPLOIT_MATURITY_POC = 3;
+    // Exploit maturity: Unreported (E:U). Defined in CVSS v4.
+    EXPLOIT_MATURITY_UNREPORTED = 4;
   }
 }
 

@@ -1673,6 +1673,18 @@
       "default": "AUTHENTICATION_UNSPECIFIED",
       "description": "Authentication.\n\n - AUTHENTICATION_UNSPECIFIED: Unspecified.\n - AUTHENTICATION_MULTIPLE: Multiple authentication required (Au:M). Defined in CVSS v2.\n - AUTHENTICATION_SINGLE: Single authentication required (Au:S). Defined in CVSS v2.\n - AUTHENTICATION_NONE: No authentication required (Au:N). Defined in CVSS v2."
     },
+    "CVSSExploitMaturity": {
+      "type": "string",
+      "enum": [
+        "EXPLOIT_MATURITY_UNSPECIFIED",
+        "EXPLOIT_MATURITY_NOT_DEFINED",
+        "EXPLOIT_MATURITY_ATTACKED",
+        "EXPLOIT_MATURITY_POC",
+        "EXPLOIT_MATURITY_UNREPORTED"
+      ],
+      "default": "EXPLOIT_MATURITY_UNSPECIFIED",
+      "description": "Exploit Maturity (E). Defined in CVSS v4.\n\n - EXPLOIT_MATURITY_UNSPECIFIED: Unspecified.\n - EXPLOIT_MATURITY_NOT_DEFINED: Exploit maturity: Not defined (E:X). Defined in CVSS v4.\n - EXPLOIT_MATURITY_ATTACKED: Exploit maturity: Attacked (E:A). Defined in CVSS v4.\n - EXPLOIT_MATURITY_POC: Exploit maturity: Proof-of-concept (E:P). Defined in CVSS v4.\n - EXPLOIT_MATURITY_UNREPORTED: Exploit maturity: Unreported (E:U). Defined in CVSS v4."
+    },
     "CVSSImpact": {
       "type": "string",
       "enum": [
@@ -4693,6 +4705,10 @@
         "subsequentSystemAvailabilityImpact": {
           "$ref": "#/definitions/CVSSImpact",
           "description": "Subsequent System Availability Impact (SA). Defined in CVSS v4."
+        },
+        "exploitMaturity": {
+          "$ref": "#/definitions/CVSSExploitMaturity",
+          "description": "Exploit Maturity (E). Defined in CVSS v4."
         }
       },
       "title": "Common Vulnerability Scoring System.\nThis message is compatible with CVSS v2, v3, and v4.\nFor CVSS v2 details, see https://www.first.org/cvss/v2/guide\nCVSS v2 calculator: https://nvd.nist.gov/vuln-metrics/cvss/v2-calculator\nFor CVSS v3 details, see https://www.first.org/cvss/specification-document\nCVSS v3 calculator: https://nvd.nist.gov/vuln-metrics/cvss/v3-calculator\nFor CVSS v4 details, see https://www.first.org/cvss/v4.0/user-guide\nCVSS v4 calculator: https://nvd.nist.gov/vuln-metrics/cvss/v4-calculator"
