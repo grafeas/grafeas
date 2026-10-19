@@ -34,7 +34,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Provides the state of this Vulnerability assessment.
+// Provides the state of this Vulnerability assessment. States should
+// follow the CISA defined minimum requirements for VEX:
+// https://www.cisa.gov/resources-tools/resources/minimum-requirements-vulnerability-exploitability-exchange-vex.
 type VulnerabilityAssessmentNote_Assessment_State int32
 
 const (
@@ -96,7 +98,9 @@ func (VulnerabilityAssessmentNote_Assessment_State) EnumDescriptor() ([]byte, []
 	return file_proto_v1_vex_proto_rawDescGZIP(), []int{0, 2, 0}
 }
 
-// Provides the type of justification.
+// Provides the type of justification. Justification types should
+// follow the CISA defined minimum requirements for VEX:
+// https://www.cisa.gov/resources-tools/resources/minimum-requirements-vulnerability-exploitability-exchange-vex.
 type VulnerabilityAssessmentNote_Assessment_Justification_JustificationType int32
 
 const (

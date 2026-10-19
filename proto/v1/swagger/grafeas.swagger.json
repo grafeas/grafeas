@@ -1513,7 +1513,7 @@
         "UNDER_INVESTIGATION"
       ],
       "default": "STATE_UNSPECIFIED",
-      "description": "Provides the state of this Vulnerability assessment.\n\n - STATE_UNSPECIFIED: No state is specified.\n - AFFECTED: This product is known to be affected by this vulnerability.\n - NOT_AFFECTED: This product is known to be not affected by this vulnerability.\n - FIXED: This product contains a fix for this vulnerability.\n - UNDER_INVESTIGATION: It is not known yet whether these versions are or are not affected\nby the vulnerability. However, it is still under investigation."
+      "description": "Provides the state of this Vulnerability assessment. States should\nfollow the CISA defined minimum requirements for VEX:\nhttps://www.cisa.gov/resources-tools/resources/minimum-requirements-vulnerability-exploitability-exchange-vex.\n\n - STATE_UNSPECIFIED: No state is specified.\n - AFFECTED: This product is known to be affected by this vulnerability.\n - NOT_AFFECTED: This product is known to be not affected by this vulnerability.\n - FIXED: This product contains a fix for this vulnerability.\n - UNDER_INVESTIGATION: It is not known yet whether these versions are or are not affected\nby the vulnerability. However, it is still under investigation."
     },
     "AttestationNoteHint": {
       "type": "object",
@@ -1771,7 +1771,7 @@
         "INLINE_MITIGATIONS_ALREADY_EXIST"
       ],
       "default": "JUSTIFICATION_TYPE_UNSPECIFIED",
-      "description": "Provides the type of justification.\n\n - JUSTIFICATION_TYPE_UNSPECIFIED: JUSTIFICATION_TYPE_UNSPECIFIED.\n - COMPONENT_NOT_PRESENT: The vulnerable component is not present in the product.\n - VULNERABLE_CODE_NOT_PRESENT: The vulnerable code is not present. Typically this case\noccurs when source code is configured or built in a way that excludes\nthe vulnerable code.\n - VULNERABLE_CODE_NOT_IN_EXECUTE_PATH: The vulnerable code can not be executed.\nTypically this case occurs when the product includes the vulnerable\ncode but does not call or use the vulnerable code.\n - VULNERABLE_CODE_CANNOT_BE_CONTROLLED_BY_ADVERSARY: The vulnerable code cannot be controlled by an attacker to exploit\nthe vulnerability.\n - INLINE_MITIGATIONS_ALREADY_EXIST: The product includes built-in protections or features that prevent\nexploitation of the vulnerability. These built-in protections cannot\nbe subverted by the attacker and cannot be configured or disabled by\nthe user. These mitigations completely prevent exploitation based on\nknown attack vectors."
+      "description": "Provides the type of justification. Justification types should\nfollow the CISA defined minimum requirements for VEX:\nhttps://www.cisa.gov/resources-tools/resources/minimum-requirements-vulnerability-exploitability-exchange-vex.\n\n - JUSTIFICATION_TYPE_UNSPECIFIED: JUSTIFICATION_TYPE_UNSPECIFIED.\n - COMPONENT_NOT_PRESENT: The vulnerable component is not present in the product.\n - VULNERABLE_CODE_NOT_PRESENT: The vulnerable code is not present. Typically this case\noccurs when source code is configured or built in a way that excludes\nthe vulnerable code.\n - VULNERABLE_CODE_NOT_IN_EXECUTE_PATH: The vulnerable code can not be executed.\nTypically this case occurs when the product includes the vulnerable\ncode but does not call or use the vulnerable code.\n - VULNERABLE_CODE_CANNOT_BE_CONTROLLED_BY_ADVERSARY: The vulnerable code cannot be controlled by an attacker to exploit\nthe vulnerability.\n - INLINE_MITIGATIONS_ALREADY_EXIST: The product includes built-in protections or features that prevent\nexploitation of the vulnerability. These built-in protections cannot\nbe subverted by the attacker and cannot be configured or disabled by\nthe user. These mitigations completely prevent exploitation based on\nknown attack vectors."
     },
     "RemediationRemediationType": {
       "type": "string",
@@ -2126,6 +2126,10 @@
             "$ref": "#/definitions/v1FileLocation"
           },
           "description": "The location at which this package was found."
+        },
+        "exploitability": {
+          "$ref": "#/definitions/v1Exploitability",
+          "description": "Exploitability signals and summary for this package issue."
         }
       },
       "description": "A detail for a distro and package this vulnerability occurrence was found in\nand its associated fix (if one is available)."
@@ -3239,6 +3243,59 @@
           "title": "The EPSS score representing the probability [0-1] of exploitation in the wild in the next 30 days"
         }
       }
+    },
+    "v1Exploitability": {
+      "type": "object",
+      "properties": {
+        "signals": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1ExploitabilitySignal"
+          },
+          "description": "Individual exploitability signals from various sources."
+        },
+        "summary": {
+          "$ref": "#/definitions/v1ExploitabilitySummary",
+          "description": "Rollup summary of the exploitability signals."
+        }
+      },
+      "description": "Exploitability information for a vulnerability. This data can be used\nacross multiple sources, including, but not limited to a top-level \nvulnerability, a package occurrence, or a package file location."
+    },
+    "v1ExploitabilitySignal": {
+      "type": "object",
+      "properties": {
+        "vexStatus": {
+          "$ref": "#/definitions/AssessmentState",
+          "description": "The VEX status asserted by this signal."
+        },
+        "vexJustification": {
+          "$ref": "#/definitions/JustificationJustificationType",
+          "description": "Justification for why the vulnerability is not exploitable."
+        },
+        "source": {
+          "type": "string",
+          "description": "Identifier of the signal source."
+        },
+        "rationale": {
+          "type": "string",
+          "description": "Human-readable explanation of this signal."
+        }
+      },
+      "description": "A single exploitability signal from a specific source (e.g., an upstream\nadvisory, a customer VEX document, or an internal build analysis)."
+    },
+    "v1ExploitabilitySummary": {
+      "type": "object",
+      "properties": {
+        "vexStatus": {
+          "$ref": "#/definitions/AssessmentState",
+          "description": "The rolled-up VEX status. Usually, this should result in an AFFECTED\nor NOT_AFFECTED vex status."
+        },
+        "rationale": {
+          "type": "string",
+          "description": "Human-readable explanation of the summary."
+        }
+      },
+      "description": "Rollup summary of exploitability across signals."
     },
     "v1FileHashes": {
       "type": "object",
@@ -4802,6 +4859,10 @@
         "cvssV4": {
           "$ref": "#/definitions/v1CVSS",
           "description": "The cvss v4 score for the vulnerability."
+        },
+        "exploitability": {
+          "$ref": "#/definitions/v1Exploitability",
+          "description": "Rollup of exploitability across all PackageIssues in this occurrence."
         }
       },
       "description": "An occurrence of a severity vulnerability on a resource."
