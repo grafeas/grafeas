@@ -110,7 +110,9 @@ message VulnerabilityAssessmentNote {
     // details how this assessment concluded the state of this vulnerability.
     repeated grafeas.v1.RelatedUrl related_uris = 4;
 
-    // Provides the state of this Vulnerability assessment.
+    // Provides the state of this Vulnerability assessment. States should
+    // follow the CISA defined minimum requirements for VEX:
+    // https://www.cisa.gov/resources-tools/resources/minimum-requirements-vulnerability-exploitability-exchange-vex.
     enum State {
       // No state is specified.
       STATE_UNSPECIFIED = 0;
@@ -135,7 +137,9 @@ message VulnerabilityAssessmentNote {
     // Justification provides the justification when the state of the
     // assessment if NOT_AFFECTED.
     message Justification {
-      // Provides the type of justification.
+      // Provides the type of justification. Justification types should
+      // follow the CISA defined minimum requirements for VEX:
+      // https://www.cisa.gov/resources-tools/resources/minimum-requirements-vulnerability-exploitability-exchange-vex.
       enum JustificationType {
         // JUSTIFICATION_TYPE_UNSPECIFIED.
         JUSTIFICATION_TYPE_UNSPECIFIED = 0;
