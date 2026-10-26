@@ -166,6 +166,17 @@ message LayerDetails {
   string command = 3;
   // The base images the layer is found within.
   repeated BaseImage base_images = 4;
+  // Attributes that apply to the layer, such as buildpacks metadata.
+  repeated LayerAttribute attributes = 6;
+}
+
+// LayerAttribute represents a single attribute (such as a tag) that applies to
+// a layer, along with the plugin that generated it.
+message LayerAttribute {
+  // The value of the attribute, with a meaning defined by the plugin.
+  string value = 1;
+  // The name of the plugin that generated this attribute.
+  string plugin = 2;
 }
 
 // License information.
