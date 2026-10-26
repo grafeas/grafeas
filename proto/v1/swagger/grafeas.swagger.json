@@ -3259,7 +3259,7 @@
           "description": "Rollup summary of the exploitability signals."
         }
       },
-      "description": "Exploitability information for a vulnerability. This data can be used\nacross multiple sources, including, but not limited to a top-level \nvulnerability, a package occurrence, or a package file location."
+      "description": "Exploitability information for a vulnerability. This data can be used\nacross multiple sources, including, but not limited to a top-level\nvulnerability, a package occurrence, or a package file location."
     },
     "v1ExploitabilitySignal": {
       "type": "object",
@@ -3572,6 +3572,20 @@
       },
       "description": "Layer holds metadata specific to a layer of a Docker image."
     },
+    "v1LayerAttribute": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string",
+          "description": "The value of the attribute, with a meaning defined by the plugin."
+        },
+        "plugin": {
+          "type": "string",
+          "description": "The name of the plugin that generated this attribute."
+        }
+      },
+      "description": "LayerAttribute represents a single attribute (such as a tag) that applies to\na layer, along with the plugin that generated it."
+    },
     "v1LayerDetails": {
       "type": "object",
       "properties": {
@@ -3598,6 +3612,13 @@
             "$ref": "#/definitions/v1BaseImage"
           },
           "description": "The base images the layer is found within."
+        },
+        "attributes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1LayerAttribute"
+          },
+          "description": "Attributes that apply to the layer, such as buildpacks metadata."
         }
       },
       "description": "Details about the layer a package was found in."
